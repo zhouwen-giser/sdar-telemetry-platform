@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/confirmation.schema.json",
+  "title": "Human Confirmation Record",
+  "description": "人工确认、否决和有效期记录。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "confirmationId",
+    "episodeId",
+    "actionId",
+    "requestedAt",
+    "requestedFrom",
+    "status",
+    "scope"
+  ],
+  "properties": {
+    "confirmationId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "人工确认标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "actionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联行动。"
+    },
+    "requestedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "请求确认时间。"
+    },
+    "requestedFrom": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "确认请求对象。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "expired",
+        "cancelled"
+      ],
+      "description": "当前状态。"
+    },
+    "decidedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "决定时间。"
+    },
+    "decidedBy": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "确认人。"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "确认适用范围。"
+    },
+    "validFrom": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "生效时间。"
+    },
+    "validUntil": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "失效时间。"
+    },
+    "invalidationConditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "失效条件。"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EvidenceRef"
+      },
+      "default": [],
+      "description": "证据引用。"
+    },
+    "comment": {
+      "type": "string",
+      "description": "备注。"
+    }
+  }
+}

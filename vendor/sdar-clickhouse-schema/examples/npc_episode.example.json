@@ -1,0 +1,833 @@
+{
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "episodeId": "ep-npc-001",
+    "agentType": "npc",
+    "agentId": "npc-ugv-01",
+    "scenarioId": "scenario-threat-escape",
+    "episodeType": "tactical_response",
+    "correlationId": "corr-npc-001",
+    "sourceRunIds": [
+      "tick-100",
+      "tick-101"
+    ],
+    "startedAt": "2026-07-15T07:00:00Z",
+    "endedAt": "2026-07-15T07:00:03Z",
+    "status": "completed",
+    "environment": "simulation",
+    "softwareVersion": "npc-v4",
+    "profile": "embodied-control",
+    "adapter": "npc",
+    "tags": [
+      "safety",
+      "escape"
+    ]
+  },
+  "trigger": {
+    "triggerId": "trg-npc-001",
+    "episodeId": "ep-npc-001",
+    "sequence": 1,
+    "triggerType": "state_change",
+    "source": {
+      "sourceType": "sensor",
+      "sourceId": "damage-event-feed",
+      "channel": "mqtt",
+      "trustLevel": "trusted"
+    },
+    "receivedAt": "2026-07-15T07:00:00Z",
+    "summary": "车辆受到高威胁攻击，需要抢占 Mission 并逃逸",
+    "priority": 100,
+    "stateVersion": 100
+  },
+  "goals": [
+    {
+      "goalId": "goal-npc-escape",
+      "goalVersion": 1,
+      "episodeId": "ep-npc-001",
+      "title": "脱离高威胁区域",
+      "description": "停止当前 Mission 并将车辆移动到安全距离",
+      "originTriggerId": "trg-npc-001",
+      "targetRefs": [
+        {
+          "entityType": "vehicle",
+          "entityId": "npc-ugv-01"
+        }
+      ],
+      "successCriteria": [
+        {
+          "criterionId": "crit-npc-preempt",
+          "description": "Mission 被安全分支抢占",
+          "criterionType": "state",
+          "expected": "SafetyPolicyTree/EscapeTree",
+          "comparator": "eq",
+          "actualSourcePath": "/activeController",
+          "critical": true
+        },
+        {
+          "criterionId": "crit-npc-safe-distance",
+          "description": "车辆与威胁距离达到安全阈值",
+          "criterionType": "position",
+          "expected": {
+            "minDistanceM": 120
+          },
+          "comparator": "gte",
+          "actualSourcePath": "/domainState/perceptionState/visibleTargets/0/distanceM",
+          "critical": true
+        }
+      ],
+      "constraints": [
+        {
+          "constraintId": "con-npc-safety-priority",
+          "category": "safety",
+          "description": "Safety 必须高于 Tactical 与 Mission",
+          "severity": "hard",
+          "appliesTo": [
+            "control"
+          ],
+          "violationPolicy": "reject"
+        }
+      ],
+      "status": "satisfied",
+      "createdAt": "2026-07-15T07:00:00Z",
+      "createdBy": {
+        "sourceType": "rule_engine",
+        "sourceId": "safety-policy",
+        "trustLevel": "trusted"
+      }
+    }
+  ],
+  "initialState": {
+    "stateId": "state-npc-100",
+    "episodeId": "ep-npc-001",
+    "agentType": "npc",
+    "stateVersion": 100,
+    "quality": {
+      "observedAt": "2026-07-15T07:00:00Z",
+      "recordedAt": "2026-07-15T07:00:00Z",
+      "freshnessMs": 20,
+      "confidence": 0.98,
+      "status": "confirmed"
+    },
+    "source": {
+      "sourceType": "agent_runtime",
+      "sourceId": "blackboard",
+      "trustLevel": "trusted"
+    },
+    "episodeStatus": "active",
+    "goalId": "goal-npc-escape",
+    "goalVersion": 1,
+    "activeExecutionBasisId": "basis-npc-escape",
+    "activeController": "MissionTree",
+    "controlMode": "autonomous",
+    "domainState": {
+      "selfState": {
+        "position": {
+          "lat": 29.7,
+          "lon": 106.8,
+          "alt": 0
+        },
+        "heading": 90,
+        "speed": 5,
+        "health": 45,
+        "ammo": 0,
+        "weaponRangeM": 300,
+        "alive": true,
+        "canFire": false,
+        "team": "blue"
+      },
+      "perceptionState": {
+        "visibleTargets": [
+          {
+            "targetId": "enemy-01",
+            "distanceM": 60,
+            "bearingDeg": 180,
+            "alive": true,
+            "threatScore": 0.95,
+            "lastSeenAt": "2026-07-15T07:00:00Z",
+            "confidence": 0.97
+          }
+        ],
+        "activeTargetId": "enemy-01"
+      },
+      "threatState": {
+        "level": "high"
+      },
+      "memoryState": {
+        "recentHit": true
+      },
+      "tacticalDecisionState": {
+        "intent": "ESCAPE",
+        "utilityScores": {
+          "ESCAPE": 0.98,
+          "HOLD": 0.1
+        },
+        "reasonSummary": "弹药耗尽且高威胁目标近距离存在"
+      },
+      "missionState": {
+        "missionId": "mission-patrol-01",
+        "status": "running",
+        "steps": [],
+        "toolCalls": [],
+        "currentToolCallIndex": 0
+      },
+      "commandState": {
+        "lastCommand": "patrol"
+      },
+      "moveTaskState": {
+        "status": "running"
+      },
+      "hmiApprovalState": {
+        "status": "not_required"
+      },
+      "routeObstacleState": {},
+      "communicationState": {
+        "upperCommandOnline": true,
+        "lastHeartbeatAt": "2026-07-15T06:59:59Z",
+        "quality": 0.9
+      }
+    }
+  },
+  "stateSnapshots": [
+    {
+      "stateId": "state-npc-100",
+      "episodeId": "ep-npc-001",
+      "agentType": "npc",
+      "stateVersion": 100,
+      "quality": {
+        "observedAt": "2026-07-15T07:00:00Z",
+        "recordedAt": "2026-07-15T07:00:00Z",
+        "freshnessMs": 20,
+        "confidence": 0.98,
+        "status": "confirmed"
+      },
+      "source": {
+        "sourceType": "agent_runtime",
+        "sourceId": "blackboard",
+        "trustLevel": "trusted"
+      },
+      "episodeStatus": "active",
+      "goalId": "goal-npc-escape",
+      "goalVersion": 1,
+      "activeExecutionBasisId": "basis-npc-escape",
+      "activeController": "MissionTree",
+      "controlMode": "autonomous",
+      "domainState": {
+        "selfState": {
+          "position": {
+            "lat": 29.7,
+            "lon": 106.8,
+            "alt": 0
+          },
+          "heading": 90,
+          "speed": 5,
+          "health": 45,
+          "ammo": 0,
+          "weaponRangeM": 300,
+          "alive": true,
+          "canFire": false,
+          "team": "blue"
+        },
+        "perceptionState": {
+          "visibleTargets": [
+            {
+              "targetId": "enemy-01",
+              "distanceM": 60,
+              "bearingDeg": 180,
+              "alive": true,
+              "threatScore": 0.95,
+              "lastSeenAt": "2026-07-15T07:00:00Z",
+              "confidence": 0.97
+            }
+          ],
+          "activeTargetId": "enemy-01"
+        },
+        "threatState": {
+          "level": "high"
+        },
+        "memoryState": {
+          "recentHit": true
+        },
+        "tacticalDecisionState": {
+          "intent": "ESCAPE",
+          "utilityScores": {
+            "ESCAPE": 0.98,
+            "HOLD": 0.1
+          },
+          "reasonSummary": "弹药耗尽且高威胁目标近距离存在"
+        },
+        "missionState": {
+          "missionId": "mission-patrol-01",
+          "status": "running",
+          "steps": [],
+          "toolCalls": [],
+          "currentToolCallIndex": 0
+        },
+        "commandState": {
+          "lastCommand": "patrol"
+        },
+        "moveTaskState": {
+          "status": "running"
+        },
+        "hmiApprovalState": {
+          "status": "not_required"
+        },
+        "routeObstacleState": {},
+        "communicationState": {
+          "upperCommandOnline": true,
+          "lastHeartbeatAt": "2026-07-15T06:59:59Z",
+          "quality": 0.9
+        }
+      }
+    },
+    {
+      "stateId": "state-npc-101",
+      "episodeId": "ep-npc-001",
+      "agentType": "npc",
+      "stateVersion": 101,
+      "quality": {
+        "observedAt": "2026-07-15T07:00:03Z",
+        "recordedAt": "2026-07-15T07:00:03Z",
+        "freshnessMs": 10,
+        "confidence": 0.99,
+        "status": "confirmed"
+      },
+      "source": {
+        "sourceType": "agent_runtime",
+        "sourceId": "blackboard",
+        "trustLevel": "trusted"
+      },
+      "episodeStatus": "completed",
+      "goalId": "goal-npc-escape",
+      "goalVersion": 1,
+      "activeExecutionBasisId": "basis-npc-escape",
+      "currentActionId": "act-npc-escape",
+      "activeController": "SafetyPolicyTree/EscapeTree",
+      "controlMode": "autonomous",
+      "domainState": {
+        "selfState": {
+          "position": {
+            "lat": 29.7005,
+            "lon": 106.799,
+            "alt": 0
+          },
+          "heading": 270,
+          "speed": 0,
+          "health": 45,
+          "ammo": 0,
+          "weaponRangeM": 300,
+          "alive": true,
+          "canFire": false,
+          "team": "blue"
+        },
+        "perceptionState": {
+          "visibleTargets": [
+            {
+              "targetId": "enemy-01",
+              "distanceM": 135,
+              "bearingDeg": 10,
+              "alive": true,
+              "threatScore": 0.6,
+              "lastSeenAt": "2026-07-15T07:00:03Z",
+              "confidence": 0.96
+            }
+          ],
+          "activeTargetId": "enemy-01"
+        },
+        "threatState": {
+          "level": "medium"
+        },
+        "memoryState": {
+          "recentHit": true
+        },
+        "tacticalDecisionState": {
+          "intent": "HOLD",
+          "utilityScores": {
+            "ESCAPE": 0.3,
+            "HOLD": 0.8
+          },
+          "reasonSummary": "已达到安全距离"
+        },
+        "missionState": {
+          "missionId": "mission-patrol-01",
+          "status": "paused",
+          "steps": [],
+          "toolCalls": [],
+          "currentToolCallIndex": 0
+        },
+        "commandState": {
+          "lastCommand": "escape"
+        },
+        "moveTaskState": {
+          "status": "completed"
+        },
+        "hmiApprovalState": {
+          "status": "not_required"
+        },
+        "routeObstacleState": {},
+        "communicationState": {
+          "upperCommandOnline": true,
+          "lastHeartbeatAt": "2026-07-15T07:00:02Z",
+          "quality": 0.9
+        }
+      }
+    }
+  ],
+  "stateDeltas": [
+    {
+      "stateDeltaId": "delta-npc-001",
+      "episodeId": "ep-npc-001",
+      "fromStateId": "state-npc-100",
+      "toStateId": "state-npc-101",
+      "fromStateVersion": 100,
+      "toStateVersion": 101,
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/activeController",
+          "value": "SafetyPolicyTree/EscapeTree"
+        },
+        {
+          "op": "replace",
+          "path": "/domainState/perceptionState/visibleTargets/0/distanceM",
+          "value": 135
+        }
+      ],
+      "reasonEventId": "evt-npc-safe",
+      "sourceDecisionId": "dec-npc-escape",
+      "sourceActionId": "act-npc-escape",
+      "recordedAt": "2026-07-15T07:00:03Z"
+    }
+  ],
+  "events": [
+    {
+      "eventId": "evt-npc-threat",
+      "episodeId": "ep-npc-001",
+      "sequence": 1,
+      "eventType": "threat.high",
+      "source": {
+        "sourceType": "sensor",
+        "sourceId": "damage-event-feed",
+        "trustLevel": "trusted"
+      },
+      "correlationId": "corr-npc-001",
+      "stateVersionBefore": 100,
+      "stateVersionAfter": 100,
+      "occurredAt": "2026-07-15T07:00:00Z",
+      "severity": "critical"
+    },
+    {
+      "eventId": "evt-npc-safe",
+      "episodeId": "ep-npc-001",
+      "sequence": 4,
+      "eventType": "escape.completed",
+      "source": {
+        "sourceType": "sensor",
+        "sourceId": "target-tracker",
+        "trustLevel": "trusted"
+      },
+      "correlationId": "corr-npc-001",
+      "actionId": "act-npc-escape",
+      "stateVersionBefore": 100,
+      "stateVersionAfter": 101,
+      "occurredAt": "2026-07-15T07:00:03Z",
+      "severity": "info"
+    }
+  ],
+  "executionBases": [
+    {
+      "basisId": "basis-npc-escape",
+      "episodeId": "ep-npc-001",
+      "basisType": "behavior_tree_branch",
+      "version": 1,
+      "status": "completed",
+      "goalId": "goal-npc-escape",
+      "goalVersion": 1,
+      "name": "SafetyPolicyTree/EscapeTree",
+      "description": "高威胁时抢占 Mission 并逃逸",
+      "policyRef": "npc-v4-safety-policy",
+      "branchPath": "RootSelector/SafetyPolicyTree/EscapeTree",
+      "utilityScores": {
+        "ESCAPE": 0.98,
+        "ATTACK": 0.0,
+        "SCAN": 0.05,
+        "HOLD": 0.1
+      },
+      "resourceClaims": [
+        {
+          "resourceType": "chassis",
+          "resourceId": "npc-ugv-01-chassis",
+          "mode": "exclusive"
+        }
+      ],
+      "successCriterionRefs": [
+        "crit-npc-preempt",
+        "crit-npc-safe-distance"
+      ],
+      "createdBy": {
+        "sourceType": "behavior_tree",
+        "sourceId": "npc-root-selector",
+        "trustLevel": "trusted"
+      },
+      "createdAt": "2026-07-15T07:00:00Z"
+    }
+  ],
+  "decisions": [
+    {
+      "decisionId": "dec-npc-escape",
+      "episodeId": "ep-npc-001",
+      "sequence": 2,
+      "decisionType": "preemption",
+      "title": "Safety 抢占 Mission",
+      "conclusion": "选择 EscapeTree 并下发逃逸机动",
+      "status": "executed",
+      "basedOnStateId": "state-npc-100",
+      "executionBasisId": "basis-npc-escape",
+      "candidateOptions": [
+        {
+          "optionId": "opt-escape",
+          "summary": "立即逃逸",
+          "score": 0.98
+        },
+        {
+          "optionId": "opt-hold",
+          "summary": "保持停止",
+          "score": 0.1
+        }
+      ],
+      "selectedOptionId": "opt-escape",
+      "rationaleSummary": "弹药为0、生命值低、高威胁目标距离60米",
+      "evidenceRefs": [
+        {
+          "evidenceType": "state_snapshot",
+          "evidenceId": "state-npc-100",
+          "relation": "supports"
+        }
+      ],
+      "riskAssessment": {
+        "level": "high",
+        "categories": [
+          "survivability"
+        ],
+        "summary": "继续 Mission 会显著增加损毁风险",
+        "mitigations": [
+          "抢占Mission",
+          "远离威胁"
+        ]
+      },
+      "expectedEffects": [
+        "与威胁距离增加到120米以上"
+      ],
+      "createdAt": "2026-07-15T07:00:00Z",
+      "createdBy": {
+        "sourceType": "behavior_tree",
+        "sourceId": "npc-root-selector",
+        "trustLevel": "trusted"
+      }
+    }
+  ],
+  "gateDecisions": [
+    {
+      "gateDecisionId": "gate-npc-control",
+      "episodeId": "ep-npc-001",
+      "actionId": "act-npc-escape",
+      "gateType": "control_ownership",
+      "decision": "allow",
+      "basedOnStateId": "state-npc-100",
+      "policyRefs": [
+        "Safety>Tactical>Mission>Idle"
+      ],
+      "reasons": [
+        "SafetyPolicyTree 获得唯一控制权"
+      ],
+      "evaluatedAt": "2026-07-15T07:00:00Z"
+    }
+  ],
+  "confirmations": [],
+  "actions": [
+    {
+      "actionId": "act-npc-escape",
+      "episodeId": "ep-npc-001",
+      "sequence": 3,
+      "basisId": "basis-npc-escape",
+      "decisionId": "dec-npc-escape",
+      "actionType": "control",
+      "capability": "move",
+      "target": {
+        "entityType": "vehicle",
+        "entityId": "npc-ugv-01"
+      },
+      "inputSummary": "沿远离 enemy-01 的方向移动至安全距离",
+      "inputHash": "cccccccccccccccccccccccccccccccc",
+      "riskLevel": "high",
+      "gateDecisionRefs": [
+        "gate-npc-control"
+      ],
+      "idempotencyKey": "ep-npc-001-escape-v1",
+      "executionStatus": "succeeded",
+      "sideEffect": true,
+      "controllerRef": "RootSelector/SafetyPolicyTree/EscapeTree",
+      "resourceClaims": [
+        {
+          "resourceType": "chassis",
+          "resourceId": "npc-ugv-01-chassis",
+          "mode": "exclusive"
+        }
+      ],
+      "attempt": 1,
+      "dispatchedAt": "2026-07-15T07:00:00Z",
+      "startedAt": "2026-07-15T07:00:00Z",
+      "endedAt": "2026-07-15T07:00:03Z",
+      "receiptRefs": [
+        "rcpt-npc-escape"
+      ],
+      "beforeStateId": "state-npc-100",
+      "afterStateId": "state-npc-101"
+    }
+  ],
+  "receipts": [
+    {
+      "receiptId": "rcpt-npc-escape",
+      "episodeId": "ep-npc-001",
+      "actionId": "act-npc-escape",
+      "provider": {
+        "sourceType": "mcp_server",
+        "sourceId": "npc-mcp-control",
+        "trustLevel": "trusted"
+      },
+      "providerRequestId": "npc-mcp-001",
+      "receivedAt": "2026-07-15T07:00:00Z",
+      "transportStatus": "ok",
+      "acceptanceStatus": "accepted",
+      "executionStatus": "accepted",
+      "outputSummary": "逃逸机动已受理"
+    }
+  ],
+  "verifications": [
+    {
+      "verificationId": "ver-npc-preempt",
+      "episodeId": "ep-npc-001",
+      "criterionId": "crit-npc-preempt",
+      "actionId": "act-npc-escape",
+      "stateId": "state-npc-101",
+      "verificationType": "state_check",
+      "expected": "SafetyPolicyTree/EscapeTree",
+      "actual": "SafetyPolicyTree/EscapeTree",
+      "comparator": "eq",
+      "status": "pass",
+      "critical": true,
+      "evidenceRefs": [
+        {
+          "evidenceType": "state_snapshot",
+          "evidenceId": "state-npc-101",
+          "relation": "validated_by"
+        }
+      ],
+      "verifiedAt": "2026-07-15T07:00:01Z",
+      "verifier": {
+        "sourceType": "agent_runtime",
+        "sourceId": "npc-tick-loop",
+        "trustLevel": "trusted"
+      }
+    },
+    {
+      "verificationId": "ver-npc-distance",
+      "episodeId": "ep-npc-001",
+      "criterionId": "crit-npc-safe-distance",
+      "actionId": "act-npc-escape",
+      "stateId": "state-npc-101",
+      "verificationType": "sensor_observation",
+      "expected": 120,
+      "actual": 135,
+      "comparator": "gte",
+      "status": "pass",
+      "critical": true,
+      "evidenceRefs": [
+        {
+          "evidenceType": "state_snapshot",
+          "evidenceId": "state-npc-101",
+          "relation": "validated_by"
+        }
+      ],
+      "verifiedAt": "2026-07-15T07:00:03Z",
+      "verifier": {
+        "sourceType": "sensor",
+        "sourceId": "target-tracker",
+        "trustLevel": "trusted"
+      }
+    }
+  ],
+  "failures": [],
+  "recoveries": [],
+  "trajectory": [
+    {
+      "trajectoryStepId": "traj-npc-001",
+      "episodeId": "ep-npc-001",
+      "sequence": 1,
+      "fromStateId": "state-npc-100",
+      "fromStateVersion": 100,
+      "triggerEventId": "evt-npc-threat",
+      "decisionId": "dec-npc-escape",
+      "actionId": "act-npc-escape",
+      "receiptIds": [
+        "rcpt-npc-escape"
+      ],
+      "stateDeltaId": "delta-npc-001",
+      "toStateId": "state-npc-101",
+      "toStateVersion": 101,
+      "timestamp": "2026-07-15T07:00:03Z"
+    }
+  ],
+  "operationalMetrics": [
+    {
+      "metricId": "op-npc-decision",
+      "episodeId": "ep-npc-001",
+      "name": "decision_latency_ms",
+      "value": 40,
+      "unit": "ms",
+      "threshold": 100,
+      "status": "pass",
+      "collectedAt": "2026-07-15T07:00:00Z"
+    },
+    {
+      "metricId": "op-npc-control-conflict",
+      "episodeId": "ep-npc-001",
+      "name": "control_conflict_count",
+      "value": 0,
+      "unit": "count",
+      "threshold": 0,
+      "status": "pass",
+      "collectedAt": "2026-07-15T07:00:03Z"
+    }
+  ],
+  "finalState": {
+    "stateId": "state-npc-101",
+    "episodeId": "ep-npc-001",
+    "agentType": "npc",
+    "stateVersion": 101,
+    "quality": {
+      "observedAt": "2026-07-15T07:00:03Z",
+      "recordedAt": "2026-07-15T07:00:03Z",
+      "freshnessMs": 10,
+      "confidence": 0.99,
+      "status": "confirmed"
+    },
+    "source": {
+      "sourceType": "agent_runtime",
+      "sourceId": "blackboard",
+      "trustLevel": "trusted"
+    },
+    "episodeStatus": "completed",
+    "goalId": "goal-npc-escape",
+    "goalVersion": 1,
+    "activeExecutionBasisId": "basis-npc-escape",
+    "currentActionId": "act-npc-escape",
+    "activeController": "SafetyPolicyTree/EscapeTree",
+    "controlMode": "autonomous",
+    "domainState": {
+      "selfState": {
+        "position": {
+          "lat": 29.7005,
+          "lon": 106.799,
+          "alt": 0
+        },
+        "heading": 270,
+        "speed": 0,
+        "health": 45,
+        "ammo": 0,
+        "weaponRangeM": 300,
+        "alive": true,
+        "canFire": false,
+        "team": "blue"
+      },
+      "perceptionState": {
+        "visibleTargets": [
+          {
+            "targetId": "enemy-01",
+            "distanceM": 135,
+            "bearingDeg": 10,
+            "alive": true,
+            "threatScore": 0.6,
+            "lastSeenAt": "2026-07-15T07:00:03Z",
+            "confidence": 0.96
+          }
+        ],
+        "activeTargetId": "enemy-01"
+      },
+      "threatState": {
+        "level": "medium"
+      },
+      "memoryState": {
+        "recentHit": true
+      },
+      "tacticalDecisionState": {
+        "intent": "HOLD",
+        "utilityScores": {
+          "ESCAPE": 0.3,
+          "HOLD": 0.8
+        },
+        "reasonSummary": "已达到安全距离"
+      },
+      "missionState": {
+        "missionId": "mission-patrol-01",
+        "status": "paused",
+        "steps": [],
+        "toolCalls": [],
+        "currentToolCallIndex": 0
+      },
+      "commandState": {
+        "lastCommand": "escape"
+      },
+      "moveTaskState": {
+        "status": "completed"
+      },
+      "hmiApprovalState": {
+        "status": "not_required"
+      },
+      "routeObstacleState": {},
+      "communicationState": {
+        "upperCommandOnline": true,
+        "lastHeartbeatAt": "2026-07-15T07:00:02Z",
+        "quality": 0.9
+      }
+    }
+  },
+  "outcome": {
+    "outcomeId": "out-npc-001",
+    "episodeId": "ep-npc-001",
+    "status": "completed",
+    "goalId": "goal-npc-escape",
+    "goalVersion": 1,
+    "finalStateId": "state-npc-101",
+    "completedCriterionRefs": [
+      "crit-npc-preempt",
+      "crit-npc-safe-distance"
+    ],
+    "failedCriterionRefs": [],
+    "pendingCriterionRefs": [],
+    "remainingItems": [
+      {
+        "itemId": "item-npc-resume",
+        "description": "威胁降低后评估是否恢复原巡逻 Mission",
+        "status": "waiting",
+        "owner": {
+          "sourceType": "agent_runtime",
+          "sourceId": "npc-mission-manager",
+          "trustLevel": "trusted"
+        },
+        "riskLevel": "medium"
+      }
+    ],
+    "residualRisks": [
+      {
+        "level": "medium",
+        "categories": [
+          "threat_present"
+        ],
+        "summary": "敌方目标仍存活但距离已扩大"
+      }
+    ],
+    "summary": "NPC 已由 Safety 分支抢占 Mission 并移动至安全距离",
+    "reportedAt": "2026-07-15T07:00:03Z"
+  },
+  "evidenceIndex": []
+}

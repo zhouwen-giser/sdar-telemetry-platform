@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-failure-propagation.schema.json",
+  "title": "Skill Failure Propagation Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "propagationId",
+    "childSkillExecutionId",
+    "failurePolicy",
+    "childOutcome",
+    "propagationAction",
+    "missingEffects",
+    "degradedReasons",
+    "evidenceRefs",
+    "propagatedAt"
+  ],
+  "properties": {
+    "propagationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "childSkillExecutionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "parentSkillExecutionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "failurePolicy": {
+      "$ref": "common-definitions.schema.json#/$defs/skillFailurePolicy"
+    },
+    "childOutcome": {
+      "enum": [
+        "completed",
+        "failed",
+        "cancelled",
+        "degraded"
+      ]
+    },
+    "propagationAction": {
+      "enum": [
+        "fail_parent",
+        "select_replacement",
+        "continue_without_child",
+        "mark_parent_degraded"
+      ]
+    },
+    "replacementSkillExecutionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "missingEffects": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "degradedReasons": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "common-definitions.schema.json#/$defs/evidenceReference"
+      }
+    },
+    "propagatedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "propagationAction": {
+            "const": "select_replacement"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "replacementSkillExecutionId"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "propagationAction": {
+            "const": "mark_parent_degraded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "missingEffects": {
+            "type": "array",
+            "minItems": 1
+          },
+          "degradedReasons": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

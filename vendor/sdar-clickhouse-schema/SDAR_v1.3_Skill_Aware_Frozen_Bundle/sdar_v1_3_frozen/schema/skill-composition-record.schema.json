@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-composition-record.schema.json",
+  "title": "Skill Composition Record Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "compositionId",
+    "rootSkillId",
+    "rootSkillVersion",
+    "status",
+    "defaultDepthLimit",
+    "hardDepthLimit",
+    "effectiveDepthLimit",
+    "maxExpandedSkills",
+    "maxExpandedNodes",
+    "actualMaxDepth",
+    "expandedSkillCount",
+    "expandedNodeCount",
+    "cycleDetected",
+    "duplicateExpansionDetected",
+    "budgetExceeded",
+    "compositionHash",
+    "createdAt"
+  ],
+  "properties": {
+    "compositionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "rootSkillId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "rootSkillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "enum": [
+        "created",
+        "validated",
+        "rejected",
+        "executing",
+        "completed",
+        "failed"
+      ]
+    },
+    "defaultDepthLimit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "hardDepthLimit": {
+      "const": 5
+    },
+    "effectiveDepthLimit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "maxExpandedSkills": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1024
+    },
+    "maxExpandedNodes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000
+    },
+    "actualMaxDepth": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "expandedSkillCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "expandedNodeCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "cycleDetected": {
+      "type": "boolean"
+    },
+    "duplicateExpansionDetected": {
+      "type": "boolean"
+    },
+    "budgetExceeded": {
+      "type": "boolean"
+    },
+    "compositionHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "compositionArtifactRef": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "createdAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  }
+}

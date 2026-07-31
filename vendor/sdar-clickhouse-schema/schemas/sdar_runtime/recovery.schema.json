@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/recovery.schema.json",
+  "title": "Recovery Record",
+  "description": "异常后的重试、降级、重规划、等待、暂停或终止过程。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "recoveryId",
+    "episodeId",
+    "failureId",
+    "strategy",
+    "decisionId",
+    "startedAt",
+    "status"
+  ],
+  "properties": {
+    "recoveryId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "恢复记录标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "failureId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联失败。"
+    },
+    "strategy": {
+      "type": "string",
+      "enum": [
+        "retry",
+        "degrade",
+        "replan",
+        "wait",
+        "pause",
+        "abort",
+        "handoff",
+        "manual_control"
+      ],
+      "description": "恢复策略。"
+    },
+    "decisionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联决策。"
+    },
+    "newBasisId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "新的执行依据。"
+    },
+    "actionIds": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "节点产生的行动。"
+    },
+    "startedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "开始时间。"
+    },
+    "completedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "完成时间。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "running",
+        "succeeded",
+        "failed",
+        "cancelled"
+      ],
+      "description": "当前状态。"
+    },
+    "resultVerificationId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "恢复结果验证。"
+    },
+    "residualRisk": {
+      "$ref": "common.schema.json#/$defs/RiskAssessment",
+      "description": "残余风险。"
+    },
+    "notes": {
+      "type": "string",
+      "description": "说明。"
+    }
+  }
+}

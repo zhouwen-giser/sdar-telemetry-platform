@@ -1,0 +1,33 @@
+{
+  "planComplianceId": "compliance-0001",
+  "skillExecutionId": "skill-exec-0001",
+  "skillId": "embodied.move_to",
+  "skillVersion": 3,
+  "planId": "plan-0001",
+  "planVersion": 2,
+  "result": "passed",
+  "checks": [
+    {
+      "checkId": "check-normative",
+      "checkType": "normative",
+      "result": "passed",
+      "evidenceRefs": []
+    },
+    {
+      "checkId": "check-provider",
+      "checkType": "provider_policy",
+      "result": "passed",
+      "evidenceRefs": []
+    },
+    {
+      "checkId": "check-evidence",
+      "checkType": "evidence_requirement",
+      "result": "passed",
+      "evidenceRefs": []
+    }
+  ],
+  "repairAttemptCount": 0,
+  "reportHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "reportArtifactRef": "artifact-compliance-0001",
+  "checkedAt": "2026-07-17T00:59:59.000Z"
+}

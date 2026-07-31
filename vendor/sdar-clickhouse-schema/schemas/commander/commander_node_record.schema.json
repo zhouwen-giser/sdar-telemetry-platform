@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/commander_node_record.schema.json",
+  "title": "Commander Graph Node Record",
+  "description": "车长 LangGraph 节点执行记录，用于映射为标准 Decision/Action/StateDelta/Trajectory。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "nodeRunId",
+    "episodeId",
+    "graphRunId",
+    "nodeName",
+    "startedAt",
+    "status",
+    "stateBeforeId"
+  ],
+  "properties": {
+    "nodeRunId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "节点执行标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "graphRunId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "LangGraph 运行标识。"
+    },
+    "nodeName": {
+      "type": "string",
+      "description": "节点名称。"
+    },
+    "nodeType": {
+      "type": "string",
+      "enum": [
+        "routing",
+        "planning",
+        "scheduling",
+        "execution",
+        "verification",
+        "report",
+        "error",
+        "other"
+      ],
+      "description": "节点类别。"
+    },
+    "startedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "开始时间。"
+    },
+    "endedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "结束时间。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "running",
+        "succeeded",
+        "failed",
+        "cancelled",
+        "timed_out"
+      ],
+      "description": "当前状态。"
+    },
+    "stateBeforeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "节点前状态。"
+    },
+    "stateAfterId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "节点后状态。"
+    },
+    "stateDeltaId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联状态增量。"
+    },
+    "decisionIds": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "节点产生的决策。"
+    },
+    "actionIds": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "节点产生的行动。"
+    },
+    "goto": {
+      "type": "string",
+      "description": "节点跳转目标。"
+    },
+    "errorRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "错误引用。"
+    },
+    "spanId": {
+      "type": "string",
+      "description": "链路 Span 标识。"
+    },
+    "parentSpanId": {
+      "type": "string",
+      "description": "父 Span 标识。"
+    }
+  }
+}

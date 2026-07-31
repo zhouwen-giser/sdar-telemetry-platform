@@ -1,0 +1,2 @@
+export type Severity="blocking"|"warning";export interface QualityIssue{id:string;type:string;severity:Severity;sourceId:string;recordId:string;message:string;createdAt:string;status:"open"|"resolved"}
+export class QualityStore{private issues:QualityIssue[]=[];add(i:Omit<QualityIssue,"id"|"createdAt"|"status">){const x={...i,id:crypto.randomUUID(),createdAt:new Date().toISOString(),status:"open" as const};this.issues.push(x);return x}list(){return [...this.issues]}}

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/success_criterion.schema.json",
+  "title": "Success Criterion",
+  "description": "可验证的目标完成条件。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "criterionId",
+    "description",
+    "criterionType",
+    "comparator",
+    "critical"
+  ],
+  "properties": {
+    "criterionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "成功条件标识。"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "详细说明。"
+    },
+    "criterionType": {
+      "type": "string",
+      "enum": [
+        "state",
+        "position",
+        "task_status",
+        "target_status",
+        "sensor_result",
+        "time",
+        "resource",
+        "human_acceptance",
+        "custom"
+      ],
+      "description": "成功条件类型。"
+    },
+    "expected": {
+      "description": "期望值。"
+    },
+    "comparator": {
+      "$ref": "common.schema.json#/$defs/Comparator",
+      "description": "比较操作。"
+    },
+    "actualSourcePath": {
+      "type": "string",
+      "description": "实际值在状态中的路径。"
+    },
+    "critical": {
+      "type": "boolean",
+      "description": "是否为关键成功条件。"
+    },
+    "deadlineAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "截止时间。"
+    },
+    "stabilityWindowMs": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "判定稳定窗口。"
+    },
+    "evidenceRequirements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "证据要求。"
+    }
+  }
+}

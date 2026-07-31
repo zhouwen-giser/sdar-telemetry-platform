@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/receipt.schema.json",
+  "title": "Execution Receipt",
+  "description": "工具、设备或外部系统返回的执行受理与执行结果回执。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receiptId",
+    "episodeId",
+    "actionId",
+    "provider",
+    "receivedAt",
+    "transportStatus",
+    "acceptanceStatus",
+    "executionStatus"
+  ],
+  "properties": {
+    "receiptId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "回执标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "actionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联行动。"
+    },
+    "provider": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "回执提供方。"
+    },
+    "providerRequestId": {
+      "type": "string",
+      "description": "提供方请求标识。"
+    },
+    "receivedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "触发接收时间。"
+    },
+    "transportStatus": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "error",
+        "timeout",
+        "unknown"
+      ],
+      "description": "传输层状态。"
+    },
+    "acceptanceStatus": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "rejected",
+        "unknown"
+      ],
+      "description": "请求是否被设备/工具受理。"
+    },
+    "executionStatus": {
+      "$ref": "common.schema.json#/$defs/ExecutionStatus",
+      "description": "执行状态。"
+    },
+    "outputSummary": {
+      "type": "string",
+      "description": "输出摘要。"
+    },
+    "rawResponseRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "原始回执引用。"
+    },
+    "observedStateRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "回执携带的状态引用。"
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "retryable": {
+          "type": "boolean",
+          "description": "是否可重试。"
+        },
+        "detailsRef": {
+          "$ref": "common.schema.json#/$defs/EvidenceRef"
+        }
+      },
+      "description": "错误对象。"
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/MetricValue"
+      },
+      "default": [],
+      "description": "耗时等调用指标。"
+    }
+  }
+}

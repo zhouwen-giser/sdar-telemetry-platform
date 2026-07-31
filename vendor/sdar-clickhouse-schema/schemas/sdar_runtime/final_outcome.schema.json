@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/final_outcome.schema.json",
+  "title": "Final Outcome",
+  "description": "Episode 的最终状态、成功条件结果、剩余事项和残余风险。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "outcomeId",
+    "episodeId",
+    "status",
+    "goalId",
+    "goalVersion",
+    "finalStateId",
+    "summary",
+    "reportedAt"
+  ],
+  "properties": {
+    "outcomeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "最终结果标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "partial",
+        "failed",
+        "aborted",
+        "blocked",
+        "waiting",
+        "paused",
+        "cancelled"
+      ],
+      "description": "当前状态。"
+    },
+    "goalId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "目标标识。"
+    },
+    "goalVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "目标版本。"
+    },
+    "finalStateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "最终状态。"
+    },
+    "completedCriterionRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "已通过成功条件。"
+    },
+    "failedCriterionRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "失败成功条件。"
+    },
+    "pendingCriterionRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "待验证成功条件。"
+    },
+    "remainingItems": {
+      "type": "array",
+      "items": {
+        "$ref": "remaining_item.schema.json"
+      },
+      "default": [],
+      "description": "剩余事项。"
+    },
+    "residualRisks": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/RiskAssessment"
+      },
+      "default": [],
+      "description": "残余风险。"
+    },
+    "summary": {
+      "type": "string",
+      "description": "结构化摘要。"
+    },
+    "reportedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "结果报告时间。"
+    },
+    "reportRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "最终报告引用。"
+    }
+  }
+}

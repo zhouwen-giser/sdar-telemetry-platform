@@ -1,0 +1,5 @@
+# Development/test fallback for ARM hosts that cannot execute the official
+# ClickHouse arm64 binary. Do not use CPU emulation for production workloads.
+services:
+  clickhouse:
+    platform: linux/amd64

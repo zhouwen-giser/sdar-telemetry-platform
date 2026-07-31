@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-evidence-requirement.schema.json",
+  "title": "Skill Evidence Requirement Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidenceRequirementId",
+    "skillExecutionId",
+    "requirementName",
+    "requirementType",
+    "required",
+    "critical",
+    "status",
+    "expectedEvidenceTypes",
+    "actualEvidenceRefs"
+  ],
+  "properties": {
+    "evidenceRequirementId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillExecutionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "requirementName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "requirementType": {
+      "enum": [
+        "state",
+        "receipt",
+        "physical_verification",
+        "coverage",
+        "trajectory",
+        "anomaly_report",
+        "human_confirmation",
+        "custom"
+      ]
+    },
+    "required": {
+      "type": "boolean"
+    },
+    "critical": {
+      "type": "boolean"
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "satisfied",
+        "failed",
+        "waived",
+        "not_applicable"
+      ]
+    },
+    "expectedEvidenceTypes": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "actualEvidenceRefs": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "common-definitions.schema.json#/$defs/evidenceReference"
+      }
+    },
+    "failureCode": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "failureSummary": {
+      "type": "string",
+      "maxLength": 4096
+    },
+    "checkedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  }
+}

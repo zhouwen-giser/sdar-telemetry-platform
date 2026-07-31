@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-composition-edge.schema.json",
+  "title": "Skill Composition Edge Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "compositionEdgeId",
+    "compositionId",
+    "parentSkillId",
+    "parentSkillVersion",
+    "childSkillId",
+    "childSkillVersion",
+    "edgeType",
+    "inputCompatible",
+    "outputCompatible",
+    "recursionDepth",
+    "remainingRecursionBudget",
+    "failurePolicy",
+    "selectedBy",
+    "evidenceRefs"
+  ],
+  "properties": {
+    "compositionEdgeId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "compositionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "parentSkillId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "parentSkillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "childSkillId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "childSkillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "edgeType": {
+      "enum": [
+        "fixed_dependency",
+        "capability_slot",
+        "replacement"
+      ]
+    },
+    "capabilitySlotId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "inputMappingHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "outputMappingHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "inputCompatible": {
+      "type": "boolean"
+    },
+    "outputCompatible": {
+      "type": "boolean"
+    },
+    "recursionDepth": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "remainingRecursionBudget": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "failurePolicy": {
+      "$ref": "common-definitions.schema.json#/$defs/skillFailurePolicy"
+    },
+    "selectedBy": {
+      "enum": [
+        "fixed",
+        "deterministic",
+        "llm_bounded",
+        "recovery"
+      ]
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "common-definitions.schema.json#/$defs/evidenceReference"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "edgeType": {
+            "const": "capability_slot"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "capabilitySlotId"
+        ]
+      }
+    }
+  ]
+}

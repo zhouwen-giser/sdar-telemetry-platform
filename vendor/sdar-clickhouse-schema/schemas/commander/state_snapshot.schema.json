@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/commander/state_snapshot.schema.json",
+  "title": "Commander State Snapshot",
+  "description": "车长智能体状态快照入口；在通用状态合同上固定 agentType 并约束 UgvState。",
+  "allOf": [
+    {
+      "$ref": "https://schemas.sdar.local/embodied-control/v1/state_snapshot.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "agentType": {
+          "const": "commander"
+        },
+        "domainState": {
+          "$ref": "https://schemas.sdar.local/embodied-control/v1/commander_state_extension.schema.json"
+        }
+      }
+    }
+  ]
+}

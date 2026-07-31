@@ -1,0 +1,22 @@
+{
+  "v1.3": [
+    "sdar.runtime.goal",
+    "sdar.runtime.plan",
+    "sdar.runtime.task",
+    "sdar.runtime.workflow",
+    "sdar.runtime.skill_attempt",
+    "sdar.runtime.skill_execution",
+    "sdar.runtime.outcome",
+    "sdar.runtime.recovery",
+    "sdar.runtime.completed_effect",
+    "sdar.runtime.mcp_tool_call",
+    "sdar.runtime.remote_task",
+    "sdar.runtime.artifact",
+    "sdar.runtime.a2a_projection",
+    "sdar.runtime.capability_summary",
+    "sdar.runtime.public_capability_card",
+    "sdar.runtime.audit"
+  ],
+  "authority": "PostgreSQL",
+  "relay": "transactional outbox delivery metadata only"
+}

@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-interpretation-record.schema.json",
+  "title": "Skill Interpretation Record Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "interpretationId",
+    "skillId",
+    "skillVersion",
+    "mode",
+    "boundedInstructionHash",
+    "normativeHash",
+    "adaptiveHash",
+    "interpretationStatus",
+    "invalidReasons",
+    "createdAt"
+  ],
+  "properties": {
+    "interpretationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "mode": {
+      "$ref": "common-definitions.schema.json#/$defs/skillExecutionMode"
+    },
+    "boundedInstructionHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "normativeHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "adaptiveHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "templateInstanceRef": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "procedureProgramRef": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "guidanceContextRef": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "interpretationStatus": {
+      "enum": [
+        "created",
+        "validated",
+        "invalid"
+      ]
+    },
+    "invalidReasons": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "createdAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "template"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "templateInstanceRef"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "procedure"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "procedureProgramRef"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "guidance"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "guidanceContextRef"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/trigger.schema.json",
+  "title": "Trigger Record",
+  "description": "Episode 的触发事实。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "triggerId",
+    "episodeId",
+    "sequence",
+    "triggerType",
+    "source",
+    "receivedAt",
+    "summary"
+  ],
+  "properties": {
+    "triggerId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "触发记录标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Episode 内有序序号。"
+    },
+    "triggerType": {
+      "type": "string",
+      "enum": [
+        "user_command",
+        "structured_task",
+        "state_change",
+        "anomaly",
+        "timer",
+        "operator_control",
+        "peer_request",
+        "system_start"
+      ],
+      "description": "触发类型。"
+    },
+    "source": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "记录来源。"
+    },
+    "receivedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "触发接收时间。"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "结构化摘要。"
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "优先级。"
+    },
+    "rawInputRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "原始输入证据引用。"
+    },
+    "targetRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EntityRef"
+      },
+      "default": [],
+      "description": "目标对象引用。"
+    },
+    "stateVersion": {
+      "type": [
+        "string",
+        "integer"
+      ],
+      "description": "状态版本。"
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "领域扩展字段。"
+    }
+  }
+}

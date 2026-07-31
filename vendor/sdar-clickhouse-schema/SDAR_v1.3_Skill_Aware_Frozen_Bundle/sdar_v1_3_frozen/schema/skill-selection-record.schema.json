@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-selection-record.schema.json",
+  "title": "Skill Selection Record Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "selectionId",
+    "candidateIds",
+    "selectionStatus",
+    "noSkillFallback",
+    "reasonSummary",
+    "decisionId",
+    "evidenceRefs",
+    "selectedAt"
+  ],
+  "properties": {
+    "selectionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "candidateIds": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "selectedSkillId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "selectedSkillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "selectionStatus": {
+      "enum": [
+        "selected",
+        "no_applicable_skill",
+        "confirmation_required",
+        "rejected"
+      ]
+    },
+    "noSkillFallback": {
+      "enum": [
+        "not_applicable",
+        "fallback",
+        "request_confirmation",
+        "reject"
+      ]
+    },
+    "reasonSummary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8192
+    },
+    "decisionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "applicabilityId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "selectedUsageSpecHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "selectedUsageSpecSource": {
+      "$ref": "common-definitions.schema.json#/$defs/skillUsageSpecSource"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "common-definitions.schema.json#/$defs/evidenceReference"
+      }
+    },
+    "selectedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "selectionStatus": {
+            "const": "selected"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "selectedSkillId",
+          "selectedSkillVersion",
+          "applicabilityId",
+          "selectedUsageSpecHash",
+          "selectedUsageSpecSource"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-execution-relation.schema.json",
+  "title": "Skill Execution Relation Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "relationId",
+    "rootSkillExecutionId",
+    "parentSkillExecutionId",
+    "childSkillExecutionId",
+    "compositionId",
+    "compositionEdgeId",
+    "failurePolicy",
+    "relationStatus",
+    "createdAt"
+  ],
+  "properties": {
+    "relationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "rootSkillExecutionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "parentSkillExecutionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "childSkillExecutionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "compositionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "compositionEdgeId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "capabilitySlotId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "failurePolicy": {
+      "$ref": "common-definitions.schema.json#/$defs/skillFailurePolicy"
+    },
+    "relationStatus": {
+      "enum": [
+        "created",
+        "active",
+        "completed",
+        "failed",
+        "cancelled",
+        "replaced"
+      ]
+    },
+    "createdAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  }
+}

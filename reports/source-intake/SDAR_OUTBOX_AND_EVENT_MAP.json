@@ -1,0 +1,5 @@
+{
+  "status": "environment_blocked",
+  "reason": "inputs/skill-driven-agent-runtime absent",
+  "baselineFamilies": []
+}

@@ -1,0 +1,34 @@
+services:
+  control-postgres:
+    image: postgres:16-alpine
+    profiles: [dev-control-postgres]
+    environment:
+      POSTGRES_DB: sdar_telemetry_control
+      POSTGRES_USER: sdar_telemetry
+      POSTGRES_PASSWORD_FILE: /run/secrets/control_postgres_password
+    secrets: [control_postgres_password]
+    volumes: [control_pg_data:/var/lib/postgresql/data]
+  ingestion-gateway:
+    build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: ingestion-gateway}}
+    environment: {WAL_DIR: /var/lib/sdar-telemetry/wal, GATEWAY_PORT: 8080}
+    volumes: [telemetry_wal:/var/lib/sdar-telemetry/wal]
+    ports: ["8080:8080"]
+  telemetry-worker:
+    build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: telemetry-worker}}
+    env_file: [../.env]
+    volumes: [telemetry_wal:/var/lib/sdar-telemetry/wal, ./secrets:/run/secrets:ro]
+  query-api:
+    build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: query-api}}
+    env_file: [../.env]
+    ports: ["8081:8081"]
+    volumes: [./secrets:/run/secrets:ro]
+  admin-api:
+    build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: admin-api}}
+    env_file: [../.env]
+    ports: ["8082:8082"]
+  sdar-outbox-relay:
+    build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: sdar-outbox-relay}}
+    env_file: [../.env]
+secrets:
+  control_postgres_password: {file: ./secrets/control_postgres_password}
+volumes: {control_pg_data: {}, telemetry_wal: {}}

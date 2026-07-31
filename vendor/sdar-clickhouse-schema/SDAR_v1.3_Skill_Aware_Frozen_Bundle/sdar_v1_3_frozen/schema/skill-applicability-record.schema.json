@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-applicability-record.schema.json",
+  "title": "Skill Applicability Record Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "applicabilityId",
+    "skillId",
+    "skillVersion",
+    "status",
+    "satisfiedRequirements",
+    "missingRequirements",
+    "blockingRequirements",
+    "unknownRequirements",
+    "contextRequirementIds",
+    "requiresReadOnlyQuery",
+    "requiresUserInput",
+    "requiresConfirmation",
+    "reasonSummary",
+    "evidenceRefs",
+    "assessedAt"
+  ],
+  "properties": {
+    "applicabilityId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "$ref": "common-definitions.schema.json#/$defs/skillApplicabilityStatus"
+    },
+    "satisfiedRequirements": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "missingRequirements": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "blockingRequirements": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "unknownRequirements": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "contextRequirementIds": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "requiresReadOnlyQuery": {
+      "type": "boolean"
+    },
+    "requiresUserInput": {
+      "type": "boolean"
+    },
+    "requiresConfirmation": {
+      "type": "boolean"
+    },
+    "reasonSummary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8192
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "common-definitions.schema.json#/$defs/evidenceReference"
+      }
+    },
+    "assessedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  }
+}

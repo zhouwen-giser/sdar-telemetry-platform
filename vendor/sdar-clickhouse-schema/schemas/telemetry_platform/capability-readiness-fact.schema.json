@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/telemetry/v1/capability-readiness-fact.schema.json",
+  "title": "CapabilityReadinessFact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "recordId",
+    "nodeId",
+    "capabilityId",
+    "capabilityVersion",
+    "snapshotVersion",
+    "status",
+    "evaluatedAt",
+    "validUntil",
+    "reasons"
+  ],
+  "properties": {
+    "recordId": {
+      "type": "string"
+    },
+    "nodeId": {
+      "type": "string"
+    },
+    "capabilityId": {
+      "type": "string"
+    },
+    "capabilityVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "snapshotVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "enum": [
+        "available",
+        "degraded",
+        "unavailable",
+        "suspended"
+      ]
+    },
+    "evaluatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "validUntil": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "catalogHash": {
+      "type": "string"
+    },
+    "policyHash": {
+      "type": "string"
+    }
+  }
+}

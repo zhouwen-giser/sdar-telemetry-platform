@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/raw_record.schema.json",
+  "title": "Raw Collection Record",
+  "description": "原始采集层统一信封。保存输入、状态、节点/Tick、工具请求与回执等未标准化原始记录。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "rawRecordId",
+    "episodeId",
+    "agentType",
+    "recordType",
+    "source",
+    "timestamp",
+    "payload"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0",
+      "description": "Schema 版本。"
+    },
+    "rawRecordId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "原始记录唯一标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "agentType": {
+      "$ref": "common.schema.json#/$defs/AgentType",
+      "description": "智能体类型：车长或 NPC。"
+    },
+    "recordType": {
+      "type": "string",
+      "enum": [
+        "message",
+        "state_snapshot",
+        "node_record",
+        "tick_record",
+        "tool_request",
+        "tool_response",
+        "approval",
+        "event_log",
+        "sensor_observation",
+        "runtime_log",
+        "other"
+      ],
+      "description": "原始记录类型。"
+    },
+    "source": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "记录来源。"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Episode 内有序序号。"
+    },
+    "timestamp": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "记录时间。"
+    },
+    "correlationId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "跨记录关联标识。"
+    },
+    "payload": {
+      "description": "原始载荷。"
+    },
+    "payloadHash": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{32,128}$",
+      "description": "载荷哈希。"
+    },
+    "storageRef": {
+      "type": "string",
+      "description": "外部存储地址。"
+    },
+    "redaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "applied": {
+          "type": "boolean"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "脱敏处理信息。"
+    }
+  }
+}

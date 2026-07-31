@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/evaluation-readiness.schema.json",
+  "title": "Skill-aware Evaluation Readiness Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "readinessId",
+    "status",
+    "sealed",
+    "evidenceSequenceComplete",
+    "stateTrajectoryComplete",
+    "actionReceiptComplete",
+    "verificationCoverageComplete",
+    "remoteTaskBindingComplete",
+    "remoteTaskTerminalComplete",
+    "continuationComplete",
+    "cancellationCertain",
+    "skillUsageSnapshotComplete",
+    "skillCandidateTraceComplete",
+    "skillApplicabilityComplete",
+    "skillContextResolutionComplete",
+    "skillSelectionComplete",
+    "skillModeSelectionComplete",
+    "skillCompositionComplete",
+    "skillCapabilitySlotComplete",
+    "skillPlanComplianceComplete",
+    "skillExecutionTreeComplete",
+    "skillFailurePropagationComplete",
+    "skillEvidenceRequirementComplete",
+    "pendingTransactionalEvidenceCount",
+    "unresolvedRemoteTaskCount",
+    "uncertainCancellationCount",
+    "unresolvedSkillExecutionCount",
+    "missingRecordTypes",
+    "qualityIssueIds",
+    "checkedAt"
+  ],
+  "properties": {
+    "readinessId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "status": {
+      "enum": [
+        "ready",
+        "degraded",
+        "not_ready"
+      ]
+    },
+    "sealed": {
+      "type": "boolean"
+    },
+    "evidenceSequenceComplete": {
+      "type": "boolean"
+    },
+    "stateTrajectoryComplete": {
+      "type": "boolean"
+    },
+    "actionReceiptComplete": {
+      "type": "boolean"
+    },
+    "verificationCoverageComplete": {
+      "type": "boolean"
+    },
+    "remoteTaskBindingComplete": {
+      "type": "boolean"
+    },
+    "remoteTaskTerminalComplete": {
+      "type": "boolean"
+    },
+    "continuationComplete": {
+      "type": "boolean"
+    },
+    "cancellationCertain": {
+      "type": "boolean"
+    },
+    "skillUsageSnapshotComplete": {
+      "type": "boolean"
+    },
+    "skillCandidateTraceComplete": {
+      "type": "boolean"
+    },
+    "skillApplicabilityComplete": {
+      "type": "boolean"
+    },
+    "skillContextResolutionComplete": {
+      "type": "boolean"
+    },
+    "skillSelectionComplete": {
+      "type": "boolean"
+    },
+    "skillModeSelectionComplete": {
+      "type": "boolean"
+    },
+    "skillCompositionComplete": {
+      "type": "boolean"
+    },
+    "skillCapabilitySlotComplete": {
+      "type": "boolean"
+    },
+    "skillPlanComplianceComplete": {
+      "type": "boolean"
+    },
+    "skillExecutionTreeComplete": {
+      "type": "boolean"
+    },
+    "skillFailurePropagationComplete": {
+      "type": "boolean"
+    },
+    "skillEvidenceRequirementComplete": {
+      "type": "boolean"
+    },
+    "pendingTransactionalEvidenceCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "unresolvedRemoteTaskCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "uncertainCancellationCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "unresolvedSkillExecutionCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "missingRecordTypes": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "qualityIssueIds": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "checkedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "ready"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "sealed": {
+            "const": true
+          },
+          "evidenceSequenceComplete": {
+            "const": true
+          },
+          "stateTrajectoryComplete": {
+            "const": true
+          },
+          "actionReceiptComplete": {
+            "const": true
+          },
+          "verificationCoverageComplete": {
+            "const": true
+          },
+          "remoteTaskBindingComplete": {
+            "const": true
+          },
+          "remoteTaskTerminalComplete": {
+            "const": true
+          },
+          "continuationComplete": {
+            "const": true
+          },
+          "cancellationCertain": {
+            "const": true
+          },
+          "skillUsageSnapshotComplete": {
+            "const": true
+          },
+          "skillCandidateTraceComplete": {
+            "const": true
+          },
+          "skillApplicabilityComplete": {
+            "const": true
+          },
+          "skillContextResolutionComplete": {
+            "const": true
+          },
+          "skillSelectionComplete": {
+            "const": true
+          },
+          "skillModeSelectionComplete": {
+            "const": true
+          },
+          "skillCompositionComplete": {
+            "const": true
+          },
+          "skillCapabilitySlotComplete": {
+            "const": true
+          },
+          "skillPlanComplianceComplete": {
+            "const": true
+          },
+          "skillExecutionTreeComplete": {
+            "const": true
+          },
+          "skillFailurePropagationComplete": {
+            "const": true
+          },
+          "skillEvidenceRequirementComplete": {
+            "const": true
+          },
+          "pendingTransactionalEvidenceCount": {
+            "const": 0
+          },
+          "unresolvedRemoteTaskCount": {
+            "const": 0
+          },
+          "uncertainCancellationCount": {
+            "const": 0
+          },
+          "unresolvedSkillExecutionCount": {
+            "const": 0
+          },
+          "missingRecordTypes": {
+            "type": "array",
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

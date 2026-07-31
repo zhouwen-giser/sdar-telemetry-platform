@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/failure.schema.json",
+  "title": "Failure Record",
+  "description": "失败、阻塞、超时或状态异常的结构化记录。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "failureId",
+    "episodeId",
+    "category",
+    "severity",
+    "detectedAt",
+    "stateId",
+    "retryable",
+    "sideEffectRisk",
+    "status"
+  ],
+  "properties": {
+    "failureId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联失败。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "relatedActionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联行动。"
+    },
+    "relatedDecisionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联决策。"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "tool_error",
+        "timeout",
+        "state_conflict",
+        "resource_unavailable",
+        "capability_gap",
+        "safety_violation",
+        "communication_loss",
+        "target_lost",
+        "route_blocked",
+        "verification_failed",
+        "other"
+      ],
+      "description": "约束类别。"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "warning",
+        "error",
+        "critical"
+      ],
+      "description": "硬/软约束。"
+    },
+    "detectedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "发现时间。"
+    },
+    "stateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "验证依据状态。"
+    },
+    "errorRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "错误引用。"
+    },
+    "retryable": {
+      "type": "boolean",
+      "description": "是否可重试。"
+    },
+    "sideEffectRisk": {
+      "$ref": "common.schema.json#/$defs/RiskLevel",
+      "description": "重试副作用风险。"
+    },
+    "impact": {
+      "type": "string",
+      "description": "影响。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "contained",
+        "recovered",
+        "unresolved"
+      ],
+      "description": "当前状态。"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EvidenceRef"
+      },
+      "default": [],
+      "description": "证据引用。"
+    }
+  }
+}

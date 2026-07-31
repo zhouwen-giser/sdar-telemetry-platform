@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-capability-slot-resolution.schema.json",
+  "title": "Skill Capability Slot Resolution Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "slotResolutionId",
+    "compositionId",
+    "capabilitySlotId",
+    "capabilityName",
+    "candidateSkillIds",
+    "status",
+    "selectionReason",
+    "inputCompatible",
+    "outputCompatible",
+    "providerPolicySatisfied",
+    "recursionBudgetSatisfied",
+    "evidenceRefs",
+    "resolvedAt"
+  ],
+  "properties": {
+    "slotResolutionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "compositionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "capabilitySlotId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "capabilityName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "requiredInputSchemaRef": {
+      "type": "string",
+      "maxLength": 4096
+    },
+    "requiredOutputSchemaRef": {
+      "type": "string",
+      "maxLength": 4096
+    },
+    "candidateSkillIds": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "selectedSkillId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "selectedSkillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "enum": [
+        "resolved",
+        "unresolved",
+        "ambiguous",
+        "rejected"
+      ]
+    },
+    "selectionReason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8192
+    },
+    "inputCompatible": {
+      "type": "boolean"
+    },
+    "outputCompatible": {
+      "type": "boolean"
+    },
+    "providerPolicySatisfied": {
+      "type": "boolean"
+    },
+    "recursionBudgetSatisfied": {
+      "type": "boolean"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "common-definitions.schema.json#/$defs/evidenceReference"
+      }
+    },
+    "resolvedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "resolved"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "selectedSkillId",
+          "selectedSkillVersion"
+        ]
+      }
+    }
+  ]
+}

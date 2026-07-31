@@ -1,0 +1,167 @@
+{
+  "documentStatus": "FROZEN",
+  "targetVersion": "1.3.0",
+  "frozenAt": "2026-07-17T00:00:00Z",
+  "decisions": [
+    {
+      "id": "D-01",
+      "topic": "原 v1.2 遥测版本",
+      "decision": "延后并升级为 v1.3，不保留并行遥测版本"
+    },
+    {
+      "id": "D-02",
+      "topic": "v1.3 生产集成基线",
+      "decision": "v1.2 最终提交进入 origin/main"
+    },
+    {
+      "id": "D-03",
+      "topic": "运行时权威",
+      "decision": "PostgreSQL"
+    },
+    {
+      "id": "D-04",
+      "topic": "正式分析权威",
+      "decision": "ClickHouse sdar_core"
+    },
+    {
+      "id": "D-05",
+      "topic": "业务层 Telemetry API",
+      "decision": "禁止；由基础设施语义自动采集"
+    },
+    {
+      "id": "D-06",
+      "topic": "采集位置",
+      "decision": "权威 Repository、Adapter、Runtime Hook 与事务边界"
+    },
+    {
+      "id": "D-07",
+      "topic": "OpenTelemetry 角色",
+      "decision": "Context Propagation 与 OTLP 传输"
+    },
+    {
+      "id": "D-08",
+      "topic": "通用自动埋点",
+      "decision": "不进入正式 Evidence Bundle"
+    },
+    {
+      "id": "D-09",
+      "topic": "技术 APM",
+      "decision": "独立 sdar_ops 或外部 APM"
+    },
+    {
+      "id": "D-10",
+      "topic": "统一 sdar_ingest",
+      "decision": "不设置为逻辑必经入口"
+    },
+    {
+      "id": "D-11",
+      "topic": "Skill 数据域",
+      "decision": "Skill Usage 与 Skill Execution 是一级证据域"
+    },
+    {
+      "id": "D-12",
+      "topic": "Skill Package 权威",
+      "decision": "PostgreSQL 中经校验的 exact version/Usage Specification"
+    },
+    {
+      "id": "D-13",
+      "topic": "Legacy Skill",
+      "decision": "通过 legacy_projection 兼容"
+    },
+    {
+      "id": "D-14",
+      "topic": "Skill Runtime",
+      "decision": "不新增第二套 Skill Runtime"
+    },
+    {
+      "id": "D-15",
+      "topic": "Workflow Runtime",
+      "decision": "不新增第二套 Workflow Runtime"
+    },
+    {
+      "id": "D-16",
+      "topic": "Provider 权威",
+      "decision": "不复制为 SDAR 本地权威状态"
+    },
+    {
+      "id": "D-17",
+      "topic": "Remote Task Observation/Control Event",
+      "decision": "必须分离"
+    },
+    {
+      "id": "D-18",
+      "topic": "ToolCall/Remote Task",
+      "decision": "生命周期必须分离"
+    },
+    {
+      "id": "D-19",
+      "topic": "关键 Evidence 交付",
+      "decision": "业务事务 + Evidence Journal + Outbox"
+    },
+    {
+      "id": "D-20",
+      "topic": "导出语义",
+      "decision": "至少一次交付，record_id + payload_hash 幂等"
+    },
+    {
+      "id": "D-21",
+      "topic": "ClickHouse 表模型",
+      "decision": "核心实体使用一级事实表"
+    },
+    {
+      "id": "D-22",
+      "topic": "大 Payload",
+      "decision": "ArtifactStore"
+    },
+    {
+      "id": "D-23",
+      "topic": "可靠性与评价重要性",
+      "decision": "Delivery Guarantee 与 Evaluation Role 两维分离"
+    },
+    {
+      "id": "D-24",
+      "topic": "degraded",
+      "decision": "不等于完整成功，必须记录缺失效果"
+    },
+    {
+      "id": "D-25",
+      "topic": "Evaluation Readiness",
+      "decision": "只判断可评价，不负责正式评分"
+    },
+    {
+      "id": "D-26",
+      "topic": "Schema 版本",
+      "decision": "每种 recordType 独立升版"
+    },
+    {
+      "id": "D-27",
+      "topic": "Migration",
+      "decision": "只追加，不修改已发布 Migration"
+    },
+    {
+      "id": "D-28",
+      "topic": "ClickHouse 六库架构",
+      "decision": "保持不变"
+    },
+    {
+      "id": "D-29",
+      "topic": "Langfuse",
+      "decision": "可选投影/评审工具，不是权威源"
+    },
+    {
+      "id": "D-30",
+      "topic": "隐藏思维链",
+      "decision": "不保存"
+    },
+    {
+      "id": "D-31",
+      "topic": "Skill Patch Candidate",
+      "decision": "记录候选，不表示修改或发布"
+    },
+    {
+      "id": "D-32",
+      "topic": "Projection",
+      "decision": "可重建分析投影，不是运行权威"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/constraint.schema.json",
+  "title": "Constraint",
+  "description": "目标与执行过程必须遵守的硬约束或软约束。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "constraintId",
+    "category",
+    "description",
+    "severity"
+  ],
+  "properties": {
+    "constraintId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "约束标识。"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "safety",
+        "authorization",
+        "space",
+        "time",
+        "resource",
+        "capability",
+        "communication",
+        "human_instruction",
+        "other"
+      ],
+      "description": "约束类别。"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "详细说明。"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "hard",
+        "soft"
+      ],
+      "description": "硬/软约束。"
+    },
+    "appliesTo": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "适用对象或动作范围。"
+    },
+    "sourceRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "来源证据。"
+    },
+    "violationPolicy": {
+      "type": "string",
+      "enum": [
+        "reject",
+        "pause",
+        "replan",
+        "warn",
+        "request_confirmation"
+      ],
+      "description": "违反约束后的处理策略。"
+    }
+  }
+}

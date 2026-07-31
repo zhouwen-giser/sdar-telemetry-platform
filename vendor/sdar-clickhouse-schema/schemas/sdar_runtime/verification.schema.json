@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/verification.schema.json",
+  "title": "Verification Record",
+  "description": "使用实际状态、传感器或业务规则逐项验证成功条件。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "verificationId",
+    "episodeId",
+    "criterionId",
+    "verificationType",
+    "expected",
+    "actual",
+    "comparator",
+    "status",
+    "critical",
+    "verifiedAt",
+    "verifier"
+  ],
+  "properties": {
+    "verificationId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "验证记录标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "criterionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "成功条件标识。"
+    },
+    "actionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联行动。"
+    },
+    "stateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "验证依据状态。"
+    },
+    "verificationType": {
+      "type": "string",
+      "enum": [
+        "state_check",
+        "sensor_observation",
+        "business_rule",
+        "human_validation",
+        "derived_check"
+      ],
+      "description": "验证类型。"
+    },
+    "expected": {
+      "description": "期望值。"
+    },
+    "actual": {
+      "description": "实际值。"
+    },
+    "comparator": {
+      "$ref": "common.schema.json#/$defs/Comparator",
+      "description": "比较操作。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail",
+        "inconclusive",
+        "pending"
+      ],
+      "description": "当前状态。"
+    },
+    "critical": {
+      "type": "boolean",
+      "description": "是否为关键成功条件。"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EvidenceRef"
+      },
+      "minItems": 1,
+      "description": "证据引用。"
+    },
+    "verifiedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "验证时间。"
+    },
+    "verifier": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "验证者。"
+    },
+    "stabilityWindowMs": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "判定稳定窗口。"
+    },
+    "notes": {
+      "type": "string",
+      "description": "说明。"
+    }
+  }
+}

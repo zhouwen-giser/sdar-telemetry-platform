@@ -1,0 +1,17 @@
+{
+  "allowedWrites": [
+    "outbox delivery metadata",
+    "telemetry control postgres"
+  ],
+  "forbiddenWrites": [
+    "goal",
+    "plan",
+    "task",
+    "workflow",
+    "skill",
+    "capability",
+    "provider",
+    "resource"
+  ],
+  "verifiedAgainstSource": false
+}

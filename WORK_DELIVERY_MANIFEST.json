@@ -1,0 +1,1375 @@
+{
+  "name": "sdar-telemetry-platform",
+  "version": "1.0.0",
+  "status": "PARTIAL_ENVIRONMENT_BLOCKED",
+  "generated_at": "2026-07-31T11:36:00+08:00",
+  "files": [
+    {
+      "path": ".env.example",
+      "size": 533,
+      "sha256": "232c42cafb6aa7b2fdcc235b1dcc8b1031c0187495a101416d7b5c6ef001bed5"
+    },
+    {
+      "path": ".gitignore",
+      "size": 50,
+      "sha256": "df42130f63474d3e0b65f547817f07bbc52d6ee8b57d1e652e009b37a0c1e730"
+    },
+    {
+      "path": "ENVIRONMENT_LIMITATIONS.md",
+      "size": 702,
+      "sha256": "bb5d32778948a7ddde1df3ad51b8ef0ed34d40d2a897cde1ef5d54bc88231077"
+    },
+    {
+      "path": "FAILED_ATTEMPTS.md",
+      "size": 790,
+      "sha256": "c7576dff809c141929299276074e212ed6563685afaec134fd2f705a7730a06e"
+    },
+    {
+      "path": "LICENSE",
+      "size": 73,
+      "sha256": "892eed1dac3a2a6062d00e4189ba8fb40ffc12deb16786fcd388baabc7e5188d"
+    },
+    {
+      "path": "NOTICE",
+      "size": 159,
+      "sha256": "f0cbde367dc24fc21db75bf375d33b3e6a8bf88a5619e515c4bc94da0a216814"
+    },
+    {
+      "path": "README.md",
+      "size": 677,
+      "sha256": "67b736715cb7ef6ab421ea2c95ab6d01c53a56ef10ff6e16bfe9726888353c27"
+    },
+    {
+      "path": "SBOM.cdx.json",
+      "size": 656,
+      "sha256": "5ed698b07a45ba8eb4fa01b52ef462261321ba8f11e2965b019bf7d80f06765c"
+    },
+    {
+      "path": "SOURCE_LOCK.json",
+      "size": 2464,
+      "sha256": "292f4e08a16099f6b96e1db80a0f450af4006b8777ba069d55205db66386c76d"
+    },
+    {
+      "path": "WORK_COMPLETION_REPORT.md",
+      "size": 961,
+      "sha256": "266d0e3fc038d4e6408dc2a2154cf2f63f8a01eb34adbcda48119a16de2d61ae"
+    },
+    {
+      "path": "apps/admin-api/src/main.ts",
+      "size": 855,
+      "sha256": "851e8bcf4b86187dd9bd6986765f80a5e1ee8a60740d262491fa93b5118980d2"
+    },
+    {
+      "path": "apps/console/public/index.html",
+      "size": 1144,
+      "sha256": "6eb6fe56b7476bcf35d689b7c942809d9bc9f28201b9d480333053c3951c1923"
+    },
+    {
+      "path": "apps/ingestion-gateway/src/main.ts",
+      "size": 1958,
+      "sha256": "1affc1d696ce2c288fa074fc2b19ec7a8f800a663e7745deed548404b37548b9"
+    },
+    {
+      "path": "apps/query-api/src/main.ts",
+      "size": 1459,
+      "sha256": "890f55bec2b414ea4618b52ab10e09d86bee142e72fdf24d1814e97fa46d534e"
+    },
+    {
+      "path": "apps/sdar-outbox-relay/src/main.ts",
+      "size": 1258,
+      "sha256": "bb6c13481a3ffc09ca7b21770bc588e2265dc5eb02bdf52f2437c991854faa47"
+    },
+    {
+      "path": "apps/telemetry-worker/src/main.ts",
+      "size": 1690,
+      "sha256": "97f77eabe52a694765ae07628b2c078dcaccfffe13194c9fa8d38a1397959798"
+    },
+    {
+      "path": "deploy/Dockerfile",
+      "size": 357,
+      "sha256": "665544e9e5e282a086b627dbfef2715977a1ef85ec864f524891ef4ccb9b5fe1"
+    },
+    {
+      "path": "deploy/compose.external-clickhouse.yaml",
+      "size": 1430,
+      "sha256": "ea45fb8ea7280ba24d21232cc48f29dcfddc838eaa542a265aa79f7eb8e552d8"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "size": 359,
+      "sha256": "04d354cc2e7b6016cad899218add2452f03c74b14adea56d696b8b3ea4dfcd01"
+    },
+    {
+      "path": "docs/execplans/P00.md",
+      "size": 148,
+      "sha256": "a8f541cd9ea11fb65d2a9647d8561664567992ec03828b46b2b25f620d75c201"
+    },
+    {
+      "path": "docs/execplans/P01.md",
+      "size": 148,
+      "sha256": "0b90c956751fbb5e533ad8e6cd10dc18dfb78e74a84829e1cf313faec3437113"
+    },
+    {
+      "path": "docs/execplans/P02.md",
+      "size": 143,
+      "sha256": "8dd3fe5268b0971272113899b3eebd7f25bdb542ad3dfc8bb1716676f4f5ec08"
+    },
+    {
+      "path": "docs/execplans/P03.md",
+      "size": 140,
+      "sha256": "b0fa95324d6cb7f3c9a08f6737fef5125c247d29bb7bf72177738d166067298d"
+    },
+    {
+      "path": "docs/execplans/P04.md",
+      "size": 146,
+      "sha256": "ee93b8afe7d32d4962e775a1b5ebfcd46adede756a931de4eb970190a1b95f17"
+    },
+    {
+      "path": "docs/execplans/P05.md",
+      "size": 148,
+      "sha256": "8b55b5db9c638eb9d137248f97fcbbb2728024d6c3c23d900c7a97c100cdd5c1"
+    },
+    {
+      "path": "docs/execplans/P06.md",
+      "size": 150,
+      "sha256": "a9de7fa437613ac34a44db0b1f75d2848893f54e7a3560aa5fd43bb6fada9f62"
+    },
+    {
+      "path": "docs/execplans/P07.md",
+      "size": 140,
+      "sha256": "14be404fc0d6e3ba32f5d66bd8489f3b21c84495cbdad939ec34baa5918b26d3"
+    },
+    {
+      "path": "docs/execplans/P08.md",
+      "size": 141,
+      "sha256": "5ed0cae9fbfa7113f06a4dae4cac909f3efede963f4fa7207da456c492e016cd"
+    },
+    {
+      "path": "docs/execplans/P09.md",
+      "size": 153,
+      "sha256": "7b4e03f6ba7b308f017c26433fde44ad2c63c721a01246a69f9db10b957d8dad"
+    },
+    {
+      "path": "docs/execplans/P10.md",
+      "size": 141,
+      "sha256": "e3f3bb86b8a2401fee60f99a0f3ef58ddee01960c2637410a420e6b10a38dbef"
+    },
+    {
+      "path": "docs/中文使用说明.md",
+      "size": 561,
+      "sha256": "ec1cb4bc4ff4d13a34f8d51a1edc8bdff387f64ce24a4949629620320b59be78"
+    },
+    {
+      "path": "integrations/skill-driven-agent-runtime/README.md",
+      "size": 266,
+      "sha256": "18d185a27be955fdf8a5149ffcadb4301297ba6a3a52dafe750c91d752c7f784"
+    },
+    {
+      "path": "integrations/skill-driven-agent-runtime/apply-check-report.md",
+      "size": 615,
+      "sha256": "1f9f53aef27485f1cc0a1c2c20e8cf544918c12bd2dae71ab870b39c7991e801"
+    },
+    {
+      "path": "integrations/skill-driven-agent-runtime/contract-map.json",
+      "size": 611,
+      "sha256": "8f42cd3584c94744a115c544852bd079471d75afd8650a4b8c75406b4ee00ff1"
+    },
+    {
+      "path": "integrations/skill-driven-agent-runtime/sdar-telemetry-integration.patch",
+      "size": 703,
+      "sha256": "9368d664160bcb1fb9c3577eceb0e1ada68bc1dafc100f3b1f12701f94eb9e77"
+    },
+    {
+      "path": "integrations/skill-driven-agent-runtime/source-lock.json",
+      "size": 274,
+      "sha256": "38de0812662cb208e53d8eedb4c54b494f9ae5855ee4f2a88fc6c6d887307628"
+    },
+    {
+      "path": "migrations/control-postgres/001_init.sql",
+      "size": 1522,
+      "sha256": "85d5e5ed3bdd9e9228f6fd2c536cf4efbe44db65b5d80d7eab6329d569282f61"
+    },
+    {
+      "path": "package.json",
+      "size": 1211,
+      "sha256": "c7d5946bfa5342fe69852c461de48034beaeb3bd46952ddfd079a5cd3770e51b"
+    },
+    {
+      "path": "packages/sdar-source-adapter/src/index.ts",
+      "size": 1129,
+      "sha256": "5fe25fec56f75be88d915a9213f6c53e9b72c9eca72793c8d07e69b718119a28"
+    },
+    {
+      "path": "packages/smpp-source-adapter/src/index.ts",
+      "size": 562,
+      "sha256": "c6a44bc2fbfecb851e5d2295c711adcee6f47d7e17609cbd186337ca9f266c35"
+    },
+    {
+      "path": "packages/telemetry-clickhouse/src/index.ts",
+      "size": 1541,
+      "sha256": "2b24ee4e9a5e36d69690e3cf4240a1fd94cf109592fe212b72e4073c7a42078b"
+    },
+    {
+      "path": "packages/telemetry-config/src/index.ts",
+      "size": 525,
+      "sha256": "bf053be61a6ae80b804e904b4e13156fdd392cba9af3128e225919453b3a45c2"
+    },
+    {
+      "path": "packages/telemetry-contracts/src/index.ts",
+      "size": 690,
+      "sha256": "281cfaadbc7e24dcd5aae5e0efaf6803bbf70c985d516f04a145a447237d8fae"
+    },
+    {
+      "path": "packages/telemetry-control-postgres/src/index.ts",
+      "size": 550,
+      "sha256": "4aa70fabad67987fdc8fc63fddb0927300d6821bfcda0210548bee0ebf3bf40b"
+    },
+    {
+      "path": "packages/telemetry-data-quality/src/index.ts",
+      "size": 471,
+      "sha256": "d24fa8b1fc94866280cd83cbec77013498fa9ba2e0944090aebdd6a8020d2a7b"
+    },
+    {
+      "path": "packages/telemetry-normalizers/src/index.ts",
+      "size": 637,
+      "sha256": "887aca84d433f49fd3b45c74daea4cdb42fb7a3cda24b6f1319e35542e099e1a"
+    },
+    {
+      "path": "packages/telemetry-projection-registry/src/index.ts",
+      "size": 2672,
+      "sha256": "034a64f61cfb95a00ca96b858c55f62ffd3592813e7f277b27316d907dfa8487"
+    },
+    {
+      "path": "packages/telemetry-query-model/src/index.ts",
+      "size": 440,
+      "sha256": "14bf4838c6acfd1ec2af6d06f0394e29356411914ca6c4c558a762659436439c"
+    },
+    {
+      "path": "packages/telemetry-reconciliation/src/index.ts",
+      "size": 360,
+      "sha256": "64fba230a5334e7816f1a351a22021fcb1d428ea7bc0cb9443fb815947fc5998"
+    },
+    {
+      "path": "packages/telemetry-source-mapping/src/index.ts",
+      "size": 532,
+      "sha256": "f62a36d771f53856d5949dd24a156205ff4db0ef6499f5f1323202bd752c6891"
+    },
+    {
+      "path": "packages/telemetry-types/src/index.ts",
+      "size": 1902,
+      "sha256": "4c2f2fb86d85fc31c4647df38ff5fc957d570c7f3a327183d968713f0d930bf8"
+    },
+    {
+      "path": "packages/telemetry-validation/src/index.ts",
+      "size": 1093,
+      "sha256": "9fc230ae9cabb6671e7e0f0418ba8504eb96a2ebc592a14effa2b35340962327"
+    },
+    {
+      "path": "packages/telemetry-wal/src/index.ts",
+      "size": 1995,
+      "sha256": "ddba8a59e4ba1d91552507c761a3a89a09127d4a7cb1ce0eff63e3232a7b6f8c"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "size": 376,
+      "sha256": "758b6c7e58c014c49aadfbd80f3ebecd1138d63e797e6f63d9f2a0abe7f1f38d"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "size": 40,
+      "sha256": "60ce4d1dbf137701a4683d171391c51662700c2f3e32a7caab8b2efc22540e65"
+    },
+    {
+      "path": "reports/LOCAL_COMMIT_HISTORY.txt",
+      "size": 527,
+      "sha256": "700408a191f25c98c93cfddbc66ed1be9ad556b0d2f3608e06ca7dc9a807aeb7"
+    },
+    {
+      "path": "reports/capacity/CAPACITY_REPORT.md",
+      "size": 223,
+      "sha256": "ecfbfc472f7cf594d5c483da0e42f2de631e83f12fbe29269cdcd8265d9b20b7"
+    },
+    {
+      "path": "reports/clickhouse/EXTERNAL_CLICKHOUSE_REPORT.md",
+      "size": 249,
+      "sha256": "24517c69a45c6ccbcc1a09292c70600747a37e99b67bef48f94906dd47f02323"
+    },
+    {
+      "path": "reports/phases/P00.md",
+      "size": 299,
+      "sha256": "2bd7dd6924b87f6b9efddca169b40460b7e6128ee6f4d5e77a7a6b38860018b7"
+    },
+    {
+      "path": "reports/phases/P01.md",
+      "size": 331,
+      "sha256": "64ebd5c7e679da333a5694d4a61db2868758ff37b172d6541e01b76b4258252f"
+    },
+    {
+      "path": "reports/phases/P02.md",
+      "size": 326,
+      "sha256": "e1cd773f62a463cfe618ad1c11be6b32b24052159a35f8ce78431d8b45dd105d"
+    },
+    {
+      "path": "reports/phases/P03.md",
+      "size": 323,
+      "sha256": "bac5d22f3b49658dc4333e37e74f365f68343df16c4dc2cf86f464b4e6419c75"
+    },
+    {
+      "path": "reports/phases/P04.md",
+      "size": 329,
+      "sha256": "8d69204026cc3a925ee0b92b560b1c8871645ec2bd813fd1d6ee1a6a54199890"
+    },
+    {
+      "path": "reports/phases/P05.md",
+      "size": 331,
+      "sha256": "f3e643b563c9e922148e1606a994e9a8b76685914a7eb393b6fca5d01de95f40"
+    },
+    {
+      "path": "reports/phases/P06.md",
+      "size": 333,
+      "sha256": "3aecc18c6fd19554a940108cf095c809a2cdf89cecd0d9997fa6fd9b34a70430"
+    },
+    {
+      "path": "reports/phases/P07.md",
+      "size": 323,
+      "sha256": "de646a97055a1abcffc80d97fe75c59d60dc64aa55756b345a2c67f8eab6e0fe"
+    },
+    {
+      "path": "reports/phases/P08.md",
+      "size": 324,
+      "sha256": "f037202f0aa67dfc1659e802cb20c5c09b5d5c74c6c0f1fa81b08bc63375db84"
+    },
+    {
+      "path": "reports/phases/P09.md",
+      "size": 336,
+      "sha256": "ff2cdac24953bac85b6cd0361b10ec05f231483a7a56bfd0908341158da9ab6e"
+    },
+    {
+      "path": "reports/phases/P10.md",
+      "size": 324,
+      "sha256": "0c5c17fdd0d0e863f14fe97dcecdbdcef4e11df7a0f235483c57b69ed264a4f8"
+    },
+    {
+      "path": "reports/recovery/RECOVERY_REPORT.md",
+      "size": 224,
+      "sha256": "74ac28b8bbefc0df0c0144b46f5b60a3507a490e432f12e50a3902df00df8c51"
+    },
+    {
+      "path": "reports/release/FINAL_RELEASE_GATE.md",
+      "size": 439,
+      "sha256": "5641d593c322f82c205eafc23e7b39ab98e6bb20a15d26559220adbaabcbe129"
+    },
+    {
+      "path": "reports/sdar-integration/PATCH_SYNTAX_CHECK.txt",
+      "size": 49,
+      "sha256": "ce59372f7bf343d811b53240b3c23a897870de5616bd4c3a830cca7a3b4a154e"
+    },
+    {
+      "path": "reports/security/SECURITY_REPORT.md",
+      "size": 276,
+      "sha256": "aa312c3caffa4b98250940467cb1f9b6cd183b39c2b056c50fc7d913b81c009a"
+    },
+    {
+      "path": "reports/source-intake/SDAR_AUTHORITY_WRITE_BOUNDARY.json",
+      "size": 269,
+      "sha256": "b73d14bbd6696e06123b4781822870525e87e31040ecdda790a75f5171b96c12"
+    },
+    {
+      "path": "reports/source-intake/SDAR_OUTBOX_AND_EVENT_MAP.json",
+      "size": 119,
+      "sha256": "ad60e844fb186150e71e2d629770acb6c7e5931e190b5e465c42dd55bff95202"
+    },
+    {
+      "path": "reports/source-intake/SDAR_SOURCE_CONTRACT_INVENTORY.md",
+      "size": 284,
+      "sha256": "4078c35b1e23e94a96ec790dff2222be9d947287ddcec134b962afa904cdbb87"
+    },
+    {
+      "path": "reports/source-intake/SMPP_PATTERN_MAPPING.md",
+      "size": 264,
+      "sha256": "20c99c925eeca28affe89ab346655d0dce8016eaffeab5a42631f2e8d51721c0"
+    },
+    {
+      "path": "reports/tests/LOCAL_TEST_REPORT.md",
+      "size": 269,
+      "sha256": "089085e2f6d402a86e5622b565c9321b6a315c0d31023209680b9507958eb745"
+    },
+    {
+      "path": "reports/tests/UNIFIED_VERIFY.log",
+      "size": 1549,
+      "sha256": "c4b7fd23ff40ce192cb25e4f3b8a8f2c06767ea4798397cdf0cbe95c595cec4b"
+    },
+    {
+      "path": "scripts/clickhouse-cli.ts",
+      "size": 1006,
+      "sha256": "a2ee1ad77a4b79c24fe5ed1350a7a08281e41c977b1fd798983a6e4ff9250b37"
+    },
+    {
+      "path": "scripts/static_verify.py",
+      "size": 651,
+      "sha256": "1e06ab987a1d2bd9e33568a5a622efee9324193b35cf8960f08ff8b0e561791f"
+    },
+    {
+      "path": "scripts/verify.sh",
+      "size": 186,
+      "sha256": "450bc3f4029285a913735b5f9272af17f7b35dd8203eec1cd768dd868ac9f38e"
+    },
+    {
+      "path": "tests/integration/wal.test.ts",
+      "size": 973,
+      "sha256": "1f4d3b50f86d4bb0f03e502118540250416489a6838fe3abdb0df37aecbc4107"
+    },
+    {
+      "path": "tests/unit/contracts.test.ts",
+      "size": 621,
+      "sha256": "afb20492e8162ca62161f07b9183266fa91636db660b7d3307a75d93ddefca35"
+    },
+    {
+      "path": "tests/unit/core.test.ts",
+      "size": 1771,
+      "sha256": "4224c3b40cc5b580d6601a6089e729560d9ad2eb9655d89bba16cde5832b3c1b"
+    },
+    {
+      "path": "tsconfig.json",
+      "size": 489,
+      "sha256": "39e5664a5820131890130897559d3c496495fdf9abcd95c93ac49f4d4513064e"
+    },
+    {
+      "path": "types/shims.d.ts",
+      "size": 977,
+      "sha256": "2e7a1b8e27a30556a61843046aa9e7f3cc21366d179e049323e601d7cd2fcb63"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/README.md",
+      "size": 8356,
+      "sha256": "de371c07311608ac257631f69c94c54828e628624ea5636a20702df83c1c647a"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/RELEASE_MANIFEST_1.3.0-rc.2.json",
+      "size": 37013,
+      "sha256": "9ee6a4d44029980c9a5f8c2efe99b861b6ce3d5188fde0db9ecba30bdf30fcda"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/00-freeze-declaration.md",
+      "size": 1426,
+      "sha256": "d1c76295594cbca0258dfcc7d2f8aecbca7dc2fe25b7f9216031f1cd838cb028"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/01-source-baseline-and-gap.md",
+      "size": 1990,
+      "sha256": "1b19a9f9cccb268edc6b911f090b40f57a6c98cca67284a126f0f461df648ce8"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/02-product-scope-and-architecture.md",
+      "size": 2053,
+      "sha256": "cf26e601890108316ea14ac9888a9f190a9847f633d6a1275d8f61e59ab08b88"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/03-authority-boundaries.md",
+      "size": 964,
+      "sha256": "f3bdfe23e69e3a669cc4a83f5c07acf159e6cd951dd268b2e3990067c5ec6b3c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/04-source-ingestion-and-ack.md",
+      "size": 1409,
+      "sha256": "33a3a2f344fad829757ebe6c15d057afea975b110ee3960db89c8f65313af0a1"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/05-canonical-contract-and-identity.md",
+      "size": 907,
+      "sha256": "ab4f7f4851eef7883128d832c571134adf6bdb443edde0950f31ccab349c490e"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/06-projection-and-warehouse.md",
+      "size": 1557,
+      "sha256": "08f6926fbfaa1205b43fb4c07c244ab3b9e5b9d0036cb18047689a68d19d77e9"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/07-v14-task-capability-skill-provider.md",
+      "size": 1424,
+      "sha256": "6a30a57910093c63c33c3f253be184098f1d4f8f040bd111fe3f80b04f465f3c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/08-smpp-providerops-and-reconciliation.md",
+      "size": 1201,
+      "sha256": "cea5e18027499497c509c9787d083b2d9cc016f880971d666314000239674083"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/09-evidence-evaluation-and-quality.md",
+      "size": 1105,
+      "sha256": "e804b971d2e75532bf28e51f0d0f35daac35011390624cace0b6bfb86db9ab82"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/10-query-api-and-read-model.md",
+      "size": 1031,
+      "sha256": "a31bc324549bccfd693a3c2837a5b05ee190c00c5a9cd19489538a8d6626955d"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/11-admin-control-plane.md",
+      "size": 862,
+      "sha256": "86b202cc32ef5795171802ca606cbaea71de6352db3dd81199e6b279e843bfa1"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/12-console-information-architecture.md",
+      "size": 730,
+      "sha256": "fa9941769b7e13376f775885f041dfb33f7eab8957f9d63fd981cf11640c9200"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/13-security-and-data-governance.md",
+      "size": 924,
+      "sha256": "4ff50f6db6ce353a8a472a8a2e4554e0bda17503c66b2542034efe4253b26063"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/14-deployment-ha-and-failure.md",
+      "size": 1107,
+      "sha256": "8c677623b51f12dfd437e7791ce93ce03a96b4951af80a8ce0f58fffc169f432"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/15-retention-capacity-and-cost.md",
+      "size": 976,
+      "sha256": "5695663e28c6cbb3939253741b506e97e93ac76ea82b854026ef2285edd040dc"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/16-versioning-and-compatibility.md",
+      "size": 856,
+      "sha256": "605bfe9f022dad616fed97940582290481b46b84f03544a367460be0b834cd2c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/17-implementation-execplan.md",
+      "size": 1329,
+      "sha256": "d5197604d514c830465c69da3ef904ed1086f05fed373b4060df42f066585289"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/18-validation-release-gates.md",
+      "size": 1286,
+      "sha256": "3c099edcb63724445442b90877f4bde3037f96bbe6e72bd295c7211582f93aac"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/19-target-warehouse-catalog.md",
+      "size": 1049,
+      "sha256": "182ceb5ad11790862007724a71c36ef4cf9b4ab7d5454bdf52ff8e0c7e7a6037"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/20-source-alignment-and-revisions.md",
+      "size": 1039,
+      "sha256": "7bce3c6e5cbc7b39f284cb5c37d2a401bcf1860437bcf0e3618b0510270e77e9"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/21-open-items-not-reopening-design.md",
+      "size": 779,
+      "sha256": "2cdb85091957ba6c9961f29e29f1ccaa2fd39b3bf1b8866375d5e7616ae99427"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/22-product-interfaces.md",
+      "size": 699,
+      "sha256": "a7bf3961dd2f0263d80bf4fa9bc4c9560cd2bd62aad4e37309079e5fc9202258"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/README.md",
+      "size": 2178,
+      "sha256": "1423911a84df18388f904bf684cef175e9953d3d51d855383ed3800b14e35410"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/migrations/13_sdar_v1_4_capability_chain.FROZEN_DESIGN.sql",
+      "size": 8961,
+      "sha256": "05b4c2250914611426362f0634c45bd23ec06e89035e396fb6a68885c147d0e8"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/README.md",
+      "size": 1612,
+      "sha256": "3c6b8874f35da1e7d18a07adf2a351dc8617e331a28f4a82714cf4710f73b540"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/SDAR_v1.3_Evidence_Foundation_Upgrade_Plan_FROZEN_CN.md",
+      "size": 28102,
+      "sha256": "f2ed3486b791ff84db12c9972f90ebf05a2e8b180d89fe63fdda92fc86419969"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/SDAR_v1.3_Skill_Aware_Evidence_Schema_V1.2_FROZEN_CN.md",
+      "size": 30477,
+      "sha256": "ca3ffdaa77f305e157f5091ef83dccd66dd20278a7ec8d0ebdb333d43ac43510"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/SHA256SUMS.txt",
+      "size": 3451,
+      "sha256": "cab34e0c72120e41e50d877ccb38e2beea9c54cc8f3c8ffd1af56321649a4cc3"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/clickhouse/SDAR_v1.3_Evidence_Policy_Seed_FROZEN.sql",
+      "size": 4202,
+      "sha256": "963c9b5976e7acbe931069e8198e5725c5e441c79756d5e281409fe6d7b066d6"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/clickhouse/SDAR_v1.3_Skill_Aware_ClickHouse_DDL_FROZEN.sql",
+      "size": 40055,
+      "sha256": "977053069317649ef3628afecd6744dde6b4b132cae337c38391fb17f3367fb5"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/examples/canonical-envelope.skill-execution.example.json",
+      "size": 3017,
+      "sha256": "2522f4d97248c685f72720039824ff2d17d7c1c4345cd90e70841750fd234988"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/examples/skill-execution-record.example.json",
+      "size": 1088,
+      "sha256": "bbe1964417564249d8d6dd7ec8e5239c1a0b392418e6cbd974c06467bde6c0e8"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/examples/skill-plan-compliance.example.json",
+      "size": 840,
+      "sha256": "187dd22f078382e3e3492bf4192d08925183d16e300f40721865f4afc36e3c1b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/frozen-decisions.json",
+      "size": 4118,
+      "sha256": "f2dd29843e54187872628279cfc207cf7d1b5b1e98b39b8ae279caa3c2ef5f35"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/frozen-manifest.json",
+      "size": 6201,
+      "sha256": "03b7317dbeae9b15e41fb9c42156a5c48aea885d5835682d0d7e76fc0c956ece"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/canonical-evidence-envelope.schema.json",
+      "size": 7542,
+      "sha256": "e01634d6ff708998e187b11605d3b32b5bacdace3f5a28f897bea3d2d6c98864"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/common-definitions.schema.json",
+      "size": 4630,
+      "sha256": "1c13bc3e6ac2aa6c099729d4a2e9195a4eab278f753e8f7028c9e4c8ea139b9b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/evaluation-readiness.schema.json",
+      "size": 5860,
+      "sha256": "d4ab93bffc829e941d93646c979fb4d75829dec16d083fe92447074bd2b97199"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/record-catalog.json",
+      "size": 8740,
+      "sha256": "d9e991bd028135b37dc59efb4e8a08c720a8efbaa000b4a49692f63b8b9847c4"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-applicability-record.schema.json",
+      "size": 2358,
+      "sha256": "a256b6d2409690a8d1752ad725d8465e919721ab02f5079d2769d35f546ca57b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-candidate-record.schema.json",
+      "size": 2396,
+      "sha256": "32df688aded63f1a3ec4f90d0bf02d6e167f8bc2adc055243045e631901790e1"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-capability-slot-resolution.schema.json",
+      "size": 2511,
+      "sha256": "3fe544e38436b180cdabd6823a2f731fa70710d5803eaeb7a814ad4fddd8b49e"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-composition-edge.schema.json",
+      "size": 2524,
+      "sha256": "5e13ae668bd85bc0f0929c4da1ae4b9156b707082441e1eca06bac6b8e98d33c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-composition-record.schema.json",
+      "size": 2266,
+      "sha256": "8191eaabdf38df2447254302b4bdb93860fffbda0a404bcc3741d4185e7b9cda"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-context-resolution.schema.json",
+      "size": 2580,
+      "sha256": "f7798371db9a50a1fd34d16adf5d155ebdfe5ef53ac6bdc2c1bedbcdfa6753e0"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-evidence-requirement.schema.json",
+      "size": 1875,
+      "sha256": "4abcae2f0955fac97ea5d1f645038ec9b947deba2557d73764cc80ab9cd12b63"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-execution-record.schema.json",
+      "size": 4363,
+      "sha256": "e0b502cbf26467331cd4dbf1e314911bae696d4ef2d130db98f820640298df9c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-execution-relation.schema.json",
+      "size": 1565,
+      "sha256": "50981a4756e6bb8a994b9c169a288a99f8d4b20d6d2bccf4ca43412198a6ccac"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-failure-propagation.schema.json",
+      "size": 2545,
+      "sha256": "e7311cc3b6483d4399d180fe3b23dc4c3b8ea32d9482701af5ad15b3114d6b34"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-interpretation-record.schema.json",
+      "size": 2441,
+      "sha256": "b3106360b84ce3716ad6d19b2dda446b274c02d44f06395a07f0e4201d29d921"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-mode-selection.schema.json",
+      "size": 2306,
+      "sha256": "812b44702adfddf0b2fc6cf9c854531369e3ed9b7dea3217ed1df3726708387f"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-patch-candidate.schema.json",
+      "size": 1831,
+      "sha256": "b859805b38f2f03269ff15a153b36612dca3430a5b176b145cbad71e205b19ad"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-plan-compliance.schema.json",
+      "size": 3265,
+      "sha256": "df5e61ae0df1a1323dbdd081a4f4d4b964557ca83b6643c9ee8d67864f18a188"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-procedure-compilation.schema.json",
+      "size": 2091,
+      "sha256": "9e5ec9c9838a20085d667aaa54533b9be38dcd0163f544f3f90d1c43b6701442"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-selection-record.schema.json",
+      "size": 2302,
+      "sha256": "e9c2f47533bc92752775695baded7ff91835535724abbca616fabf0d7f9020b0"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/schema/skill-usage-snapshot.schema.json",
+      "size": 2810,
+      "sha256": "b782e675f016be18b39f89d74f0670dd54aa8d715b46991283208b47b060fe40"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/validate_bundle.py",
+      "size": 2307,
+      "sha256": "c39670522372dad95f96dc3d7fb67af1cb4c0d9a0a56f6f6774a1b7d5df0e6eb"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/SHA256SUMS_1.3.0-rc.2.txt",
+      "size": 23917,
+      "sha256": "19a6c474bf62830664b29ae0a21ee90d09c4dced5312998a91cdd52debdb6f38"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/VALIDATION_1.3.0-rc.2.txt",
+      "size": 332,
+      "sha256": "00b3aa3c6852369f56a3caced4a351beaa07d468db1aa0d2839b410691f5747b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/docs/SDAR v1.2_统一遥测与评价证据采集_Schema V1.1.md",
+      "size": 51041,
+      "sha256": "b6ce81608740cadf134d8d00f206eb294644d10879e177f3caf4cbcf9d2817b0"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/docs/SDAR_ClickHouse_Schema_1.3.0_RC1_更新说明.md",
+      "size": 732,
+      "sha256": "2ad5f132adf2b2f16eaf2bc0fa90e4777940cfcdc251192c534d34045e1617e1"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/docs/SDAR_Embodied_Control_Data_Schema_V1.0.docx",
+      "size": 75843,
+      "sha256": "90f147bd6dc6e964d46a4931a9d9e35bc6f59ed0b7c33faad9b0c7952145d83c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/docs/SDAR_Embodied_Control_Data_Schema_V1.0.md",
+      "size": 49622,
+      "sha256": "b2b8decef1158a34595d856d88d7c647b63f3983805393a35a9efaf2f789fb92"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/docs/SDAR_v1.3_项目集成说明.md",
+      "size": 3696,
+      "sha256": "eb679890e7ac3c38f68aa0e9bba5325f47851b0e98ae366336ad9ffe4c5a01df"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/docs/车长智能体与NPC智能体评价指标_待评审.md",
+      "size": 27747,
+      "sha256": "88450d1172d1ff601dcf39d3f65541d2023dd51c949ad9aa5342ce9aa2a9822b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/examples/commander_episode.example.json",
+      "size": 24654,
+      "sha256": "169da0cda82b55ad8f05ea2105693a7eebcbc631844ddfc93e07e79f3969535c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/examples/evaluation_result.example.json",
+      "size": 2314,
+      "sha256": "c9f5454458ea43c67f3d7d5ea630ef80cad14998ad9b7758abce96bedda46349"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/examples/npc_episode.example.json",
+      "size": 22367,
+      "sha256": "eb61b8b801c9189b5658ebe94992689c6d418a398490f4dc8aa36b6e20b3df28"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/examples/telemetry_platform/task-capability-binding-fact.example.json",
+      "size": 664,
+      "sha256": "a308e89a2713e54746b1265720ba68fad662c959a98b00c7658b7d7587c65782"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/examples/v1_3_skill_aware/canonical-envelope.skill-execution.example.json",
+      "size": 3017,
+      "sha256": "2522f4d97248c685f72720039824ff2d17d7c1c4345cd90e70841750fd234988"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/examples/v1_3_skill_aware/skill-execution-record.example.json",
+      "size": 1088,
+      "sha256": "bbe1964417564249d8d6dd7ec8e5239c1a0b392418e6cbd974c06467bde6c0e8"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/examples/v1_3_skill_aware/skill-plan-compliance.example.json",
+      "size": 840,
+      "sha256": "187dd22f078382e3e3492bf4192d08925183d16e300f40721865f4afc36e3c1b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/manifest.json",
+      "size": 8752,
+      "sha256": "9cbc0ad0ed6bea3a113287a92c03c70e522a6fdfa1e69d5be617645ce261cf13"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/npc_minimal_case_schema_v1/README.md",
+      "size": 4892,
+      "sha256": "05d8300cfe84de0a8248f9c57bd491259f5c4382b5fda54d35892eb37e309104"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/npc_minimal_case_schema_v1/npc_minimal_case.example.json",
+      "size": 2645,
+      "sha256": "aafb9cd7408a60b57abf1b47753ff029f1eb7e3911d29489186d2e72382fd777"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/npc_minimal_case_schema_v1/npc_minimal_case.schema.json",
+      "size": 12442,
+      "sha256": "2b36616a45c9d2ebb4792fe7c4450eda263403789d2efd8f5640a34f05f84fc0"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/npc_minimal_runtime_schema_v1/NPC_最小运行采集数据_Schema_说明文档_V1.0.docx",
+      "size": 11930,
+      "sha256": "df1c916fdbe5238b9d5ff842feefbef31305ddc2ca719d3ce026982d7e5f42df"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/npc_minimal_runtime_schema_v1/NPC_最小运行采集数据_Schema_说明文档_V1.0.md",
+      "size": 7425,
+      "sha256": "4676ff2572c3b2171a3153d7897e0ea03db37db86ec255a3abdf5f7902bf9d5d"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/npc_minimal_runtime_schema_v1/npc_minimal_runtime_record.example.json",
+      "size": 2057,
+      "sha256": "1a32e56f41635a24ea98a59e58b580678818860a76e2bd1fdd95f990d7ba8a42"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/npc_minimal_runtime_schema_v1/npc_minimal_runtime_record.schema.json",
+      "size": 13018,
+      "sha256": "2f9559b0c0292d0e876cba0dc7769e072e931b51c20ebfd24947fd3f690b17aa"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/README.md",
+      "size": 4189,
+      "sha256": "e81d3309f3f54863833cac68527db99ce386ca40f81f0621197ecde77d249a48"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/commander/README.md",
+      "size": 1944,
+      "sha256": "816716a0891f7967118fe6d276e3530fcc773ea6a9c3fbe7b2ae3492bcfff98d"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/commander/commander_node_record.schema.json",
+      "size": 2837,
+      "sha256": "b44b9f1067a28e12a23e10c0468e963bbd5adb4215e8a9ca34138ee33c93da7a"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/commander/commander_state_extension.schema.json",
+      "size": 3640,
+      "sha256": "458a6c2c78fb6b89715b5a5d3e09ea57bdb8977c4485d7b35c70516ae819e56d"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/commander/episode_evidence_bundle.schema.json",
+      "size": 1322,
+      "sha256": "3580495b2b010ada9fd681b3342f7b708d8286b4abd4d01635f3074d40a7c54d"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/commander/state_snapshot.schema.json",
+      "size": 710,
+      "sha256": "9561072765c98e62c53e394bfaf3b7a87ea5925e4840910bc70d3966b460872a"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/npc/README.md",
+      "size": 2389,
+      "sha256": "b53c7f9a374887827b99ac0bdb57b5a9bdfc6176537e962f842bfceb4376529b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/npc/episode_evidence_bundle.schema.json",
+      "size": 1290,
+      "sha256": "75802cf02e4316f116c82fbc01646ed6b12d38e54df686c258aeef4a80370423"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/npc/npc_state_extension.schema.json",
+      "size": 5900,
+      "sha256": "e2fefca87dcb83e57f58e9b2d01aaef186d2c6dd7c8be62d73aa5f8b87c1c265"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/npc/npc_tick_record.schema.json",
+      "size": 2440,
+      "sha256": "1f13e889a119b9124b787e7e74da4c2396ce548f5a8a257621c6dc69906a7689"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/npc/state_snapshot.schema.json",
+      "size": 686,
+      "sha256": "326ac3b1ca868c044bc327db3822cffafe27fa8dfe15b8cf964b23866bc61923"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/README.md",
+      "size": 3012,
+      "sha256": "fb396eddf29cf45bd7e7d7bb1cf52a2043608e935ecebeef206a8dfec4323bc5"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/action.schema.json",
+      "size": 4317,
+      "sha256": "1330dac21173fe6da7933a53e7b3f78cbe11499c93db596679ba451a6a0bb5ff"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/common.schema.json",
+      "size": 9417,
+      "sha256": "dbf3601d152ffe72da9b240d34da51947ced0dca86662657bb17139abf520de3"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/confirmation.schema.json",
+      "size": 2334,
+      "sha256": "a996dcb39de5620cb2c19dfeeabca44ed90ef53aaf29cc7af69056e820388b97"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/constraint.schema.json",
+      "size": 1624,
+      "sha256": "7da67f2ff430be79ed8c8e66e6a9648fced8babcd7d011329fdd5bf3435c5b29"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/decision.schema.json",
+      "size": 3838,
+      "sha256": "377865719b0a4f690ecb5c3fb50d0f9bc661586a9de5d5f859273dc0f4a7652c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/episode_evidence_bundle.schema.json",
+      "size": 4983,
+      "sha256": "a0c2fa7643b39c40914d2d652383f1a3e6002c2c40dce21e356ac32ffd3d218c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/episode_metadata.schema.json",
+      "size": 3079,
+      "sha256": "9b4b63cba351b3b8c4fbe13c4c253c25a8f359927341a520aadfe70fda05ff1a"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/evaluation_result.schema.json",
+      "size": 6291,
+      "sha256": "6e273f1b0013db9dc23a4949b309f9535bcfae694bfb7ec6c03ee20620133080"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/event.schema.json",
+      "size": 2446,
+      "sha256": "7778ce093b0b774c56364f951ffa6a6ef8fcbcae8f3fbec34decd40302d9eb19"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/execution_basis.schema.json",
+      "size": 5466,
+      "sha256": "6e80a174e6af2fd02ebd5cfdcf94438c1605765b72030c42a18fc9e3f79fd589"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/failure.schema.json",
+      "size": 2575,
+      "sha256": "8c1653597284c36372d768be768749f5813824cfdb6ac6a1a713211617eb7127"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/final_outcome.schema.json",
+      "size": 2673,
+      "sha256": "5597bbc001bde020b1c8a2206922495416b7046494f45b115853ab3d932cb81c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/gate_decision.schema.json",
+      "size": 2222,
+      "sha256": "b1b9d6e951e5adff3195ee633fc4899ff34d7cefa207ec97a546234dc9e4ca6c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/goal.schema.json",
+      "size": 2685,
+      "sha256": "8d2c94f9286224cca25acbdb55ede5846b1b43f3d6158a457dc97bf5ec35369a"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/operational_metric.schema.json",
+      "size": 1797,
+      "sha256": "085f505ff063151d96f87d45eda736ea0e99833cd6d4c1050a7b631f72979f35"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/raw_record.schema.json",
+      "size": 2518,
+      "sha256": "2b86626c7183253b7dd612c784b50c3b447ad073d01d49fb31928096e0b2d9a5"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/receipt.schema.json",
+      "size": 2773,
+      "sha256": "875029cd00219419e0e4d6ceb51a9fe6fa8fe4fdd41fe529ff84f1034a47a971"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/recovery.schema.json",
+      "size": 2298,
+      "sha256": "ecd8a6b1981081b30164b9d029c97d5ef65637ce12c3d54cb4f20eee29eebfa2"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/remaining_item.schema.json",
+      "size": 1376,
+      "sha256": "d13b8d661490671055f30621d7837eccb33299107ad69566154af204af8c7966"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/state_delta.schema.json",
+      "size": 2129,
+      "sha256": "3009054d72c9e8d816982452bd4bb035739291599bbe0e4371f688da8a4ab5f5"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/state_snapshot.schema.json",
+      "size": 4063,
+      "sha256": "ad60b8a49ec27c9396434cf39f7d8cef49c7095c1df6ba2ef44127ddd74a4c6d"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/success_criterion.schema.json",
+      "size": 1787,
+      "sha256": "7b49451e66a1ea43b754fd5a9d899a729631ce5035fa317766f4b3cd5a4cf699"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/trajectory_step.schema.json",
+      "size": 2400,
+      "sha256": "a83ed56eae842950b093d74bef298b2d3c07b51cd28741d3519829783bc199a3"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/trigger.schema.json",
+      "size": 2166,
+      "sha256": "77a12cd8c92c0b2c8c012aadb31c72035b52d81ba8d20a3296de41069113febe"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/canonical-evidence-envelope.schema.json",
+      "size": 7542,
+      "sha256": "e01634d6ff708998e187b11605d3b32b5bacdace3f5a28f897bea3d2d6c98864"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/common-definitions.schema.json",
+      "size": 4630,
+      "sha256": "1c13bc3e6ac2aa6c099729d4a2e9195a4eab278f753e8f7028c9e4c8ea139b9b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/evaluation-readiness.schema.json",
+      "size": 5860,
+      "sha256": "d4ab93bffc829e941d93646c979fb4d75829dec16d083fe92447074bd2b97199"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/record-catalog.json",
+      "size": 8740,
+      "sha256": "d9e991bd028135b37dc59efb4e8a08c720a8efbaa000b4a49692f63b8b9847c4"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-applicability-record.schema.json",
+      "size": 2358,
+      "sha256": "a256b6d2409690a8d1752ad725d8465e919721ab02f5079d2769d35f546ca57b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-candidate-record.schema.json",
+      "size": 2396,
+      "sha256": "32df688aded63f1a3ec4f90d0bf02d6e167f8bc2adc055243045e631901790e1"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-capability-slot-resolution.schema.json",
+      "size": 2511,
+      "sha256": "3fe544e38436b180cdabd6823a2f731fa70710d5803eaeb7a814ad4fddd8b49e"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-composition-edge.schema.json",
+      "size": 2524,
+      "sha256": "5e13ae668bd85bc0f0929c4da1ae4b9156b707082441e1eca06bac6b8e98d33c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-composition-record.schema.json",
+      "size": 2266,
+      "sha256": "8191eaabdf38df2447254302b4bdb93860fffbda0a404bcc3741d4185e7b9cda"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-context-resolution.schema.json",
+      "size": 2580,
+      "sha256": "f7798371db9a50a1fd34d16adf5d155ebdfe5ef53ac6bdc2c1bedbcdfa6753e0"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-evidence-requirement.schema.json",
+      "size": 1875,
+      "sha256": "4abcae2f0955fac97ea5d1f645038ec9b947deba2557d73764cc80ab9cd12b63"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-execution-record.schema.json",
+      "size": 4363,
+      "sha256": "e0b502cbf26467331cd4dbf1e314911bae696d4ef2d130db98f820640298df9c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-execution-relation.schema.json",
+      "size": 1565,
+      "sha256": "50981a4756e6bb8a994b9c169a288a99f8d4b20d6d2bccf4ca43412198a6ccac"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-failure-propagation.schema.json",
+      "size": 2545,
+      "sha256": "e7311cc3b6483d4399d180fe3b23dc4c3b8ea32d9482701af5ad15b3114d6b34"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-interpretation-record.schema.json",
+      "size": 2441,
+      "sha256": "b3106360b84ce3716ad6d19b2dda446b274c02d44f06395a07f0e4201d29d921"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-mode-selection.schema.json",
+      "size": 2306,
+      "sha256": "812b44702adfddf0b2fc6cf9c854531369e3ed9b7dea3217ed1df3726708387f"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-patch-candidate.schema.json",
+      "size": 1831,
+      "sha256": "b859805b38f2f03269ff15a153b36612dca3430a5b176b145cbad71e205b19ad"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-plan-compliance.schema.json",
+      "size": 3265,
+      "sha256": "df5e61ae0df1a1323dbdd081a4f4d4b964557ca83b6643c9ee8d67864f18a188"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-procedure-compilation.schema.json",
+      "size": 2091,
+      "sha256": "9e5ec9c9838a20085d667aaa54533b9be38dcd0163f544f3f90d1c43b6701442"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-selection-record.schema.json",
+      "size": 2302,
+      "sha256": "e9c2f47533bc92752775695baded7ff91835535724abbca616fabf0d7f9020b0"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/v1_3_skill_aware/skill-usage-snapshot.schema.json",
+      "size": 2810,
+      "sha256": "b782e675f016be18b39f89d74f0670dd54aa8d715b46991283208b47b060fe40"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/sdar_runtime/verification.schema.json",
+      "size": 2566,
+      "sha256": "4a51e0b9034a4fe9c9fa5ea6f7ca26d4c499a8c723eecc0cd3e65a3ed40437bf"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/telemetry_platform/capability-readiness-fact.schema.json",
+      "size": 1236,
+      "sha256": "6b518ecdb2dfd579749e104b68fee8d4e99d0805e32ca8e5352f6c6b12bd83bb"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/telemetry_platform/data-quality-issue.schema.json",
+      "size": 1056,
+      "sha256": "9f8fd11e699b297af9750f19022ab54487479849c1bdd2d324c352b30c0a99b3"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/telemetry_platform/durable-ack.schema.json",
+      "size": 985,
+      "sha256": "abd6b908be544244137a76b2b5465c68455f22a95c2b07c5ba92802ceac1f82d"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/telemetry_platform/ingestion-batch.schema.json",
+      "size": 845,
+      "sha256": "e99b64f2858faae7f8a5f442fd6ba8e60d126d90ae027c8261d05fa3a571d93b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/telemetry_platform/projection-target.schema.json",
+      "size": 1076,
+      "sha256": "cf01c3e60d3abf493eba522bf914dc05ebf3b61bf2248ee5a829120de7d01022"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/telemetry_platform/task-capability-binding-fact.schema.json",
+      "size": 1389,
+      "sha256": "24de274eb278012908114dcdc8e6b9cffbd4bf156363029ea69454a6da80626d"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/schemas/telemetry_platform/telemetry-source.schema.json",
+      "size": 1223,
+      "sha256": "0139038b0ba9ed2e0c0c2095e19ba7601332d02c67695ceb7a3e42ea0aaf0724"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/.env.example",
+      "size": 415,
+      "sha256": "209e719d8fa0f31be782253d4e67cbc2e7a3d2d27c6e7a1681a763c7c853a99e"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/.gitignore",
+      "size": 5,
+      "sha256": "69aa73cf5bc3377a7d97f2e8d2bb773195815efe225af7f1be6f5b9306bbe14f"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/README.md",
+      "size": 8358,
+      "sha256": "57fbbee03373b67572e5957ab56aaa3083306231fccb725870ca4b8759ca8cad"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/all.sql",
+      "size": 582854,
+      "sha256": "826c4b487d2f7229f040d06cfc532f63fd7ec402d10e17812a49190f240ab2c6"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/compose.amd64-emulation.yaml",
+      "size": 203,
+      "sha256": "5a55fe2c500a2dee80911407e29b41e03d9ed7fb13072ce68bc5fc609a372224"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/compose.yaml",
+      "size": 1129,
+      "sha256": "8ec72106cdfc797b76e400cb661dad150294cc3849a73172bb341fdcbd212d26"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/docs/alignment_check.md",
+      "size": 6920,
+      "sha256": "d4fefcd774fd36c64234083802a8b07ea281f4d5c92a4138bbefc6dcdfa5afcb"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/docs/deployment.md",
+      "size": 12978,
+      "sha256": "29bf0651b0226ab1ea4778bc17df5f4dc5e5d598e1de7b908e5a405c4d254342"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/docs/embodied_layer.md",
+      "size": 11764,
+      "sha256": "0c73053d5b54fef1959feb686c71572982476aee0489804ae793e987411b6225"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/docs/evaluation_contract.md",
+      "size": 11486,
+      "sha256": "c9466b0c089d576c55c52b25119f09b294bbd6dabbda5e02ec9cd9651478a58e"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/docs/migration_from_v1_0.md",
+      "size": 4680,
+      "sha256": "0e3dae4cdcabd4309559106ff89464bc2904ec57db499353a27edc238d7e344b"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/docs/projection_contract.md",
+      "size": 25787,
+      "sha256": "1c64fd5c45bcbd0fffd0663df0b5759120971ed6b06902d10763e42d0172e35a"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/docs/schema_mapping.md",
+      "size": 17396,
+      "sha256": "5c5e68a1f61004ab03d269a4c59969a3a992279a6fa801731d3129011918cd71"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/docs/static_validation.txt",
+      "size": 222,
+      "sha256": "236b5ff7301b44440533f7b54b6820401c47dd22635792edec947afd65986752"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/docs/table_catalog.md",
+      "size": 15610,
+      "sha256": "03ad96bbbcb9b817bae995c0da1611b4b0ed5774642a575650d5ebb5256d701f"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/docs/validation.md",
+      "size": 8642,
+      "sha256": "29ed1229d494d9519311b78a621062e53e652cfe4537f571ec14c3f8296d9243"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/manifest.json",
+      "size": 5699,
+      "sha256": "259317874afccb3cc47ecdb773ef0629b9d6a97f93ced6eaa9212aab98e64495"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/00_create_databases.sql",
+      "size": 642,
+      "sha256": "17c1cf772cdb0b61abf39153fa21b91a3fb205447524bc66423d4015ad29fd81"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/01_sdar_meta.sql",
+      "size": 23140,
+      "sha256": "5a3db03dd8b477408ea0cb562bafa0db2253f4344455a4d67af06062bb31150a"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/02_sdar_core.sql",
+      "size": 113198,
+      "sha256": "a6b4afd2bd380fcd194e6e37b71811d3cd9524c76362a4cc248d236a60b3310d"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/03_sdar_commander.sql",
+      "size": 49422,
+      "sha256": "69b5f325b420731fd6c6dec27a240854fefeeebc3f5804c3468954006ff989da"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/04_sdar_npc.sql",
+      "size": 53519,
+      "sha256": "59520e3ee3628476f2a96460a8cda8c61b69be78510026153bbb6dc24139fa0c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/05_sdar_embodied.sql",
+      "size": 87996,
+      "sha256": "3d4278a4a79100d4953ff325cada233b3a39c58f37af5aa8f6925146914d90bd"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/06_sdar_mart.sql",
+      "size": 45676,
+      "sha256": "c92ff74eb7b85ef218d4e8fe755629457c9b6f0fcdbfc0f57a22a463a3cbdbab"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/07_quality_views.sql",
+      "size": 54914,
+      "sha256": "a01c346fbe0b5a955cb64ffb43acaf27226ccdf93737d12ed7f98d1671fe366a"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/08_seed_meta.sql",
+      "size": 48132,
+      "sha256": "732f05e948b8d20ee30f1dd34bec533a716d6cc6da89f465eb01a41af6108d2c"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/09_smoke_test.sql",
+      "size": 13212,
+      "sha256": "44d64dcc05cad4f838f104c93b9028ada97745e5706e7497d4908b0ef9a2485e"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/10_sdar_v1_3_skill_aware.sql",
+      "size": 50858,
+      "sha256": "560783ab1a26d70f3fd3fd997a2b72b46c20c86689b377fc5ee501deb7a79814"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/11_sdar_v1_3_event_handling.sql",
+      "size": 3728,
+      "sha256": "4aa252a3245c83629ea5a0246a1b9033b91c43a5ba7044dab5e02142c34bcb94"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/12_smpp_provider_ops_projection.sql",
+      "size": 19645,
+      "sha256": "2296d35a8cc94427c1346a0fff2703344a883a63bd8833bbd4884a31459e63db"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/13_sdar_v1_4_capability_chain.sql",
+      "size": 15982,
+      "sha256": "31e1ee0348ad56dfdc4c88efb5053b3951a057cfbba681ef2033bed016b9da80"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/tools/build_package.py",
+      "size": 9266,
+      "sha256": "ff0ed0f9a91d689af1a5b96316dbcb74560fd4f5411b433451f861f9a2395298"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/tools/check_clickhouse_image_compatibility.sh",
+      "size": 2412,
+      "sha256": "25e113caee4721439fcac4e360a9eff18517483e577176544cdb70815ec90aa6"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/tools/validate_clickhouse.sh",
+      "size": 435,
+      "sha256": "1c83e899b7806185883b8553efd0e2b04e313715a09630eaba12d8df0be280e6"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/types/sdar-evidence.types.ts",
+      "size": 4893,
+      "sha256": "9ffa2796cb5e1ff5f7ec47d967847bfca3300fcb32b00b66947ad1c38bf88c10"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/types/sdar-v1.3-evidence.types.ts",
+      "size": 3855,
+      "sha256": "a147bdc141055b22b8c909b1f6fba17070334a66927423d34450e0aceb29ed89"
+    },
+    {
+      "path": "vendor/sdar-clickhouse-schema/validate_examples.py",
+      "size": 5275,
+      "sha256": "42df5cdc7a1617ed34bf5efc68d6ebb529936b1738032809e998d211319ea6c5"
+    }
+  ],
+  "verification": {
+    "typecheck": "passed",
+    "tests": "12/12 passed",
+    "static_verify": "passed",
+    "external_clickhouse": "not_verified_environment_blocked",
+    "sdar_git_apply_check": "not_executed_complete_checkout_unavailable"
+  }
+}

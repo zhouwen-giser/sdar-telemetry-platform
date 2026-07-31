@@ -1,0 +1,104 @@
+{
+  "framework": "SDAR",
+  "frameworkVersion": "2.0",
+  "profile": "embodied-control",
+  "profileVersion": "1.0",
+  "adapter": "commander",
+  "episodeId": "ep-cmd-001",
+  "score": 88.5,
+  "level": "A",
+  "passed": true,
+  "fatalErrors": [],
+  "hardGates": {
+    "HG1": {
+      "status": "pass",
+      "finding": "目标与对象正确"
+    },
+    "HG2": {
+      "status": "pass",
+      "finding": "关键状态有效"
+    },
+    "HG3": {
+      "status": "pass",
+      "finding": "安全与控制权正确"
+    },
+    "HG4": {
+      "status": "pass",
+      "finding": "关键行动证据完整"
+    },
+    "HG5": {
+      "status": "pass",
+      "finding": "状态轨迹可重建"
+    },
+    "HG6": {
+      "status": "pass",
+      "finding": "关键成功条件已验证"
+    },
+    "HG7": {
+      "status": "pass",
+      "finding": "结果与最终状态一致"
+    }
+  },
+  "dimensions": {
+    "taskUnderstanding": 18,
+    "planExecutionConsistency": 23,
+    "criticalDecisionQuality": 17,
+    "processIntegrity": 18,
+    "closureCompleteness": 12.5
+  },
+  "metrics": [
+    {
+      "metricId": "M1",
+      "score": 2,
+      "weightedScore": 7,
+      "evidenceLevel": "E2",
+      "evidenceRefs": [
+        {
+          "evidenceType": "goal",
+          "evidenceId": "goal-cmd-001"
+        }
+      ],
+      "finding": "目标与成功条件完整"
+    },
+    {
+      "metricId": "M14",
+      "score": 2,
+      "weightedScore": 8,
+      "evidenceLevel": "E2",
+      "evidenceRefs": [
+        {
+          "evidenceType": "verification",
+          "evidenceId": "ver-cmd-arrive"
+        },
+        {
+          "evidenceType": "verification",
+          "evidenceId": "ver-cmd-recon"
+        }
+      ],
+      "finding": "物理完成由状态轨道验证"
+    }
+  ],
+  "operationalMetrics": [
+    {
+      "metricId": "op-cmd-decision",
+      "episodeId": "ep-cmd-001",
+      "name": "decision_latency_ms",
+      "value": 3000,
+      "unit": "ms",
+      "threshold": 3000,
+      "status": "pass",
+      "collectedAt": "2026-07-15T06:00:03Z"
+    }
+  ],
+  "outcome": "completed",
+  "majorFindings": [],
+  "improvements": [
+    "补充完整 M1-M15 指标明细"
+  ],
+  "evaluatedAt": "2026-07-15T08:00:00Z",
+  "evaluator": {
+    "sourceType": "system",
+    "sourceId": "sdar-evaluator-v2",
+    "trustLevel": "trusted"
+  }
+}

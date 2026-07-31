@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/telemetry/v1/telemetry-source.schema.json",
+  "title": "TelemetrySource",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sourceId",
+    "sourceType",
+    "tenantId",
+    "projectId",
+    "environment",
+    "credentialRef",
+    "status",
+    "revision"
+  ],
+  "properties": {
+    "sourceId": {
+      "type": "string"
+    },
+    "sourceType": {
+      "enum": [
+        "sdar_runtime_evidence",
+        "sdar_node_control_event",
+        "commander_application_evidence",
+        "npc_application_evidence",
+        "smpp_provider_ops",
+        "device_measurement",
+        "otlp_diagnostic"
+      ]
+    },
+    "tenantId": {
+      "type": "string"
+    },
+    "projectId": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "nodeId": {
+      "type": "string"
+    },
+    "smppSourceId": {
+      "type": "string"
+    },
+    "credentialRef": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "active",
+        "suspended",
+        "retired"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

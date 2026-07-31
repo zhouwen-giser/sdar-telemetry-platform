@@ -1,0 +1,179 @@
+{
+  "name": "sdar-clickhouse-schema",
+  "version": "1.3.0-rc.2",
+  "release_kind": "fresh-install-release-candidate",
+  "implementation_status": "static_validated_clickhouse_runtime_validation_pending",
+  "target_final_version": "1.3.0",
+  "clickhouse_compatibility": "24.8+",
+  "recommended": "25.3 LTS+",
+  "database_count": 6,
+  "physical_table_count": 200,
+  "view_count": 76,
+  "files": [
+    {
+      "path": ".env.example",
+      "size": 415,
+      "sha256": "209e719d8fa0f31be782253d4e67cbc2e7a3d2d27c6e7a1681a763c7c853a99e"
+    },
+    {
+      "path": ".gitignore",
+      "size": 5,
+      "sha256": "69aa73cf5bc3377a7d97f2e8d2bb773195815efe225af7f1be6f5b9306bbe14f"
+    },
+    {
+      "path": "README.md",
+      "size": 8358,
+      "sha256": "57fbbee03373b67572e5957ab56aaa3083306231fccb725870ca4b8759ca8cad"
+    },
+    {
+      "path": "all.sql",
+      "size": 582854,
+      "sha256": "826c4b487d2f7229f040d06cfc532f63fd7ec402d10e17812a49190f240ab2c6"
+    },
+    {
+      "path": "compose.amd64-emulation.yaml",
+      "size": 203,
+      "sha256": "5a55fe2c500a2dee80911407e29b41e03d9ed7fb13072ce68bc5fc609a372224"
+    },
+    {
+      "path": "compose.yaml",
+      "size": 1129,
+      "sha256": "8ec72106cdfc797b76e400cb661dad150294cc3849a73172bb341fdcbd212d26"
+    },
+    {
+      "path": "docs/alignment_check.md",
+      "size": 6920,
+      "sha256": "d4fefcd774fd36c64234083802a8b07ea281f4d5c92a4138bbefc6dcdfa5afcb"
+    },
+    {
+      "path": "docs/deployment.md",
+      "size": 12978,
+      "sha256": "29bf0651b0226ab1ea4778bc17df5f4dc5e5d598e1de7b908e5a405c4d254342"
+    },
+    {
+      "path": "docs/embodied_layer.md",
+      "size": 11764,
+      "sha256": "0c73053d5b54fef1959feb686c71572982476aee0489804ae793e987411b6225"
+    },
+    {
+      "path": "docs/evaluation_contract.md",
+      "size": 11486,
+      "sha256": "c9466b0c089d576c55c52b25119f09b294bbd6dabbda5e02ec9cd9651478a58e"
+    },
+    {
+      "path": "docs/migration_from_v1_0.md",
+      "size": 4680,
+      "sha256": "0e3dae4cdcabd4309559106ff89464bc2904ec57db499353a27edc238d7e344b"
+    },
+    {
+      "path": "docs/projection_contract.md",
+      "size": 25787,
+      "sha256": "1c64fd5c45bcbd0fffd0663df0b5759120971ed6b06902d10763e42d0172e35a"
+    },
+    {
+      "path": "docs/schema_mapping.md",
+      "size": 17396,
+      "sha256": "5c5e68a1f61004ab03d269a4c59969a3a992279a6fa801731d3129011918cd71"
+    },
+    {
+      "path": "docs/static_validation.txt",
+      "size": 222,
+      "sha256": "236b5ff7301b44440533f7b54b6820401c47dd22635792edec947afd65986752"
+    },
+    {
+      "path": "docs/table_catalog.md",
+      "size": 15610,
+      "sha256": "03ad96bbbcb9b817bae995c0da1611b4b0ed5774642a575650d5ebb5256d701f"
+    },
+    {
+      "path": "docs/validation.md",
+      "size": 8642,
+      "sha256": "29ed1229d494d9519311b78a621062e53e652cfe4537f571ec14c3f8296d9243"
+    },
+    {
+      "path": "migrations/00_create_databases.sql",
+      "size": 642,
+      "sha256": "17c1cf772cdb0b61abf39153fa21b91a3fb205447524bc66423d4015ad29fd81"
+    },
+    {
+      "path": "migrations/01_sdar_meta.sql",
+      "size": 23140,
+      "sha256": "5a3db03dd8b477408ea0cb562bafa0db2253f4344455a4d67af06062bb31150a"
+    },
+    {
+      "path": "migrations/02_sdar_core.sql",
+      "size": 113198,
+      "sha256": "a6b4afd2bd380fcd194e6e37b71811d3cd9524c76362a4cc248d236a60b3310d"
+    },
+    {
+      "path": "migrations/03_sdar_commander.sql",
+      "size": 49422,
+      "sha256": "69b5f325b420731fd6c6dec27a240854fefeeebc3f5804c3468954006ff989da"
+    },
+    {
+      "path": "migrations/04_sdar_npc.sql",
+      "size": 53519,
+      "sha256": "59520e3ee3628476f2a96460a8cda8c61b69be78510026153bbb6dc24139fa0c"
+    },
+    {
+      "path": "migrations/05_sdar_embodied.sql",
+      "size": 87996,
+      "sha256": "3d4278a4a79100d4953ff325cada233b3a39c58f37af5aa8f6925146914d90bd"
+    },
+    {
+      "path": "migrations/06_sdar_mart.sql",
+      "size": 45676,
+      "sha256": "c92ff74eb7b85ef218d4e8fe755629457c9b6f0fcdbfc0f57a22a463a3cbdbab"
+    },
+    {
+      "path": "migrations/07_quality_views.sql",
+      "size": 54914,
+      "sha256": "a01c346fbe0b5a955cb64ffb43acaf27226ccdf93737d12ed7f98d1671fe366a"
+    },
+    {
+      "path": "migrations/08_seed_meta.sql",
+      "size": 48132,
+      "sha256": "732f05e948b8d20ee30f1dd34bec533a716d6cc6da89f465eb01a41af6108d2c"
+    },
+    {
+      "path": "migrations/09_smoke_test.sql",
+      "size": 13212,
+      "sha256": "44d64dcc05cad4f838f104c93b9028ada97745e5706e7497d4908b0ef9a2485e"
+    },
+    {
+      "path": "migrations/10_sdar_v1_3_skill_aware.sql",
+      "size": 50858,
+      "sha256": "560783ab1a26d70f3fd3fd997a2b72b46c20c86689b377fc5ee501deb7a79814"
+    },
+    {
+      "path": "migrations/11_sdar_v1_3_event_handling.sql",
+      "size": 3728,
+      "sha256": "4aa252a3245c83629ea5a0246a1b9033b91c43a5ba7044dab5e02142c34bcb94"
+    },
+    {
+      "path": "migrations/12_smpp_provider_ops_projection.sql",
+      "size": 19645,
+      "sha256": "2296d35a8cc94427c1346a0fff2703344a883a63bd8833bbd4884a31459e63db"
+    },
+    {
+      "path": "migrations/13_sdar_v1_4_capability_chain.sql",
+      "size": 15982,
+      "sha256": "31e1ee0348ad56dfdc4c88efb5053b3951a057cfbba681ef2033bed016b9da80"
+    },
+    {
+      "path": "tools/build_package.py",
+      "size": 9266,
+      "sha256": "ff0ed0f9a91d689af1a5b96316dbcb74560fd4f5411b433451f861f9a2395298"
+    },
+    {
+      "path": "tools/check_clickhouse_image_compatibility.sh",
+      "size": 2412,
+      "sha256": "25e113caee4721439fcac4e360a9eff18517483e577176544cdb70815ec90aa6"
+    },
+    {
+      "path": "tools/validate_clickhouse.sh",
+      "size": 435,
+      "sha256": "1c83e899b7806185883b8553efd0e2b04e313715a09630eaba12d8df0be280e6"
+    }
+  ]
+}

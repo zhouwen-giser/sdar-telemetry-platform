@@ -1,0 +1,7 @@
+status=PASS
+schema_version=1.3.0-rc.2
+migration_count=14
+database_count=6
+physical_table_count=200
+view_count=76
+checks=database_declarations,exact_table_counts,datetime64_ttl,stable_replacing_partitions,duplicate_objects

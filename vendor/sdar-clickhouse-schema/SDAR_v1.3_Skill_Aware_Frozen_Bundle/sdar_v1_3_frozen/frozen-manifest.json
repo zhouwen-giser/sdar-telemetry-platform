@@ -1,0 +1,175 @@
+{
+  "documentStatus": "FROZEN",
+  "targetVersion": "SDAR v1.3.0",
+  "schemaDocumentRevision": "V1.2",
+  "evidenceFamily": "sdar.evidence/v1",
+  "frozenAt": "2026-07-17T00:00:00Z",
+  "sourceBaselines": [
+    "SDAR v1.1 MCP Tasks 升级设计文档",
+    "SDAR v1.2 Skill 驱动的能力使用体系 Codex Goal 任务包",
+    "SDAR ClickHouse 多范式数据存储结构与定义 V1.1 修正版",
+    "原 SDAR v1.2 统一遥测与评价证据采集 Schema V1.1"
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "3c6b8874f35da1e7d18a07adf2a351dc8617e331a28f4a82714cf4710f73b540",
+      "sizeBytes": 1612
+    },
+    {
+      "path": "SDAR_v1.3_Evidence_Foundation_Upgrade_Plan_FROZEN_CN.md",
+      "sha256": "f2ed3486b791ff84db12c9972f90ebf05a2e8b180d89fe63fdda92fc86419969",
+      "sizeBytes": 28102
+    },
+    {
+      "path": "SDAR_v1.3_Skill_Aware_Evidence_Schema_V1.2_FROZEN_CN.md",
+      "sha256": "ca3ffdaa77f305e157f5091ef83dccd66dd20278a7ec8d0ebdb333d43ac43510",
+      "sizeBytes": 30477
+    },
+    {
+      "path": "clickhouse/SDAR_v1.3_Evidence_Policy_Seed_FROZEN.sql",
+      "sha256": "963c9b5976e7acbe931069e8198e5725c5e441c79756d5e281409fe6d7b066d6",
+      "sizeBytes": 4202
+    },
+    {
+      "path": "clickhouse/SDAR_v1.3_Skill_Aware_ClickHouse_DDL_FROZEN.sql",
+      "sha256": "977053069317649ef3628afecd6744dde6b4b132cae337c38391fb17f3367fb5",
+      "sizeBytes": 40055
+    },
+    {
+      "path": "examples/canonical-envelope.skill-execution.example.json",
+      "sha256": "2522f4d97248c685f72720039824ff2d17d7c1c4345cd90e70841750fd234988",
+      "sizeBytes": 3017
+    },
+    {
+      "path": "examples/skill-execution-record.example.json",
+      "sha256": "bbe1964417564249d8d6dd7ec8e5239c1a0b392418e6cbd974c06467bde6c0e8",
+      "sizeBytes": 1088
+    },
+    {
+      "path": "examples/skill-plan-compliance.example.json",
+      "sha256": "187dd22f078382e3e3492bf4192d08925183d16e300f40721865f4afc36e3c1b",
+      "sizeBytes": 840
+    },
+    {
+      "path": "frozen-decisions.json",
+      "sha256": "f2dd29843e54187872628279cfc207cf7d1b5b1e98b39b8ae279caa3c2ef5f35",
+      "sizeBytes": 4118
+    },
+    {
+      "path": "schema/canonical-evidence-envelope.schema.json",
+      "sha256": "e01634d6ff708998e187b11605d3b32b5bacdace3f5a28f897bea3d2d6c98864",
+      "sizeBytes": 7542
+    },
+    {
+      "path": "schema/common-definitions.schema.json",
+      "sha256": "1c13bc3e6ac2aa6c099729d4a2e9195a4eab278f753e8f7028c9e4c8ea139b9b",
+      "sizeBytes": 4630
+    },
+    {
+      "path": "schema/evaluation-readiness.schema.json",
+      "sha256": "d4ab93bffc829e941d93646c979fb4d75829dec16d083fe92447074bd2b97199",
+      "sizeBytes": 5860
+    },
+    {
+      "path": "schema/record-catalog.json",
+      "sha256": "d9e991bd028135b37dc59efb4e8a08c720a8efbaa000b4a49692f63b8b9847c4",
+      "sizeBytes": 8740
+    },
+    {
+      "path": "schema/skill-applicability-record.schema.json",
+      "sha256": "a256b6d2409690a8d1752ad725d8465e919721ab02f5079d2769d35f546ca57b",
+      "sizeBytes": 2358
+    },
+    {
+      "path": "schema/skill-candidate-record.schema.json",
+      "sha256": "32df688aded63f1a3ec4f90d0bf02d6e167f8bc2adc055243045e631901790e1",
+      "sizeBytes": 2396
+    },
+    {
+      "path": "schema/skill-capability-slot-resolution.schema.json",
+      "sha256": "3fe544e38436b180cdabd6823a2f731fa70710d5803eaeb7a814ad4fddd8b49e",
+      "sizeBytes": 2511
+    },
+    {
+      "path": "schema/skill-composition-edge.schema.json",
+      "sha256": "5e13ae668bd85bc0f0929c4da1ae4b9156b707082441e1eca06bac6b8e98d33c",
+      "sizeBytes": 2524
+    },
+    {
+      "path": "schema/skill-composition-record.schema.json",
+      "sha256": "8191eaabdf38df2447254302b4bdb93860fffbda0a404bcc3741d4185e7b9cda",
+      "sizeBytes": 2266
+    },
+    {
+      "path": "schema/skill-context-resolution.schema.json",
+      "sha256": "f7798371db9a50a1fd34d16adf5d155ebdfe5ef53ac6bdc2c1bedbcdfa6753e0",
+      "sizeBytes": 2580
+    },
+    {
+      "path": "schema/skill-evidence-requirement.schema.json",
+      "sha256": "4abcae2f0955fac97ea5d1f645038ec9b947deba2557d73764cc80ab9cd12b63",
+      "sizeBytes": 1875
+    },
+    {
+      "path": "schema/skill-execution-record.schema.json",
+      "sha256": "e0b502cbf26467331cd4dbf1e314911bae696d4ef2d130db98f820640298df9c",
+      "sizeBytes": 4363
+    },
+    {
+      "path": "schema/skill-execution-relation.schema.json",
+      "sha256": "50981a4756e6bb8a994b9c169a288a99f8d4b20d6d2bccf4ca43412198a6ccac",
+      "sizeBytes": 1565
+    },
+    {
+      "path": "schema/skill-failure-propagation.schema.json",
+      "sha256": "e7311cc3b6483d4399d180fe3b23dc4c3b8ea32d9482701af5ad15b3114d6b34",
+      "sizeBytes": 2545
+    },
+    {
+      "path": "schema/skill-interpretation-record.schema.json",
+      "sha256": "b3106360b84ce3716ad6d19b2dda446b274c02d44f06395a07f0e4201d29d921",
+      "sizeBytes": 2441
+    },
+    {
+      "path": "schema/skill-mode-selection.schema.json",
+      "sha256": "812b44702adfddf0b2fc6cf9c854531369e3ed9b7dea3217ed1df3726708387f",
+      "sizeBytes": 2306
+    },
+    {
+      "path": "schema/skill-patch-candidate.schema.json",
+      "sha256": "b859805b38f2f03269ff15a153b36612dca3430a5b176b145cbad71e205b19ad",
+      "sizeBytes": 1831
+    },
+    {
+      "path": "schema/skill-plan-compliance.schema.json",
+      "sha256": "df5e61ae0df1a1323dbdd081a4f4d4b964557ca83b6643c9ee8d67864f18a188",
+      "sizeBytes": 3265
+    },
+    {
+      "path": "schema/skill-procedure-compilation.schema.json",
+      "sha256": "9e5ec9c9838a20085d667aaa54533b9be38dcd0163f544f3f90d1c43b6701442",
+      "sizeBytes": 2091
+    },
+    {
+      "path": "schema/skill-selection-record.schema.json",
+      "sha256": "e9c2f47533bc92752775695baded7ff91835535724abbca616fabf0d7f9020b0",
+      "sizeBytes": 2302
+    },
+    {
+      "path": "schema/skill-usage-snapshot.schema.json",
+      "sha256": "b782e675f016be18b39f89d74f0670dd54aa8d715b46991283208b47b060fe40",
+      "sizeBytes": 2810
+    },
+    {
+      "path": "validate_bundle.py",
+      "sha256": "c39670522372dad95f96dc3d7fb67af1cb4c0d9a0a56f6f6774a1b7d5df0e6eb",
+      "sizeBytes": 2307
+    }
+  ],
+  "validation": {
+    "jsonSchemaDraft": "2020-12",
+    "jsonSchemaCount": 20,
+    "exampleValidation": "passed"
+  }
+}

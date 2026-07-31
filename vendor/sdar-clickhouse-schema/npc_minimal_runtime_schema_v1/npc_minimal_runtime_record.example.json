@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.1.0",
+  "recordType": "npc_minimal_runtime_record",
+  "collectionProfile": "minimal",
+  "recordId": "npc-rec-0001",
+  "episodeId": "npc-episode-route-obstacle-001",
+  "sequence": 1,
+  "caseId": "npc-case-route-obstacle-001",
+  "correlationId": "corr-20260715-0001",
+  "missionId": "mission-10023",
+  "tickId": 2841,
+  "agentId": "npc-ugv-01",
+  "scenarioType": "safety_preemption",
+  "environment": "simulation",
+  "startedAt": "2026-07-15T08:00:00.000Z",
+  "endedAt": "2026-07-15T08:00:00.180Z",
+  "trigger": {
+    "triggerType": "safety_event",
+    "source": "sensor_adapter",
+    "name": "route_obstacle_detected",
+    "priority": 100,
+    "summary": "当前路径检测到阻塞，需要停止 Mission 机动。"
+  },
+  "decision": {
+    "decisionType": "safety",
+    "priorityLevel": "P1_SAFETY",
+    "basisType": "behavior_tree",
+    "selectedBranch": "MainTree/RootSelector/SafetyPolicyTree/RouteObstacleStopTree",
+    "selectedIntent": "STOP",
+    "decisionStatus": "selected",
+    "reasonCode": "ROUTE_OBSTACLE"
+  },
+  "action": {
+    "actionType": "control",
+    "toolName": "ugv_stop",
+    "target": "ugv-01",
+    "executionStatus": "succeeded",
+    "sideEffect": true,
+    "attemptCount": 1,
+    "resultCode": "MCP_OK",
+    "startedAt": "2026-07-15T08:00:00.090Z",
+    "endedAt": "2026-07-15T08:00:00.160Z"
+  },
+  "control": {
+    "previousMode": "mission",
+    "currentMode": "safety",
+    "controlOwner": "safety_tree",
+    "preemptedMission": true,
+    "approvalRequired": false,
+    "approvalStatus": "not_required"
+  },
+  "outcome": {
+    "status": "safe_hold",
+    "reasonCode": "ROUTE_OBSTACLE_STOPPED",
+    "summary": "安全分支已抢占 Mission 并下发停止命令。该记录不证明车辆物理速度已经归零。"
+  },
+  "error": null,
+  "operational": {
+    "decisionLatencyMs": 58,
+    "dispatchLatencyMs": 32,
+    "totalDurationMs": 180
+  },
+  "tags": [
+    "safety",
+    "preemption",
+    "route-obstacle"
+  ],
+  "metadata": {
+    "agentVersion": "npc-v4.0",
+    "behaviorTreeVersion": "v4"
+  }
+}

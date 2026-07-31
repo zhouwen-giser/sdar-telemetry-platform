@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";import {mkdtemp,appendFile,rm} from "node:fs/promises";import os from "node:os";import path from "node:path";import {DurableWal} from "../../packages/telemetry-wal/src/index.js";
+test("fsync append and recover",async()=>{const d=await mkdtemp(path.join(os.tmpdir(),"wal-"));const w=new DurableWal(d);await w.append("p",{x:1});assert.equal((await w.recover("p")).length,1);await rm(d,{recursive:true})});
+test("tail truncation",async()=>{const d=await mkdtemp(path.join(os.tmpdir(),"wal-"));const w=new DurableWal(d);await w.append("p",{x:1});await appendFile(path.join(d,"p.wal"),"broken");assert.equal((await w.recover("p")).length,1);await rm(d,{recursive:true})});
+test("high water retryable",async()=>{const d=await mkdtemp(path.join(os.tmpdir(),"wal-"));const w=new DurableWal(d,1);await w.append("p",{x:1});await assert.rejects(()=>w.append("p",{x:2}),/high water/);await rm(d,{recursive:true})});

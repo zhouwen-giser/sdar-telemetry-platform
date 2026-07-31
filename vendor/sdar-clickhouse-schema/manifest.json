@@ -1,0 +1,201 @@
+{
+  "package": "sdar-embodied-control-schema",
+  "version": "1.0.0",
+  "jsonSchemaDraft": "2020-12",
+  "framework": {
+    "name": "SDAR",
+    "version": "2.0"
+  },
+  "profile": {
+    "name": "embodied-control",
+    "version": "1.0"
+  },
+  "relatedSpecifications": {
+    "runtimeTelemetry": {
+      "sdarVersion": "1.3.0",
+      "schemaDocumentRevision": "1.2",
+      "evidenceFamily": "sdar.evidence/v1",
+      "status": "frozen",
+      "document": "SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/SDAR_v1.3_Skill_Aware_Evidence_Schema_V1.2_FROZEN_CN.md"
+    },
+    "evaluationDraft": {
+      "version": "2.1-review1",
+      "status": "draft",
+      "document": "docs/车长智能体与NPC智能体评价指标_待评审.md"
+    },
+    "telemetryPlatform": {
+      "name": "SDAR Telemetry Platform",
+      "version": "1.0.0",
+      "status": "design-frozen",
+      "document": "SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/README.md"
+    }
+  },
+  "storageImplementation": {
+    "name": "sdar-clickhouse-schema",
+    "version": "1.3.0-rc.2",
+    "path": "sdar_clickhouse_schema_v1_0",
+    "manifest": "sdar_clickhouse_schema_v1_0/manifest.json",
+    "releaseKind": "fresh-install-release-candidate",
+    "clickhouseCompatibility": "24.8+",
+    "databaseCount": 6,
+    "physicalTableCount": 200,
+    "viewCount": 76,
+    "targetFinalVersion": "1.3.0",
+    "implementationStatus": "static_validated_cpu_compatibility_preflight_added_clickhouse_runtime_validation_pending",
+    "migrationRange": "00..13"
+  },
+  "subpackages": [
+    {
+      "name": "npc-minimal-evaluation-case",
+      "version": "1.1.0",
+      "path": "npc_minimal_case_schema_v1",
+      "schema": "npc_minimal_case_schema_v1/npc_minimal_case.schema.json",
+      "example": "npc_minimal_case_schema_v1/npc_minimal_case.example.json",
+      "runtimeEvidence": false
+    },
+    {
+      "name": "npc-minimal-runtime-record",
+      "version": "1.1.0",
+      "path": "npc_minimal_runtime_schema_v1",
+      "schema": "npc_minimal_runtime_schema_v1/npc_minimal_runtime_record.schema.json",
+      "example": "npc_minimal_runtime_schema_v1/npc_minimal_runtime_record.example.json",
+      "collectionProfile": "minimal",
+      "clickhouseTarget": "sdar_npc.minimal_runtime_record"
+    }
+  ],
+  "schemas": [
+    "commander/commander_node_record.schema.json",
+    "commander/commander_state_extension.schema.json",
+    "commander/episode_evidence_bundle.schema.json",
+    "commander/state_snapshot.schema.json",
+    "npc/episode_evidence_bundle.schema.json",
+    "npc/npc_state_extension.schema.json",
+    "npc/npc_tick_record.schema.json",
+    "npc/state_snapshot.schema.json",
+    "sdar_runtime/action.schema.json",
+    "sdar_runtime/common.schema.json",
+    "sdar_runtime/confirmation.schema.json",
+    "sdar_runtime/constraint.schema.json",
+    "sdar_runtime/decision.schema.json",
+    "sdar_runtime/episode_evidence_bundle.schema.json",
+    "sdar_runtime/episode_metadata.schema.json",
+    "sdar_runtime/evaluation_result.schema.json",
+    "sdar_runtime/event.schema.json",
+    "sdar_runtime/execution_basis.schema.json",
+    "sdar_runtime/failure.schema.json",
+    "sdar_runtime/final_outcome.schema.json",
+    "sdar_runtime/gate_decision.schema.json",
+    "sdar_runtime/goal.schema.json",
+    "sdar_runtime/operational_metric.schema.json",
+    "sdar_runtime/raw_record.schema.json",
+    "sdar_runtime/receipt.schema.json",
+    "sdar_runtime/recovery.schema.json",
+    "sdar_runtime/remaining_item.schema.json",
+    "sdar_runtime/state_delta.schema.json",
+    "sdar_runtime/state_snapshot.schema.json",
+    "sdar_runtime/success_criterion.schema.json",
+    "sdar_runtime/trajectory_step.schema.json",
+    "sdar_runtime/trigger.schema.json",
+    "sdar_runtime/verification.schema.json",
+    "sdar_runtime/v1_3_skill_aware/canonical-evidence-envelope.schema.json",
+    "sdar_runtime/v1_3_skill_aware/common-definitions.schema.json",
+    "sdar_runtime/v1_3_skill_aware/evaluation-readiness.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-applicability-record.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-candidate-record.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-capability-slot-resolution.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-composition-edge.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-composition-record.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-context-resolution.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-evidence-requirement.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-execution-record.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-execution-relation.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-failure-propagation.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-interpretation-record.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-mode-selection.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-patch-candidate.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-plan-compliance.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-procedure-compilation.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-selection-record.schema.json",
+    "sdar_runtime/v1_3_skill_aware/skill-usage-snapshot.schema.json",
+    "telemetry_platform/capability-readiness-fact.schema.json",
+    "telemetry_platform/data-quality-issue.schema.json",
+    "telemetry_platform/durable-ack.schema.json",
+    "telemetry_platform/ingestion-batch.schema.json",
+    "telemetry_platform/projection-target.schema.json",
+    "telemetry_platform/task-capability-binding-fact.schema.json",
+    "telemetry_platform/telemetry-source.schema.json"
+  ],
+  "schemaLayout": {
+    "commonDependency": "schemas/sdar_runtime",
+    "runtimeV13": "schemas/sdar_runtime/v1_3_skill_aware",
+    "runtimeRecordCatalog": "schemas/sdar_runtime/v1_3_skill_aware/record-catalog.json",
+    "systems": {
+      "sdar_runtime": "schemas/sdar_runtime",
+      "commander": "schemas/commander",
+      "npc": "schemas/npc"
+    },
+    "documentation": "schemas/README.md",
+    "telemetryPlatform": "schemas/telemetry_platform"
+  },
+  "examples": [
+    "commander_episode.example.json",
+    "evaluation_result.example.json",
+    "npc_episode.example.json",
+    "v1_3_skill_aware/canonical-envelope.skill-execution.example.json",
+    "v1_3_skill_aware/skill-execution-record.example.json",
+    "v1_3_skill_aware/skill-plan-compliance.example.json",
+    "telemetry_platform/task-capability-binding-fact.example.json"
+  ],
+  "exampleValidation": [
+    {
+      "example": "examples/v1_3_skill_aware/canonical-envelope.skill-execution.example.json",
+      "schema": "schemas/sdar_runtime/v1_3_skill_aware/canonical-evidence-envelope.schema.json"
+    },
+    {
+      "example": "examples/v1_3_skill_aware/skill-execution-record.example.json",
+      "schema": "schemas/sdar_runtime/v1_3_skill_aware/skill-execution-record.schema.json"
+    },
+    {
+      "example": "examples/v1_3_skill_aware/skill-plan-compliance.example.json",
+      "schema": "schemas/sdar_runtime/v1_3_skill_aware/skill-plan-compliance.schema.json"
+    },
+    {
+      "example": "examples/commander_episode.example.json",
+      "schema": "schemas/commander/episode_evidence_bundle.schema.json"
+    },
+    {
+      "example": "examples/npc_episode.example.json",
+      "schema": "schemas/npc/episode_evidence_bundle.schema.json"
+    },
+    {
+      "example": "examples/evaluation_result.example.json",
+      "schema": "schemas/sdar_runtime/evaluation_result.schema.json"
+    },
+    {
+      "example": "npc_minimal_case_schema_v1/npc_minimal_case.example.json",
+      "schema": "npc_minimal_case_schema_v1/npc_minimal_case.schema.json"
+    },
+    {
+      "example": "npc_minimal_runtime_schema_v1/npc_minimal_runtime_record.example.json",
+      "schema": "npc_minimal_runtime_schema_v1/npc_minimal_runtime_record.schema.json"
+    },
+    {
+      "example": "examples/telemetry_platform/task-capability-binding-fact.example.json",
+      "schema": "schemas/telemetry_platform/task-capability-binding-fact.schema.json"
+    }
+  ],
+  "documents": [
+    "schemas/README.md",
+    "schemas/sdar_runtime/README.md",
+    "schemas/commander/README.md",
+    "schemas/npc/README.md",
+    "docs/SDAR_Embodied_Control_Data_Schema_V1.0.md",
+    "SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/README.md",
+    "SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/SDAR_v1.3_Evidence_Foundation_Upgrade_Plan_FROZEN_CN.md",
+    "SDAR_v1.3_Skill_Aware_Frozen_Bundle/sdar_v1_3_frozen/SDAR_v1.3_Skill_Aware_Evidence_Schema_V1.2_FROZEN_CN.md",
+    "docs/SDAR_v1.3_项目集成说明.md",
+    "docs/车长智能体与NPC智能体评价指标_待评审.md",
+    "sdar_clickhouse_schema_v1_0/README.md",
+    "SDAR_Telemetry_Platform_Frozen_Bundle/v1_0/README.md"
+  ]
+}

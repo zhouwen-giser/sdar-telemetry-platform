@@ -1,0 +1,17 @@
+{
+  "recordId": "018f1234-5678-7abc-8def-0123456789ab",
+  "nodeId": "ugv-01",
+  "taskId": "task-area-inspection-001",
+  "capabilityId": "area-inspection",
+  "capabilityVersion": 1,
+  "exposureId": "area-inspection-public",
+  "exposureVersion": 1,
+  "initialImplementationRefs": [
+    "plan_template:area-inspection:1",
+    "skill:vehicle-move:3"
+  ],
+  "successCriteriaHash": "1111111111111111111111111111111111111111111111111111111111111111",
+  "evidenceRequirementHash": "2222222222222222222222222222222222222222222222222222222222222222",
+  "bindingHash": "3333333333333333333333333333333333333333333333333333333333333333",
+  "boundAt": "2026-07-31T00:00:00Z"
+}

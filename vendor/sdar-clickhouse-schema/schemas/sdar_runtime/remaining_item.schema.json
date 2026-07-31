@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/remaining_item.schema.json",
+  "title": "Remaining Item",
+  "description": "最终收口时仍未关闭的事项、责任方和处理状态。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "itemId",
+    "description",
+    "status",
+    "owner"
+  ],
+  "properties": {
+    "itemId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "剩余事项标识。"
+    },
+    "description": {
+      "type": "string",
+      "description": "详细说明。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "waiting",
+        "blocked",
+        "accepted_risk",
+        "closed"
+      ],
+      "description": "当前状态。"
+    },
+    "owner": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "责任方。"
+    },
+    "dueAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "计划完成时间。"
+    },
+    "riskLevel": {
+      "$ref": "common.schema.json#/$defs/RiskLevel",
+      "description": "风险级别。"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EvidenceRef"
+      },
+      "default": [],
+      "description": "证据引用。"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/telemetry/v1/projection-target.schema.json",
+  "title": "ProjectionTarget",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "targetId",
+    "targetType",
+    "projectionSets",
+    "credentialRef",
+    "status",
+    "revision"
+  ],
+  "properties": {
+    "targetId": {
+      "type": "string"
+    },
+    "targetType": {
+      "enum": [
+        "sdar_clickhouse",
+        "shadow_clickhouse",
+        "object_storage"
+      ]
+    },
+    "projectionSets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "credentialRef": {
+      "type": "string"
+    },
+    "routeIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "active",
+        "suspended",
+        "retired"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

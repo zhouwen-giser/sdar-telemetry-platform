@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/telemetry/v1/durable-ack.schema.json",
+  "title": "DurableAck",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "batchId",
+    "sourceId",
+    "status",
+    "walPartition",
+    "walOffset",
+    "acknowledgedAt"
+  ],
+  "properties": {
+    "batchId": {
+      "type": "string"
+    },
+    "sourceId": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "durably_accepted",
+        "duplicate",
+        "rejected"
+      ]
+    },
+    "walPartition": {
+      "type": "string"
+    },
+    "walOffset": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "acceptedRecordCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "rejectedRecordCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "acknowledgedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "errorCode": {
+      "type": "string"
+    }
+  }
+}

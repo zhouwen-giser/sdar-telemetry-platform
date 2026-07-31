@@ -1,0 +1,33 @@
+{
+  "name": "sdar-telemetry-platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test dist/tests/**/*.test.js",
+    "verify": "bash scripts/verify.sh",
+    "clickhouse:preflight": "npm run build && node dist/scripts/clickhouse-cli.js preflight",
+    "clickhouse:migrate": "npm run build && node dist/scripts/clickhouse-cli.js migrate",
+    "clickhouse:verify": "npm run build && node dist/scripts/clickhouse-cli.js verify",
+    "clickhouse:smoke": "npm run build && node dist/scripts/clickhouse-cli.js smoke",
+    "start:gateway": "node dist/apps/ingestion-gateway/src/main.js",
+    "start:worker": "node dist/apps/telemetry-worker/src/main.js",
+    "start:query": "node dist/apps/query-api/src/main.js",
+    "start:admin": "node dist/apps/admin-api/src/main.js",
+    "start:relay": "node dist/apps/sdar-outbox-relay/src/main.js"
+  },
+  "dependencies": {
+    "ajv": "8.17.1",
+    "pg": "8.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.30",
+    "typescript": "5.8.3"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/gate_decision.schema.json",
+  "title": "Gate Decision",
+  "description": "控制动作执行前的安全、策略、授权、能力或控制权门槛判定。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "gateDecisionId",
+    "episodeId",
+    "actionId",
+    "gateType",
+    "decision",
+    "evaluatedAt",
+    "basedOnStateId"
+  ],
+  "properties": {
+    "gateDecisionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "门槛判定标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "actionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联行动。"
+    },
+    "gateType": {
+      "type": "string",
+      "enum": [
+        "execution",
+        "policy",
+        "safety",
+        "authorization",
+        "human_confirmation",
+        "control_ownership",
+        "capability",
+        "rate_limit"
+      ],
+      "description": "门槛类型。"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "allow",
+        "deny",
+        "defer"
+      ],
+      "description": "允许、拒绝或延后。"
+    },
+    "basedOnStateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "决策所依据的状态。"
+    },
+    "policyRefs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "适用策略。"
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "判定原因。"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EvidenceRef"
+      },
+      "default": [],
+      "description": "证据引用。"
+    },
+    "evaluatedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "评价时间。"
+    },
+    "expiresAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "门槛判定有效期。"
+    }
+  }
+}

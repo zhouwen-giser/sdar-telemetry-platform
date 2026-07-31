@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/common-definitions.schema.json",
+  "title": "SDAR Evidence Common Definitions",
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "deliveryGuarantee": {
+      "enum": [
+        "transactional",
+        "buffered"
+      ]
+    },
+    "evaluationRole": {
+      "enum": [
+        "required",
+        "supporting",
+        "diagnostic"
+      ]
+    },
+    "skillExecutionMode": {
+      "enum": [
+        "guidance",
+        "template",
+        "procedure"
+      ]
+    },
+    "skillFailurePolicy": {
+      "enum": [
+        "fail_fast",
+        "recoverable",
+        "optional",
+        "degraded"
+      ]
+    },
+    "skillUsageSpecSource": {
+      "enum": [
+        "native",
+        "legacy_projection"
+      ]
+    },
+    "skillApplicabilityStatus": {
+      "enum": [
+        "satisfied",
+        "partial",
+        "unsatisfied",
+        "unknown"
+      ]
+    },
+    "skillExecutionStatus": {
+      "enum": [
+        "selected",
+        "planning",
+        "executing",
+        "waiting_external",
+        "completed",
+        "failed",
+        "cancelled",
+        "degraded"
+      ]
+    },
+    "evidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceId",
+        "evidenceType",
+        "sourceSystem"
+      ],
+      "properties": {
+        "evidenceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "evidenceType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "sourceSystem": {
+          "enum": [
+            "sdar",
+            "mcp_provider",
+            "upstream_agent",
+            "human",
+            "artifact_store",
+            "other"
+          ]
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "uri": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "checksum": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "producedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "producerRefs": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "uri",
+        "mediaType",
+        "sha256",
+        "sizeBytes",
+        "storageProvider",
+        "contentRole",
+        "createdAt"
+      ],
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "encoding": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "sizeBytes": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "storageProvider": {
+          "enum": [
+            "filesystem",
+            "minio",
+            "s3"
+          ]
+        },
+        "contentRole": {
+          "enum": [
+            "prompt",
+            "model_output",
+            "state_snapshot",
+            "tool_input",
+            "tool_output",
+            "remote_task_snapshot",
+            "continuation_snapshot",
+            "skill_package",
+            "skill_usage_snapshot",
+            "skill_normative_snapshot",
+            "skill_adaptive_snapshot",
+            "skill_composition_snapshot",
+            "skill_template_instance",
+            "skill_procedure_program",
+            "skill_plan_compliance_report",
+            "skill_execution_tree",
+            "skill_patch_candidate",
+            "attachment",
+            "debug_bundle",
+            "other"
+          ]
+        },
+        "preview": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/commander_state_extension.schema.json",
+  "title": "Commander UgvState Extension",
+  "description": "车长智能体 UgvState 在统一 StateSnapshot 中的领域扩展。",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "sourceMessages": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EvidenceRef"
+      },
+      "default": []
+    },
+    "requestEnvelope": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "intentResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actionType": {
+          "type": "string",
+          "description": "行动类型。"
+        },
+        "shortcutId": {
+          "type": "string"
+        },
+        "waypoints": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "object"
+            ]
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "actionList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "default": []
+    },
+    "currentActionIdx": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "actionCmd": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "missionState": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "adtState": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "verifyFailed": {
+      "type": "boolean"
+    },
+    "forceEgoReplan": {
+      "type": "boolean"
+    },
+    "egoReplanLonLat": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lon": {
+          "type": "number"
+        },
+        "lat": {
+          "type": "number"
+        }
+      }
+    },
+    "capabilityTracks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "chassisTask": {
+          "$ref": "#/$defs/CapabilityTrack"
+        },
+        "eoTask": {
+          "$ref": "#/$defs/CapabilityTrack"
+        },
+        "weaponTask": {
+          "$ref": "#/$defs/CapabilityTrack"
+        }
+      }
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EvidenceRef"
+      },
+      "default": []
+    }
+  },
+  "$defs": {
+    "CapabilityTrack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capability",
+        "state"
+      ],
+      "properties": {
+        "capability": {
+          "type": "string",
+          "enum": [
+            "move",
+            "observe",
+            "engage"
+          ],
+          "description": "能力类别。"
+        },
+        "state": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "idle",
+            "pending",
+            "running",
+            "completed",
+            "failed",
+            "cancelled",
+            "unknown"
+          ],
+          "description": "当前状态。"
+        },
+        "missionId": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "updatedAt": {
+          "$ref": "common.schema.json#/$defs/Timestamp"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

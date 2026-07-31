@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/state_delta.schema.json",
+  "title": "State Delta",
+  "description": "一次合法状态转换的增量记录。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "stateDeltaId",
+    "episodeId",
+    "fromStateId",
+    "toStateId",
+    "fromStateVersion",
+    "toStateVersion",
+    "operations",
+    "recordedAt"
+  ],
+  "properties": {
+    "stateDeltaId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联状态增量。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "fromStateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "变化前状态。"
+    },
+    "toStateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "变化后状态。"
+    },
+    "fromStateVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "变化前版本。"
+    },
+    "toStateVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "变化后版本。"
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/JsonPatchOperation"
+      },
+      "minItems": 1,
+      "description": "JSON Patch 风格状态变更。"
+    },
+    "reasonEventId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "触发本次变更的事件。"
+    },
+    "sourceDecisionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "产生变更的决策。"
+    },
+    "sourceActionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "产生变更的行动。"
+    },
+    "recordedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "记录时间。"
+    },
+    "invariantChecks": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/MetricValue"
+      },
+      "default": [],
+      "description": "状态不变量校验结果。"
+    }
+  }
+}

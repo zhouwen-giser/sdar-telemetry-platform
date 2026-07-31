@@ -1,0 +1,259 @@
+{
+  "catalogVersion": "1.0.0",
+  "evidenceFamily": "sdar.evidence/v1",
+  "frozenAt": "2026-07-17T00:00:00Z",
+  "records": [
+    {
+      "recordType": "skill_usage_snapshot",
+      "schemaName": "sdar.skill-usage-snapshot",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-usage-snapshot.schema.json",
+      "eventTypes": [
+        "skill.usage_snapshot_recorded"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_usage_snapshot",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_candidate_record",
+      "schemaName": "sdar.skill-candidate-record",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-candidate-record.schema.json",
+      "eventTypes": [
+        "skill.discovered"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_candidate_record",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_applicability_record",
+      "schemaName": "sdar.skill-applicability-record",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-applicability-record.schema.json",
+      "eventTypes": [
+        "skill.applicability_assessed"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_applicability_record",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_context_resolution",
+      "schemaName": "sdar.skill-context-resolution",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-context-resolution.schema.json",
+      "eventTypes": [
+        "skill.context_missing",
+        "skill.context_resolved"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_context_resolution",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_selection_record",
+      "schemaName": "sdar.skill-selection-record",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-selection-record.schema.json",
+      "eventTypes": [
+        "skill.selected",
+        "skill.selection_rejected"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_selection_record",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_mode_selection",
+      "schemaName": "sdar.skill-mode-selection",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-mode-selection.schema.json",
+      "eventTypes": [
+        "skill.mode_selected",
+        "skill.mode_confirmation_required"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_mode_selection",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_composition_record",
+      "schemaName": "sdar.skill-composition-record",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-composition-record.schema.json",
+      "eventTypes": [
+        "skill.composition_started",
+        "skill.composition_validated",
+        "skill.composition_rejected"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_composition_record",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_composition_edge",
+      "schemaName": "sdar.skill-composition-edge",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-composition-edge.schema.json",
+      "eventTypes": [
+        "skill.child_selected"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_composition_edge",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_capability_slot_resolution",
+      "schemaName": "sdar.skill-capability-slot-resolution",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-capability-slot-resolution.schema.json",
+      "eventTypes": [
+        "skill.capability_slot_resolved",
+        "skill.capability_slot_unresolved"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_capability_slot_resolution",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_interpretation_record",
+      "schemaName": "sdar.skill-interpretation-record",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-interpretation-record.schema.json",
+      "eventTypes": [
+        "skill.interpretation_created"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_interpretation_record",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_procedure_compilation",
+      "schemaName": "sdar.skill-procedure-compilation",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-procedure-compilation.schema.json",
+      "eventTypes": [
+        "skill.procedure_compiled",
+        "skill.procedure_compilation_failed"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_procedure_compilation",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_plan_compliance",
+      "schemaName": "sdar.skill-plan-compliance",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-plan-compliance.schema.json",
+      "eventTypes": [
+        "skill.plan_compliance_passed",
+        "skill.plan_compliance_repaired",
+        "skill.plan_compliance_confirmation_required",
+        "skill.plan_compliance_rejected"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_plan_compliance",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_execution_record",
+      "schemaName": "sdar.skill-execution-record",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-execution-record.schema.json",
+      "eventTypes": [
+        "skill.execution_selected",
+        "skill.execution_planning",
+        "skill.execution_started",
+        "skill.execution_waiting_external",
+        "skill.execution_completed",
+        "skill.execution_failed",
+        "skill.execution_cancelled",
+        "skill.execution_degraded"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_execution_record",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_execution_relation",
+      "schemaName": "sdar.skill-execution-relation",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-execution-relation.schema.json",
+      "eventTypes": [
+        "skill.child_selected"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_execution_relation",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_failure_propagation",
+      "schemaName": "sdar.skill-failure-propagation",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-failure-propagation.schema.json",
+      "eventTypes": [
+        "skill.failure_propagated"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_failure_propagation",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_evidence_requirement",
+      "schemaName": "sdar.skill-evidence-requirement",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-evidence-requirement.schema.json",
+      "eventTypes": [
+        "skill.evidence_requirement_satisfied",
+        "skill.evidence_requirement_failed"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.skill_evidence_requirement",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "skill_patch_candidate",
+      "schemaName": "sdar.skill-patch-candidate",
+      "schemaVersion": 1,
+      "payloadSchema": "skill-patch-candidate.schema.json",
+      "eventTypes": [
+        "skill.patch_candidate_created"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "supporting",
+      "targetTable": "sdar_core.skill_patch_candidate",
+      "samplingAllowed": false
+    },
+    {
+      "recordType": "evaluation_readiness",
+      "schemaName": "sdar.evaluation-readiness",
+      "schemaVersion": 1,
+      "payloadSchema": "evaluation-readiness.schema.json",
+      "eventTypes": [
+        "evaluation.readiness_checked"
+      ],
+      "deliveryGuarantee": "transactional",
+      "evaluationRole": "required",
+      "targetTable": "sdar_core.evaluation_readiness",
+      "samplingAllowed": false
+    }
+  ]
+}

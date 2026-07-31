@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "1.1.0",
+  "caseId": "npc-route-obstacle-preemption-001",
+  "caseVersion": 1,
+  "agentType": "npc",
+  "title": "路障触发安全分支抢占 Mission",
+  "description": "验证 NPC 在执行 Mission 期间收到路线阻塞事件后，优先进入安全停止分支，不继续下发 Mission 控制。",
+  "scenarioType": "safety_preemption",
+  "environment": "simulation",
+  "input": {
+    "triggerType": "safety_event",
+    "source": "test_harness",
+    "eventType": "route_obstacle_detected",
+    "fixtureRef": "fixtures/npc/route-obstacle-during-mission-v1.json",
+    "priority": 100
+  },
+  "expectations": {
+    "expectedOutcome": "safe_hold",
+    "assertions": [
+      {
+        "assertionId": "a-branch",
+        "description": "必须选择路线阻塞安全停止分支",
+        "subject": "execution_basis",
+        "path": "behaviorTree.activeBranch",
+        "operator": "eq",
+        "expected": "SafetyPolicyTree/RouteObstacleStopTree",
+        "critical": true,
+        "withinMs": 500
+      },
+      {
+        "assertionId": "a-stop",
+        "description": "必须下发停止动作",
+        "subject": "action",
+        "path": "actions[*].name",
+        "operator": "contains",
+        "expected": "stop",
+        "critical": true,
+        "withinMs": 500
+      },
+      {
+        "assertionId": "a-no-mission-call",
+        "description": "抢占期间不得继续下发 Mission 工具调用",
+        "subject": "action",
+        "path": "actions[*].source",
+        "operator": "not_contains",
+        "expected": "MissionTree",
+        "critical": true
+      }
+    ],
+    "forbiddenBehaviors": [
+      "路障存在时继续移动",
+      "SafetyPolicyTree 已生效但 MissionTree 仍获得控制权"
+    ],
+    "maxDurationMs": 3000
+  },
+  "evaluation": {
+    "framework": "SDAR",
+    "frameworkVersion": "2.0",
+    "evaluationScope": "application",
+    "profile": "npc-application",
+    "profileVersion": "1.0",
+    "adapter": "npc",
+    "collectionProfile": "minimal",
+    "metricSetId": "application.npc-application.metrics",
+    "metricSetVersion": "application-v1-draft",
+    "gateSetId": "application.npc-application.gates",
+    "gateSetVersion": "application-v1-draft",
+    "fatalSetId": "application.npc-application.fatals",
+    "fatalSetVersion": "application-v1-draft",
+    "ruleSetStatus": "draft",
+    "applicableMetrics": ["M6", "M7", "M9", "M10", "M11", "M15"],
+    "requiredHardGates": [],
+    "fatalErrorChecks": [],
+    "minimumScore": 75
+  },
+  "tags": ["npc-v4", "safety", "preemption", "route-obstacle"],
+  "metadata": {
+    "owner": "npc-evaluation",
+    "priority": 1
+  }
+}

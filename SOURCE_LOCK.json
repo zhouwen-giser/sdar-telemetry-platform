@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-31T03:20:03.750145+00:00",
+  "repositories": {
+    "smppTelemetryReference": {
+      "repository": "zhouwen-giser/smpp-telemetry-platform",
+      "role": "read-only implementation pattern",
+      "inspectedCommit": "53a799d4c0166669411e61b816c6ed8ef63cc70f",
+      "expectedBranch": "main",
+      "allowExecutionCheckout": "exact commit preferred"
+    },
+    "sdarRuntime": {
+      "repository": "zhouwen-giser/skill-driven-agent-runtime",
+      "role": "read-only source authority plus additive integration patch target",
+      "inspectedBranch": "feature/v1.3-sequential-implementation",
+      "inspectedHead": "27fddc25c24919c4d64d1a63b34dd7c0593854de",
+      "minimumAccepted": "execution checkout must contain the inspected head or provide a newer local v1.3 final descendant",
+      "mainAtInspection": "940bb96439186acf2151935cc953a51b512abab1"
+    }
+  },
+  "artifacts": {
+    "telemetryDesignFreeze": {
+      "filename": "SDAR_Telemetry_Platform_独立遥测平台_完整设计冻结基线_V1.0.zip",
+      "sha256": "97ae56b4585fd29eff8000492ae98c678c4249f4d741550bd993121302c0ebac",
+      "role": "highest-priority architecture and contract baseline"
+    },
+    "clickhouseSchema": {
+      "filename": "sdar_clickhouse_schema.zip",
+      "sha256": "16dd6d6b170a27849f4ddaa9e5befa7d3eca4c0d12b3317b5413686ab02b7ce5",
+      "role": "external ClickHouse schema and migration source",
+      "expectedPackageLine": "1.3.0-rc.2 / target 1.3.0"
+    }
+  },
+  "priority": [
+    "SDAR_Telemetry_Platform_独立遥测平台_完整设计冻结基线_V1.0",
+    "sdar_clickhouse_schema.zip",
+    "current local skill-driven-agent-runtime v1.3 source",
+    "smpp-telemetry-platform implementation patterns"
+  ],
+  "repository_sources": {
+    "skill-driven-agent-runtime": {
+      "url": "https://github.com/zhouwen-giser/skill-driven-agent-runtime",
+      "branch": "feature/v1.3-sequential-implementation",
+      "commit": "27fddc25c24919c4d64d1a63b34dd7c0593854de",
+      "verification": "github_web_read_only",
+      "local_checkout": "unavailable_dns_blocked"
+    },
+    "smpp-telemetry-platform": {
+      "url": "https://github.com/zhouwen-giser/smpp-telemetry-platform",
+      "branch": "main",
+      "commit": "53a799d4c0166669411e61b816c6ed8ef63cc70f",
+      "verification": "github_web_read_only",
+      "local_checkout": "unavailable_dns_blocked"
+    }
+  },
+  "updated_at": "2026-07-31T11:36:00+08:00"
+}

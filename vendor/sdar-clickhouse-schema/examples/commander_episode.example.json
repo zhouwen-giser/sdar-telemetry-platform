@@ -1,0 +1,931 @@
+{
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "episodeId": "ep-cmd-001",
+    "agentType": "commander",
+    "agentId": "ugv-01",
+    "scenarioId": "scenario-forest-recon",
+    "episodeType": "mission_execution",
+    "correlationId": "corr-cmd-001",
+    "sourceRunIds": [
+      "graph-run-001"
+    ],
+    "startedAt": "2026-07-15T06:00:00Z",
+    "endedAt": "2026-07-15T06:03:20Z",
+    "status": "completed",
+    "environment": "simulation",
+    "softwareVersion": "ugv-agents-v2",
+    "modelVersion": "local-14b-demo",
+    "profile": "embodied-control",
+    "adapter": "commander",
+    "tags": [
+      "move",
+      "recon"
+    ]
+  },
+  "trigger": {
+    "triggerId": "trg-cmd-001",
+    "episodeId": "ep-cmd-001",
+    "sequence": 1,
+    "triggerType": "user_command",
+    "source": {
+      "sourceType": "operator",
+      "sourceId": "operator-01",
+      "channel": "mqtt",
+      "trustLevel": "trusted"
+    },
+    "receivedAt": "2026-07-15T06:00:00Z",
+    "summary": "前往树林2并侦察",
+    "priority": 90,
+    "rawInputRef": {
+      "evidenceType": "raw_record",
+      "evidenceId": "raw-msg-001",
+      "relation": "supports"
+    }
+  },
+  "goals": [
+    {
+      "goalId": "goal-cmd-001",
+      "goalVersion": 1,
+      "episodeId": "ep-cmd-001",
+      "title": "树林2侦察",
+      "description": "无人车到达树林2并完成光电侦察",
+      "originTriggerId": "trg-cmd-001",
+      "targetRefs": [
+        {
+          "entityType": "area",
+          "entityId": "forest-2",
+          "displayName": "树林2"
+        }
+      ],
+      "successCriteria": [
+        {
+          "criterionId": "crit-arrive",
+          "description": "车辆到达树林2",
+          "criterionType": "position",
+          "expected": {
+            "areaId": "forest-2"
+          },
+          "comparator": "within",
+          "actualSourcePath": "/domainState/capabilityTracks/chassisTask",
+          "critical": true
+        },
+        {
+          "criterionId": "crit-recon",
+          "description": "光电侦察任务完成",
+          "criterionType": "task_status",
+          "expected": "completed",
+          "comparator": "eq",
+          "actualSourcePath": "/domainState/capabilityTracks/eoTask/status",
+          "critical": true
+        }
+      ],
+      "constraints": [
+        {
+          "constraintId": "con-safe-route",
+          "category": "safety",
+          "description": "不得进入禁行区",
+          "severity": "hard",
+          "appliesTo": [
+            "move"
+          ],
+          "violationPolicy": "replan"
+        }
+      ],
+      "status": "satisfied",
+      "createdAt": "2026-07-15T06:00:01Z",
+      "createdBy": {
+        "sourceType": "agent_runtime",
+        "sourceId": "commander-agent",
+        "trustLevel": "trusted"
+      }
+    }
+  ],
+  "initialState": {
+    "stateId": "state-cmd-000",
+    "episodeId": "ep-cmd-001",
+    "agentType": "commander",
+    "stateVersion": 0,
+    "quality": {
+      "observedAt": "2026-07-15T06:00:00Z",
+      "recordedAt": "2026-07-15T06:00:00Z",
+      "freshnessMs": 0,
+      "confidence": 1,
+      "status": "confirmed"
+    },
+    "source": {
+      "sourceType": "agent_runtime",
+      "sourceId": "ugv-state-store",
+      "trustLevel": "trusted"
+    },
+    "episodeStatus": "active",
+    "goalId": "goal-cmd-001",
+    "goalVersion": 1,
+    "activeController": "commander-main",
+    "controlMode": "supervised",
+    "domainState": {
+      "sourceMessages": [
+        {
+          "evidenceType": "raw_record",
+          "evidenceId": "raw-msg-001"
+        }
+      ],
+      "requestEnvelope": {
+        "task_points": []
+      },
+      "actionList": [],
+      "currentActionIdx": 0,
+      "missionState": {
+        "status": "planning"
+      },
+      "verifyFailed": false,
+      "capabilityTracks": {
+        "chassisTask": {
+          "capability": "move",
+          "state": 0,
+          "status": "idle"
+        },
+        "eoTask": {
+          "capability": "observe",
+          "state": 0,
+          "status": "idle"
+        },
+        "weaponTask": {
+          "capability": "engage",
+          "state": 0,
+          "status": "idle"
+        }
+      },
+      "messages": []
+    }
+  },
+  "stateSnapshots": [
+    {
+      "stateId": "state-cmd-000",
+      "episodeId": "ep-cmd-001",
+      "agentType": "commander",
+      "stateVersion": 0,
+      "quality": {
+        "observedAt": "2026-07-15T06:00:00Z",
+        "recordedAt": "2026-07-15T06:00:00Z",
+        "freshnessMs": 0,
+        "confidence": 1,
+        "status": "confirmed"
+      },
+      "source": {
+        "sourceType": "agent_runtime",
+        "sourceId": "ugv-state-store",
+        "trustLevel": "trusted"
+      },
+      "episodeStatus": "active",
+      "goalId": "goal-cmd-001",
+      "goalVersion": 1,
+      "activeController": "commander-main",
+      "controlMode": "supervised",
+      "domainState": {
+        "sourceMessages": [
+          {
+            "evidenceType": "raw_record",
+            "evidenceId": "raw-msg-001"
+          }
+        ],
+        "requestEnvelope": {
+          "task_points": []
+        },
+        "actionList": [],
+        "currentActionIdx": 0,
+        "missionState": {
+          "status": "planning"
+        },
+        "verifyFailed": false,
+        "capabilityTracks": {
+          "chassisTask": {
+            "capability": "move",
+            "state": 0,
+            "status": "idle"
+          },
+          "eoTask": {
+            "capability": "observe",
+            "state": 0,
+            "status": "idle"
+          },
+          "weaponTask": {
+            "capability": "engage",
+            "state": 0,
+            "status": "idle"
+          }
+        },
+        "messages": []
+      }
+    },
+    {
+      "stateId": "state-cmd-001",
+      "episodeId": "ep-cmd-001",
+      "agentType": "commander",
+      "stateVersion": 1,
+      "quality": {
+        "observedAt": "2026-07-15T06:02:05Z",
+        "recordedAt": "2026-07-15T06:02:05Z",
+        "freshnessMs": 0,
+        "confidence": 1,
+        "status": "confirmed"
+      },
+      "source": {
+        "sourceType": "agent_runtime",
+        "sourceId": "ugv-state-store",
+        "trustLevel": "trusted"
+      },
+      "episodeStatus": "active",
+      "goalId": "goal-cmd-001",
+      "goalVersion": 1,
+      "activeController": "commander-main",
+      "controlMode": "supervised",
+      "domainState": {
+        "sourceMessages": [
+          {
+            "evidenceType": "raw_record",
+            "evidenceId": "raw-msg-001"
+          }
+        ],
+        "requestEnvelope": {
+          "task_points": []
+        },
+        "actionList": [],
+        "currentActionIdx": 0,
+        "missionState": {
+          "status": "executing"
+        },
+        "verifyFailed": false,
+        "capabilityTracks": {
+          "chassisTask": {
+            "capability": "move",
+            "state": 4,
+            "status": "completed",
+            "missionId": "m-001",
+            "updatedAt": "2026-07-15T06:02:05Z"
+          },
+          "eoTask": {
+            "capability": "observe",
+            "state": 0,
+            "status": "idle"
+          },
+          "weaponTask": {
+            "capability": "engage",
+            "state": 0,
+            "status": "idle"
+          }
+        },
+        "messages": []
+      },
+      "activeExecutionBasisId": "basis-cmd-001",
+      "currentStepId": "step-move",
+      "currentActionId": "act-cmd-move"
+    },
+    {
+      "stateId": "state-cmd-002",
+      "episodeId": "ep-cmd-001",
+      "agentType": "commander",
+      "stateVersion": 2,
+      "quality": {
+        "observedAt": "2026-07-15T06:03:10Z",
+        "recordedAt": "2026-07-15T06:03:10Z",
+        "freshnessMs": 0,
+        "confidence": 1,
+        "status": "confirmed"
+      },
+      "source": {
+        "sourceType": "agent_runtime",
+        "sourceId": "ugv-state-store",
+        "trustLevel": "trusted"
+      },
+      "episodeStatus": "completed",
+      "goalId": "goal-cmd-001",
+      "goalVersion": 1,
+      "activeExecutionBasisId": "basis-cmd-001",
+      "currentStepId": "step-observe",
+      "currentActionId": "act-cmd-observe",
+      "activeController": "commander-main",
+      "controlMode": "supervised",
+      "domainState": {
+        "sourceMessages": [
+          {
+            "evidenceType": "raw_record",
+            "evidenceId": "raw-msg-001"
+          }
+        ],
+        "requestEnvelope": {
+          "task_points": [
+            {
+              "name": "树林2"
+            }
+          ]
+        },
+        "intentResult": {
+          "actionType": "route",
+          "waypoints": [
+            "树林2"
+          ],
+          "confidence": 0.91
+        },
+        "actionList": [
+          {
+            "stepId": "step-move"
+          },
+          {
+            "stepId": "step-observe"
+          }
+        ],
+        "currentActionIdx": 1,
+        "actionCmd": {
+          "name": "observe_scan_detect"
+        },
+        "missionState": {
+          "status": "completed"
+        },
+        "adtState": {},
+        "verifyFailed": false,
+        "forceEgoReplan": false,
+        "capabilityTracks": {
+          "chassisTask": {
+            "capability": "move",
+            "state": 4,
+            "status": "completed",
+            "missionId": "m-001",
+            "updatedAt": "2026-07-15T06:02:05Z"
+          },
+          "eoTask": {
+            "capability": "observe",
+            "state": 4,
+            "status": "completed",
+            "missionId": "m-002",
+            "updatedAt": "2026-07-15T06:03:10Z"
+          },
+          "weaponTask": {
+            "capability": "engage",
+            "state": 0,
+            "status": "idle"
+          }
+        },
+        "messages": []
+      }
+    }
+  ],
+  "stateDeltas": [
+    {
+      "stateDeltaId": "delta-cmd-001",
+      "episodeId": "ep-cmd-001",
+      "fromStateId": "state-cmd-000",
+      "toStateId": "state-cmd-001",
+      "fromStateVersion": 0,
+      "toStateVersion": 1,
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/domainState/capabilityTracks/chassisTask/status",
+          "value": "completed"
+        }
+      ],
+      "reasonEventId": "evt-cmd-move-complete",
+      "sourceActionId": "act-cmd-move",
+      "recordedAt": "2026-07-15T06:02:05Z"
+    },
+    {
+      "stateDeltaId": "delta-cmd-002",
+      "episodeId": "ep-cmd-001",
+      "fromStateId": "state-cmd-001",
+      "toStateId": "state-cmd-002",
+      "fromStateVersion": 1,
+      "toStateVersion": 2,
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/domainState/capabilityTracks/eoTask/status",
+          "value": "completed"
+        }
+      ],
+      "reasonEventId": "evt-cmd-recon-complete",
+      "sourceActionId": "act-cmd-observe",
+      "recordedAt": "2026-07-15T06:03:10Z"
+    }
+  ],
+  "events": [
+    {
+      "eventId": "evt-cmd-start",
+      "episodeId": "ep-cmd-001",
+      "sequence": 1,
+      "eventType": "goal.created",
+      "source": {
+        "sourceType": "agent_runtime",
+        "sourceId": "commander-agent",
+        "trustLevel": "trusted"
+      },
+      "correlationId": "corr-cmd-001",
+      "stateVersionBefore": 0,
+      "stateVersionAfter": 0,
+      "occurredAt": "2026-07-15T06:00:01Z",
+      "severity": "info"
+    },
+    {
+      "eventId": "evt-cmd-move-complete",
+      "episodeId": "ep-cmd-001",
+      "sequence": 4,
+      "eventType": "action.completed",
+      "source": {
+        "sourceType": "mcp_server",
+        "sourceId": "ugv01-mcp",
+        "trustLevel": "trusted"
+      },
+      "correlationId": "corr-cmd-001",
+      "actionId": "act-cmd-move",
+      "stateVersionBefore": 0,
+      "stateVersionAfter": 1,
+      "occurredAt": "2026-07-15T06:02:05Z",
+      "severity": "info"
+    },
+    {
+      "eventId": "evt-cmd-recon-complete",
+      "episodeId": "ep-cmd-001",
+      "sequence": 6,
+      "eventType": "action.completed",
+      "source": {
+        "sourceType": "mcp_server",
+        "sourceId": "ugv01-mcp",
+        "trustLevel": "trusted"
+      },
+      "correlationId": "corr-cmd-001",
+      "actionId": "act-cmd-observe",
+      "stateVersionBefore": 1,
+      "stateVersionAfter": 2,
+      "occurredAt": "2026-07-15T06:03:10Z",
+      "severity": "info"
+    }
+  ],
+  "executionBases": [
+    {
+      "basisId": "basis-cmd-001",
+      "episodeId": "ep-cmd-001",
+      "basisType": "plan",
+      "version": 1,
+      "status": "completed",
+      "goalId": "goal-cmd-001",
+      "goalVersion": 1,
+      "name": "移动并侦察行动计划",
+      "steps": [
+        {
+          "stepId": "step-move",
+          "name": "前往树林2",
+          "order": 1,
+          "capability": "move",
+          "dependsOn": [],
+          "resourceClaims": [
+            {
+              "resourceType": "chassis",
+              "resourceId": "ugv-01-chassis",
+              "mode": "exclusive"
+            }
+          ],
+          "completionCriterionRefs": [
+            "crit-arrive"
+          ],
+          "allowedParallel": false,
+          "onFailure": "replan"
+        },
+        {
+          "stepId": "step-observe",
+          "name": "完成光电侦察",
+          "order": 2,
+          "capability": "observe",
+          "dependsOn": [
+            "step-move"
+          ],
+          "resourceClaims": [
+            {
+              "resourceType": "payload",
+              "resourceId": "ugv-01-eo",
+              "mode": "exclusive"
+            }
+          ],
+          "completionCriterionRefs": [
+            "crit-recon"
+          ],
+          "allowedParallel": false,
+          "onFailure": "pause"
+        }
+      ],
+      "successCriterionRefs": [
+        "crit-arrive",
+        "crit-recon"
+      ],
+      "createdBy": {
+        "sourceType": "llm",
+        "sourceId": "task-planning-agent",
+        "trustLevel": "partially_trusted"
+      },
+      "createdAt": "2026-07-15T06:00:03Z"
+    }
+  ],
+  "decisions": [
+    {
+      "decisionId": "dec-cmd-route",
+      "episodeId": "ep-cmd-001",
+      "sequence": 2,
+      "decisionType": "route",
+      "title": "选择慢路径任务规划",
+      "conclusion": "生成移动与侦察两步计划",
+      "status": "executed",
+      "basedOnStateId": "state-cmd-000",
+      "executionBasisId": "basis-cmd-001",
+      "selectedOptionId": "opt-plan",
+      "candidateOptions": [
+        {
+          "optionId": "opt-plan",
+          "summary": "使用任务规划与状态闭环执行",
+          "score": 0.92
+        }
+      ],
+      "rationaleSummary": "指令包含机动和侦察两个依赖动作，需要按物理完成状态推进",
+      "evidenceRefs": [
+        {
+          "evidenceType": "trigger",
+          "evidenceId": "trg-cmd-001",
+          "relation": "supports"
+        }
+      ],
+      "riskAssessment": {
+        "level": "medium",
+        "categories": [
+          "vehicle_control"
+        ],
+        "summary": "涉及底盘和载荷控制"
+      },
+      "createdAt": "2026-07-15T06:00:03Z",
+      "createdBy": {
+        "sourceType": "agent_runtime",
+        "sourceId": "mix-supervisor",
+        "trustLevel": "trusted"
+      }
+    }
+  ],
+  "gateDecisions": [
+    {
+      "gateDecisionId": "gate-cmd-move",
+      "episodeId": "ep-cmd-001",
+      "actionId": "act-cmd-move",
+      "gateType": "safety",
+      "decision": "allow",
+      "basedOnStateId": "state-cmd-000",
+      "policyRefs": [
+        "safe-route-v1"
+      ],
+      "reasons": [
+        "路径未进入禁行区"
+      ],
+      "evaluatedAt": "2026-07-15T06:00:04Z"
+    },
+    {
+      "gateDecisionId": "gate-cmd-observe",
+      "episodeId": "ep-cmd-001",
+      "actionId": "act-cmd-observe",
+      "gateType": "capability",
+      "decision": "allow",
+      "basedOnStateId": "state-cmd-001",
+      "reasons": [
+        "光电载荷在线"
+      ],
+      "evaluatedAt": "2026-07-15T06:02:10Z"
+    }
+  ],
+  "confirmations": [],
+  "actions": [
+    {
+      "actionId": "act-cmd-move",
+      "episodeId": "ep-cmd-001",
+      "sequence": 3,
+      "basisId": "basis-cmd-001",
+      "stepId": "step-move",
+      "decisionId": "dec-cmd-route",
+      "actionType": "control",
+      "capability": "move",
+      "target": {
+        "entityType": "vehicle",
+        "entityId": "ugv-01"
+      },
+      "inputSummary": "沿规划路径前往树林2",
+      "inputHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "riskLevel": "medium",
+      "gateDecisionRefs": [
+        "gate-cmd-move"
+      ],
+      "idempotencyKey": "ep-cmd-001-step-move-v1",
+      "executionStatus": "succeeded",
+      "sideEffect": true,
+      "controllerRef": "commander-main",
+      "resourceClaims": [
+        {
+          "resourceType": "chassis",
+          "resourceId": "ugv-01-chassis",
+          "mode": "exclusive"
+        }
+      ],
+      "attempt": 1,
+      "dispatchedAt": "2026-07-15T06:00:05Z",
+      "startedAt": "2026-07-15T06:00:05Z",
+      "endedAt": "2026-07-15T06:02:05Z",
+      "receiptRefs": [
+        "rcpt-cmd-move"
+      ],
+      "beforeStateId": "state-cmd-000",
+      "afterStateId": "state-cmd-001"
+    },
+    {
+      "actionId": "act-cmd-observe",
+      "episodeId": "ep-cmd-001",
+      "sequence": 5,
+      "basisId": "basis-cmd-001",
+      "stepId": "step-observe",
+      "decisionId": "dec-cmd-route",
+      "actionType": "control",
+      "capability": "observe",
+      "target": {
+        "entityType": "sensor",
+        "entityId": "ugv-01-eo"
+      },
+      "inputSummary": "执行区域扫描侦察",
+      "inputHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "riskLevel": "low",
+      "gateDecisionRefs": [
+        "gate-cmd-observe"
+      ],
+      "idempotencyKey": "ep-cmd-001-step-observe-v1",
+      "executionStatus": "succeeded",
+      "sideEffect": true,
+      "controllerRef": "commander-main",
+      "resourceClaims": [
+        {
+          "resourceType": "payload",
+          "resourceId": "ugv-01-eo",
+          "mode": "exclusive"
+        }
+      ],
+      "attempt": 1,
+      "dispatchedAt": "2026-07-15T06:02:11Z",
+      "startedAt": "2026-07-15T06:02:11Z",
+      "endedAt": "2026-07-15T06:03:10Z",
+      "receiptRefs": [
+        "rcpt-cmd-observe"
+      ],
+      "beforeStateId": "state-cmd-001",
+      "afterStateId": "state-cmd-002"
+    }
+  ],
+  "receipts": [
+    {
+      "receiptId": "rcpt-cmd-move",
+      "episodeId": "ep-cmd-001",
+      "actionId": "act-cmd-move",
+      "provider": {
+        "sourceType": "mcp_server",
+        "sourceId": "ugv01-mcp",
+        "trustLevel": "trusted"
+      },
+      "providerRequestId": "mcp-req-001",
+      "receivedAt": "2026-07-15T06:00:05Z",
+      "transportStatus": "ok",
+      "acceptanceStatus": "accepted",
+      "executionStatus": "accepted",
+      "outputSummary": "路径任务已受理"
+    },
+    {
+      "receiptId": "rcpt-cmd-observe",
+      "episodeId": "ep-cmd-001",
+      "actionId": "act-cmd-observe",
+      "provider": {
+        "sourceType": "mcp_server",
+        "sourceId": "ugv01-mcp",
+        "trustLevel": "trusted"
+      },
+      "providerRequestId": "mcp-req-002",
+      "receivedAt": "2026-07-15T06:02:11Z",
+      "transportStatus": "ok",
+      "acceptanceStatus": "accepted",
+      "executionStatus": "accepted",
+      "outputSummary": "扫描任务已受理"
+    }
+  ],
+  "verifications": [
+    {
+      "verificationId": "ver-cmd-arrive",
+      "episodeId": "ep-cmd-001",
+      "criterionId": "crit-arrive",
+      "actionId": "act-cmd-move",
+      "stateId": "state-cmd-001",
+      "verificationType": "state_check",
+      "expected": {
+        "areaId": "forest-2"
+      },
+      "actual": {
+        "areaId": "forest-2",
+        "chassisStatus": "completed"
+      },
+      "comparator": "within",
+      "status": "pass",
+      "critical": true,
+      "evidenceRefs": [
+        {
+          "evidenceType": "state_snapshot",
+          "evidenceId": "state-cmd-001",
+          "relation": "validated_by"
+        }
+      ],
+      "verifiedAt": "2026-07-15T06:02:05Z",
+      "verifier": {
+        "sourceType": "agent_runtime",
+        "sourceId": "progress-check",
+        "trustLevel": "trusted"
+      }
+    },
+    {
+      "verificationId": "ver-cmd-recon",
+      "episodeId": "ep-cmd-001",
+      "criterionId": "crit-recon",
+      "actionId": "act-cmd-observe",
+      "stateId": "state-cmd-002",
+      "verificationType": "state_check",
+      "expected": "completed",
+      "actual": "completed",
+      "comparator": "eq",
+      "status": "pass",
+      "critical": true,
+      "evidenceRefs": [
+        {
+          "evidenceType": "state_snapshot",
+          "evidenceId": "state-cmd-002",
+          "relation": "validated_by"
+        }
+      ],
+      "verifiedAt": "2026-07-15T06:03:10Z",
+      "verifier": {
+        "sourceType": "agent_runtime",
+        "sourceId": "progress-check",
+        "trustLevel": "trusted"
+      }
+    }
+  ],
+  "failures": [],
+  "recoveries": [],
+  "trajectory": [
+    {
+      "trajectoryStepId": "traj-cmd-001",
+      "episodeId": "ep-cmd-001",
+      "sequence": 1,
+      "fromStateId": "state-cmd-000",
+      "fromStateVersion": 0,
+      "triggerEventId": "evt-cmd-move-complete",
+      "decisionId": "dec-cmd-route",
+      "actionId": "act-cmd-move",
+      "receiptIds": [
+        "rcpt-cmd-move"
+      ],
+      "stateDeltaId": "delta-cmd-001",
+      "toStateId": "state-cmd-001",
+      "toStateVersion": 1,
+      "timestamp": "2026-07-15T06:02:05Z"
+    },
+    {
+      "trajectoryStepId": "traj-cmd-002",
+      "episodeId": "ep-cmd-001",
+      "sequence": 2,
+      "fromStateId": "state-cmd-001",
+      "fromStateVersion": 1,
+      "triggerEventId": "evt-cmd-recon-complete",
+      "decisionId": "dec-cmd-route",
+      "actionId": "act-cmd-observe",
+      "receiptIds": [
+        "rcpt-cmd-observe"
+      ],
+      "stateDeltaId": "delta-cmd-002",
+      "toStateId": "state-cmd-002",
+      "toStateVersion": 2,
+      "timestamp": "2026-07-15T06:03:10Z"
+    }
+  ],
+  "operationalMetrics": [
+    {
+      "metricId": "op-cmd-decision",
+      "episodeId": "ep-cmd-001",
+      "name": "decision_latency_ms",
+      "value": 3000,
+      "unit": "ms",
+      "threshold": 3000,
+      "status": "pass",
+      "collectedAt": "2026-07-15T06:00:03Z"
+    }
+  ],
+  "finalState": {
+    "stateId": "state-cmd-002",
+    "episodeId": "ep-cmd-001",
+    "agentType": "commander",
+    "stateVersion": 2,
+    "quality": {
+      "observedAt": "2026-07-15T06:03:10Z",
+      "recordedAt": "2026-07-15T06:03:10Z",
+      "freshnessMs": 0,
+      "confidence": 1,
+      "status": "confirmed"
+    },
+    "source": {
+      "sourceType": "agent_runtime",
+      "sourceId": "ugv-state-store",
+      "trustLevel": "trusted"
+    },
+    "episodeStatus": "completed",
+    "goalId": "goal-cmd-001",
+    "goalVersion": 1,
+    "activeExecutionBasisId": "basis-cmd-001",
+    "currentStepId": "step-observe",
+    "currentActionId": "act-cmd-observe",
+    "activeController": "commander-main",
+    "controlMode": "supervised",
+    "domainState": {
+      "sourceMessages": [
+        {
+          "evidenceType": "raw_record",
+          "evidenceId": "raw-msg-001"
+        }
+      ],
+      "requestEnvelope": {
+        "task_points": [
+          {
+            "name": "树林2"
+          }
+        ]
+      },
+      "intentResult": {
+        "actionType": "route",
+        "waypoints": [
+          "树林2"
+        ],
+        "confidence": 0.91
+      },
+      "actionList": [
+        {
+          "stepId": "step-move"
+        },
+        {
+          "stepId": "step-observe"
+        }
+      ],
+      "currentActionIdx": 1,
+      "actionCmd": {
+        "name": "observe_scan_detect"
+      },
+      "missionState": {
+        "status": "completed"
+      },
+      "adtState": {},
+      "verifyFailed": false,
+      "forceEgoReplan": false,
+      "capabilityTracks": {
+        "chassisTask": {
+          "capability": "move",
+          "state": 4,
+          "status": "completed",
+          "missionId": "m-001",
+          "updatedAt": "2026-07-15T06:02:05Z"
+        },
+        "eoTask": {
+          "capability": "observe",
+          "state": 4,
+          "status": "completed",
+          "missionId": "m-002",
+          "updatedAt": "2026-07-15T06:03:10Z"
+        },
+        "weaponTask": {
+          "capability": "engage",
+          "state": 0,
+          "status": "idle"
+        }
+      },
+      "messages": []
+    }
+  },
+  "outcome": {
+    "outcomeId": "out-cmd-001",
+    "episodeId": "ep-cmd-001",
+    "status": "completed",
+    "goalId": "goal-cmd-001",
+    "goalVersion": 1,
+    "finalStateId": "state-cmd-002",
+    "completedCriterionRefs": [
+      "crit-arrive",
+      "crit-recon"
+    ],
+    "failedCriterionRefs": [],
+    "pendingCriterionRefs": [],
+    "remainingItems": [],
+    "residualRisks": [],
+    "summary": "车辆已到达树林2并完成光电侦察",
+    "reportedAt": "2026-07-15T06:03:20Z"
+  },
+  "evidenceIndex": []
+}

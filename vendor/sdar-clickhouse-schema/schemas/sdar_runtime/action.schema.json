@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/action.schema.json",
+  "title": "Action Record",
+  "description": "Agent 主动发起的一次业务行动。行动请求不等于行动成功。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "actionId",
+    "episodeId",
+    "sequence",
+    "basisId",
+    "decisionId",
+    "actionType",
+    "target",
+    "inputSummary",
+    "inputHash",
+    "riskLevel",
+    "idempotencyKey",
+    "executionStatus",
+    "sideEffect",
+    "beforeStateId"
+  ],
+  "properties": {
+    "actionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联行动。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Episode 内有序序号。"
+    },
+    "basisId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "执行依据标识。"
+    },
+    "stepId": {
+      "$ref": "common.schema.json#/$defs/Id"
+    },
+    "decisionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联决策。"
+    },
+    "actionType": {
+      "type": "string",
+      "enum": [
+        "read",
+        "simulation",
+        "write",
+        "control",
+        "human_request",
+        "delegate"
+      ],
+      "description": "行动类型。"
+    },
+    "capability": {
+      "type": "string",
+      "description": "能力类别。"
+    },
+    "target": {
+      "$ref": "common.schema.json#/$defs/EntityRef",
+      "description": "行动目标。"
+    },
+    "inputSummary": {
+      "type": "string",
+      "description": "输入摘要。"
+    },
+    "inputPayloadRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "完整输入引用。"
+    },
+    "inputHash": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{32,128}$",
+      "description": "输入哈希。"
+    },
+    "riskLevel": {
+      "$ref": "common.schema.json#/$defs/RiskLevel",
+      "description": "风险级别。"
+    },
+    "gateDecisionRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "执行前门槛判定引用。"
+    },
+    "confirmationRef": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "人工确认引用。"
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "description": "幂等键。"
+    },
+    "executionStatus": {
+      "$ref": "common.schema.json#/$defs/ExecutionStatus",
+      "description": "执行状态。"
+    },
+    "sideEffect": {
+      "type": "boolean",
+      "description": "是否产生外部副作用。"
+    },
+    "controllerRef": {
+      "type": "string",
+      "description": "控制者或活动分支。"
+    },
+    "resourceClaims": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ResourceClaim"
+      },
+      "default": [],
+      "description": "资源占用声明。"
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "尝试次数。"
+    },
+    "retryOfActionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "被重试行动。"
+    },
+    "dispatchedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "下发时间。"
+    },
+    "startedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "开始时间。"
+    },
+    "endedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "结束时间。"
+    },
+    "receiptRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "回执引用。"
+    },
+    "beforeStateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "执行前状态。"
+    },
+    "afterStateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "执行后状态。"
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "领域扩展字段。"
+    }
+  }
+}

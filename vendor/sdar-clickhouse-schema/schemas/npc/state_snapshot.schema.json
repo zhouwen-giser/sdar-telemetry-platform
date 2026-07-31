@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/npc/state_snapshot.schema.json",
+  "title": "NPC State Snapshot",
+  "description": "NPC 智能体状态快照入口；在通用状态合同上固定 agentType 并约束 Blackboard。",
+  "allOf": [
+    {
+      "$ref": "https://schemas.sdar.local/embodied-control/v1/state_snapshot.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "agentType": {
+          "const": "npc"
+        },
+        "domainState": {
+          "$ref": "https://schemas.sdar.local/embodied-control/v1/npc_state_extension.schema.json"
+        }
+      }
+    }
+  ]
+}

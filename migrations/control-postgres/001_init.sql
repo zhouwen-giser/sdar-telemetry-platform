@@ -1,0 +1,7 @@
+CREATE SCHEMA IF NOT EXISTS telemetry_control;
+CREATE TABLE IF NOT EXISTS telemetry_control.source(source_id text primary key,source_type text not null,tenant_scope jsonb not null,credential_ref text not null,enabled boolean not null default true,created_at timestamptz not null default now());
+CREATE TABLE IF NOT EXISTS telemetry_control.route(route_id text primary key,source_id text references telemetry_control.source,projection_set text not null,target_id text not null,enabled boolean not null default true);
+CREATE TABLE IF NOT EXISTS telemetry_control.projection_revision(revision_id uuid primary key,projection_set text not null,version text not null,status text not null check(status in('draft','published','applied','lkg')),definition jsonb not null,mapping_hash text not null,created_at timestamptz not null default now());
+CREATE TABLE IF NOT EXISTS telemetry_control.checkpoint(target_id text,partition_id text,wal_offset bigint not null,projection_version text not null,mapping_hash text not null,updated_at timestamptz not null default now(),primary key(target_id,partition_id));
+CREATE TABLE IF NOT EXISTS telemetry_control.job(job_id uuid primary key,job_type text not null,status text not null,payload jsonb not null,lease_until timestamptz,last_error text,created_at timestamptz not null default now());
+CREATE TABLE IF NOT EXISTS telemetry_control.audit_log(id bigserial primary key,actor text not null,action text not null,payload_json jsonb not null,created_at timestamptz not null default now());

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/trajectory_step.schema.json",
+  "title": "State Trajectory Step",
+  "description": "按时间和因果顺序连接状态、事件、决策、行动、回执和状态增量。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trajectoryStepId",
+    "episodeId",
+    "sequence",
+    "fromStateId",
+    "fromStateVersion",
+    "triggerEventId",
+    "stateDeltaId",
+    "toStateId",
+    "toStateVersion",
+    "timestamp"
+  ],
+  "properties": {
+    "trajectoryStepId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "轨迹步骤标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Episode 内有序序号。"
+    },
+    "fromStateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "变化前状态。"
+    },
+    "fromStateVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "变化前版本。"
+    },
+    "triggerEventId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "触发事件。"
+    },
+    "decisionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联决策。"
+    },
+    "actionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联行动。"
+    },
+    "receiptIds": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "关联回执。"
+    },
+    "stateDeltaId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联状态增量。"
+    },
+    "toStateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "变化后状态。"
+    },
+    "toStateVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "变化后版本。"
+    },
+    "invariantChecks": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/MetricValue"
+      },
+      "default": [],
+      "description": "状态不变量校验结果。"
+    },
+    "timestamp": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "记录时间。"
+    }
+  }
+}

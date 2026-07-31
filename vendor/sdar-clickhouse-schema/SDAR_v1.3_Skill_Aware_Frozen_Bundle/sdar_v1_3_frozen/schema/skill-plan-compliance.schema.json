@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-plan-compliance.schema.json",
+  "title": "Skill Plan Compliance Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "planComplianceId",
+    "skillExecutionId",
+    "skillId",
+    "skillVersion",
+    "planId",
+    "planVersion",
+    "result",
+    "checks",
+    "repairAttemptCount",
+    "reportHash",
+    "checkedAt"
+  ],
+  "properties": {
+    "planComplianceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillExecutionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "planId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "planVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "result": {
+      "enum": [
+        "passed",
+        "repaired",
+        "confirmation_required",
+        "rejected"
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "checkId",
+          "checkType",
+          "result",
+          "evidenceRefs"
+        ],
+        "properties": {
+          "checkId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "checkType": {
+            "enum": [
+              "normative",
+              "task_type_allowlist",
+              "provider_policy",
+              "recursion_budget",
+              "failure_policy",
+              "confirmation_requirement",
+              "evidence_requirement",
+              "forbidden_action",
+              "hard_gate"
+            ]
+          },
+          "result": {
+            "enum": [
+              "passed",
+              "failed",
+              "warning",
+              "not_applicable"
+            ]
+          },
+          "reasonCode": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "maxItems": 256,
+            "items": {
+              "$ref": "common-definitions.schema.json#/$defs/evidenceReference"
+            }
+          }
+        }
+      }
+    },
+    "repairAttemptCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "repairedPlanVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "reportHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "reportArtifactRef": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "checkedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "repaired"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "repairedPlanVersion"
+        ]
+      }
+    }
+  ]
+}

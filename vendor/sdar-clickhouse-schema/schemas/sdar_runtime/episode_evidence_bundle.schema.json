@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/episode_evidence_bundle.schema.json",
+  "title": "Agent Episode Evidence Bundle",
+  "description": "车长与 NPC 共用评价引擎的完整证据包。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "metadata",
+    "trigger",
+    "goals",
+    "initialState",
+    "stateSnapshots",
+    "events",
+    "executionBases",
+    "decisions",
+    "actions",
+    "receipts",
+    "verifications",
+    "trajectory",
+    "finalState",
+    "outcome"
+  ],
+  "properties": {
+    "metadata": {
+      "$ref": "episode_metadata.schema.json",
+      "description": "扩展元数据。"
+    },
+    "trigger": {
+      "$ref": "trigger.schema.json"
+    },
+    "goals": {
+      "type": "array",
+      "items": {
+        "$ref": "goal.schema.json"
+      },
+      "minItems": 1
+    },
+    "initialState": {
+      "$ref": "state_snapshot.schema.json",
+      "description": "Episode 初始完整状态。"
+    },
+    "stateSnapshots": {
+      "type": "array",
+      "items": {
+        "$ref": "state_snapshot.schema.json"
+      },
+      "minItems": 1,
+      "description": "状态快照序列。"
+    },
+    "stateDeltas": {
+      "type": "array",
+      "items": {
+        "$ref": "state_delta.schema.json"
+      },
+      "default": [],
+      "description": "状态增量序列。"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "event.schema.json"
+      },
+      "default": [],
+      "description": "有序事件流。"
+    },
+    "executionBases": {
+      "type": "array",
+      "items": {
+        "$ref": "execution_basis.schema.json"
+      },
+      "default": [],
+      "description": "计划、策略或行为树分支等执行依据。"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "decision.schema.json"
+      },
+      "default": [],
+      "description": "关键决策记录。"
+    },
+    "gateDecisions": {
+      "type": "array",
+      "items": {
+        "$ref": "gate_decision.schema.json"
+      },
+      "default": [],
+      "description": "门槛判定记录。"
+    },
+    "confirmations": {
+      "type": "array",
+      "items": {
+        "$ref": "confirmation.schema.json"
+      },
+      "default": [],
+      "description": "人工确认记录。"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "action.schema.json"
+      },
+      "default": [],
+      "description": "行动记录。"
+    },
+    "receipts": {
+      "type": "array",
+      "items": {
+        "$ref": "receipt.schema.json"
+      },
+      "default": [],
+      "description": "工具或设备回执。"
+    },
+    "verifications": {
+      "type": "array",
+      "items": {
+        "$ref": "verification.schema.json"
+      },
+      "default": [],
+      "description": "成功条件验证。"
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "$ref": "failure.schema.json"
+      },
+      "default": [],
+      "description": "失败记录。"
+    },
+    "recoveries": {
+      "type": "array",
+      "items": {
+        "$ref": "recovery.schema.json"
+      },
+      "default": [],
+      "description": "恢复与重规划记录。"
+    },
+    "trajectory": {
+      "type": "array",
+      "items": {
+        "$ref": "trajectory_step.schema.json"
+      },
+      "default": [],
+      "description": "状态轨迹。"
+    },
+    "operationalMetrics": {
+      "type": "array",
+      "items": {
+        "$ref": "operational_metric.schema.json"
+      },
+      "default": [],
+      "description": "运行性能指标。"
+    },
+    "finalState": {
+      "$ref": "state_snapshot.schema.json",
+      "description": "Episode 最终完整状态。"
+    },
+    "outcome": {
+      "$ref": "final_outcome.schema.json",
+      "description": "最终结果。"
+    },
+    "evidenceIndex": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "evidenceId",
+          "evidenceType",
+          "schemaRef"
+        ],
+        "properties": {
+          "evidenceId": {
+            "$ref": "common.schema.json#/$defs/Id"
+          },
+          "evidenceType": {
+            "type": "string"
+          },
+          "schemaRef": {
+            "type": "string"
+          },
+          "sequence": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Episode 内有序序号。"
+          },
+          "occurredAt": {
+            "$ref": "common.schema.json#/$defs/Timestamp",
+            "description": "事件实际发生时间。"
+          },
+          "storageRef": {
+            "type": "string",
+            "description": "外部存储地址。"
+          },
+          "payloadHash": {
+            "type": "string",
+            "description": "载荷哈希。"
+          }
+        }
+      },
+      "default": [],
+      "description": "证据索引。"
+    }
+  }
+}

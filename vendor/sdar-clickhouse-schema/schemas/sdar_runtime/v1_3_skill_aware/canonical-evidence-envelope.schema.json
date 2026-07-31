@@ -1,0 +1,364 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/canonical-evidence-envelope.schema.json",
+  "title": "SDAR Canonical Evidence Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidenceFamily",
+    "recordId",
+    "recordType",
+    "schemaName",
+    "schemaVersion",
+    "eventType",
+    "eventCategory",
+    "deliveryGuarantee",
+    "evaluationRole",
+    "tenantId",
+    "projectId",
+    "environment",
+    "agentId",
+    "agentType",
+    "agentVersion",
+    "applicationVersion",
+    "episodeId",
+    "runId",
+    "segmentId",
+    "correlationId",
+    "traceId",
+    "sequence",
+    "aggregateType",
+    "aggregateId",
+    "evidenceRefs",
+    "artifactRefs",
+    "attributes",
+    "payloadHash",
+    "payload",
+    "occurredAt"
+  ],
+  "properties": {
+    "evidenceFamily": {
+      "const": "sdar.evidence/v1"
+    },
+    "recordId": {
+      "$ref": "common-definitions.schema.json#/$defs/uuid"
+    },
+    "recordType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "schemaName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "eventType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "eventCategory": {
+      "enum": [
+        "runtime",
+        "request",
+        "goal",
+        "skill",
+        "plan",
+        "state",
+        "decision",
+        "policy",
+        "human",
+        "action",
+        "receipt",
+        "verification",
+        "outcome",
+        "mcp_task",
+        "continuation",
+        "model",
+        "tool",
+        "memory",
+        "quality"
+      ]
+    },
+    "deliveryGuarantee": {
+      "$ref": "common-definitions.schema.json#/$defs/deliveryGuarantee"
+    },
+    "evaluationRole": {
+      "$ref": "common-definitions.schema.json#/$defs/evaluationRole"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "projectId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "environment": {
+      "enum": [
+        "dev",
+        "test",
+        "staging",
+        "prod"
+      ]
+    },
+    "agentId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "agentType": {
+      "const": "sdar"
+    },
+    "agentVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "applicationVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "sessionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "conversationId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "a2aTaskId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "episodeId": {
+      "$ref": "common-definitions.schema.json#/$defs/uuid"
+    },
+    "runId": {
+      "$ref": "common-definitions.schema.json#/$defs/uuid"
+    },
+    "segmentId": {
+      "$ref": "common-definitions.schema.json#/$defs/uuid"
+    },
+    "correlationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "traceId": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{32}$"
+    },
+    "spanId": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{16}$"
+    },
+    "parentSpanId": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{16}$"
+    },
+    "sequence": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "evidenceSequence": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "goalId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "goalVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "planId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "planVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "planStepId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "workflowInstanceId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "workflowNodeId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "stateVersionBefore": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "stateVersionAfter": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "decisionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "actionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "receiptId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "verificationId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "bindingId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "remoteTaskId": {
+      "type": "string",
+      "maxLength": 512
+    },
+    "controlEventId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "continuationId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "skillId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "skillVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "skillExecutionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "rootSkillExecutionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "parentSkillExecutionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "usageSpecVersion": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "usageSpecHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "usageSpecSource": {
+      "$ref": "common-definitions.schema.json#/$defs/skillUsageSpecSource"
+    },
+    "skillExecutionMode": {
+      "$ref": "common-definitions.schema.json#/$defs/skillExecutionMode"
+    },
+    "compositionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "capabilitySlotId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "recursionDepth": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "remainingRecursionBudget": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "failurePolicy": {
+      "$ref": "common-definitions.schema.json#/$defs/skillFailurePolicy"
+    },
+    "planComplianceId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "aggregateType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "aggregateId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "common-definitions.schema.json#/$defs/evidenceReference"
+      }
+    },
+    "artifactRefs": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "$ref": "common-definitions.schema.json#/$defs/artifactReference"
+      }
+    },
+    "attributes": {
+      "type": "object",
+      "maxProperties": 128,
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 4096
+      }
+    },
+    "payloadHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "occurredAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    },
+    "observedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "deliveryGuarantee": {
+            "const": "transactional"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "evidenceSequence"
+        ]
+      }
+    }
+  ]
+}

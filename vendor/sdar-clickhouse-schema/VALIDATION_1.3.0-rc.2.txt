@@ -1,0 +1,10 @@
+release=1.3.0-rc.2
+status=static_validated_clickhouse_runtime_validation_pending
+json_examples=PASS
+system_isolation_checks=PASS
+build_package_check=PASS
+cpu_compatibility_preflight=ADDED
+amd64_emulation_compose_override=ADDED
+clickhouse_24_8_runtime_compile=PENDING
+clickhouse_25_3_runtime_compile=PENDING
+cross_system_e2e=PENDING

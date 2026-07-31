@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/commander/episode_evidence_bundle.schema.json",
+  "title": "Commander Episode Evidence Bundle",
+  "description": "车长采集完整 Episode 入口；复用通用证据合同并固定 commander Adapter 和状态扩展。",
+  "allOf": [
+    {
+      "$ref": "https://schemas.sdar.local/embodied-control/v1/episode_evidence_bundle.schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "allOf": [
+            {
+              "$ref": "https://schemas.sdar.local/embodied-control/v1/episode_metadata.schema.json"
+            },
+            {
+              "properties": {
+                "agentType": {
+                  "const": "commander"
+                },
+                "adapter": {
+                  "const": "commander"
+                }
+              }
+            }
+          ]
+        },
+        "initialState": {
+          "$ref": "state_snapshot.schema.json"
+        },
+        "stateSnapshots": {
+          "type": "array",
+          "items": {
+            "$ref": "state_snapshot.schema.json"
+          },
+          "minItems": 1
+        },
+        "finalState": {
+          "$ref": "state_snapshot.schema.json"
+        }
+      }
+    }
+  ]
+}

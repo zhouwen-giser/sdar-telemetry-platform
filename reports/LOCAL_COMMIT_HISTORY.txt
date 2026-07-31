@@ -1,0 +1,12 @@
+2952816 P00: lock sources and frozen contracts
+01af95b P01: phase gate and evidence checkpoint
+f7a85c3 P02: phase gate and evidence checkpoint
+5648186 P03: phase gate and evidence checkpoint
+98b448b P04: phase gate and evidence checkpoint
+38724f8 P05: phase gate and evidence checkpoint
+d448a3a P06: phase gate and evidence checkpoint
+94d6e56 P07: phase gate and evidence checkpoint
+a051b2d P08: phase gate and evidence checkpoint
+30a1b41 P09: phase gate and evidence checkpoint
+93f2830 P10: phase gate and evidence checkpoint
+675b46e P10: finalize work delivery evidence

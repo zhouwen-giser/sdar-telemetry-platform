@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-execution-record.schema.json",
+  "title": "Skill Execution Record Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "skillExecutionId",
+    "rootSkillExecutionId",
+    "skillId",
+    "skillVersion",
+    "usageSpecVersion",
+    "usageSpecHash",
+    "usageSpecSource",
+    "executionMode",
+    "status",
+    "recursionDepth",
+    "remainingRecursionBudget",
+    "failurePolicy",
+    "selectionId",
+    "applicabilityId",
+    "modeSelectionId",
+    "degraded",
+    "degradedReasons",
+    "missingEffects",
+    "recordVersion"
+  ],
+  "properties": {
+    "skillExecutionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "rootSkillExecutionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "parentSkillExecutionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "skillId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "usageSpecVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "usageSpecHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "usageSpecSource": {
+      "$ref": "common-definitions.schema.json#/$defs/skillUsageSpecSource"
+    },
+    "executionMode": {
+      "$ref": "common-definitions.schema.json#/$defs/skillExecutionMode"
+    },
+    "status": {
+      "$ref": "common-definitions.schema.json#/$defs/skillExecutionStatus"
+    },
+    "recursionDepth": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "remainingRecursionBudget": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "failurePolicy": {
+      "$ref": "common-definitions.schema.json#/$defs/skillFailurePolicy"
+    },
+    "selectionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "applicabilityId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "modeSelectionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "compositionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "planComplianceId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "planId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "planVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "workflowInstanceId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "contextSnapshotHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "contextSnapshotArtifactRef": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "startedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    },
+    "waitingExternalAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    },
+    "endedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    },
+    "degraded": {
+      "type": "boolean"
+    },
+    "degradedReasons": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "missingEffects": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "outcomeSummary": {
+      "type": "string",
+      "maxLength": 8192
+    },
+    "recordVersion": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "degraded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "degraded": {
+            "const": true
+          }
+        },
+        "required": [
+          "degradedReasons",
+          "missingEffects"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "degraded": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "degradedReasons": {
+            "type": "array",
+            "minItems": 1
+          },
+          "missingEffects": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

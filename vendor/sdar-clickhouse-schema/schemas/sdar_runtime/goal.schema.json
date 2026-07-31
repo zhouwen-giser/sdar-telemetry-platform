@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/goal.schema.json",
+  "title": "Goal Record",
+  "description": "Episode 的结构化目标、约束与成功条件。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "goalId",
+    "goalVersion",
+    "episodeId",
+    "title",
+    "description",
+    "originTriggerId",
+    "status",
+    "successCriteria",
+    "createdAt"
+  ],
+  "properties": {
+    "goalId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "目标标识。"
+    },
+    "goalVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "目标版本。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "标题。"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "详细说明。"
+    },
+    "originTriggerId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "来源触发标识。"
+    },
+    "targetRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EntityRef"
+      },
+      "default": [],
+      "description": "目标对象引用。"
+    },
+    "successCriteria": {
+      "type": "array",
+      "items": {
+        "$ref": "success_criterion.schema.json"
+      },
+      "minItems": 1,
+      "description": "成功条件集合。"
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "$ref": "constraint.schema.json"
+      },
+      "default": [],
+      "description": "约束集合。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "accepted",
+        "active",
+        "satisfied",
+        "partially_satisfied",
+        "failed",
+        "cancelled",
+        "superseded"
+      ],
+      "description": "当前状态。"
+    },
+    "createdAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "创建时间。"
+    },
+    "createdBy": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "创建者。"
+    },
+    "supersedesGoalVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "被替代的目标版本。"
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "显式假设。"
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "领域扩展字段。"
+    }
+  }
+}

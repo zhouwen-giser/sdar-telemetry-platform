@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/event.schema.json",
+  "title": "Event Record",
+  "description": "已发生且不可修改的事实。事件不保存当前完整状态。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "eventId",
+    "episodeId",
+    "sequence",
+    "eventType",
+    "source",
+    "correlationId",
+    "occurredAt"
+  ],
+  "properties": {
+    "eventId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "事件标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Episode 内有序序号。"
+    },
+    "eventType": {
+      "type": "string",
+      "minLength": 1,
+      "description": "事件类型。"
+    },
+    "source": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "记录来源。"
+    },
+    "correlationId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "跨记录关联标识。"
+    },
+    "causationId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "直接原因记录标识。"
+    },
+    "actionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联行动。"
+    },
+    "decisionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联决策。"
+    },
+    "stateVersionBefore": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "事件前状态版本。"
+    },
+    "stateVersionAfter": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "事件后状态版本。"
+    },
+    "payloadRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "事件载荷引用。"
+    },
+    "occurredAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "事件实际发生时间。"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "error",
+        "critical"
+      ],
+      "description": "硬/软约束。"
+    },
+    "summary": {
+      "type": "string",
+      "description": "结构化摘要。"
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "领域扩展字段。"
+    }
+  }
+}

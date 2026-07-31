@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/telemetry/v1/data-quality-issue.schema.json",
+  "title": "DataQualityIssue",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "issueId",
+    "ruleId",
+    "severity",
+    "sourceId",
+    "status",
+    "detectedAt",
+    "evidenceRefs"
+  ],
+  "properties": {
+    "issueId": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "blocking",
+        "warning",
+        "informational"
+      ]
+    },
+    "sourceId": {
+      "type": "string"
+    },
+    "recordId": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "open",
+        "acknowledged",
+        "resolving",
+        "resolved",
+        "waived"
+      ]
+    },
+    "detectedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "detail": {
+      "type": "object"
+    }
+  }
+}

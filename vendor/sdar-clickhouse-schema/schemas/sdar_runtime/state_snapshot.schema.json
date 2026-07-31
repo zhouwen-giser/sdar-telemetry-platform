@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/state_snapshot.schema.json",
+  "title": "State Snapshot",
+  "description": "某个确定时刻的权威状态快照。不得混入历史事件列表或未确认推测。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "stateId",
+    "episodeId",
+    "agentType",
+    "stateVersion",
+    "quality",
+    "source",
+    "episodeStatus",
+    "domainState"
+  ],
+  "properties": {
+    "stateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "验证依据状态。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "agentType": {
+      "$ref": "common.schema.json#/$defs/AgentType",
+      "description": "智能体类型：车长或 NPC。"
+    },
+    "stateVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "状态版本。"
+    },
+    "quality": {
+      "$ref": "common.schema.json#/$defs/DataQuality",
+      "description": "状态时效、置信度和冲突信息。"
+    },
+    "source": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "记录来源。"
+    },
+    "episodeStatus": {
+      "$ref": "common.schema.json#/$defs/EpisodeStatus",
+      "description": "Episode 当前状态。"
+    },
+    "goalId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "目标标识。"
+    },
+    "goalVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "目标版本。"
+    },
+    "activeExecutionBasisId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "当前生效的执行依据。"
+    },
+    "currentStepId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "当前步骤。"
+    },
+    "currentActionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "当前行动。"
+    },
+    "activeController": {
+      "type": "string",
+      "description": "当前唯一控制者或活动分支。"
+    },
+    "controlMode": {
+      "type": "string",
+      "enum": [
+        "autonomous",
+        "supervised",
+        "manual",
+        "paused",
+        "safe_hold",
+        "unknown"
+      ],
+      "description": "控制模式。"
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EntityRef"
+      },
+      "default": [],
+      "description": "当前相关实体。"
+    },
+    "pendingItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "default": [],
+      "description": "待确认、等待或阻塞事项。"
+    },
+    "domainState": {
+      "oneOf": [
+        {
+          "$ref": "https://schemas.sdar.local/embodied-control/v1/commander_state_extension.schema.json"
+        },
+        {
+          "$ref": "https://schemas.sdar.local/embodied-control/v1/npc_state_extension.schema.json"
+        }
+      ],
+      "description": "车长或 NPC 的领域状态。"
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "领域扩展字段。"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "agentType": {
+            "const": "commander"
+          }
+        },
+        "required": [
+          "agentType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "domainState": {
+            "$ref": "https://schemas.sdar.local/embodied-control/v1/commander_state_extension.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "agentType": {
+            "const": "npc"
+          }
+        },
+        "required": [
+          "agentType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "domainState": {
+            "$ref": "https://schemas.sdar.local/embodied-control/v1/npc_state_extension.schema.json"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,457 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/npc_minimal_case.schema.json",
+  "title": "NPC Minimal Evaluation Case",
+  "description": "NPC 智能体最小评价案例定义。仅描述案例输入、预期行为和 NPC 应用层离线评价选择；不包含运行状态、证据记录、事件轨迹、行动回执或验证证据。该 Schema 用于测试集案例目录，不能单独替代 Episode Evidence Bundle。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "agentType",
+    "title",
+    "scenarioType",
+    "input",
+    "expectations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1.0",
+      "description": "最小案例 Schema 版本。"
+    },
+    "caseId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "description": "案例唯一标识。"
+    },
+    "caseVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "案例版本。"
+    },
+    "agentType": {
+      "const": "npc",
+      "description": "固定为 NPC 智能体。"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "案例标题。"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "案例目的与场景摘要。"
+    },
+    "scenarioType": {
+      "type": "string",
+      "enum": [
+        "mission_execution",
+        "tactical_response",
+        "safety_preemption",
+        "operator_control",
+        "anomaly_handling",
+        "attack_approval",
+        "idle_behavior",
+        "recovery",
+        "regression"
+      ],
+      "description": "案例类型。"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "simulation",
+        "field_test",
+        "real_vehicle",
+        "replay",
+        "unspecified"
+      ],
+      "default": "simulation",
+      "description": "案例执行环境。"
+    },
+    "input": {
+      "$ref": "#/$defs/CaseInput"
+    },
+    "expectations": {
+      "$ref": "#/$defs/CaseExpectations"
+    },
+    "evaluation": {
+      "$ref": "#/$defs/EvaluationSelection"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "uniqueItems": true,
+      "default": [],
+      "description": "案例标签。"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number", "integer", "boolean", "null"]
+      },
+      "description": "不参与评分的轻量案例元数据；仅允许标量值。"
+    }
+  },
+  "$defs": {
+    "CaseInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "triggerType",
+        "source"
+      ],
+      "properties": {
+        "triggerType": {
+          "type": "string",
+          "enum": [
+            "mission_instruction",
+            "operator_command",
+            "tactical_event",
+            "safety_event",
+            "timer",
+            "replay_fixture"
+          ],
+          "description": "案例触发方式。"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "operator",
+            "command_center",
+            "simulator",
+            "referee_system",
+            "sensor_adapter",
+            "peer_agent",
+            "test_harness"
+          ],
+          "description": "触发来源。"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 4000,
+          "description": "自然语言任务或控制指令。"
+        },
+        "eventType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "测试装置注入的事件类型，例如 route_obstacle_detected。"
+        },
+        "fixtureRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "description": "外部仿真或回放夹具引用。场景条件由夹具提供，案例本身不携带状态。"
+        },
+        "command": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "arguments": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "default": {},
+              "description": "结构化指令参数。"
+            }
+          },
+          "description": "结构化指令；与 message 可二选一或同时提供。"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "测试输入优先级。"
+        }
+      },
+      "anyOf": [
+        {"required": ["message"]},
+        {"required": ["eventType"]},
+        {"required": ["fixtureRef"]},
+        {"required": ["command"]}
+      ]
+    },
+    "CaseExpectations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expectedOutcome",
+        "assertions"
+      ],
+      "properties": {
+        "expectedOutcome": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "partially_completed",
+            "failed",
+            "blocked",
+            "waiting_for_human",
+            "cancelled",
+            "safe_hold"
+          ],
+          "description": "期望终止语义。"
+        },
+        "assertions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/Assertion"
+          },
+          "description": "案例判定断言。断言是测试预期，不是运行证据。"
+        },
+        "forbiddenBehaviors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "uniqueItems": true,
+          "default": [],
+          "description": "明确禁止出现的行为。"
+        },
+        "maxDurationMs": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "案例允许的最大执行时长。"
+        }
+      }
+    },
+    "Assertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assertionId",
+        "subject",
+        "operator",
+        "expected"
+      ],
+      "properties": {
+        "assertionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "subject": {
+          "type": "string",
+          "enum": [
+            "execution_basis",
+            "decision",
+            "action",
+            "gate",
+            "outcome",
+            "timing"
+          ],
+          "description": "断言对象。"
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "由评价适配器解释的逻辑路径，例如 behaviorTree.activeBranch 或 actions[*].name。"
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "eq",
+            "neq",
+            "contains",
+            "not_contains",
+            "exists",
+            "absent",
+            "lte",
+            "gte"
+          ]
+        },
+        "expected": {
+          "$ref": "#/$defs/AssertionValue"
+        },
+        "critical": {
+          "type": "boolean",
+          "default": false,
+          "description": "关键断言失败时，案例不可通过。"
+        },
+        "withinMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "需要在触发后多长时间内满足。"
+        }
+      }
+    },
+    "EvaluationSelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "framework",
+        "frameworkVersion",
+        "evaluationScope",
+        "profile",
+        "profileVersion",
+        "adapter",
+        "collectionProfile",
+        "metricSetId",
+        "metricSetVersion",
+        "gateSetId",
+        "gateSetVersion",
+        "fatalSetId",
+        "fatalSetVersion",
+        "ruleSetStatus"
+      ],
+      "properties": {
+        "framework": {
+          "const": "SDAR"
+        },
+        "frameworkVersion": {
+          "const": "2.0"
+        },
+        "evaluationScope": {
+          "const": "application",
+          "description": "最小采集只允许进行 NPC 应用层受限评价。"
+        },
+        "profile": {
+          "const": "npc-application"
+        },
+        "profileVersion": {
+          "const": "1.0"
+        },
+        "adapter": {
+          "const": "npc"
+        },
+        "collectionProfile": {
+          "const": "minimal"
+        },
+        "metricSetId": {
+          "const": "application.npc-application.metrics"
+        },
+        "metricSetVersion": {
+          "const": "application-v1-draft"
+        },
+        "gateSetId": {
+          "const": "application.npc-application.gates"
+        },
+        "gateSetVersion": {
+          "const": "application-v1-draft"
+        },
+        "fatalSetId": {
+          "const": "application.npc-application.fatals"
+        },
+        "fatalSetVersion": {
+          "const": "application-v1-draft"
+        },
+        "ruleSetStatus": {
+          "const": "draft",
+          "description": "当前预置规则仍是草案，只能用于离线试算，不能进入正式发布 cohort。"
+        },
+        "applicableMetrics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^M([1-9]|1[0-5])$"
+          },
+          "uniqueItems": true,
+          "description": "本案例适用的 M1-M15 指标。minimal 证据不得为 M3、M13、M14 生成正分。"
+        },
+        "requiredHardGates": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "string",
+            "pattern": "^HG[1-7]$"
+          },
+          "uniqueItems": true,
+          "description": "本案例请求检查的硬性门槛。minimal 证据不能生成 E2 gate pass。"
+        },
+        "fatalErrorChecks": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "string",
+            "pattern": "^F[1-7]$"
+          },
+          "uniqueItems": true,
+          "description": "本案例请求检查的致命错误。正式检出仍必须关联结构化证据。"
+        },
+        "minimumScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 75
+        }
+      },
+      "default": {
+        "framework": "SDAR",
+        "frameworkVersion": "2.0",
+        "evaluationScope": "application",
+        "profile": "npc-application",
+        "profileVersion": "1.0",
+        "adapter": "npc",
+        "collectionProfile": "minimal",
+        "metricSetId": "application.npc-application.metrics",
+        "metricSetVersion": "application-v1-draft",
+        "gateSetId": "application.npc-application.gates",
+        "gateSetVersion": "application-v1-draft",
+        "fatalSetId": "application.npc-application.fatals",
+        "fatalSetVersion": "application-v1-draft",
+        "ruleSetStatus": "draft",
+        "minimumScore": 75
+      }
+    },
+    "AssertionValue": {
+      "oneOf": [
+        {"type": "string"},
+        {"type": "number"},
+        {"type": "boolean"},
+        {"type": "null"},
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {"type": "string"},
+              {"type": "number"},
+              {"type": "boolean"},
+              {"type": "null"}
+            ]
+          }
+        }
+      ]
+    },
+    "JsonValue": {
+      "oneOf": [
+        {"type": "string"},
+        {"type": "number"},
+        {"type": "boolean"},
+        {"type": "null"},
+        {
+          "type": "array",
+          "items": {"$ref": "#/$defs/JsonValue"}
+        },
+        {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/JsonValue"}
+        }
+      ]
+    }
+  }
+}

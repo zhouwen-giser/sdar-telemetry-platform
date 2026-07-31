@@ -1,0 +1,14 @@
+diff --git a/docs/telemetry-sink-integration.md b/docs/telemetry-sink-integration.md
+new file mode 100644
+index 0000000..2b852f1
+--- /dev/null
++++ b/docs/telemetry-sink-integration.md
+@@ -0,0 +1,8 @@
++# Telemetry Sink Integration
++
++SDAR PostgreSQL remains the sole runtime authority.
++The telemetry relay reads committed transactional outbox records and changes only delivery metadata.
++It commits delivery only after receiving a durable WAL acknowledgement from the independent telemetry platform.
++Redis/BullMQ is wake-up infrastructure, not telemetry authority.
++Runtime capability summary is not a NodeCapabilityDefinition.
++OTel spans/logs are observational and do not substitute formal evidence.

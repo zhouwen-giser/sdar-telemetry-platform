@@ -1,0 +1,3 @@
+import type {EvidenceBatch} from "../../telemetry-types/src/index.js";
+export class ContractError extends Error {constructor(public code:string,message:string){super(message)}}
+export function assertBatch(v:unknown):asserts v is EvidenceBatch {if(!v||typeof v!=="object")throw new ContractError("TEL-ING-001","batch must be object");const b=v as any;if(b.schemaVersion!=="1.0"||!b.sourceId||!b.sourceType||!b.batchId||!Array.isArray(b.records)||b.records.length===0)throw new ContractError("TEL-ING-002","invalid batch contract");for(const r of b.records){if(!r.sourceRecordId||!r.recordFamily||!r.occurredAt||!r.tenantId)throw new ContractError("TEL-ING-003","invalid record contract");}}

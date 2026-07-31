@@ -1,0 +1,2 @@
+export interface SourceMapping{sourceId:string;sourceType:string;tenantIds:string[];enabled:boolean;credentialRef:string;nodeId?:string;}
+export class SourceRegistry{constructor(private rows:SourceMapping[]){ } resolve(sourceId:string){const r=this.rows.find(x=>x.sourceId===sourceId&&x.enabled);if(!r)throw new Error("unknown source");return r;} authorize(sourceId:string,tenantId:string){const r=this.resolve(sourceId);if(!r.tenantIds.includes("*")&&!r.tenantIds.includes(tenantId))throw new Error("cross-tenant source scope");}}

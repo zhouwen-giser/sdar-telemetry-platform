@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/episode_metadata.schema.json",
+  "title": "Agent Episode Metadata",
+  "description": "一次可评价任务、战术响应、异常处置或固定时间窗的统一元数据。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "episodeId",
+    "agentType",
+    "agentId",
+    "scenarioId",
+    "episodeType",
+    "correlationId",
+    "startedAt",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0",
+      "description": "Schema 版本。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "agentType": {
+      "$ref": "common.schema.json#/$defs/AgentType",
+      "description": "智能体类型：车长或 NPC。"
+    },
+    "agentId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "智能体/设备实例标识。"
+    },
+    "scenarioId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "测试或业务场景标识。"
+    },
+    "episodeType": {
+      "$ref": "common.schema.json#/$defs/EpisodeType",
+      "description": "Episode 类型。"
+    },
+    "correlationId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "跨记录关联标识。"
+    },
+    "parentEpisodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "父 Episode 标识。"
+    },
+    "sourceRunIds": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "映射到原运行、图运行或 Tick 的标识列表。"
+    },
+    "startedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "开始时间。"
+    },
+    "endedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "结束时间。"
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/EpisodeStatus",
+      "description": "当前状态。"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "simulation",
+        "field_test",
+        "real_vehicle",
+        "replay",
+        "unknown"
+      ],
+      "description": "运行环境。"
+    },
+    "softwareVersion": {
+      "type": "string",
+      "description": "软件版本。"
+    },
+    "modelVersion": {
+      "type": "string",
+      "description": "模型版本。"
+    },
+    "profile": {
+      "type": "string",
+      "default": "embodied-control",
+      "description": "评价 Profile。"
+    },
+    "adapter": {
+      "type": "string",
+      "enum": [
+        "commander",
+        "npc"
+      ],
+      "description": "数据适配器类型。"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "标签。"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "扩展元数据。"
+    }
+  }
+}

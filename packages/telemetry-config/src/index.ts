@@ -1,0 +1,2 @@
+export interface PlatformConfig{walDir:string;walHighWaterBytes:number;gatewayPort:number;queryPort:number;adminPort:number;workerIntervalMs:number;}
+export function loadConfig():PlatformConfig{return {walDir:process.env.WAL_DIR??"./runtime/wal",walHighWaterBytes:Number(process.env.WAL_HIGH_WATER_BYTES??536870912),gatewayPort:Number(process.env.GATEWAY_PORT??8080),queryPort:Number(process.env.QUERY_PORT??8081),adminPort:Number(process.env.ADMIN_PORT??8082),workerIntervalMs:Number(process.env.WORKER_INTERVAL_MS??1000)}}

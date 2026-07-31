@@ -1,0 +1,615 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/npc_minimal_runtime_record.schema.json",
+  "title": "NPC Minimal Runtime Collection Record",
+  "description": "NPC 智能体最小运行采集记录。每条记录描述一次关键决策—动作—结果片段，作为 collection_profile=minimal 写入 sdar_npc；不包含 Blackboard/StateSnapshot、完整事件流、EvidenceRef、原始 MCP 请求响应、VerificationRecord 或 StateTrajectory。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "recordType",
+    "collectionProfile",
+    "recordId",
+    "episodeId",
+    "sequence",
+    "agentId",
+    "scenarioType",
+    "environment",
+    "startedAt",
+    "endedAt",
+    "trigger",
+    "decision",
+    "action",
+    "control",
+    "outcome"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1.0"
+    },
+    "recordType": {
+      "const": "npc_minimal_runtime_record"
+    },
+    "collectionProfile": {
+      "const": "minimal",
+      "description": "固定为 minimal；Collector 同值写入 sdar_npc 公共信封列 collection_profile。"
+    },
+    "recordId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "episodeId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "caseId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "correlationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "missionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "tickId": {
+      "type": [
+        "string",
+        "integer"
+      ]
+    },
+    "agentId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "scenarioType": {
+      "type": "string",
+      "enum": [
+        "mission_execution",
+        "tactical_response",
+        "safety_preemption",
+        "operator_control",
+        "anomaly_handling",
+        "attack_approval",
+        "idle_behavior",
+        "recovery",
+        "regression"
+      ]
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "simulation",
+        "field_test",
+        "real_vehicle",
+        "replay",
+        "unspecified"
+      ]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "endedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "trigger": {
+      "$ref": "#/$defs/Trigger"
+    },
+    "decision": {
+      "$ref": "#/$defs/Decision"
+    },
+    "action": {
+      "$ref": "#/$defs/Action"
+    },
+    "control": {
+      "$ref": "#/$defs/Control"
+    },
+    "outcome": {
+      "$ref": "#/$defs/Outcome"
+    },
+    "error": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/Error"
+        }
+      ]
+    },
+    "operational": {
+      "$ref": "#/$defs/Operational"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "integer",
+          "boolean",
+          "null"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "Trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "triggerType",
+        "source",
+        "name"
+      ],
+      "properties": {
+        "triggerType": {
+          "type": "string",
+          "enum": [
+            "mission_instruction",
+            "operator_command",
+            "tactical_event",
+            "safety_event",
+            "timer",
+            "replay_fixture"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "operator",
+            "command_center",
+            "simulator",
+            "referee_system",
+            "sensor_adapter",
+            "peer_agent",
+            "hmi",
+            "internal_timer",
+            "test_harness"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 500
+        }
+      }
+    },
+    "Decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decisionType",
+        "priorityLevel",
+        "basisType",
+        "selectedBranch",
+        "selectedIntent",
+        "decisionStatus"
+      ],
+      "properties": {
+        "decisionType": {
+          "type": "string",
+          "enum": [
+            "safety",
+            "tactical",
+            "mission",
+            "idle",
+            "operator_override",
+            "recovery"
+          ]
+        },
+        "priorityLevel": {
+          "type": "string",
+          "enum": [
+            "P1_SAFETY",
+            "P2_TACTICAL",
+            "P3_MISSION",
+            "P4_IDLE",
+            "OPERATOR",
+            "RECOVERY"
+          ]
+        },
+        "basisType": {
+          "type": "string",
+          "enum": [
+            "behavior_tree",
+            "utility",
+            "mission_tool_call",
+            "operator_command",
+            "fallback"
+          ]
+        },
+        "selectedBranch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "selectedIntent": {
+          "type": "string",
+          "enum": [
+            "ATTACK",
+            "ESCAPE",
+            "SCAN",
+            "HOLD",
+            "STOP",
+            "MISSION_EXECUTE",
+            "WAIT",
+            "RECOVER",
+            "NONE"
+          ]
+        },
+        "decisionStatus": {
+          "type": "string",
+          "enum": [
+            "selected",
+            "rejected",
+            "no_action"
+          ]
+        },
+        "reasonCode": {
+          "type": "string",
+          "maxLength": 128
+        }
+      }
+    },
+    "Action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actionType",
+        "executionStatus",
+        "sideEffect",
+        "attemptCount"
+      ],
+      "properties": {
+        "actionType": {
+          "type": "string",
+          "enum": [
+            "control",
+            "read",
+            "human_request",
+            "none"
+          ]
+        },
+        "toolName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "executionStatus": {
+          "type": "string",
+          "enum": [
+            "not_started",
+            "dispatched",
+            "accepted",
+            "succeeded",
+            "failed",
+            "cancelled",
+            "skipped"
+          ]
+        },
+        "sideEffect": {
+          "type": "boolean"
+        },
+        "attemptCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "resultCode": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "currentMode",
+        "controlOwner",
+        "preemptedMission",
+        "approvalRequired",
+        "approvalStatus"
+      ],
+      "properties": {
+        "previousMode": {
+          "type": "string",
+          "enum": [
+            "safety",
+            "tactical",
+            "mission",
+            "idle",
+            "operator",
+            "unknown"
+          ]
+        },
+        "currentMode": {
+          "type": "string",
+          "enum": [
+            "safety",
+            "tactical",
+            "mission",
+            "idle",
+            "operator",
+            "recovery"
+          ]
+        },
+        "controlOwner": {
+          "type": "string",
+          "enum": [
+            "safety_tree",
+            "tactical_tree",
+            "mission_tree",
+            "idle_tree",
+            "operator",
+            "recovery_manager"
+          ]
+        },
+        "preemptedMission": {
+          "type": "boolean"
+        },
+        "approvalRequired": {
+          "type": "boolean"
+        },
+        "approvalStatus": {
+          "type": "string",
+          "enum": [
+            "not_required",
+            "pending",
+            "approved",
+            "rejected",
+            "expired"
+          ]
+        },
+        "approvalAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reasonCode"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "partially_completed",
+            "failed",
+            "blocked",
+            "waiting_for_human",
+            "cancelled",
+            "safe_hold",
+            "no_action"
+          ]
+        },
+        "reasonCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "category",
+        "retryable"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "input",
+            "decision",
+            "action",
+            "timeout",
+            "system",
+            "approval",
+            "unknown"
+          ]
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "messageSummary": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "Operational": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "decisionLatencyMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dispatchLatencyMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalDurationMs": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "properties": {
+              "actionType": {
+                "enum": [
+                  "control",
+                  "read"
+                ]
+              }
+            },
+            "required": [
+              "actionType"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "action": {
+            "required": [
+              "toolName"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "control": {
+            "properties": {
+              "approvalRequired": {
+                "const": false
+              }
+            },
+            "required": [
+              "approvalRequired"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "control": {
+            "properties": {
+              "approvalStatus": {
+                "const": "not_required"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "properties": {
+              "selectedIntent": {
+                "const": "ATTACK"
+              }
+            },
+            "required": [
+              "selectedIntent"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "control": {
+            "properties": {
+              "approvalRequired": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "properties": {
+              "executionStatus": {
+                "const": "failed"
+              }
+            },
+            "required": [
+              "executionStatus"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "not": {
+              "type": "null"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

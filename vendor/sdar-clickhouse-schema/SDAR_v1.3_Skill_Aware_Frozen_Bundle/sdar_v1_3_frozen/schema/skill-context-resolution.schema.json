@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-context-resolution.schema.json",
+  "title": "Skill Context Resolution Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contextResolutionId",
+    "contextRequirementId",
+    "requirementName",
+    "requirementType",
+    "resolutionStatus",
+    "source",
+    "authoritative",
+    "conflictRefs",
+    "evidenceRefs",
+    "resolvedAt"
+  ],
+  "properties": {
+    "contextResolutionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "contextRequirementId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "requirementName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "requirementType": {
+      "enum": [
+        "location",
+        "permission",
+        "safety",
+        "device_state",
+        "time_window",
+        "forbidden_zone",
+        "resource",
+        "task_evidence",
+        "custom"
+      ]
+    },
+    "resolutionStatus": {
+      "enum": [
+        "resolved",
+        "unresolved",
+        "conflict",
+        "invalid"
+      ]
+    },
+    "source": {
+      "enum": [
+        "authoritative_context",
+        "read_only_query",
+        "deterministic_derivation",
+        "user_input",
+        "unresolved"
+      ]
+    },
+    "valueHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "valueSummary": {
+      "type": "string",
+      "maxLength": 4096
+    },
+    "valueArtifactRef": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "authoritative": {
+      "type": "boolean"
+    },
+    "freshnessObservedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    },
+    "validUntil": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    },
+    "conflictRefs": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "common-definitions.schema.json#/$defs/evidenceReference"
+      }
+    },
+    "resolvedAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "const": "unresolved"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authoritative": {
+            "const": false
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/execution_basis.schema.json",
+  "title": "Execution Basis",
+  "description": "关键行动的合法执行依据，可为计划、策略、规则、SOP、快捷方式或行为树分支。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "basisId",
+    "episodeId",
+    "basisType",
+    "version",
+    "status",
+    "goalId",
+    "createdBy",
+    "createdAt"
+  ],
+  "properties": {
+    "basisId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "执行依据标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "basisType": {
+      "type": "string",
+      "enum": [
+        "plan",
+        "policy",
+        "rule",
+        "sop",
+        "shortcut",
+        "behavior_tree_branch",
+        "workflow",
+        "human_instruction",
+        "mission_tool_queue"
+      ],
+      "description": "执行依据类型。"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "版本。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "approved",
+        "active",
+        "superseded",
+        "completed",
+        "rejected",
+        "cancelled"
+      ],
+      "description": "当前状态。"
+    },
+    "goalId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "目标标识。"
+    },
+    "goalVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "目标版本。"
+    },
+    "name": {
+      "type": "string",
+      "description": "名称。"
+    },
+    "description": {
+      "type": "string",
+      "description": "详细说明。"
+    },
+    "preconditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "前置条件。"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ExecutionStep"
+      },
+      "default": [],
+      "description": "计划或程序步骤。"
+    },
+    "policyRef": {
+      "type": "string",
+      "description": "策略/规则标识。"
+    },
+    "branchPath": {
+      "type": "string",
+      "description": "行为树分支路径。"
+    },
+    "utilityScores": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "Utility 候选分数。"
+    },
+    "resourceClaims": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ResourceClaim"
+      },
+      "default": [],
+      "description": "资源占用声明。"
+    },
+    "successCriterionRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Id"
+      },
+      "default": [],
+      "description": "关联成功条件。"
+    },
+    "createdBy": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "创建者。"
+    },
+    "createdAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "创建时间。"
+    },
+    "approvedBy": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "批准者。"
+    },
+    "approvalRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "批准记录引用。"
+    },
+    "supersedesBasisId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "被替代的执行依据。"
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "领域扩展字段。"
+    }
+  },
+  "$defs": {
+    "ExecutionStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stepId",
+        "name",
+        "order"
+      ],
+      "properties": {
+        "stepId": {
+          "$ref": "common.schema.json#/$defs/Id"
+        },
+        "name": {
+          "type": "string",
+          "description": "名称。"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "capability": {
+          "type": "string",
+          "description": "能力类别。"
+        },
+        "actionTemplate": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/Id"
+          },
+          "default": []
+        },
+        "resourceClaims": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/ResourceClaim"
+          },
+          "default": [],
+          "description": "资源占用声明。"
+        },
+        "preconditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "前置条件。"
+        },
+        "completionCriterionRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/Id"
+          },
+          "default": []
+        },
+        "allowedParallel": {
+          "type": "boolean",
+          "default": false
+        },
+        "onFailure": {
+          "type": "string",
+          "enum": [
+            "retry",
+            "skip",
+            "replan",
+            "pause",
+            "abort",
+            "degrade"
+          ]
+        }
+      }
+    }
+  }
+}

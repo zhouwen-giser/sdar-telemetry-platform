@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/decision.schema.json",
+  "title": "Decision Record",
+  "description": "正式决策结论及其可复核依据，不保存隐藏思维过程。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decisionId",
+    "episodeId",
+    "sequence",
+    "decisionType",
+    "title",
+    "conclusion",
+    "status",
+    "basedOnStateId",
+    "createdAt",
+    "createdBy"
+  ],
+  "properties": {
+    "decisionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联决策。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Episode 内有序序号。"
+    },
+    "decisionType": {
+      "type": "string",
+      "enum": [
+        "intent",
+        "route",
+        "plan",
+        "policy_selection",
+        "target_selection",
+        "gate",
+        "preemption",
+        "recovery",
+        "termination",
+        "other"
+      ],
+      "description": "决策类型。"
+    },
+    "title": {
+      "type": "string",
+      "description": "标题。"
+    },
+    "conclusion": {
+      "type": "string",
+      "description": "决策结论。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "accepted",
+        "rejected",
+        "superseded",
+        "executed"
+      ],
+      "description": "当前状态。"
+    },
+    "basedOnStateId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "决策所依据的状态。"
+    },
+    "executionBasisId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "关联执行依据。"
+    },
+    "candidateOptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "optionId",
+          "summary"
+        ],
+        "properties": {
+          "optionId": {
+            "$ref": "common.schema.json#/$defs/Id"
+          },
+          "summary": {
+            "type": "string",
+            "description": "结构化摘要。"
+          },
+          "score": {
+            "type": "number",
+            "description": "加权总分。"
+          },
+          "pros": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "default": [],
+      "description": "候选方案。"
+    },
+    "selectedOptionId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "选择的方案。"
+    },
+    "rationaleSummary": {
+      "type": "string",
+      "description": "可审计的简要依据，不含隐藏思维链。"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/EvidenceRef"
+      },
+      "default": [],
+      "description": "证据引用。"
+    },
+    "riskAssessment": {
+      "$ref": "common.schema.json#/$defs/RiskAssessment",
+      "description": "风险评估。"
+    },
+    "expectedEffects": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "预期影响。"
+    },
+    "createdAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "创建时间。"
+    },
+    "createdBy": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "创建者。"
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "领域扩展字段。"
+    }
+  }
+}

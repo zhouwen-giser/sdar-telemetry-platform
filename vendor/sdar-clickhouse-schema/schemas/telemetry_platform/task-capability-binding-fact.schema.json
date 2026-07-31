@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/telemetry/v1/task-capability-binding-fact.schema.json",
+  "title": "TaskCapabilityBindingFact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "recordId",
+    "nodeId",
+    "taskId",
+    "capabilityId",
+    "capabilityVersion",
+    "initialImplementationRefs",
+    "successCriteriaHash",
+    "evidenceRequirementHash",
+    "bindingHash",
+    "boundAt"
+  ],
+  "properties": {
+    "recordId": {
+      "type": "string"
+    },
+    "nodeId": {
+      "type": "string"
+    },
+    "taskId": {
+      "type": "string"
+    },
+    "capabilityId": {
+      "type": "string"
+    },
+    "capabilityVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "exposureId": {
+      "type": "string"
+    },
+    "exposureVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "initialImplementationRefs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "successCriteriaHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "evidenceRequirementHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "bindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "boundAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

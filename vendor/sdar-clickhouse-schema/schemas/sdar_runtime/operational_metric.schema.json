@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/operational_metric.schema.json",
+  "title": "Operational Metric",
+  "description": "独立于100分语义评分的运行时与实时性能指标。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "metricId",
+    "episodeId",
+    "name",
+    "value",
+    "collectedAt"
+  ],
+  "properties": {
+    "metricId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "指标记录标识。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "name": {
+      "type": "string",
+      "enum": [
+        "state_freshness_ms",
+        "decision_latency_ms",
+        "dispatch_latency_ms",
+        "verification_latency_ms",
+        "tick_overrun_ms",
+        "duplicate_action_count",
+        "control_conflict_count",
+        "state_version_conflict_count",
+        "trajectory_rebuild_rate",
+        "verification_coverage",
+        "other"
+      ],
+      "description": "名称。"
+    },
+    "value": {
+      "type": "number",
+      "description": "指标值。"
+    },
+    "unit": {
+      "type": "string",
+      "description": "单位。"
+    },
+    "threshold": {
+      "type": "number",
+      "description": "阈值。"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail",
+        "warning",
+        "unknown"
+      ],
+      "description": "当前状态。"
+    },
+    "collectedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "采集时间。"
+    },
+    "sourceRef": {
+      "$ref": "common.schema.json#/$defs/EvidenceRef",
+      "description": "来源证据。"
+    }
+  }
+}

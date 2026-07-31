@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-patch-candidate.schema.json",
+  "title": "Skill Patch Candidate Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "patchCandidateId",
+    "sourceSkillId",
+    "sourceSkillVersion",
+    "sourceSkillExecutionIds",
+    "targetArea",
+    "summary",
+    "rationale",
+    "proposedPatchArtifactRef",
+    "proposedPatchHash",
+    "status",
+    "createdAt"
+  ],
+  "properties": {
+    "patchCandidateId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "sourceSkillId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "sourceSkillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sourceSkillExecutionIds": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 256
+      }
+    },
+    "targetArea": {
+      "enum": [
+        "adaptive_guidance",
+        "template",
+        "procedure",
+        "composition",
+        "provider_policy",
+        "evidence_policy",
+        "other"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8192
+    },
+    "proposedPatchArtifactRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "proposedPatchHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "status": {
+      "enum": [
+        "created",
+        "under_review",
+        "accepted_for_experiment",
+        "rejected"
+      ]
+    },
+    "createdAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  }
+}

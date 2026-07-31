@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.local/embodied-control/v1/evaluation_result.schema.json",
+  "title": "SDAR Evaluation Result",
+  "description": "SDAR V2 Core + Embodied-Control Profile 的统一评价结果。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "framework",
+    "frameworkVersion",
+    "profile",
+    "profileVersion",
+    "episodeId",
+    "score",
+    "level",
+    "passed",
+    "fatalErrors",
+    "hardGates",
+    "dimensions",
+    "metrics",
+    "evaluatedAt"
+  ],
+  "properties": {
+    "framework": {
+      "const": "SDAR",
+      "description": "评价框架名称。"
+    },
+    "frameworkVersion": {
+      "const": "2.0",
+      "description": "SDAR Core 版本。"
+    },
+    "profile": {
+      "const": "embodied-control",
+      "description": "评价 Profile。"
+    },
+    "profileVersion": {
+      "const": "1.0",
+      "description": "领域 Profile 版本。"
+    },
+    "adapter": {
+      "type": "string",
+      "enum": [
+        "commander",
+        "npc"
+      ],
+      "description": "数据适配器类型。"
+    },
+    "episodeId": {
+      "$ref": "common.schema.json#/$defs/Id",
+      "description": "评价 Episode 唯一标识。"
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "加权总分。"
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "S",
+        "A",
+        "B",
+        "C",
+        "D",
+        "HG",
+        "F"
+      ],
+      "description": "等级。"
+    },
+    "passed": {
+      "type": "boolean",
+      "description": "是否通过。"
+    },
+    "fatalErrors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "description"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "description": "详细说明。"
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/EvidenceRef"
+            },
+            "description": "证据引用。"
+          }
+        }
+      },
+      "description": "致命错误。"
+    },
+    "hardGates": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "fail",
+              "not_applicable"
+            ],
+            "description": "当前状态。"
+          },
+          "finding": {
+            "type": "string"
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/EvidenceRef"
+            },
+            "description": "证据引用。"
+          }
+        }
+      },
+      "description": "硬性门槛结果。"
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "taskUnderstanding",
+        "planExecutionConsistency",
+        "criticalDecisionQuality",
+        "processIntegrity",
+        "closureCompleteness"
+      ],
+      "properties": {
+        "taskUnderstanding": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "planExecutionConsistency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "criticalDecisionQuality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "processIntegrity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "closureCompleteness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 15
+        }
+      },
+      "description": "五维评分。"
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "metricId",
+          "score",
+          "weightedScore",
+          "evidenceLevel"
+        ],
+        "properties": {
+          "metricId": {
+            "type": "string",
+            "pattern": "^M([1-9]|1[0-5])$",
+            "description": "指标记录标识。"
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2,
+            "description": "加权总分。"
+          },
+          "weightedScore": {
+            "type": "number",
+            "minimum": 0
+          },
+          "evidenceLevel": {
+            "$ref": "common.schema.json#/$defs/EvidenceLevel"
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/EvidenceRef"
+            },
+            "default": [],
+            "description": "证据引用。"
+          },
+          "finding": {
+            "type": "string"
+          },
+          "improvement": {
+            "type": "string"
+          },
+          "notApplicable": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "description": "耗时等调用指标。"
+    },
+    "operationalMetrics": {
+      "type": "array",
+      "items": {
+        "$ref": "operational_metric.schema.json"
+      },
+      "default": [],
+      "description": "运行性能指标。"
+    },
+    "outcome": {
+      "type": "string",
+      "description": "最终结果。"
+    },
+    "majorFindings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "主要发现。"
+    },
+    "improvements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "改进建议。"
+    },
+    "evaluatedAt": {
+      "$ref": "common.schema.json#/$defs/Timestamp",
+      "description": "评价时间。"
+    },
+    "evaluator": {
+      "$ref": "common.schema.json#/$defs/SourceRef",
+      "description": "评价器。"
+    }
+  }
+}

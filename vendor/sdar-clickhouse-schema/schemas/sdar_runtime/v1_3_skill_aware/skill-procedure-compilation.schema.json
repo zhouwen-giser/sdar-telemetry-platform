@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sdar.io/evidence/v1/skill-procedure-compilation.schema.json",
+  "title": "Skill Procedure Compilation Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "compilationId",
+    "skillId",
+    "skillVersion",
+    "procedureProgramHash",
+    "procedureProgramArtifactRef",
+    "status",
+    "deterministic",
+    "validationErrors",
+    "compilerVersion",
+    "compiledAt"
+  ],
+  "properties": {
+    "compilationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "skillVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "procedureProgramHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "procedureProgramArtifactRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "targetWorkflowDefinitionId": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "targetWorkflowVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "targetWorkflowHash": {
+      "$ref": "common-definitions.schema.json#/$defs/sha256"
+    },
+    "status": {
+      "enum": [
+        "compiled",
+        "validation_failed",
+        "rejected"
+      ]
+    },
+    "deterministic": {
+      "type": "boolean"
+    },
+    "validationErrors": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      }
+    },
+    "compilerVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "compiledAt": {
+      "$ref": "common-definitions.schema.json#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "compiled"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "targetWorkflowDefinitionId",
+          "targetWorkflowVersion",
+          "targetWorkflowHash"
+        ]
+      }
+    }
+  ]
+}
