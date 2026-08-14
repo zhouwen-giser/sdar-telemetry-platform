@@ -6,6 +6,7 @@
   "branch": "feature/domain-projection-worker-v0.1",
   "baseSha": "44fb583034d350d429c45ab065bd95e8792b74c1",
   "preCommitHead": "3c8b22b0e3bc6430eca292cd7651e34b8bdb52bd",
+  "phaseCommitSha": "4d47235f5e3ffdeffda4eede94023c3755ca1f4e",
   "contractVersion": "sdar.domain-projection/v1",
   "canonicalizationVersion": "sdar.domain-projection-canonical-json/v1",
   "validationPackage": "packages/telemetry-contracts",

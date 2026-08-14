@@ -1,6 +1,6 @@
 # ExecPlan — SDAR Telemetry Domain Projection Worker v0.1
 
-Last updated: 2026-08-14T13:56:36.569Z
+Last updated: 2026-08-14T14:00:53.159Z
 
 ## Goal
 
@@ -22,7 +22,7 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 | Draft PR | [#1](https://github.com/zhouwen-giser/sdar-telemetry-platform/pull/1) — confirmed draft/open |
 | Phase 0 documentation commit | `be086281cef5c2c65c7d22acbbc8bfdb086d09f9` (pushed) |
 | Phase 0 publication commit | `3c8b22b0e3bc6430eca292cd7651e34b8bdb52bd` (pushed) |
-| Phase 1 contract commit | `PENDING_THIS_PHASE_COMMIT` |
+| Phase 1 contract commit | `4d47235f5e3ffdeffda4eede94023c3755ca1f4e` (pushed) |
 | Mapper coding allowed | **No** |
 
 ## Repository architecture
