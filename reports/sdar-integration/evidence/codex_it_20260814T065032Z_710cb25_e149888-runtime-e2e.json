@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "classification": "real_runtime_producer_failed_and_canceled_tasks",
+  "generatedAt": "2026-08-14T08:30:12.129Z",
+  "baselines": {
+    "telemetry": "e149888ae0e548baf2b973e237b4c3e64849db2d",
+    "runtimeMain": "34ce7a7a43971de37566b24f969b4f0aeadec2b2",
+    "runtimeExecution": "710cb25d9e365c6a1a30a532d22deac787a7c3b0"
+  },
+  "contract": {
+    "name": "sdar.evidence/v1",
+    "canonicalHash": "sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f",
+    "registryHash": "sha256:eac67fcc0cd02c55da750156af42f3ea2130ee470f0670aba980c08ddec41c71",
+    "recordTypes": 100,
+    "requiredRecordTypes": 95,
+    "diagnosticRecordTypes": 5
+  },
+  "run": {
+    "exportId": "codex_it_20260814T065032Z_710cb25_e149888",
+    "sourceId": "codex_it_20260814T065032Z_710cb25_e149888",
+    "nodeId": "node-codex-it-20260814",
+    "revision": 1,
+    "endpointOrigin": "loopback_redacted",
+    "fullRuntimeState": "stopped_deliberately",
+    "deliveryBoundary": "official_evidence_only_product_services"
+  },
+  "probe": {
+    "method": "HEAD",
+    "status": 204
+  },
+  "postgres": {
+    "beforeRecovery": {
+      "recordCount": 2435,
+      "acknowledgedRecords": 2066,
+      "pendingRecords": 369,
+      "openDeadLetters": 57
+    },
+    "recovery": {
+      "firstOperation": {
+        "requeuedRecords": 22,
+        "failedRecords": 1,
+        "remainingDeadLetters": 35,
+        "failureClass": "sparse_partition_ack_frontier"
+      },
+      "finalOperation": {
+        "operationId": "codex_it_20260814T082118Z_evidence_recovery2",
+        "requeuedRecords": 35,
+        "deliveredRecords": 451,
+        "drainCycles": 395,
+        "pendingRecords": 0,
+        "deadLetterRecords": 0,
+        "acknowledgedFrontier": "2517",
+        "highWatermarkActive": false
+      },
+      "totalRequeuedRecords": 57
+    },
+    "finalSnapshot": {
+      "recordCount": 2517,
+      "firstSequence": "1",
+      "lastSequence": "2517",
+      "pendingRecords": 0,
+      "deadLetterRecords": 0
+    }
+  },
+  "wal": {
+    "partition": "c561d2855735b82a3e1b81d4162f4220d4f387624a83fd9af7e6c7670761579c",
+    "frames": 2439,
+    "bytes": 6224020,
+    "records": 2517,
+    "firstSequence": "1",
+    "lastSequence": "2517",
+    "uniqueBatchHashes": 2439,
+    "uniquePayloadHashes": 2439
+  },
+  "worker": {
+    "checkpointOffset": 2438,
+    "journalFiles": 2439,
+    "updatedAt": "2026-08-14T08:24:36.626Z"
+  },
+  "clickHouseQuery": {
+    "status": 200,
+    "rowCount": 2517,
+    "uniqueRecordIds": 2517,
+    "uniqueRowIds": 2517,
+    "watermark": "2026-08-14T08:24:36.141Z",
+    "coverage": {
+      "expected": "sdar.evidence/v1",
+      "observed": "sdar.evidence/v1"
+    },
+    "postgresTupleHash": "sha256:3d8fd06dc9f4bb09b7aa4de518800eaa63c514417ad11e2006ac07e01af537f8",
+    "clickHouseTupleHash": "sha256:3d8fd06dc9f4bb09b7aa4de518800eaa63c514417ad11e2006ac07e01af537f8",
+    "exactTupleMatch": true,
+    "recordTypeCounts": {
+      "evidence.projection_issue": 20,
+      "evidence.source_checkpoint": 735,
+      "node_control.audit_event": 161,
+      "node_control.health_observation": 591,
+      "node_control.management_operation": 92,
+      "node_control.mcp_provider_binding_revision": 3,
+      "node_control.node_event": 778,
+      "node_control.profile_revision": 2,
+      "node_control.skill_governance": 49,
+      "node_control.smpp_source_revision": 23,
+      "runtime.a2a_task": 12,
+      "runtime.action": 1,
+      "runtime.episode": 12,
+      "runtime.execution_gate": 1,
+      "runtime.goal": 3,
+      "runtime.goal_contract": 1,
+      "runtime.human_confirmation": 1,
+      "runtime.plan": 1,
+      "runtime.plan_step": 8,
+      "runtime.receipt": 1,
+      "runtime.request": 12,
+      "runtime.state_transition": 10
+    }
+  },
+  "taskEvidence": {
+    "phaseDistribution": {
+      "completed": {
+        "tasks": 0,
+        "records": 0
+      },
+      "failed": {
+        "tasks": 7,
+        "records": 37
+      },
+      "canceled": {
+        "tasks": 5,
+        "records": 26
+      }
+    },
+    "knownTasks": [
+      {
+        "taskId": "bdd21f07-8a2b-4ab5-8749-27a79c44a559",
+        "phase": "failed",
+        "recordCount": 3
+      },
+      {
+        "taskId": "22479a8a-07bb-415a-ae1f-189d346ad3eb",
+        "phase": "failed",
+        "recordCount": 3
+      },
+      {
+        "taskId": "2c722ad4-e1be-4d0d-9473-7ff7aea2c0e2",
+        "phase": "canceled",
+        "recordCount": 14
+      },
+      {
+        "taskId": "c8c3da6a-c75f-499e-b835-5d7a68cbab64",
+        "phase": "failed",
+        "recordCount": 3
+      }
+    ]
+  },
+  "failureRecovery": {
+    "evidenceFile": "codex_it_20260814T080120Z_710cb25_e149888_v2-fixture-e2e.json",
+    "schemaVersion": 2,
+    "status": "passed",
+    "clickHouseTransportOutage": {
+      "preflightTarget": "192.168.1.7:1",
+      "preflightAuthenticated": false,
+      "reachable": false,
+      "checkpointBefore": -1,
+      "checkpointDuringFailure": -1,
+      "walFramesBefore": 1,
+      "walFramesDuringFailure": 1,
+      "walBytesBefore": 3271,
+      "walBytesDuringFailure": 3271,
+      "recoveredCheckpoint": 0,
+      "recoveredWrites": 1
+    },
+    "workerCrash": {
+      "signal": "SIGKILL",
+      "processBoundary": "independent_child",
+      "restartSkippedCompletedProjection": true,
+      "restartCompletedOnlyUnfinishedProjection": true
+    }
+  },
+  "checks": {
+    "probe": true,
+    "strictAcknowledgement": true,
+    "postgresToWalCount": true,
+    "walToWorkerCheckpoint": true,
+    "workerToClickHouseCount": true,
+    "postgresClickHouseTupleHash": true,
+    "failedTaskTrace": true,
+    "canceledTaskTrace": true,
+    "noCompletedTaskObserved": true,
+    "deadLetterRecovery": true,
+    "clickHouseOutageRecovery": true,
+    "workerSigkillRecovery": true
+  }
+}

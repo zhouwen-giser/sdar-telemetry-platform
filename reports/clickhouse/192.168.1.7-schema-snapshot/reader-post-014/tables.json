@@ -1,0 +1,3732 @@
+[
+  {
+    "database": "sdar_commander",
+    "name": "action_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "capability_track_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "commander_node_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, node_run_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, node_run_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "confirmation_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "constraint_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, goal_id, goal_version, constraint_id",
+    "primary_key": "tenant_id, project_id, episode_id, goal_id, goal_version, constraint_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "context_snapshot",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "decision_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "entity_ref",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, owner_record_id, role, entity_type, entity_id",
+    "primary_key": "tenant_id, project_id, episode_id, owner_record_id, role, entity_type, entity_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "episode_evidence_bundle_manifest",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, bundle_id",
+    "primary_key": "tenant_id, project_id, episode_id, bundle_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "episode_metadata",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id",
+    "primary_key": "tenant_id, project_id, episode_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "evaluation_readiness",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, readiness_id",
+    "primary_key": "tenant_id, project_id, episode_id, readiness_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "event_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "evidence_index",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, evidence_id, owner_record_id",
+    "primary_key": "tenant_id, project_id, episode_id, evidence_id, owner_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "execution_basis",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, basis_id, basis_version",
+    "primary_key": "tenant_id, project_id, episode_id, basis_id, basis_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "failure_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "final_outcome",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, outcome_id",
+    "primary_key": "tenant_id, project_id, episode_id, outcome_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "gate_decision",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "goal_record",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, goal_id, goal_version",
+    "primary_key": "tenant_id, project_id, episode_id, goal_id, goal_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "mcp_call_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "operational_metric",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "plan_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "plan_step_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, basis_id_ref, step_index, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, basis_id_ref, step_index, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "raw_record",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id, payload_sha256",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id, payload_sha256",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "receipt_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "recovery_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "remaining_item",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, outcome_id, item_id",
+    "primary_key": "tenant_id, project_id, episode_id, outcome_id, item_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "report_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "resource_claim",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, resource_type, resource_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, resource_type, resource_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "route_decision_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "sop_run_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "sop_step_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, sop_run_id, step_index, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, sop_run_id, step_index, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "state_delta",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "state_snapshot",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, state_version, state_id",
+    "primary_key": "tenant_id, project_id, episode_id, state_version, state_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "success_criterion",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, goal_id, goal_version, criterion_id",
+    "primary_key": "tenant_id, project_id, episode_id, goal_id, goal_version, criterion_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "trajectory_step",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "trigger_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_commander",
+    "name": "v_bundle_final_state_not_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_commander",
+    "name": "v_completed_without_verification",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_commander",
+    "name": "v_orphan_action",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_commander",
+    "name": "verification_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "a2a_exposure_revision_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id, exposure_id) % 64",
+    "sorting_key": "tenant_id, project_id, environment, node_id, exposure_id, exposure_version, record_id",
+    "primary_key": "tenant_id, project_id, environment, node_id, exposure_id, exposure_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "a2a_task_state",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "action_receipt",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "action_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "agent_card_revision_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id) % 64",
+    "sorting_key": "tenant_id, project_id, environment, node_id, agent_card_revision, record_id",
+    "primary_key": "tenant_id, project_id, environment, node_id, agent_card_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "artifact_feedback_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, feedback_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, feedback_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "artifact_lifecycle_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, artifact_id, artifact_version, record_id",
+    "primary_key": "tenant_id, project_id, artifact_id, artifact_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "artifact_promotion_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, promotion_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, promotion_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "artifact_reference",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, artifact_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, artifact_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "artifact_retrieval_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, retrieval_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, retrieval_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "artifact_usage_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, usage_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, usage_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "artifact_validation_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, artifact_id, artifact_version, validation_id, record_id",
+    "primary_key": "tenant_id, project_id, artifact_id, artifact_version, validation_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "canonical_evidence_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, record_type, occurred_at, evidence_record_id",
+    "primary_key": "tenant_id, project_id, record_type, occurred_at, evidence_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "capability_implementation_binding_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id, capability_id) % 64",
+    "sorting_key": "tenant_id, project_id, environment, node_id, capability_id, capability_version, binding_id, record_id",
+    "primary_key": "tenant_id, project_id, environment, node_id, capability_id, capability_version, binding_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "capability_readiness_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id, capability_id) % 64",
+    "sorting_key": "tenant_id, project_id, environment, node_id, capability_id, capability_version, snapshot_version, record_id",
+    "primary_key": "tenant_id, project_id, environment, node_id, capability_id, capability_version, snapshot_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "constraint_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, goal_id, goal_version, constraint_id",
+    "primary_key": "tenant_id, project_id, episode_id, goal_id, goal_version, constraint_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "counterexample_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, counterexample_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, counterexample_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "decision_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "domain_projection_context",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, source_agent_type, source_table, source_record_id, target_table, target_record_id, lineage_id",
+    "primary_key": "tenant_id, project_id, source_agent_type, source_table, source_record_id, target_table, target_record_id, lineage_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "episode",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id",
+    "primary_key": "tenant_id, project_id, episode_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "episode_evidence_manifest_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, manifest_version, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, manifest_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "episode_outcome",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "evaluation_readiness",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, readiness_id",
+    "primary_key": "tenant_id, project_id, episode_id, readiness_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "event_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "evidence_export_status_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, export_id) % 64",
+    "sorting_key": "tenant_id, project_id, export_id, export_revision, record_id",
+    "primary_key": "tenant_id, project_id, export_id, export_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "evidence_index",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, sequence, record_id, payload_hash",
+    "primary_key": "tenant_id, project_id, episode_id, sequence, record_id, payload_hash",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "evidence_projection_issue_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, issue_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, issue_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "evidence_quality_issue",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(issue_id) % 64",
+    "sorting_key": "tenant_id, project_id, issue_id",
+    "primary_key": "tenant_id, project_id, issue_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "evidence_source_checkpoint_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, source_family) % 64",
+    "sorting_key": "tenant_id, project_id, source_family, source_partition, record_id",
+    "primary_key": "tenant_id, project_id, source_family, source_partition, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "execution_basis",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, basis_id, basis_version",
+    "primary_key": "tenant_id, project_id, episode_id, basis_id, basis_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "execution_gate_decision",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "experience_activity_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, trace_id, activity_key, record_id",
+    "primary_key": "tenant_id, project_id, trace_id, activity_key, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "experience_trace_event_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, trace_id, trace_sequence, record_id",
+    "primary_key": "tenant_id, project_id, trace_id, trace_sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "experience_trace_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, trace_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, trace_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "external_entity_relation_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, environment, smpp_source_id, relation_id) % 128",
+    "sorting_key": "tenant_id, project_id, environment, smpp_source_id, source_entity_urn, target_entity_urn, relation_type, valid_from, relation_id, projection_id, projection_version",
+    "primary_key": "tenant_id, project_id, environment, smpp_source_id, source_entity_urn, target_entity_urn, relation_type, valid_from, relation_id, projection_id, projection_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "external_provider_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, environment, smpp_source_id, fact_id) % 128",
+    "sorting_key": "tenant_id, project_id, environment, smpp_source_id, fact_type, provider_id, resource_id, occurred_at, fact_id, projection_id, projection_version",
+    "primary_key": "tenant_id, project_id, environment, smpp_source_id, fact_type, provider_id, resource_id, occurred_at, fact_id, projection_id, projection_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "goal_assumption",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, goal_id, goal_version, assumption_id",
+    "primary_key": "tenant_id, project_id, episode_id, goal_id, goal_version, assumption_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "goal_experience_episode_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "goal_record",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, goal_id, goal_version",
+    "primary_key": "tenant_id, project_id, episode_id, goal_id, goal_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "human_confirmation",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "ingestion_dead_letter",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, occurred_at, dead_letter_id",
+    "primary_key": "tenant_id, project_id, occurred_at, dead_letter_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "interaction_episode_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, interaction_episode_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, interaction_episode_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "memory_operation_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "model_call_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_audit_event_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, node_id, audit_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, node_id, audit_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_capability_version_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id, capability_id) % 64",
+    "sorting_key": "tenant_id, project_id, environment, node_id, capability_id, capability_version, record_id",
+    "primary_key": "tenant_id, project_id, environment, node_id, capability_id, capability_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_configuration_apply_ack_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, node_id, configuration_id, requested_revision, record_id",
+    "primary_key": "tenant_id, project_id, node_id, configuration_id, requested_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_configuration_lkg_transition_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, node_id, configuration_id, to_revision, record_id",
+    "primary_key": "tenant_id, project_id, node_id, configuration_id, to_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_configuration_revision_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id) % 64",
+    "sorting_key": "tenant_id, project_id, node_id, configuration_id, configuration_revision, record_id",
+    "primary_key": "tenant_id, project_id, node_id, configuration_id, configuration_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_event_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, node_id, aggregate_type, aggregate_id, aggregate_revision, record_id",
+    "primary_key": "tenant_id, project_id, node_id, aggregate_type, aggregate_id, aggregate_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_health_observation_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, node_id, observed_at, record_id",
+    "primary_key": "tenant_id, project_id, node_id, observed_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_llm_provider_revision_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id) % 64",
+    "sorting_key": "tenant_id, project_id, node_id, provider_id, provider_revision, record_id",
+    "primary_key": "tenant_id, project_id, node_id, provider_id, provider_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_management_operation_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, node_id, operation_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, node_id, operation_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_mcp_provider_binding_revision_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id) % 64",
+    "sorting_key": "tenant_id, project_id, node_id, provider_binding_id, binding_revision, record_id",
+    "primary_key": "tenant_id, project_id, node_id, provider_binding_id, binding_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_model_route_revision_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id) % 64",
+    "sorting_key": "tenant_id, project_id, node_id, route_id, route_revision, record_id",
+    "primary_key": "tenant_id, project_id, node_id, route_id, route_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_plan_template_governance_revision_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id) % 64",
+    "sorting_key": "tenant_id, project_id, node_id, template_id, template_version, record_id",
+    "primary_key": "tenant_id, project_id, node_id, template_id, template_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_profile_revision_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id) % 64",
+    "sorting_key": "tenant_id, project_id, node_id, profile_revision, record_id",
+    "primary_key": "tenant_id, project_id, node_id, profile_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_skill_governance_revision_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id) % 64",
+    "sorting_key": "tenant_id, project_id, node_id, skill_id, skill_version, record_id",
+    "primary_key": "tenant_id, project_id, node_id, skill_id, skill_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_smpp_source_revision_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id) % 64",
+    "sorting_key": "tenant_id, project_id, node_id, source_id, smpp_source_revision, record_id",
+    "primary_key": "tenant_id, project_id, node_id, source_id, smpp_source_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_telemetry_export_ack_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, node_id, export_id, acknowledged_sequence, record_id",
+    "primary_key": "tenant_id, project_id, node_id, export_id, acknowledged_sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_telemetry_export_configuration_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id) % 64",
+    "sorting_key": "tenant_id, project_id, node_id, export_id, export_revision, record_id",
+    "primary_key": "tenant_id, project_id, node_id, export_id, export_revision, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "node_telemetry_export_delivery_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, node_id, export_id, first_sequence, record_id",
+    "primary_key": "tenant_id, project_id, node_id, export_id, first_sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "plan_record",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, plan_id, plan_version",
+    "primary_key": "tenant_id, project_id, episode_id, plan_id, plan_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "plan_step",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, plan_id, plan_version, plan_step_id",
+    "primary_key": "tenant_id, project_id, episode_id, plan_id, plan_version, plan_step_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "planning_correction_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, correction_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, correction_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "policy_decision",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "process_variant_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, variant_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, variant_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "raw_envelope",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id, payload_hash",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id, payload_hash",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "recovery_pattern_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, workflow_pattern_id, recovery_pattern_id, record_id",
+    "primary_key": "tenant_id, project_id, workflow_pattern_id, recovery_pattern_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "remote_task_binding",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(binding_id) % 64",
+    "sorting_key": "tenant_id, project_id, binding_id",
+    "primary_key": "tenant_id, project_id, binding_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "remote_task_cancel",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "remote_task_control_event",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(control_event_id) % 64",
+    "sorting_key": "tenant_id, project_id, control_event_id",
+    "primary_key": "tenant_id, project_id, control_event_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "remote_task_input_link",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "remote_task_observation",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, binding_id, received_at, record_id",
+    "primary_key": "tenant_id, project_id, binding_id, received_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "remote_task_poll_attempt",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "remote_task_reconciliation",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "replay_case_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, dataset_id, dataset_version, case_id, case_version, record_id",
+    "primary_key": "tenant_id, project_id, dataset_id, dataset_version, case_id, case_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "replay_case_result_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, replay_run_id, case_id, case_version, record_id",
+    "primary_key": "tenant_id, project_id, replay_run_id, case_id, case_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "replay_dataset_version_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, dataset_id, dataset_version, record_id",
+    "primary_key": "tenant_id, project_id, dataset_id, dataset_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "replay_metric_result_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, replay_run_id, case_id, metric_id, record_id",
+    "primary_key": "tenant_id, project_id, replay_run_id, case_id, metric_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "replay_run_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, replay_run_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, replay_run_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "request_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "run_seal",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, run_id",
+    "primary_key": "tenant_id, project_id, episode_id, run_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "run_segment",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, segment_index, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, segment_index, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "sdar_evidence_v1_record",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "record_type, record_id, row_id",
+    "primary_key": "record_type, record_id, row_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_applicability_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_candidate_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_capability_slot_resolution",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_composition_edge",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_composition_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_context_resolution",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_evidence_requirement",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_execution_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_execution_relation",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_failure_propagation",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_interpretation_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_mode_selection",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_patch_candidate",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_plan_compliance",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_procedure_compilation",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_selection_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "skill_usage_snapshot",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "state_snapshot",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "state_trajectory",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, trajectory_step, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, trajectory_step, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "state_transition",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "success_criterion",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, goal_id, goal_version, criterion_id",
+    "primary_key": "tenant_id, project_id, episode_id, goal_id, goal_version, criterion_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "task_availability_check",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "task_capability_attempt_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id, task_id) % 128",
+    "sorting_key": "tenant_id, project_id, environment, node_id, task_id, attempt_no, attempt_id, record_id",
+    "primary_key": "tenant_id, project_id, environment, node_id, task_id, attempt_no, attempt_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "task_capability_binding_fact",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, node_id, task_id) % 128",
+    "sorting_key": "tenant_id, project_id, environment, node_id, task_id, binding_id, record_id",
+    "primary_key": "tenant_id, project_id, environment, node_id, task_id, binding_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "tool_call_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_a2a_exposure_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_agent_card_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_artifact_lifecycle_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_canonical_evidence_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_capability_readiness_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_completed_action_without_passed_verification",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_domain_projection_reference_issue",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_duplicate_evidence_sequence",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_episode_evaluation_readiness_v141",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_episode_evidence_manifest_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_event_handling_trace",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_evidence_sequence_gap",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_experience_pattern_replay_chain",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_experience_trace_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_experience_trace_missing_fact",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_experience_trace_parent_gap",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_goal_skill_plan_action_chain",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_node_capability_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_node_configuration_apply_state",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_node_configuration_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_node_event_sequence_gap",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_node_health_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_node_profile_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_node_telemetry_delivery_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_not_ready_evaluation",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_payload_hash_conflict",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_remote_task_evidence_chain",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_remote_task_without_terminal",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_replay_dataset_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_required_evidence_gap",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_sdar_smpp_execution_topology",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_sdar_smpp_task_reconciliation",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_skill_execution_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_skill_execution_tree",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_smpp_execution_latest_progress",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_smpp_provider_task_timeline",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_smpp_resource_current_health",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_smpp_resource_current_state",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_source_projection_coverage",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_source_projection_coverage_detail",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_task_capability_contract_issue",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_task_capability_execution_chain",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_task_capability_execution_chain_v2",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_terminal_state_mismatch",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_uncertain_cancellation",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_unprocessed_control_event",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "v_unsealed_episode",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_core",
+    "name": "verification_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "workflow_continuation_attempt",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "workflow_continuation_snapshot",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(continuation_id) % 64",
+    "sorting_key": "tenant_id, project_id, continuation_id, snapshot_version",
+    "primary_key": "tenant_id, project_id, continuation_id, snapshot_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "workflow_pattern_dependency_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, workflow_pattern_id, predecessor_activity_key, successor_activity_key, record_id",
+    "primary_key": "tenant_id, project_id, workflow_pattern_id, predecessor_activity_key, successor_activity_key, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_core",
+    "name": "workflow_pattern_fact",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, workflow_pattern_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, workflow_pattern_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "constraint_record",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "control_action",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "control_authority_event",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "control_receipt",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "decision",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "device_state_observation",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "domain_event",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "episode",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "episode_evidence_bundle_manifest",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "evaluation_readiness",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "evidence_index",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "execution_basis",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "failure",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "final_outcome",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "goal",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "human_confirmation",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "operational_metric",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "physical_verification",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "preemption_recovery",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "recovery",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "resource_claim_event",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "safety_gate_decision",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "state_delta",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "state_freshness_check",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "state_snapshot",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "success_criterion",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "target_state_observation",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "trajectory_step",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "trigger",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "v_control_authority_conflict",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "v_duplicate_control_dispatch",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "v_episode_evidence_bundle_manifest_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "v_episode_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "v_evaluation_readiness_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "v_invalid_physical_verification_source",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "v_minimal_evidence_overclaim",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "v_missing_readiness",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "v_readiness_issue",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "v_resource_claim_conflict",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_embodied",
+    "name": "verification",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(canonical_episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "primary_key": "tenant_id, project_id, canonical_episode_id, projection_id, projection_version, canonical_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "agent_version_dataset_summary",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(dataset_id) % 64",
+    "sorting_key": "tenant_id, project_id, dataset_id, dataset_version, agent_id, agent_version, record_id",
+    "primary_key": "tenant_id, project_id, dataset_id, dataset_version, agent_id, agent_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "calibration_result",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(calibration_id) % 64",
+    "sorting_key": "tenant_id, project_id, calibration_id, record_id",
+    "primary_key": "tenant_id, project_id, calibration_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "commander_evaluation_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "commander_fatal_error",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "commander_gate_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "commander_metric_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "dataset_case_execution",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(dataset_run_id) % 64",
+    "sorting_key": "tenant_id, project_id, dataset_run_id, case_execution_id, record_id",
+    "primary_key": "tenant_id, project_id, dataset_run_id, case_execution_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "dataset_case_result",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(dataset_run_id) % 64",
+    "sorting_key": "tenant_id, project_id, dataset_run_id, case_execution_id, record_id",
+    "primary_key": "tenant_id, project_id, dataset_run_id, case_execution_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "dataset_run",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(dataset_run_id) % 64",
+    "sorting_key": "tenant_id, project_id, dataset_run_id, record_id",
+    "primary_key": "tenant_id, project_id, dataset_run_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "embodied_evaluation_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "embodied_fatal_error",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "embodied_gate_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "embodied_metric_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "evaluation_fatal_error",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(toString(evaluation_id)) % 64",
+    "sorting_key": "tenant_id, project_id, evaluation_id, result_version, fatal_error_id, row_payload_hash",
+    "primary_key": "tenant_id, project_id, evaluation_id, result_version, fatal_error_id, row_payload_hash",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "evaluation_gate_result",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(toString(evaluation_id)) % 64",
+    "sorting_key": "tenant_id, project_id, evaluation_id, result_version, gate_id, row_payload_hash",
+    "primary_key": "tenant_id, project_id, evaluation_id, result_version, gate_id, row_payload_hash",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "evaluation_metric_result",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(toString(evaluation_id)) % 64",
+    "sorting_key": "tenant_id, project_id, evaluation_id, result_version, metric_id, row_payload_hash",
+    "primary_key": "tenant_id, project_id, evaluation_id, result_version, metric_id, row_payload_hash",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "evaluation_result",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(toString(evaluation_id)) % 64",
+    "sorting_key": "tenant_id, project_id, evaluation_id, result_version, result_payload_hash",
+    "primary_key": "tenant_id, project_id, evaluation_id, result_version, result_payload_hash",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "general_evaluation_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "general_fatal_error",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "general_gate_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "general_metric_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "human_review_result",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(dataset_run_id) % 64",
+    "sorting_key": "tenant_id, project_id, dataset_run_id, case_execution_id, review_id, record_id",
+    "primary_key": "tenant_id, project_id, dataset_run_id, case_execution_id, review_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "judge_result",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(dataset_run_id) % 64",
+    "sorting_key": "tenant_id, project_id, dataset_run_id, case_execution_id, judge_id, metric_id, record_id",
+    "primary_key": "tenant_id, project_id, dataset_run_id, case_execution_id, judge_id, metric_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "npc_evaluation_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "npc_fatal_error",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "npc_gate_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "npc_metric_result",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "provider_dataset_summary",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(dataset_id) % 64",
+    "sorting_key": "tenant_id, project_id, dataset_id, dataset_version, provider_id, operation_name, record_id",
+    "primary_key": "tenant_id, project_id, dataset_id, dataset_version, provider_id, operation_name, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "skill_version_dataset_summary",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(dataset_id) % 64",
+    "sorting_key": "tenant_id, project_id, dataset_id, dataset_version, skill_id, skill_version, record_id",
+    "primary_key": "tenant_id, project_id, dataset_id, dataset_version, skill_id, skill_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_dataset_case_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_dataset_release_gate",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_duplicate_payload_conflict",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_fatal_error_committed",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_fatal_error_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_fatal_error_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_fatal_error_versioned",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_gate_result_committed",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_gate_result_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_gate_result_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_gate_result_versioned",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_metric_result_committed",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_metric_result_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_metric_result_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_metric_result_versioned",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_orphan_child",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_outcome_inconsistent",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_provenance_mismatch",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_result_current",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_result_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_result_versioned",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_rule_set_registry_mismatch",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_mart",
+    "name": "v_evaluation_score_reconciliation_issue",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_meta",
+    "name": "artifact_policy_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, artifact_policy_id, record_id",
+    "primary_key": "tenant_id, project_id, artifact_policy_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "collector_version",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, collector_id, collector_version",
+    "primary_key": "tenant_id, project_id, collector_id, collector_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "data_quality_rule",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, rule_id, rule_version",
+    "primary_key": "tenant_id, project_id, rule_id, rule_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "dataset_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, dataset_id, record_id",
+    "primary_key": "tenant_id, project_id, dataset_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "dataset_split_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, split_definition_id, record_id",
+    "primary_key": "tenant_id, project_id, split_definition_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "dataset_version",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, dataset_id, record_id",
+    "primary_key": "tenant_id, project_id, dataset_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "deployment_environment_mapping",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, mapping_version, source_system, deployment_id, source_environment",
+    "primary_key": "tenant_id, project_id, mapping_version, source_system, deployment_id, source_environment",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "evaluation_case_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, case_id, record_id",
+    "primary_key": "tenant_id, project_id, case_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "evaluation_case_version",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, case_id, record_id",
+    "primary_key": "tenant_id, project_id, case_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "evaluation_profile_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, framework, framework_version, evaluation_tier, profile, profile_version, metric_set_id, metric_set_version, gate_set_id, gate_set_version, fatal_set_id, fatal_set_version",
+    "primary_key": "tenant_id, project_id, framework, framework_version, evaluation_tier, profile, profile_version, metric_set_id, metric_set_version, gate_set_id, gate_set_version, fatal_set_id, fatal_set_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "evaluation_rule_set_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, framework, framework_version, evaluation_tier, profile, profile_version, rule_set_kind, rule_set_id, rule_set_version",
+    "primary_key": "tenant_id, project_id, framework, framework_version, evaluation_tier, profile, profile_version, rule_set_kind, rule_set_id, rule_set_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "event_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, catalog_version, event_type",
+    "primary_key": "tenant_id, project_id, catalog_version, event_type",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "event_policy",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, catalog_version, event_type, policy_version",
+    "primary_key": "tenant_id, project_id, catalog_version, event_type, policy_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "evidence_policy",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, record_type, policy_version",
+    "primary_key": "tenant_id, project_id, record_type, policy_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "expected_contract_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, expected_contract_id, record_id",
+    "primary_key": "tenant_id, project_id, expected_contract_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "fatal_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, framework, framework_version, evaluation_tier, profile, profile_version, fatal_set_version, fatal_id, fatal_version",
+    "primary_key": "tenant_id, project_id, framework, framework_version, evaluation_tier, profile, profile_version, fatal_set_version, fatal_id, fatal_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "fault_injection_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, fault_id, record_id",
+    "primary_key": "tenant_id, project_id, fault_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "gate_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, framework, framework_version, evaluation_tier, profile, profile_version, gate_set_version, gate_id, gate_version",
+    "primary_key": "tenant_id, project_id, framework, framework_version, evaluation_tier, profile, profile_version, gate_set_version, gate_id, gate_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "human_label_policy",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, policy_id, record_id",
+    "primary_key": "tenant_id, project_id, policy_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "id_crosswalk",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(source_key_hash) % 64",
+    "sorting_key": "tenant_id, project_id, projection_id, projection_version, source_system, source_agent_type, source_database, source_entity_type, business_discriminator, target_entity_type, source_id",
+    "primary_key": "tenant_id, project_id, projection_id, projection_version, source_system, source_agent_type, source_database, source_entity_type, business_discriminator, target_entity_type, source_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "id_namespace_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, namespace_name, namespace_version",
+    "primary_key": "tenant_id, project_id, namespace_name, namespace_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "judge_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, judge_id, record_id",
+    "primary_key": "tenant_id, project_id, judge_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "metric_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, framework, framework_version, evaluation_tier, profile, profile_version, metric_set_version, metric_id, metric_version",
+    "primary_key": "tenant_id, project_id, framework, framework_version, evaluation_tier, profile, profile_version, metric_set_version, metric_id, metric_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "projection_checkpoint",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(tenant_id, project_id, projection_id, projection_version, source_stream, source_partition) % 64",
+    "sorting_key": "tenant_id, project_id, projection_id, projection_version, consumer_group, source_stream, source_partition",
+    "primary_key": "tenant_id, project_id, projection_id, projection_version, consumer_group, source_stream, source_partition",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "projection_dead_letter",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(dead_letter_id) % 64",
+    "sorting_key": "tenant_id, project_id, projection_id, projection_version, dead_letter_id",
+    "primary_key": "tenant_id, project_id, projection_id, projection_version, dead_letter_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "projection_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, projection_id",
+    "primary_key": "tenant_id, project_id, projection_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "projection_lineage",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(target_database, target_table, target_record_id, source_database, source_table, source_record_id) % 64",
+    "sorting_key": "tenant_id, project_id, projection_id, projection_version, target_database, target_table, target_record_id, source_database, source_table, source_record_id, mapping_rule_id",
+    "primary_key": "tenant_id, project_id, projection_id, projection_version, target_database, target_table, target_record_id, source_database, source_table, source_record_id, mapping_rule_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "projection_run",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(projection_run_id) % 64",
+    "sorting_key": "tenant_id, project_id, projection_id, projection_version, projection_run_id",
+    "primary_key": "tenant_id, project_id, projection_id, projection_version, projection_run_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "projection_version",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, projection_id, projection_version",
+    "primary_key": "tenant_id, project_id, projection_id, projection_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "record_policy_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, policy_version, record_id",
+    "primary_key": "tenant_id, project_id, policy_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "record_type_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, catalog_version, record_id",
+    "primary_key": "tenant_id, project_id, catalog_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "redaction_profile_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, redaction_profile_id, record_id",
+    "primary_key": "tenant_id, project_id, redaction_profile_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "scenario_family_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, scenario_family_id, record_id",
+    "primary_key": "tenant_id, project_id, scenario_family_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "schema_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, schema_name, schema_version",
+    "primary_key": "tenant_id, project_id, schema_name, schema_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "source_mapping_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, mapping_version, record_id",
+    "primary_key": "tenant_id, project_id, mapping_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "trajectory_constraint_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, constraint_id, record_id",
+    "primary_key": "tenant_id, project_id, constraint_id, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_meta",
+    "name": "warehouse_release_definition",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "",
+    "sorting_key": "tenant_id, project_id, release_version, record_id",
+    "primary_key": "tenant_id, project_id, release_version, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "action_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "blackboard_snapshot_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, blackboard_version, snapshot_id",
+    "primary_key": "tenant_id, project_id, episode_id, blackboard_version, snapshot_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "bt_transition_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "confirmation_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "constraint_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, goal_id, goal_version, constraint_id",
+    "primary_key": "tenant_id, project_id, episode_id, goal_id, goal_version, constraint_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "decision_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "entity_ref",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, owner_record_id, role, entity_type, entity_id",
+    "primary_key": "tenant_id, project_id, episode_id, owner_record_id, role, entity_type, entity_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "episode_evidence_bundle_manifest",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, bundle_id",
+    "primary_key": "tenant_id, project_id, episode_id, bundle_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "episode_metadata",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id",
+    "primary_key": "tenant_id, project_id, episode_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "evaluation_readiness",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, readiness_id",
+    "primary_key": "tenant_id, project_id, episode_id, readiness_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "event_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "evidence_index",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, evidence_id, owner_record_id",
+    "primary_key": "tenant_id, project_id, episode_id, evidence_id, owner_record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "execution_basis",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, basis_id, basis_version",
+    "primary_key": "tenant_id, project_id, episode_id, basis_id, basis_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "failure_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "final_outcome",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, outcome_id",
+    "primary_key": "tenant_id, project_id, episode_id, outcome_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "gate_decision",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "goal_record",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, goal_id, goal_version",
+    "primary_key": "tenant_id, project_id, episode_id, goal_id, goal_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "hmi_approval_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "mcp_call_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "minimal_runtime_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "mission_detail",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, mission_id, mission_version",
+    "primary_key": "tenant_id, project_id, episode_id, mission_id, mission_version",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "mission_tool_call_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, mission_id, mission_version, tool_call_index, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, mission_id, mission_version, tool_call_index, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "npc_tick_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, tick_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, tick_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "operational_metric",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "operator_command_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "preemption_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "raw_record",
+    "engine": "ReplacingMergeTree",
+    "partition_key": "cityHash64(episode_id) % 64",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id, payload_sha256",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id, payload_sha256",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "receipt_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "recovery_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "remaining_item",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, outcome_id, item_id",
+    "primary_key": "tenant_id, project_id, episode_id, outcome_id, item_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "resource_claim",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, resource_type, resource_id, occurred_at, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, resource_type, resource_id, occurred_at, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "state_delta",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "state_snapshot",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, state_version, state_id",
+    "primary_key": "tenant_id, project_id, episode_id, state_version, state_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "success_criterion",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, goal_id, goal_version, criterion_id",
+    "primary_key": "tenant_id, project_id, episode_id, goal_id, goal_version, criterion_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "threat_evaluation_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "trajectory_step",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "trigger_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "utility_score_detail",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, tick_id, rank, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, tick_id, rank, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  },
+  {
+    "database": "sdar_npc",
+    "name": "v_bundle_final_state_not_latest",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_npc",
+    "name": "v_completed_without_verification",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_npc",
+    "name": "v_orphan_action",
+    "engine": "View",
+    "partition_key": "",
+    "sorting_key": "",
+    "primary_key": "",
+    "sampling_key": "",
+    "storage_policy": ""
+  },
+  {
+    "database": "sdar_npc",
+    "name": "verification_record",
+    "engine": "MergeTree",
+    "partition_key": "toYYYYMM(occurred_at)",
+    "sorting_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "primary_key": "tenant_id, project_id, episode_id, occurred_at, sequence, record_id",
+    "sampling_key": "",
+    "storage_policy": "default"
+  }
+]

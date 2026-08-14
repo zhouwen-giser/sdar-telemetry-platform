@@ -1,4 +1,56 @@
-import {readdir,readFile,writeFile,mkdir} from "node:fs/promises";import path from "node:path";import {DurableWal} from "../../../packages/telemetry-wal/src/index.js";import {normalizeBatch} from "../../../packages/telemetry-normalizers/src/index.js";import {ProjectionRegistry,canonicalProjection,v13Projection,v14Projection,smppProjection} from "../../../packages/telemetry-projection-registry/src/index.js";import {ClickHouseClient,configFromEnv} from "../../../packages/telemetry-clickhouse/src/index.js";import {loadConfig} from "../../../packages/telemetry-config/src/index.js";
-const c=loadConfig(),wal=new DurableWal(c.walDir,c.walHighWaterBytes),ch=new ClickHouseClient(configFromEnv()),reg=new ProjectionRegistry();[canonicalProjection,v13Projection,v14Projection,smppProjection].forEach(x=>reg.register(x));const cpDir=path.join(c.walDir,"checkpoints");await mkdir(cpDir,{recursive:true});
-async function tick(){for(const f of await readdir(c.walDir).catch(()=>[])){if(!f.endsWith('.wal'))continue;const p=f.slice(0,-4),frames=await wal.recover(p),cp=Number(await readFile(path.join(cpDir,p),"utf8").catch(()=>"-1"));for(const frame of frames.filter(x=>x.offset>cp)){const facts=normalizeBatch(frame.payload as any);for(const fact of facts){const rows=reg.project(fact);const grouped:Record<string,typeof rows>={};for(const row of rows)(grouped[row.table]??=[]).push(row);for(const [table,group] of Object.entries(grouped))await ch.insert(table,group.map((x:any)=>x.row));}await writeFile(path.join(cpDir,p),String(frame.offset))}}}
-setInterval(()=>tick().catch(e=>console.error("worker",e.message)),c.workerIntervalMs);await tick().catch(e=>console.error("initial",e.message));
+import path from "node:path";
+
+import {
+  ClickHouseClient,
+  configFromEnv,
+} from "../../../packages/telemetry-clickhouse/src/index.js";
+import { loadConfig } from "../../../packages/telemetry-config/src/index.js";
+import {
+  ProjectionRegistry,
+  canonicalProjection,
+  smppProjection,
+  v13Projection,
+  v14Projection,
+} from "../../../packages/telemetry-projection-registry/src/index.js";
+import type { EvidenceV1WalPayload } from "../../../packages/telemetry-types/src/index.js";
+import { DurableSegmentWal } from "../../../packages/telemetry-wal/src/index.js";
+import { TelemetryWorker } from "./worker.js";
+
+const config = loadConfig();
+const walRoot = path.join(config.walDir, "sdar-evidence-v1");
+const wal = new DurableSegmentWal<EvidenceV1WalPayload>(walRoot, config.walHighWaterBytes);
+const clickhouse = new ClickHouseClient(configFromEnv());
+const registry = new ProjectionRegistry();
+for (const projection of [canonicalProjection, v13Projection, v14Projection, smppProjection]) {
+  registry.register(projection);
+}
+
+const worker = new TelemetryWorker({
+  wal,
+  clickhouse,
+  projector: registry,
+  stateRoot: path.join(config.walDir, "sdar-evidence-v1-worker"),
+});
+
+let stopping = false;
+async function run(): Promise<void> {
+  while (!stopping) {
+    const started = Date.now();
+    try {
+      await worker.processOnce();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "WORKER_UNKNOWN_ERROR";
+      console.error("telemetry-worker", message);
+    }
+    const remaining = Math.max(0, config.workerIntervalMs - (Date.now() - started));
+    await new Promise<void>((resolve) => setTimeout(resolve, remaining));
+  }
+}
+
+for (const signal of ["SIGINT", "SIGTERM"] as const) {
+  process.once(signal, () => {
+    stopping = true;
+  });
+}
+
+await run();

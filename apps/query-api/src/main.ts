@@ -1,2 +1,22 @@
-import http from "node:http";import {ClickHouseClient,configFromEnv} from "../../../packages/telemetry-clickhouse/src/index.js";import {envelope} from "../../../packages/telemetry-query-model/src/index.js";import {loadConfig} from "../../../packages/telemetry-config/src/index.js";const c=loadConfig(),ch=new ClickHouseClient(configFromEnv("CLICKHOUSE_QUERY_"));
-http.createServer(async(req:any,res:any)=>{res.setHeader("content-type","application/json");try{const u=new URL(req.url??"/","http://x");let sql="";if(u.pathname.startsWith("/v1/tasks/")&&u.pathname.endsWith("/timeline")){const id=u.pathname.split('/')[3].replace(/'/g,"''");sql=`SELECT * FROM sdar_mart.task_timeline WHERE task_id='${id}' ORDER BY occurred_at FORMAT JSON`;}else if(u.pathname.startsWith("/v1/tasks/")&&u.pathname.endsWith("/capability-chain")){const id=u.pathname.split('/')[3].replace(/'/g,"''");sql=`SELECT * FROM sdar_mart.task_capability_chain WHERE task_id='${id}' FORMAT JSON`;}else if(u.pathname==="/health"){res.end(JSON.stringify({status:"ok"}));return}else{res.statusCode=404;res.end(JSON.stringify({error:"not found"}));return}const raw=await ch.query(sql),parsed=JSON.parse(raw);res.end(JSON.stringify(envelope(parsed.data??[],new Date().toISOString(),["sdar-v1.3"],["sdar-v1.3"]))) }catch(e:any){res.statusCode=503;res.end(JSON.stringify(envelope({error:e.message},null,["sdar-v1.3","smpp"],[])))}}).listen(c.queryPort,()=>console.log(`query-api:${c.queryPort}`));
+import {
+  ClickHouseClient,
+  configFromEnv,
+} from "../../../packages/telemetry-clickhouse/src/index.js";
+import { loadConfig } from "../../../packages/telemetry-config/src/index.js";
+import { createQueryApi, loadQueryBearerCredential } from "./server.js";
+
+const configuration = loadConfig();
+const clickHouse = new ClickHouseClient(configFromEnv("CLICKHOUSE_QUERY_"));
+const bearerCredential = await loadQueryBearerCredential();
+const server = createQueryApi({
+  clickHouse,
+  bearerCredential,
+  maxResultRows: Number(process.env["QUERY_MAX_RESULT_ROWS"] ?? 10_000),
+});
+
+const bindHost = process.env["QUERY_BIND_HOST"] ?? "127.0.0.1";
+server.listen(configuration.queryPort, bindHost, () => {
+  process.stdout.write(
+    `${JSON.stringify({ event: "query_api.ready", host: bindHost, port: configuration.queryPort })}\n`,
+  );
+});

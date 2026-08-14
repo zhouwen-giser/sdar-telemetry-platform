@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdar-fixture-e2e",
+  "status": "passed",
+  "generatedAt": "2026-08-14T06:55:07.027Z",
+  "runId": "codex_it_20260814T065452Z_710cb25d_e149888a",
+  "contractVersion": "sdar.evidence/v1",
+  "fixture": {
+    "path": "integrations/skill-driven-agent-runtime/v1.4.1/reports/v1.4.1-evidence/clickhouse-handoff/sample-batches/valid-batch.json",
+    "sha256": "459249b4a985256ce9e82a763f001fb8ad77a09faa2d1ad65afcaf6b454978db",
+    "batchHash": "sha256:0dfed22b24c29bdff0f15f02f61d56c5e47e8313208fdeb7bb2e09dfc2cb078e",
+    "payloadHashes": [
+      "sha256:24480973473e2592cc93db05d43b6f713a17afd5c0306554f802bfa261d723ee",
+      "sha256:faf77a32178baa3763e82686da354bbfe3b23170b9d44e0b8dfb3c9f5cec39a2"
+    ],
+    "payloadsPreserved": true
+  },
+  "derivedBatch": {
+    "contractVersion": "sdar.evidence/v1",
+    "exportId": "codex_it_20260814T065452Z_710cb25d_e149888a:export",
+    "sourceId": "codex_it_20260814T065452Z_710cb25d_e149888a:source",
+    "nodeId": "codex_it_20260814T065452Z_710cb25d_e149888a:node",
+    "revision": 1,
+    "batchHash": "sha256:924ffd0f7f8f6044c3d2d94dcdabc005ece56e6fbc981e1df41a49f8f0e3f10f",
+    "firstSequence": "1",
+    "lastSequence": "2",
+    "records": [
+      {
+        "recordId": "evidence_50a6685156c77cfd6cfda27d28c1f742b6162553eec712ec62297af0afa437e5",
+        "recordType": "runtime.episode",
+        "payloadHash": "sha256:24480973473e2592cc93db05d43b6f713a17afd5c0306554f802bfa261d723ee",
+        "sourceRecordId": "codex_it_20260814T065452Z_710cb25d_e149888a:source-record:1:handoff-episode-1",
+        "sourceRevision": "codex_it_20260814T065452Z_710cb25d_e149888a:source-revision:1",
+        "taskId": "codex_it_20260814T065452Z_710cb25d_e149888a:task:1",
+        "episodeId": "codex_it_20260814T065452Z_710cb25d_e149888a:episode:1",
+        "runId": "codex_it_20260814T065452Z_710cb25d_e149888a",
+        "nodeId": "codex_it_20260814T065452Z_710cb25d_e149888a:node",
+        "correlationId": "codex_it_20260814T065452Z_710cb25d_e149888a:correlation:1",
+        "evidenceSequence": "1"
+      },
+      {
+        "recordId": "evidence_08585687dbf603f7e460c23cc4b32c432ebd14c8654e414909132e21b22d8264",
+        "recordType": "runtime.episode",
+        "payloadHash": "sha256:faf77a32178baa3763e82686da354bbfe3b23170b9d44e0b8dfb3c9f5cec39a2",
+        "sourceRecordId": "codex_it_20260814T065452Z_710cb25d_e149888a:source-record:2:handoff-episode-2",
+        "sourceRevision": "codex_it_20260814T065452Z_710cb25d_e149888a:source-revision:1",
+        "taskId": "codex_it_20260814T065452Z_710cb25d_e149888a:task:2",
+        "episodeId": "codex_it_20260814T065452Z_710cb25d_e149888a:episode:2",
+        "runId": "codex_it_20260814T065452Z_710cb25d_e149888a",
+        "nodeId": "codex_it_20260814T065452Z_710cb25d_e149888a:node",
+        "correlationId": "codex_it_20260814T065452Z_710cb25d_e149888a:correlation:2",
+        "evidenceSequence": "2"
+      }
+    ]
+  },
+  "target": {
+    "host": "192.168.1.7",
+    "table": "sdar_core.sdar_evidence_v1_record",
+    "engine": "ReplacingMergeTree",
+    "tablePreflight": "passed",
+    "queryReadonly": 2
+  },
+  "gateway": {
+    "headStatus": 204,
+    "postStatus": 202,
+    "acknowledgement": {
+      "lastAcknowledgedSequence": "2"
+    },
+    "restartPostStatus": 202,
+    "restartAcknowledgement": {
+      "lastAcknowledgedSequence": "2"
+    }
+  },
+  "outageBacklog": {
+    "workerRunningDuringIngest": false,
+    "durableFrames": 1,
+    "durableBytes": 3254,
+    "walPayloadHash": "f7725e289f23c85599c38952e31042f6071c55d96dabb78844fc5d7189b59088"
+  },
+  "restartDeduplication": {
+    "partition": "796cbc690c5ec77cb5761b2bc41b78d77f2fbe98a6ee3511d4538d002049b188",
+    "framesAfterDuplicate": 1,
+    "bytesBeforeDuplicate": 3254,
+    "bytesAfterDuplicate": 3254,
+    "walDidNotGrow": true
+  },
+  "worker": {
+    "initial": {
+      "partitionsVisited": 1,
+      "framesCompleted": 1,
+      "writesCompleted": 1
+    },
+    "replayFromFreshState": {
+      "partitionsVisited": 1,
+      "framesCompleted": 1,
+      "writesCompleted": 1
+    }
+  },
+  "query": {
+    "route": "/v1/evidence/trace",
+    "filter": {
+      "exportId": "codex_it_20260814T065452Z_710cb25d_e149888a:export"
+    },
+    "watermarkBeforeReplay": "2026-08-14T06:55:06.812Z",
+    "watermarkAfterReplay": "2026-08-14T06:55:06.812Z",
+    "beforeReplay": {
+      "rowCount": 2,
+      "recordIds": [
+        "evidence_08585687dbf603f7e460c23cc4b32c432ebd14c8654e414909132e21b22d8264",
+        "evidence_50a6685156c77cfd6cfda27d28c1f742b6162553eec712ec62297af0afa437e5"
+      ],
+      "rowIds": [
+        "1886e7c3cdb3098c460106f07f20ed7f1c18e562076065867a01200a8b6591ff",
+        "c20cc6a565cf0577afabab02bd0e1e132691038c73b5e893434f9c92fd534ad7"
+      ],
+      "payloadHashes": [
+        "sha256:24480973473e2592cc93db05d43b6f713a17afd5c0306554f802bfa261d723ee",
+        "sha256:faf77a32178baa3763e82686da354bbfe3b23170b9d44e0b8dfb3c9f5cec39a2"
+      ],
+      "walPayloadHashes": [
+        "f7725e289f23c85599c38952e31042f6071c55d96dabb78844fc5d7189b59088",
+        "f7725e289f23c85599c38952e31042f6071c55d96dabb78844fc5d7189b59088"
+      ]
+    },
+    "afterReplay": {
+      "rowCount": 2,
+      "recordIds": [
+        "evidence_08585687dbf603f7e460c23cc4b32c432ebd14c8654e414909132e21b22d8264",
+        "evidence_50a6685156c77cfd6cfda27d28c1f742b6162553eec712ec62297af0afa437e5"
+      ],
+      "rowIds": [
+        "1886e7c3cdb3098c460106f07f20ed7f1c18e562076065867a01200a8b6591ff",
+        "c20cc6a565cf0577afabab02bd0e1e132691038c73b5e893434f9c92fd534ad7"
+      ],
+      "payloadHashes": [
+        "sha256:24480973473e2592cc93db05d43b6f713a17afd5c0306554f802bfa261d723ee",
+        "sha256:faf77a32178baa3763e82686da354bbfe3b23170b9d44e0b8dfb3c9f5cec39a2"
+      ],
+      "walPayloadHashes": [
+        "f7725e289f23c85599c38952e31042f6071c55d96dabb78844fc5d7189b59088",
+        "f7725e289f23c85599c38952e31042f6071c55d96dabb78844fc5d7189b59088"
+      ]
+    }
+  },
+  "checks": {
+    "fixtureValidated": true,
+    "derivedBatchValidated": true,
+    "payloadsPreserved": true,
+    "durableBeforeWorker": true,
+    "gatewayRestartIdempotent": true,
+    "exactAcknowledgement": true,
+    "exactTraceIdentity": true,
+    "effectiveRowsStableAfterReplay": true
+  }
+}

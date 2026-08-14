@@ -7,28 +7,71 @@ services:
       POSTGRES_USER: sdar_telemetry
       POSTGRES_PASSWORD_FILE: /run/secrets/control_postgres_password
     secrets: [control_postgres_password]
-    volumes: [control_pg_data:/var/lib/postgresql/data]
+    volumes:
+      - control_pg_data:/var/lib/postgresql/data
+      - ../migrations/control-postgres:/docker-entrypoint-initdb.d:ro
   ingestion-gateway:
     build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: ingestion-gateway}}
-    environment: {WAL_DIR: /var/lib/sdar-telemetry/wal, GATEWAY_PORT: 8080}
-    volumes: [telemetry_wal:/var/lib/sdar-telemetry/wal]
-    ports: ["8080:8080"]
+    environment:
+      WAL_DIR: ${WAL_DIR:-/var/lib/sdar-telemetry/wal}
+      WAL_HIGH_WATER_BYTES: ${WAL_HIGH_WATER_BYTES:-536870912}
+      GATEWAY_PORT: ${GATEWAY_PORT:-8080}
+      GATEWAY_BIND_HOST: 0.0.0.0
+      SDAR_EVIDENCE_SCHEMA_ROOT: /app/integrations/skill-driven-agent-runtime/v1.4.1/schemas/evidence/v1
+      EVIDENCE_INGEST_BEARER_TOKEN_FILE: /run/secrets/evidence_ingest_bearer_token
+      EVIDENCE_MAX_REQUEST_BYTES: ${EVIDENCE_MAX_REQUEST_BYTES:-67108864}
+    volumes:
+      - telemetry_wal:/var/lib/sdar-telemetry/wal
+    secrets: [evidence_ingest_bearer_token]
+    ports: ["${GATEWAY_PUBLISH_HOST:-127.0.0.1}:${GATEWAY_PORT:-8080}:${GATEWAY_PORT:-8080}"]
   telemetry-worker:
     build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: telemetry-worker}}
-    env_file: [../.env]
-    volumes: [telemetry_wal:/var/lib/sdar-telemetry/wal, ./secrets:/run/secrets:ro]
+    environment:
+      WAL_DIR: ${WAL_DIR:-/var/lib/sdar-telemetry/wal}
+      WAL_HIGH_WATER_BYTES: ${WAL_HIGH_WATER_BYTES:-536870912}
+      WORKER_INTERVAL_MS: ${WORKER_INTERVAL_MS:-1000}
+      CLICKHOUSE_URL: ${CLICKHOUSE_URL:-}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-}
+      CLICKHOUSE_PASSWORD_FILE: /run/secrets/clickhouse_password
+      CLICKHOUSE_SECURE: ${CLICKHOUSE_SECURE:-true}
+      CLICKHOUSE_CONNECT_TIMEOUT_MS: ${CLICKHOUSE_CONNECT_TIMEOUT_MS:-5000}
+      CLICKHOUSE_REQUEST_TIMEOUT_MS: ${CLICKHOUSE_REQUEST_TIMEOUT_MS:-30000}
+    volumes: [telemetry_wal:/var/lib/sdar-telemetry/wal]
+    secrets: [clickhouse_password]
   query-api:
     build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: query-api}}
-    env_file: [../.env]
-    ports: ["8081:8081"]
-    volumes: [./secrets:/run/secrets:ro]
+    environment:
+      QUERY_PORT: ${QUERY_PORT:-8081}
+      QUERY_BIND_HOST: 0.0.0.0
+      QUERY_MAX_RESULT_ROWS: ${QUERY_MAX_RESULT_ROWS:-10000}
+      QUERY_API_BEARER_TOKEN_FILE: /run/secrets/query_api_bearer_token
+      CLICKHOUSE_QUERY_URL: ${CLICKHOUSE_QUERY_URL:-}
+      CLICKHOUSE_QUERY_USER: ${CLICKHOUSE_QUERY_USER:-}
+      CLICKHOUSE_QUERY_PASSWORD_FILE: /run/secrets/clickhouse_query_password
+      CLICKHOUSE_QUERY_SECURE: ${CLICKHOUSE_QUERY_SECURE:-true}
+      CLICKHOUSE_QUERY_CONNECT_TIMEOUT_MS: ${CLICKHOUSE_QUERY_CONNECT_TIMEOUT_MS:-5000}
+      CLICKHOUSE_QUERY_REQUEST_TIMEOUT_MS: ${CLICKHOUSE_QUERY_REQUEST_TIMEOUT_MS:-30000}
+    ports: ["${QUERY_PUBLISH_HOST:-127.0.0.1}:${QUERY_PORT:-8081}:${QUERY_PORT:-8081}"]
+    secrets: [clickhouse_query_password, query_api_bearer_token]
   admin-api:
     build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: admin-api}}
-    env_file: [../.env]
-    ports: ["8082:8082"]
+    environment:
+      ADMIN_PORT: ${ADMIN_PORT:-8082}
+    ports: ["${ADMIN_PUBLISH_HOST:-127.0.0.1}:${ADMIN_PORT:-8082}:${ADMIN_PORT:-8082}"]
   sdar-outbox-relay:
     build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: sdar-outbox-relay}}
-    env_file: [../.env]
+    profiles: [legacy-v1.3]
+    environment:
+      SDAR_DATABASE_URL: ${SDAR_DATABASE_URL:-}
+      INGESTION_URL: ${INGESTION_URL:-http://ingestion-gateway:8080}
+      SDAR_SOURCE_ID: ${SDAR_SOURCE_ID:-sdar-v1.3-legacy}
+      RELAY_INTERVAL_MS: ${RELAY_INTERVAL_MS:-1000}
+    labels:
+      io.sdar.telemetry.compatibility: "v1.3-legacy-only"
 secrets:
   control_postgres_password: {file: ./secrets/control_postgres_password}
+  evidence_ingest_bearer_token: {file: ./secrets/evidence_ingest_bearer_token}
+  clickhouse_password: {file: ./secrets/clickhouse_password}
+  clickhouse_query_password: {file: ./secrets/clickhouse_query_password}
+  query_api_bearer_token: {file: ./secrets/query_api_bearer_token}
 volumes: {control_pg_data: {}, telemetry_wal: {}}

@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-08-14T06:39:56.567Z",
+  "phase": "reader-pre-014",
+  "databaseAllowlist": [
+    "sdar_meta",
+    "sdar_core",
+    "sdar_commander",
+    "sdar_npc",
+    "sdar_embodied",
+    "sdar_mart"
+  ],
+  "counts": {
+    "databases": 6,
+    "tablesAndViews": 372,
+    "columns": 13515,
+    "showCreate": 372
+  },
+  "queryPolicy": {
+    "readonly": 2,
+    "maxResultRows": 100000
+  }
+}
