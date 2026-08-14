@@ -19,8 +19,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
 | Current HEAD before the Phase 0 documentation commit | `40b269b` |
 | Current `origin/main` | `44fb583034d350d429c45ab065bd95e8792b74c1` |
-| Draft PR | `PENDING` — no authoritative PR evidence recorded |
-| Phase 0 documentation commit | `PENDING` |
+| Draft PR | [#1](https://github.com/zhouwen-giser/sdar-telemetry-platform/pull/1) — confirmed draft/open |
+| Phase 0 documentation commit | `be086281cef5c2c65c7d22acbbc8bfdb086d09f9` (pushed) |
 | Mapper coding allowed | **No** |
 
 ## Repository architecture

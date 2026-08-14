@@ -17,8 +17,8 @@ The repository has reusable Evidence v1 ingestion, ClickHouse, Projection Regist
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
 | Baseline maintenance commit | `40b269b` (pushed) |
 | `origin/main` | `44fb583034d350d429c45ab065bd95e8792b74c1` |
-| Draft PR | PENDING / no authoritative evidence |
-| Phase 0 commit | PENDING |
+| Draft PR | [#1](https://github.com/zhouwen-giser/sdar-telemetry-platform/pull/1) — draft/open |
+| Phase 0 commit | `be086281cef5c2c65c7d22acbbc8bfdb086d09f9` (pushed) |
 
 Baseline maintenance was intentionally isolated from the Domain Phase 0 commit:
 
@@ -149,12 +149,12 @@ Until both decisions and the 1.5 schema compatibility record exist, every mappin
 | --- | --- |
 | Branch and base SHA recorded | PASS |
 | Repository/API/Compose/reconciliation inventory | PASS |
-| Required Phase 0 files created | PASS for local files; commit pending |
+| Required Phase 0 files created | PASS; committed and pushed |
 | Baseline `npm run verify` | PASS 70/70 |
 | Fresh live ClickHouse snapshot | PASS (read-only evidence captured) |
 | 1.5/RC1 authority integrity | FAIL |
 | Exact source contracts | FAIL 0/10 |
 | Target/governance table presence | PASS 6/6 + 6/6 in current live snapshot |
 | D1/D2 compatibility decisions | PENDING |
-| Draft PR | PENDING |
+| Draft PR | PASS / #1 remains draft |
 | Permission to begin Mapper coding | **DENIED** |
