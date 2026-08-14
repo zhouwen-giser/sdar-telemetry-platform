@@ -1,0 +1,26 @@
+[
+  {
+    "name": "sdar_commander",
+    "engine": "Atomic"
+  },
+  {
+    "name": "sdar_core",
+    "engine": "Atomic"
+  },
+  {
+    "name": "sdar_embodied",
+    "engine": "Atomic"
+  },
+  {
+    "name": "sdar_mart",
+    "engine": "Atomic"
+  },
+  {
+    "name": "sdar_meta",
+    "engine": "Atomic"
+  },
+  {
+    "name": "sdar_npc",
+    "engine": "Atomic"
+  }
+]
