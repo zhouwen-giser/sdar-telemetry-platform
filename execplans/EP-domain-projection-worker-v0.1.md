@@ -1,6 +1,6 @@
 # ExecPlan — SDAR Telemetry Domain Projection Worker v0.1
 
-Last updated: 2026-08-14T14:00:53.159Z
+Last updated: 2026-08-14T14:12:43.193Z
 
 ## Goal
 
@@ -12,7 +12,7 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_1_COMPLETE` |
+| Phase state | `PHASE_1_COMPLETE_COMPATIBILITY_PACKET_READY` |
 | Implementation state | `BLOCKED_SCHEMA_COMPATIBILITY` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
@@ -23,6 +23,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 | Phase 0 documentation commit | `be086281cef5c2c65c7d22acbbc8bfdb086d09f9` (pushed) |
 | Phase 0 publication commit | `3c8b22b0e3bc6430eca292cd7651e34b8bdb52bd` (pushed) |
 | Phase 1 contract commit | `4d47235f5e3ffdeffda4eede94023c3755ca1f4e` (pushed) |
+| Phase 1 publication commit | `72b35c35700d038ab1c80729dfabc8a704947b80` (pushed) |
+| Compatibility decision packet | `reports/domain-projection-v0.1/compatibility-decision-packet.md` and `.json` |
 | Mapper coding allowed | **No** |
 
 ## Repository architecture
@@ -107,6 +109,12 @@ The vendor bundle is not accepted as the target 1.5.x authority. No Domain migra
 
 The ten source names required by the task are absent from both the fresh live snapshot and the supplied RC1 migrations. A user-approved compatibility decision must bind each exact logical source to an authoritative physical table/schema, or keep the mapping blocked. Similar names must not be selected implicitly.
 
+The decision-ready audit found four `SAFE_CANDIDATE_FOR_REVIEW` rows (C02,
+C05, N02 and N03) and six `SEMANTICALLY_INSUFFICIENT` rows (C01, C03, C04,
+N01, N04 and N05). All ten remain blocked because no physical binding has been
+approved. The complete field-level gap is frozen in
+`reports/domain-projection-v0.1/compatibility-candidate-matrix.csv`.
+
 ### D2 — Projection identity model
 
 The vendored seed models P1 as one coarse `application_to_embodied@1.1.0` projection, while the Goal requires ten formal DP-C/N projections and a set containing ten projection IDs/versions. A user-approved decision must choose:
@@ -121,6 +129,12 @@ still declares `1.4.1-rc.1` despite a 1.5-like DDL footprint. A user-approved
 decision must repair the package/release marker or explicitly accept the frozen
 live per-table schema fingerprints as the compatibility authority.
 
+The frozen live snapshot combined fingerprint is
+`sha256:c3b9e327b1072c8063db5c65220f848890c7da6e4390afdce68f93e706e05170`.
+The package's expected aggregate hash is `bd7534...f38f0f`, while the actual
+mixed RC1/RC2 `all.sql` is `5a175b...80ea`. Exact D3-A and D3-B approval text
+is recorded in `compatibility-decision-packet.md`.
+
 ## Hard stop
 
 **Do not start Mapper, SourceReader, TargetWriter or Domain Worker implementation until D1 and D2 are explicitly resolved and the inconsistent live/reference 1.5 schema authority is accepted or repaired.**
@@ -131,7 +145,8 @@ live per-table schema fingerprints as the compatibility authority.
 | --- | --- | --- |
 | 0 — Baseline/discovery | COMPLETE | evidence frozen; implementation remains behind the compatibility gate |
 | 1 — Domain contracts | COMPLETE | five immutable types + schemas + validator + 7 valid/14 invalid fixtures; canonical schema hashes frozen |
-| 2–9 — Runtime/mappings/reconcile | BLOCKED | Phase 0 hard stop cleared |
+| Compatibility gate | DECISION_PACKET_READY | D1 has 4 reviewable and 6 insufficient candidates; D2-A and D3-A/B are decision-ready; no implementation authorization |
+| 2–9 — Runtime/mappings/reconcile | BLOCKED | D1/D2/D3 compatibility hard stop cleared |
 | 10 — Query/Admin/Metrics | NOT_STARTED | endpoints, config, permissions, Compose, health/readiness/metrics |
 | 11 — Projection Set | NOT_STARTED | `embodied-standard/1` immutable artifact and hash |
 | 12–13 — Acceptance/adversarial | NOT_STARTED | deterministic/restart/conflict/replay/drift and 10/10 mapping evidence |
@@ -180,5 +195,8 @@ The following baseline maintenance changes were isolated in commit `40b269b` and
 
 ## Resume point
 
-Resume at the compatibility gate after Phase 1. Obtain D1/D2/D3 before Phase 2
-or any mapper/source/target implementation. Do not resume from mapper code.
+Resume at the compatibility gate after Phase 1 using
+`reports/domain-projection-v0.1/compatibility-decision-packet.md`. Obtain and
+record D1/D2/D3 before Phase 2 or any mapper/source/target implementation. Do
+not resume from mapper code and do not treat the four reviewable candidates as
+approved aliases.
