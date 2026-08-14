@@ -4,7 +4,7 @@ This directory is the byte-locked Telemetry import of the Runtime-owned Evidence
 
 ## Locked source
 
-- Execution SHA: `710cb25d9e365c6a1a30a532d22deac787a7c3b0`
+- Execution SHA: `7246c263bbb5554d01a7aa343ef6f857378e7bf4`
 - Main SHA: `34ce7a7a43971de37566b24f969b4f0aeadec2b2`
 - Contract version: `sdar.evidence/v1`
 - Canonical contract SHA-256: `sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f`

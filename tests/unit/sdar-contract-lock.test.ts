@@ -9,7 +9,7 @@ type JsonObject = Record<string, unknown>;
 const snapshotRoot = path.resolve(
   "integrations/skill-driven-agent-runtime/v1.4.1",
 );
-const expectedExecutionSha = "710cb25d9e365c6a1a30a532d22deac787a7c3b0";
+const expectedExecutionSha = "7246c263bbb5554d01a7aa343ef6f857378e7bf4";
 const expectedMainSha = "34ce7a7a43971de37566b24f969b4f0aeadec2b2";
 const expectedContractSha =
   "sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f";

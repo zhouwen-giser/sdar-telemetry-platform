@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "snapshotVersion": "v1.4.1",
   "sourcePath": "../skill-driven-agent-runtime",
-  "executionSha": "710cb25d9e365c6a1a30a532d22deac787a7c3b0",
+  "executionSha": "7246c263bbb5554d01a7aa343ef6f857378e7bf4",
   "mainSha": "34ce7a7a43971de37566b24f969b4f0aeadec2b2",
   "mainRef": "origin/main",
   "contractVersion": "sdar.evidence/v1",
