@@ -1,0 +1,23 @@
+{
+  "contractVersion": "sdar.domain-projection/v1",
+  "deadLetterId": "fixture-dead-letter-0001",
+  "projectionId": "fixture.projection.alpha",
+  "projectionVersion": 1,
+  "sourceDatabase": "sdar_commander",
+  "sourceTable": "fixture_source_fact",
+  "sourceRecordId": "fixture-source-record-0002",
+  "sourceRevision": "1",
+  "sourceContentHash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "failureCode": "MAPPING_UNSUPPORTED",
+  "failureClass": "non_retryable",
+  "failureSummary": "The fixture source is intentionally unsupported.",
+  "attemptCount": 1,
+  "firstFailedAt": "2026-08-14T00:02:00.000Z",
+  "lastFailedAt": "2026-08-14T00:02:00.000Z",
+  "status": "ignored",
+  "resolution": {
+    "managementActionId": "fixture-management-action-0001",
+    "action": "ignore",
+    "resolvedAt": "2026-08-14T00:03:00.000Z"
+  }
+}

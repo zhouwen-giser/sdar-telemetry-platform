@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdar.dev/schemas/domain-projection/v1/domain-projection-definition.schema.json",
+  "title": "DomainProjectionDefinition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "projectionId",
+    "projectionVersion",
+    "source",
+    "target",
+    "mapperId",
+    "mapperVersion",
+    "cursorPolicy",
+    "identityPolicy",
+    "enabled"
+  ],
+  "properties": {
+    "contractVersion": { "const": "sdar.domain-projection/v1" },
+    "projectionId": { "$ref": "#/$defs/id" },
+    "projectionVersion": { "$ref": "#/$defs/version" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["database", "table"],
+      "dependentRequired": {
+        "schemaName": ["schemaVersion"],
+        "schemaVersion": ["schemaName"]
+      },
+      "properties": {
+        "database": { "enum": ["sdar_commander", "sdar_npc"] },
+        "table": { "$ref": "#/$defs/table" },
+        "schemaName": { "$ref": "#/$defs/id" },
+        "schemaVersion": { "$ref": "#/$defs/version" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["database", "table"],
+      "dependentRequired": {
+        "schemaName": ["schemaVersion"],
+        "schemaVersion": ["schemaName"]
+      },
+      "properties": {
+        "database": { "const": "sdar_embodied" },
+        "table": {
+          "enum": [
+            "control_action",
+            "control_receipt",
+            "human_confirmation",
+            "physical_verification",
+            "preemption_recovery",
+            "state_freshness_check"
+          ]
+        },
+        "schemaName": { "$ref": "#/$defs/id" },
+        "schemaVersion": { "$ref": "#/$defs/version" }
+      }
+    },
+    "mapperId": { "$ref": "#/$defs/id" },
+    "mapperVersion": { "$ref": "#/$defs/semver" },
+    "cursorPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fields", "uniqueTieBreakerFields", "order"],
+      "properties": {
+        "fields": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/table" }
+        },
+        "uniqueTieBreakerFields": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/table" }
+        },
+        "order": { "const": "asc" }
+      }
+    },
+    "identityPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version"],
+      "properties": {
+        "version": { "$ref": "#/$defs/id" }
+      }
+    },
+    "enabled": { "type": "boolean" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "table": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "semver": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 64,
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$"
+    }
+  }
+}

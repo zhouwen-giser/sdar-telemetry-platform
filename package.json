@@ -14,6 +14,7 @@
     "verify": "bash scripts/verify.sh",
     "sync:sdar-evidence-contract": "node --experimental-strip-types scripts/sync-sdar-evidence-contract.ts",
     "check:sdar-evidence-contract": "node --experimental-strip-types scripts/sync-sdar-evidence-contract.ts --check",
+    "verify:domain-projection-contracts": "npm run build && node dist/scripts/verify-domain-projection-contracts.js",
     "test:sdar-contract": "npm run build && node --test dist/tests/unit/evidence-v1-contract.test.js dist/tests/unit/sdar-contract-lock.test.js dist/tests/unit/normalizers.test.js dist/tests/integration/ingestion-gateway.test.js",
     "test:clickhouse-schema": "npm run build && node --test dist/tests/unit/clickhouse.test.js dist/tests/unit/projection-v1.test.js",
     "test:sdar-e2e": "npm run build && node --env-file-if-exists=.env dist/scripts/run-sdar-e2e.js",

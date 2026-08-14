@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdar.dev/schemas/domain-projection/v1/projection-lineage.schema.json",
+  "title": "ProjectionLineage",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "lineageId",
+    "projectionId",
+    "projectionVersion",
+    "mapperId",
+    "mapperVersion",
+    "mappingRuleId",
+    "mappingRuleVersion",
+    "sourceDatabase",
+    "sourceTable",
+    "sourceRecordId",
+    "sourceRevision",
+    "sourceContentHash",
+    "targetDatabase",
+    "targetTable",
+    "targetRecordId",
+    "targetContentHash",
+    "projectedAt"
+  ],
+  "properties": {
+    "contractVersion": { "const": "sdar.domain-projection/v1" },
+    "lineageId": { "$ref": "#/$defs/id" },
+    "projectionId": { "$ref": "#/$defs/id" },
+    "projectionVersion": { "$ref": "#/$defs/version" },
+    "mapperId": { "$ref": "#/$defs/id" },
+    "mapperVersion": { "$ref": "#/$defs/semver" },
+    "mappingRuleId": { "$ref": "#/$defs/id" },
+    "mappingRuleVersion": { "$ref": "#/$defs/semver" },
+    "sourceDatabase": { "enum": ["sdar_commander", "sdar_npc"] },
+    "sourceTable": { "$ref": "#/$defs/table" },
+    "sourceRecordId": { "$ref": "#/$defs/identity" },
+    "sourceRevision": { "$ref": "#/$defs/identity" },
+    "sourceContentHash": { "$ref": "#/$defs/hash" },
+    "targetDatabase": { "const": "sdar_embodied" },
+    "targetTable": {
+      "enum": [
+        "control_action",
+        "control_receipt",
+        "human_confirmation",
+        "physical_verification",
+        "preemption_recovery",
+        "state_freshness_check"
+      ]
+    },
+    "targetRecordId": { "$ref": "#/$defs/identity" },
+    "targetContentHash": { "$ref": "#/$defs/hash" },
+    "projectedAt": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "table": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "identity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001F\\u007F]+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "semver": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 64,
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

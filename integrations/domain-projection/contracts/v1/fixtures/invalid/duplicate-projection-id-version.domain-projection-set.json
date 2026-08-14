@@ -1,0 +1,22 @@
+{
+  "contractVersion": "sdar.domain-projection/v1",
+  "projectionSetId": "fixture.duplicate",
+  "projectionSetVersion": 1,
+  "projections": [
+    {
+      "projectionId": "fixture.projection.alpha",
+      "projectionVersion": 1,
+      "mapperId": "fixture.mapper.alpha",
+      "mapperVersion": "1.0.0",
+      "definitionHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "projectionId": "fixture.projection.alpha",
+      "projectionVersion": 1,
+      "mapperId": "fixture.mapper.other",
+      "mapperVersion": "1.0.1",
+      "definitionHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    }
+  ],
+  "projectionSetHash": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+}

@@ -1,6 +1,6 @@
 # ExecPlan — SDAR Telemetry Domain Projection Worker v0.1
 
-Last updated: 2026-08-14T13:16:21.953Z
+Last updated: 2026-08-14T13:56:36.569Z
 
 ## Goal
 
@@ -12,15 +12,17 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_0_COMPLETE` |
+| Phase state | `PHASE_1_COMPLETE` |
 | Implementation state | `BLOCKED_SCHEMA_COMPATIBILITY` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
-| Current HEAD before the Phase 0 documentation commit | `40b269b` |
+| Current HEAD before the Phase 1 contract commit | `3c8b22b0e3bc6430eca292cd7651e34b8bdb52bd` |
 | Current `origin/main` | `44fb583034d350d429c45ab065bd95e8792b74c1` |
 | Draft PR | [#1](https://github.com/zhouwen-giser/sdar-telemetry-platform/pull/1) — confirmed draft/open |
 | Phase 0 documentation commit | `be086281cef5c2c65c7d22acbbc8bfdb086d09f9` (pushed) |
+| Phase 0 publication commit | `3c8b22b0e3bc6430eca292cd7651e34b8bdb52bd` (pushed) |
+| Phase 1 contract commit | `PENDING_THIS_PHASE_COMMIT` |
 | Mapper coding allowed | **No** |
 
 ## Repository architecture
@@ -112,6 +114,13 @@ The vendored seed models P1 as one coarse `application_to_embodied@1.1.0` projec
 1. ten independent projection IDs; or
 2. one coarse projection ID plus ten mapping-rule IDs, with an explicit task-book compatibility exception.
 
+### D3 — Schema authority
+
+The supplied 1.5 RC1 package is not integrity-clean and the live release row
+still declares `1.4.1-rc.1` despite a 1.5-like DDL footprint. A user-approved
+decision must repair the package/release marker or explicitly accept the frozen
+live per-table schema fingerprints as the compatibility authority.
+
 ## Hard stop
 
 **Do not start Mapper, SourceReader, TargetWriter or Domain Worker implementation until D1 and D2 are explicitly resolved and the inconsistent live/reference 1.5 schema authority is accepted or repaired.**
@@ -121,7 +130,7 @@ The vendored seed models P1 as one coarse `application_to_embodied@1.1.0` projec
 | Phase | Status | Exit requirement |
 | --- | --- | --- |
 | 0 — Baseline/discovery | COMPLETE | evidence frozen; implementation remains behind the compatibility gate |
-| 1 — Domain contracts | NOT_STARTED | five immutable types + schemas + validators + fixtures |
+| 1 — Domain contracts | COMPLETE | five immutable types + schemas + validator + 7 valid/14 invalid fixtures; canonical schema hashes frozen |
 | 2–9 — Runtime/mappings/reconcile | BLOCKED | Phase 0 hard stop cleared |
 | 10 — Query/Admin/Metrics | NOT_STARTED | endpoints, config, permissions, Compose, health/readiness/metrics |
 | 11 — Projection Set | NOT_STARTED | `embodied-standard/1` immutable artifact and hash |
@@ -141,6 +150,25 @@ The vendored seed models P1 as one coarse `application_to_embodied@1.1.0` projec
 
 The prior SDAR integration evidence is reusable context but is not Domain Projection acceptance evidence.
 
+## Phase 1 contract evidence
+
+Phase 1 extends the existing `packages/telemetry-contracts` package. The five
+readonly contracts, one AJV loader, canonical hash helpers, five hash-locked
+JSON Schemas, 21 fixtures and the independent verifier are frozen under
+`integrations/domain-projection/contracts/v1/`. No DP-C/N definition or source
+alias was created.
+
+| Command | Result |
+| --- | --- |
+| `npm run verify:domain-projection-contracts` | PASS: 5 schemas; 21 fixtures; 7 valid/14 invalid |
+| focused `domain-projection-contracts.test.ts` | PASS: 13/13 adversarial groups |
+| `npm run check:sdar-evidence-contract` | PASS: 121 files; 100 records; 95/5; a99/eac unchanged |
+| `npm run verify` | PASS with loopback permission: 83/83 tests, typecheck, build and static gate |
+| ClickHouse reads/writes in Phase 1 | NOT_RUN / zero; Phase 0 snapshot remains the authority evidence |
+
+Detailed evidence: `reports/domain-projection-v0.1/01-domain-contracts.md` and
+`01-domain-contracts.json`.
+
 ## Worktree preservation
 
 The following baseline maintenance changes were isolated in commit `40b269b` and pushed before this Phase 0 documentation commit:
@@ -152,6 +180,5 @@ The following baseline maintenance changes were isolated in commit `40b269b` and
 
 ## Resume point
 
-Resume at the compatibility gate after Phase 0. Obtain D1/D2 and an explicit
-decision for the inconsistent 1.5 authority/release marker. Do not resume from
-mapper code.
+Resume at the compatibility gate after Phase 1. Obtain D1/D2/D3 before Phase 2
+or any mapper/source/target implementation. Do not resume from mapper code.

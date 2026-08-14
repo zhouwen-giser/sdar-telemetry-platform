@@ -1,0 +1,26 @@
+{
+  "contractVersion": "sdar.domain-projection/v1",
+  "cases": [
+    { "path": "valid/domain-projection-definition.json", "kind": "definition", "valid": true },
+    { "path": "valid/projection-checkpoint.json", "kind": "checkpoint", "valid": true },
+    { "path": "valid/projection-checkpoint.positioned.json", "kind": "checkpoint", "valid": true },
+    { "path": "valid/projection-lineage.json", "kind": "lineage", "valid": true },
+    { "path": "valid/projection-dead-letter.json", "kind": "deadLetter", "valid": true },
+    { "path": "valid/projection-dead-letter.missing-identity.json", "kind": "deadLetter", "valid": true },
+    { "path": "valid/domain-projection-set.json", "kind": "projectionSet", "valid": true },
+    { "path": "invalid/invalid-enum.projection-dead-letter.json", "kind": "deadLetter", "valid": false },
+    { "path": "invalid/ignored-without-management-action.projection-dead-letter.json", "kind": "deadLetter", "valid": false },
+    { "path": "invalid/null-identity-for-unrelated-failure.projection-dead-letter.json", "kind": "deadLetter", "valid": false },
+    { "path": "invalid/wrong-failure-class.projection-dead-letter.json", "kind": "deadLetter", "valid": false },
+    { "path": "invalid/duplicate-projection-id-version.domain-projection-set.json", "kind": "projectionSet", "valid": false },
+    { "path": "invalid/multiple-versions-one-projection.domain-projection-set.json", "kind": "projectionSet", "valid": false },
+    { "path": "invalid/invalid-hash.projection-lineage.json", "kind": "lineage", "valid": false },
+    { "path": "invalid/invalid-source.domain-projection-definition.json", "kind": "definition", "valid": false },
+    { "path": "invalid/invalid-target.domain-projection-definition.json", "kind": "definition", "valid": false },
+    { "path": "invalid/unbounded-metadata.domain-projection-definition.json", "kind": "definition", "valid": false },
+    { "path": "invalid/executable-code-like-field.domain-projection-definition.json", "kind": "definition", "valid": false },
+    { "path": "invalid/tie-breaker-outside-cursor.domain-projection-definition.json", "kind": "definition", "valid": false },
+    { "path": "invalid/partial-initial-cursor.projection-checkpoint.json", "kind": "checkpoint", "valid": false },
+    { "path": "invalid/nonexistent-utc-date.projection-checkpoint.json", "kind": "checkpoint", "valid": false }
+  ]
+}
