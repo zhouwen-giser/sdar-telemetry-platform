@@ -12,8 +12,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_2_PUBLISHED_PHASE_3_IN_PROGRESS` |
-| Implementation state | `DOMAIN_SOURCE_V1_FROZEN_PROJECTIONS_DISABLED` |
+| Phase state | `PHASE_3_IMPLEMENTED_PUBLICATION_PENDING` |
+| Implementation state | `DOMAIN_SOURCE_REAL_LANDING_VERIFIED_PROJECTIONS_DISABLED` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
@@ -138,7 +138,7 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Resume Phase 0 — audit/decision closure | COMPLETE | package/heads/decisions/live RC2 exact-match evidence frozen |
 | Resume Phase 1 — RC2 contract sync | COMPLETE_PUBLISHED | immutable integration contract and repeatable preflight verifier |
 | Phase 2 — Domain Source v1 contracts | COMPLETE_PUBLISHED | 10 exact types, 2 seals, batch/ACK, Golden fixtures |
-| Phase 3 — durable source ingestion | IN_PROGRESS | authenticated routes, fsync-before-ACK, allowlisted ClickHouse routing |
+| Phase 3 — durable source ingestion | COMPLETE_UNPUBLISHED | authenticated routes, fsync-before-ACK, real exact-table landing |
 | Phases 4–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
 | Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
@@ -197,5 +197,5 @@ ClickHouse E2E evidence.
 
 ## Resume point
 
-Resume at Phase 3 durable Domain Source ingestion and WAL routing. Keep all projections disabled
-and preserve the existing Evidence v1 path unchanged.
+Publish Phase 3, then resume at Phase 4 Domain projection Control PostgreSQL and leases. Keep all
+projections disabled and preserve the existing Evidence v1 path unchanged.

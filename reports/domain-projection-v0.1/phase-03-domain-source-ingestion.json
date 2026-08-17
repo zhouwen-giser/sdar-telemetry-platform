@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "phase": 3,
+  "name": "Durable Domain Source ingestion and WAL routing",
+  "status": "passed_pending_publication",
+  "phaseCommit": null,
+  "phasePushed": false,
+  "contractVersion": "sdar.domain-source/v1",
+  "routes": [
+    "/v1/domain-source/batches",
+    "/v1/domain-source/episode-seals"
+  ],
+  "durability": {
+    "wal": "immutable_segment",
+    "ackOrder": ["fsync-file", "rename", "fsync-directory", "http-202"],
+    "restartDuplicate": "PASS",
+    "repackagedDuplicate": "PASS",
+    "identityConflict": "PASS_PRE_APPEND",
+    "sequenceConflict": "PASS_PRE_APPEND",
+    "sealConflict": "PASS_PRE_APPEND"
+  },
+  "realClickHouse": {
+    "status": "PASS",
+    "runId": "codex_dp3_20260817t081412z",
+    "host": "192.168.1.7",
+    "serverVersion": "24.10.2.1",
+    "preflight": "PASS_RC2_ZERO_ACTIVE",
+    "sourceTables": 10,
+    "sealTables": 2,
+    "rows": 12,
+    "evidence": "reports/domain-projection-v0.1/evidence/codex_dp3_20260817t081412z-phase-03-domain-source-e2e.json"
+  },
+  "verification": {
+    "focusedIntegration": "PASS_5_OF_5",
+    "fullVerify": "PASS_98_OF_98_TYPECHECK_BUILD_STATIC",
+    "domainMappingTargetE2E": "NOT_RUN"
+  },
+  "gates": {
+    "G06": "PASS",
+    "G07": "PASS",
+    "G08": "PASS"
+  },
+  "limitations": [
+    "This phase lands exact source and seal rows only.",
+    "No Domain mapper, target fact, lineage or projection checkpoint was executed.",
+    "All ten Domain Projections remain disabled."
+  ]
+}

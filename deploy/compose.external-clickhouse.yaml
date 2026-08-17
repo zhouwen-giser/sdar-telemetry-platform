@@ -18,11 +18,13 @@ services:
       GATEWAY_PORT: ${GATEWAY_PORT:-8080}
       GATEWAY_BIND_HOST: 0.0.0.0
       SDAR_EVIDENCE_SCHEMA_ROOT: /app/integrations/skill-driven-agent-runtime/v1.4.1/schemas/evidence/v1
+      SDAR_DOMAIN_SOURCE_SCHEMA_ROOT: /app/integrations/domain-source/contracts/v1/schemas
       EVIDENCE_INGEST_BEARER_TOKEN_FILE: /run/secrets/evidence_ingest_bearer_token
+      DOMAIN_SOURCE_INGEST_BEARER_TOKEN_FILE: /run/secrets/domain_source_ingest_bearer_token
       EVIDENCE_MAX_REQUEST_BYTES: ${EVIDENCE_MAX_REQUEST_BYTES:-67108864}
     volumes:
       - telemetry_wal:/var/lib/sdar-telemetry/wal
-    secrets: [evidence_ingest_bearer_token]
+    secrets: [evidence_ingest_bearer_token, domain_source_ingest_bearer_token]
     ports: ["${GATEWAY_PUBLISH_HOST:-127.0.0.1}:${GATEWAY_PORT:-8080}:${GATEWAY_PORT:-8080}"]
   telemetry-worker:
     build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: telemetry-worker}}
@@ -30,6 +32,7 @@ services:
       WAL_DIR: ${WAL_DIR:-/var/lib/sdar-telemetry/wal}
       WAL_HIGH_WATER_BYTES: ${WAL_HIGH_WATER_BYTES:-536870912}
       WORKER_INTERVAL_MS: ${WORKER_INTERVAL_MS:-1000}
+      SDAR_DOMAIN_SOURCE_SCHEMA_ROOT: /app/integrations/domain-source/contracts/v1/schemas
       CLICKHOUSE_URL: ${CLICKHOUSE_URL:-}
       CLICKHOUSE_USER: ${CLICKHOUSE_USER:-}
       CLICKHOUSE_PASSWORD_FILE: /run/secrets/clickhouse_password
@@ -71,6 +74,7 @@ services:
 secrets:
   control_postgres_password: {file: ./secrets/control_postgres_password}
   evidence_ingest_bearer_token: {file: ./secrets/evidence_ingest_bearer_token}
+  domain_source_ingest_bearer_token: {file: ./secrets/domain_source_ingest_bearer_token}
   clickhouse_password: {file: ./secrets/clickhouse_password}
   clickhouse_query_password: {file: ./secrets/clickhouse_query_password}
   query_api_bearer_token: {file: ./secrets/query_api_bearer_token}

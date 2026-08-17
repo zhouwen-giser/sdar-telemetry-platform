@@ -100,10 +100,11 @@ assert wal_mount in gateway, "gateway WAL is not backed by the named volume"
 assert wal_mount in worker, "worker does not consume the durable gateway WAL volume"
 assert "WAL_DIR: ${WAL_DIR:-/var/lib/sdar-telemetry/wal}" in gateway
 assert "WAL_DIR: ${WAL_DIR:-/var/lib/sdar-telemetry/wal}" in worker
-assert "secrets: [evidence_ingest_bearer_token]" in gateway
+assert "secrets: [evidence_ingest_bearer_token, domain_source_ingest_bearer_token]" in gateway
 assert "secrets: [clickhouse_password]" in worker
 assert "secrets: [clickhouse_query_password, query_api_bearer_token]" in query
 assert "EVIDENCE_INGEST_BEARER_TOKEN_FILE: /run/secrets/evidence_ingest_bearer_token" in gateway
+assert "DOMAIN_SOURCE_INGEST_BEARER_TOKEN_FILE: /run/secrets/domain_source_ingest_bearer_token" in gateway
 assert "CLICKHOUSE_PASSWORD_FILE: /run/secrets/clickhouse_password" in worker
 assert "CLICKHOUSE_QUERY_PASSWORD_FILE: /run/secrets/clickhouse_query_password" in query
 assert "QUERY_API_BEARER_TOKEN_FILE: /run/secrets/query_api_bearer_token" in query
@@ -127,6 +128,7 @@ for required_setting in [
     "CLICKHOUSE_PASSWORD_FILE=/run/secrets/clickhouse_password",
     "CLICKHOUSE_QUERY_PASSWORD_FILE=/run/secrets/clickhouse_query_password",
     "EVIDENCE_INGEST_BEARER_TOKEN_FILE=/run/secrets/evidence_ingest_bearer_token",
+    "DOMAIN_SOURCE_INGEST_BEARER_TOKEN_FILE=/run/secrets/domain_source_ingest_bearer_token",
     "QUERY_API_BEARER_TOKEN_FILE=/run/secrets/query_api_bearer_token",
     "SDAR_EVIDENCE_SCHEMA_ROOT=/app/integrations/skill-driven-agent-runtime/v1.4.1/schemas/evidence/v1",
 ]:

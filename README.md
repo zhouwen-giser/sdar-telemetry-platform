@@ -27,6 +27,12 @@ source contract、两类 Episode Seal、batch/seal ACK 和 Golden/adversarial fi
 near-name legacy alias，也不允许请求携带数据库名、表名或 SQL 标识符。该合同目前只完成离线
 资格验证；Gateway durable routing 与真实 ClickHouse 写入从 Phase 3 开始验收。
 
+Phase 3 已加入独立认证的 `/v1/domain-source/batches` 与
+`/v1/domain-source/episode-seals`。Gateway 把已验证请求写入独立
+`sdar-domain-source-v1` immutable segment WAL，并在文件 fsync、原子 rename 和目录 fsync
+完成后才 ACK；Worker 只允许写入 RC2 锁定的 10 张 source 表和 2 张 seal 表。Domain Source
+token 与 Evidence token 必须分离。
+
 Domain Projection 只提供标准事实、readiness、lineage 与不可变 fact index，不在本仓库实现
 Benchmark M1–M15、F/HG、baseline、comparison 或评分逻辑。
 

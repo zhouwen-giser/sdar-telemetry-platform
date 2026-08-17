@@ -97,6 +97,18 @@ export type DomainSourceSealAcknowledgement = Readonly<{
   sealRevision: string;
 }>;
 
+export type DomainSourceWalPayload =
+  | Readonly<{
+      kind: "sdar-domain-source-v1-batch";
+      receivedAt: string;
+      batch: DomainSourceBatchRequest;
+    }>
+  | Readonly<{
+      kind: "sdar-domain-source-v1-seal";
+      receivedAt: string;
+      seal: DomainSourceEpisodeSealRequest;
+    }>;
+
 export type DomainSourceContractKind = "batch" | "seal" | "batchAck" | "sealAck";
 
 export interface DomainSourceContractTypeMap {
@@ -304,6 +316,29 @@ export function createDomainSourceRecordIdentityHash(
   ]);
 }
 
+export function createDomainSourceSealIdentityHash(
+  seal: Pick<
+    DomainSourceEpisodeSealRequest,
+    | "tenantId"
+    | "projectId"
+    | "application"
+    | "sourceContractId"
+    | "sourceContractVersion"
+    | "episodeId"
+    | "sealRevision"
+  >,
+): DomainSourceSha256 {
+  return hashCanonicalDomainSourceJson([
+    seal.tenantId,
+    seal.projectId,
+    seal.application,
+    seal.sourceContractId,
+    seal.sourceContractVersion,
+    seal.episodeId,
+    seal.sealRevision,
+  ]);
+}
+
 export function domainSourceApplicationFor(
   sourceContractId: DomainSourceContractId,
 ): DomainSourceApplication {
@@ -337,6 +372,17 @@ function assertBatchIntegrity(batch: DomainSourceBatchRequest): void {
         DOMAIN_SOURCE_V1_ERROR_CODES.applicationMismatch,
         "Every Domain Source record must belong to the batch application.",
         `records[${String(index)}].sourceContractId`,
+      );
+    }
+    if (
+      record.tenantId !== firstRecord(batch).tenantId ||
+      record.projectId !== firstRecord(batch).projectId ||
+      record.environment !== firstRecord(batch).environment
+    ) {
+      throw new DomainSourceContractError(
+        DOMAIN_SOURCE_V1_ERROR_CODES.applicationMismatch,
+        "Every Domain Source record must share the batch tenant, project and environment.",
+        `records[${String(index)}]`,
       );
     }
     const identity = createDomainSourceRecordIdentityHash(record);
@@ -373,6 +419,18 @@ function assertBatchIntegrity(batch: DomainSourceBatchRequest): void {
       "batchHash",
     );
   }
+}
+
+function firstRecord(batch: DomainSourceBatchRequest): DomainSourceRecord {
+  const record = batch.records[0];
+  if (record === undefined) {
+    throw new DomainSourceContractError(
+      DOMAIN_SOURCE_V1_ERROR_CODES.schemaInvalid,
+      "Domain Source batch must contain at least one record.",
+      "records",
+    );
+  }
+  return record;
 }
 
 function assertSealIntegrity(seal: DomainSourceEpisodeSealRequest): void {

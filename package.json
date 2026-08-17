@@ -22,6 +22,7 @@
     "test:sdar-contract": "npm run build && node --test dist/tests/unit/evidence-v1-contract.test.js dist/tests/unit/sdar-contract-lock.test.js dist/tests/unit/normalizers.test.js dist/tests/integration/ingestion-gateway.test.js",
     "test:clickhouse-schema": "npm run build && node --test dist/tests/unit/clickhouse.test.js dist/tests/unit/projection-v1.test.js",
     "test:sdar-e2e": "npm run build && node --env-file-if-exists=.env dist/scripts/run-sdar-e2e.js",
+    "test:domain-source-e2e": "npm run build && node --env-file-if-exists=.env dist/scripts/run-domain-source-e2e.js",
     "clickhouse:preflight": "npm run build && node --env-file-if-exists=.env dist/scripts/clickhouse-cli.js preflight",
     "clickhouse:domain-preflight": "npm run build && node --env-file-if-exists=.env dist/scripts/verify-domain-projection-clickhouse-preflight.js",
     "clickhouse:snapshot": "npm run build && node --env-file-if-exists=.env dist/scripts/clickhouse-schema-snapshot.js",
