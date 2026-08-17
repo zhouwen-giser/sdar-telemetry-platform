@@ -69,6 +69,24 @@ export type DomainProjectionReplayRequest = Readonly<{
   finishedAt: string | null;
 }>;
 
+export type DomainProjectionReconciliationRequest = Readonly<{
+  reconciliationRequestId: string;
+  projectionId: string;
+  projectionVersion: number;
+  mappingHash: string;
+  tenantId: string;
+  projectId: string;
+  episodeId: string | null;
+  fromCursor: Readonly<Record<string, unknown>>;
+  toCursor: Readonly<Record<string, unknown>>;
+  requestedBy: string;
+  requestHash: string;
+  status: "requested" | "running" | "succeeded" | "failed" | "canceled";
+  createdAt: string;
+  startedAt: string | null;
+  finishedAt: string | null;
+}>;
+
 export type DomainSourceProducerRegistration = Readonly<{
   producerId: string;
   application: "commander" | "npc";
@@ -290,6 +308,60 @@ export class DomainProjectionControlRepository {
     return replayRequestFromRow(found);
   }
 
+  async registerReconciliationRequest(
+    request: Omit<
+      DomainProjectionReconciliationRequest,
+      "status" | "createdAt" | "startedAt" | "finishedAt"
+    >,
+  ): Promise<DomainProjectionReconciliationRequest> {
+    assertNonEmpty("reconciliationRequestId", request.reconciliationRequestId);
+    assertProjectionIdentity(request);
+    assertHash("mappingHash", request.mappingHash);
+    assertNonEmpty("tenantId", request.tenantId);
+    assertNonEmpty("projectId", request.projectId);
+    if (request.episodeId !== null) assertNonEmpty("episodeId", request.episodeId);
+    assertPlainObject("fromCursor", request.fromCursor);
+    assertPlainObject("toCursor", request.toCursor);
+    assertNonEmpty("requestedBy", request.requestedBy);
+    assertHash("requestHash", request.requestHash);
+    const result = await this.database.query<ReconciliationRequestRow>(
+      `INSERT INTO telemetry_control.domain_projection_reconciliation_request (
+         reconciliation_request_id, projection_id, projection_version, mapping_hash,
+         tenant_id, project_id, episode_id, from_cursor_json, to_cursor_json,
+         requested_by, request_hash
+       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9::jsonb,$10,$11)
+       ON CONFLICT (reconciliation_request_id) DO NOTHING
+       RETURNING *`,
+      [
+        request.reconciliationRequestId,
+        request.projectionId,
+        request.projectionVersion,
+        request.mappingHash,
+        request.tenantId,
+        request.projectId,
+        request.episodeId,
+        JSON.stringify(request.fromCursor),
+        JSON.stringify(request.toCursor),
+        request.requestedBy,
+        request.requestHash,
+      ],
+    );
+    if (result.rows[0] !== undefined) return reconciliationRequestFromRow(result.rows[0]);
+    const existing = await this.database.query<ReconciliationRequestRow>(
+      `SELECT * FROM telemetry_control.domain_projection_reconciliation_request
+       WHERE reconciliation_request_id=$1`,
+      [request.reconciliationRequestId],
+    );
+    const found = existing.rows[0];
+    if (found === undefined || found.request_hash !== request.requestHash) {
+      throw new DomainProjectionControlError(
+        "DOMAIN_PROJECTION_RECONCILIATION_ID_CONFLICT",
+        "reconciliation request id is already bound to a different request",
+      );
+    }
+    return reconciliationRequestFromRow(found);
+  }
+
   async registerProducer(
     producer: Omit<DomainSourceProducerRegistration, "status" | "registeredAt" | "lastHeartbeatAt">,
   ): Promise<DomainSourceProducerRegistration> {
@@ -416,6 +488,24 @@ type ReplayRequestRow = {
   finished_at: Date | null;
 };
 
+type ReconciliationRequestRow = {
+  reconciliation_request_id: string;
+  projection_id: string;
+  projection_version: string;
+  mapping_hash: string;
+  tenant_id: string;
+  project_id: string;
+  episode_id: string | null;
+  from_cursor_json: Record<string, unknown>;
+  to_cursor_json: Record<string, unknown>;
+  requested_by: string;
+  request_hash: string;
+  status: DomainProjectionReconciliationRequest["status"];
+  created_at: Date;
+  started_at: Date | null;
+  finished_at: Date | null;
+};
+
 type ProducerRow = {
   producer_id: string;
   application: "commander" | "npc";
@@ -477,6 +567,28 @@ function managementActionFromRow(row: ManagementActionRow): DomainProjectionMana
 function replayRequestFromRow(row: ReplayRequestRow): DomainProjectionReplayRequest {
   return Object.freeze({
     replayRequestId: row.replay_request_id,
+    projectionId: row.projection_id,
+    projectionVersion: safeDatabaseInteger("projectionVersion", row.projection_version),
+    mappingHash: row.mapping_hash,
+    tenantId: row.tenant_id,
+    projectId: row.project_id,
+    episodeId: row.episode_id,
+    fromCursor: freezeRecord(row.from_cursor_json),
+    toCursor: freezeRecord(row.to_cursor_json),
+    requestedBy: row.requested_by,
+    requestHash: row.request_hash,
+    status: row.status,
+    createdAt: row.created_at.toISOString(),
+    startedAt: row.started_at?.toISOString() ?? null,
+    finishedAt: row.finished_at?.toISOString() ?? null,
+  });
+}
+
+function reconciliationRequestFromRow(
+  row: ReconciliationRequestRow,
+): DomainProjectionReconciliationRequest {
+  return Object.freeze({
+    reconciliationRequestId: row.reconciliation_request_id,
     projectionId: row.projection_id,
     projectionVersion: safeDatabaseInteger("projectionVersion", row.projection_version),
     mappingHash: row.mapping_hash,

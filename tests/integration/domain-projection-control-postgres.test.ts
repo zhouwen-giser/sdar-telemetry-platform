@@ -154,6 +154,29 @@ test(
       assert.equal(replay.replayRequestId, duplicateReplay.replayRequestId);
       assert.equal(replay.status, "requested");
 
+      const reconciliationInput = {
+        reconciliationRequestId: `phase12-reconcile-${suffix}`,
+        projectionId: replayInput.projectionId,
+        projectionVersion: replayInput.projectionVersion,
+        mappingHash,
+        tenantId: replayInput.tenantId,
+        projectId: replayInput.projectId,
+        episodeId: replayInput.episodeId,
+        fromCursor: replayInput.fromCursor,
+        toCursor: replayInput.toCursor,
+        requestedBy: "phase12-integration",
+        requestHash,
+      };
+      const reconciliation = await repository.registerReconciliationRequest(reconciliationInput);
+      const duplicateReconciliation = await repository.registerReconciliationRequest(
+        reconciliationInput,
+      );
+      assert.equal(
+        reconciliation.reconciliationRequestId,
+        duplicateReconciliation.reconciliationRequestId,
+      );
+      assert.equal(reconciliation.status, "requested");
+
       const producer = await repository.registerProducer({
         producerId: `phase4-producer-${suffix}`,
         application: "commander",
@@ -173,7 +196,11 @@ test(
 );
 
 async function migrate(pool: Pool): Promise<void> {
-  for (const filename of ["001_init.sql", "002_domain_projection_runtime.sql"]) {
+  for (const filename of [
+    "001_init.sql",
+    "002_domain_projection_runtime.sql",
+    "003_domain_projection_reconciliation.sql",
+  ]) {
     const sql = await readFile(path.join(process.cwd(), "migrations/control-postgres", filename),
       "utf8",
     );

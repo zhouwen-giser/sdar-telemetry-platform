@@ -9,6 +9,7 @@ import test from "node:test";
 import {
   EVIDENCE_V1_CANONICAL_TABLE,
   EVIDENCE_V1_CONTRACT,
+  buildDomainProjectionQuery,
   clickHouseStringExpression,
   createQueryApi,
   loadQueryBearerCredential,
@@ -218,6 +219,35 @@ test("ClickHouse string expressions contain only a fixed function and UTF-8 hex"
   const value = "'\\); SELECT secret FROM system.tables -- 零";
   const expectedHex = Buffer.from(value, "utf8").toString("hex");
   assert.equal(clickHouseStringExpression(value), `unhex('${expectedHex}')`);
+});
+
+test("Domain Query matrix is typed, bounded and never embeds caller values", () => {
+  const malicious = "projection-' OR 1=1 -- 零";
+  const encoded = encodeURIComponent(malicious);
+  const routes = [
+    "/v1/domain-projections",
+    `/v1/domain-projections/${encoded}`,
+    "/v1/domain-projection-sets",
+    "/v1/domain-projection-sets/embodied-standard/1",
+    "/v1/domain-episodes/episode-1/readiness",
+    "/v1/domain-episodes/episode-1/facts",
+    `/v1/domain-projections/${encoded}/runs`,
+    `/v1/domain-projections/${encoded}/checkpoints`,
+    `/v1/domain-projections/${encoded}/lineage`,
+    `/v1/domain-projections/${encoded}/dead-letters`,
+  ];
+  for (const route of routes) {
+    const sql = buildDomainProjectionQuery(route);
+    assert.match(sql, /^SELECT\n  \*,/u);
+    assert.match(sql, /ORDER BY/u);
+    assert.match(sql, /FORMAT JSON$/u);
+    assert.equal(sql.includes(malicious), false);
+    assert.doesNotMatch(sql, /\$\{|;|\bINSERT\b|\bALTER\b|\bDROP\b/iu);
+  }
+  assert.throws(
+    () => buildDomainProjectionQuery("/v1/domain-projections/x/arbitrary-sql"),
+    /QUERY_ROUTE_NOT_FOUND/u,
+  );
 });
 
 interface QueryCall {

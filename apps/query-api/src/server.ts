@@ -7,6 +7,7 @@ import type { ClickHouseQueryOptions } from "../../../packages/telemetry-clickho
 import { envelope } from "../../../packages/telemetry-query-model/src/index.js";
 
 export const EVIDENCE_V1_CONTRACT = "sdar.evidence/v1";
+export const DOMAIN_PROJECTION_V1_CONTRACT = "sdar.domain-projection/v1";
 export const EVIDENCE_V1_CANONICAL_TABLE = "sdar_core.sdar_evidence_v1_record";
 export const DEFAULT_QUERY_MAX_RESULT_ROWS = 10_000;
 
@@ -90,6 +91,7 @@ async function handleRequest(
 
   const taskRoute = /^\/v1\/tasks\/([^/]+)\/(timeline|capability-chain)$/u.exec(url.pathname);
   let sql: string;
+  let contract = EVIDENCE_V1_CONTRACT;
   if (taskRoute !== null) {
     const taskId = decodeQueryValue(taskRoute[1] as string);
     sql =
@@ -98,6 +100,12 @@ async function handleRequest(
         : buildTaskCapabilityChainQuery(taskId);
   } else if (url.pathname === TRACE_ROUTE) {
     sql = buildEvidenceTraceQuery(url.searchParams);
+  } else if (url.pathname.startsWith("/v1/domain-")) {
+    if ([...url.searchParams.keys()].length !== 0) {
+      throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
+    }
+    sql = buildDomainProjectionQuery(url.pathname);
+    contract = DOMAIN_PROJECTION_V1_CONTRACT;
   } else {
     throw new QueryApiError("QUERY_ROUTE_NOT_FOUND", 404);
   }
@@ -108,17 +116,96 @@ async function handleRequest(
   } catch {
     throw new QueryApiError("QUERY_BACKEND_UNAVAILABLE", 503);
   }
-  const { rows, watermark } = parseClickHouseResult(raw);
+  const { rows, watermark } = parseClickHouseResult(raw, contract === EVIDENCE_V1_CONTRACT);
   sendJson(
     response,
     200,
     envelope(
       rows,
       watermark,
-      [EVIDENCE_V1_CONTRACT],
-      rows.length === 0 ? [] : [EVIDENCE_V1_CONTRACT],
+      [contract],
+      rows.length === 0 ? [] : [contract],
     ),
   );
+}
+
+export function buildDomainProjectionQuery(pathname: string): string {
+  if (pathname === "/v1/domain-projections") {
+    return domainQuery("sdar_meta.v_domain_projection_health", "", "projection_id, projection_version", "last_run_updated_at");
+  }
+  let match = /^\/v1\/domain-projections\/([^/]+)$/u.exec(pathname);
+  if (match !== null) {
+    return domainQuery(
+      "sdar_meta.v_domain_projection_health",
+      `projection_id = ${clickHouseStringExpression(decodeQueryValue(match[1]!))}`,
+      "projection_id, projection_version",
+      "last_run_updated_at",
+    );
+  }
+  if (pathname === "/v1/domain-projection-sets") {
+    return domainQuery(
+      "sdar_meta.v_domain_projection_set_readiness",
+      "",
+      "projection_set_id, projection_set_version",
+      null,
+    );
+  }
+  match = /^\/v1\/domain-projection-sets\/([^/]+)\/([^/]+)$/u.exec(pathname);
+  if (match !== null) {
+    return domainQuery(
+      "sdar_meta.v_domain_projection_set_readiness",
+      `projection_set_id = ${clickHouseStringExpression(decodeQueryValue(match[1]!))}\n  AND projection_set_version = ${clickHouseStringExpression(decodeQueryValue(match[2]!))}`,
+      "projection_set_id, projection_set_version",
+      null,
+    );
+  }
+  match = /^\/v1\/domain-episodes\/([^/]+)\/(readiness|facts)$/u.exec(pathname);
+  if (match !== null) {
+    const episodeId = clickHouseStringExpression(decodeQueryValue(match[1]!));
+    return match[2] === "readiness"
+      ? domainQuery(
+          "sdar_mart.v_episode_domain_readiness",
+          `episode_id = ${episodeId}`,
+          "projection_set_id, projection_set_version",
+          "as_of_watermark",
+        )
+      : domainQuery(
+          "sdar_embodied.v_episode_domain_fact_index",
+          `episode_key = ${episodeId}`,
+          "occurred_at, projection_id, target_table, target_record_id",
+          "ingested_at",
+        );
+  }
+  match = /^\/v1\/domain-projections\/([^/]+)\/(runs|checkpoints|lineage|dead-letters)$/u.exec(pathname);
+  if (match !== null) {
+    const projectionId = clickHouseStringExpression(decodeQueryValue(match[1]!));
+    const resources = {
+      runs: ["sdar_meta.projection_run", "updated_at", "updated_at, projection_run_id"],
+      checkpoints: ["sdar_meta.projection_checkpoint", "updated_at", "updated_at, source_partition"],
+      lineage: ["sdar_meta.projection_lineage", "projected_at", "projected_at, lineage_id"],
+      "dead-letters": ["sdar_meta.projection_dead_letter", "updated_at", "updated_at, dead_letter_id"],
+    } as const;
+    const resource = resources[match[2] as keyof typeof resources];
+    return domainQuery(resource[0], `projection_id = ${projectionId}`, resource[2], resource[1]);
+  }
+  throw new QueryApiError("QUERY_ROUTE_NOT_FOUND", 404);
+}
+
+function domainQuery(
+  table: string,
+  predicate: string,
+  order: string,
+  watermarkColumn: string | null,
+): string {
+  const watermark = watermarkColumn === null
+    ? `CAST(NULL, 'Nullable(Int64)')`
+    : `toUnixTimestamp64Milli(max(${watermarkColumn}) OVER ())`;
+  return `SELECT
+  *,
+  ${watermark} AS ${WATERMARK_COLUMN}
+FROM ${table}${predicate === "" ? "" : `\nWHERE ${predicate}`}
+ORDER BY ${order}
+FORMAT JSON`;
 }
 
 function assertAuthorization(request: IncomingMessage, expectedCredentialDigest: Buffer): void {
@@ -223,7 +310,7 @@ function parseRequestUrl(value: string | undefined): URL {
   }
 }
 
-function parseClickHouseResult(raw: string): {
+function parseClickHouseResult(raw: string, requireWatermark = true): {
   rows: Record<string, unknown>[];
   watermark: string | null;
 } {
@@ -243,7 +330,7 @@ function parseClickHouseResult(raw: string): {
     const copy = { ...candidate };
     const rawWatermark = copy[WATERMARK_COLUMN];
     delete copy[WATERMARK_COLUMN];
-    if (rawWatermark !== undefined) {
+    if (rawWatermark !== undefined && rawWatermark !== null) {
       const candidateWatermark = timestampMillisecondsToIso(rawWatermark);
       if (watermark !== null && watermark !== candidateWatermark) {
         throw new QueryApiError("QUERY_BACKEND_RESPONSE_INVALID", 503);
@@ -252,7 +339,7 @@ function parseClickHouseResult(raw: string): {
     }
     return copy;
   });
-  if (rows.length > 0 && watermark === null) {
+  if (requireWatermark && rows.length > 0 && watermark === null) {
     throw new QueryApiError("QUERY_BACKEND_RESPONSE_INVALID", 503);
   }
   return { rows, watermark };
