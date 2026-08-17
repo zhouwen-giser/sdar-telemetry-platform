@@ -151,8 +151,8 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 13 — Benchmark handoff contracts | COMPLETE_PUBLISHED | immutable eight-asset consumer handoff; live qualification retained |
 | Phase 14 — Compose/operations | COMPLETE_PUBLISHED | safe configuration/entry points wired; actual process smoke retained |
 | Phase 15 — real ClickHouse E2E | BLOCKED_HARNESS_PUBLISHED | real 10/10 + SIGKILL harness ready; external execution unavailable |
-| Phase 16 — Benchmark consumer qualification | IN_PROGRESS | contract/readiness/fact consumption only; no scoring code here |
-| Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
+| Phase 16 — Benchmark consumer qualification | BLOCKED_PUBLISHED | frozen baseline lacks Domain path; no consumer worktree mutation |
+| Phase 17 — release acceptance | IN_PROGRESS | run every available gate and retain required blockers |
 
 ## Baseline command evidence
 
@@ -298,8 +298,15 @@ and nine source-level focused cases pass. G14/G30/G31 remain pending because ext
 execution permission was unavailable; the compiled harness and in-memory regression are not
 reported as live E2E.
 
+## Phase 16 consumer qualification evidence
+
+The exact Benchmark baseline `ee7f737…` was inspected without touching its dirty working tree. The
+repeatable qualifier reports `BENCHMARK_DOMAIN_CONSUMER_PATH_MISSING`: all seven Domain view
+references, `not_required`, `blocked_drift`, General independence and the formal-ready gate are
+absent. G23/G24/G32 therefore remain blocked. Telemetry's helper/fixture tests are not counted as
+actual consumer qualification, and no scoring code was added here.
+
 ## Resume point
 
-Resume implementation at Phase 16 Benchmark consumer qualification while retaining the exact Phase
-15 live resume command. Keep all projections disabled outside isolated qualification, do not
-implement Benchmark scoring, and close G14/G30/G31 only with real 24.10.2.1 evidence.
+Resume at Phase 17 final local acceptance while retaining the exact Phase 15 live command and Phase
+16 external consumer action. Do not declare completion until all blocking gates have real evidence.

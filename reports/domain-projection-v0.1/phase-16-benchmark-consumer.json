@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "phase": 16,
+  "name": "Benchmark consumer-contract qualification",
+  "status": "blocked_external_consumer_path_missing",
+  "phaseCommit": "46e2086",
+  "phasePushed": true,
+  "consumerBaseline": "ee7f73735595382072b8205b891af554e8496582",
+  "qualification": {
+    "errorCode": "BENCHMARK_DOMAIN_CONSUMER_PATH_MISSING",
+    "missingViewCount": 7,
+    "missingStatuses": ["not_required", "blocked_drift"],
+    "generalProfileIndependence": false,
+    "formalReadyGate": false,
+    "consumerWorkingTreeModified": false,
+    "telemetryBenchmarkScoringLogic": false
+  },
+  "verification": {
+    "typecheck": "PASS",
+    "build": "PASS",
+    "qualifierUnit": "PASS",
+    "staticVerify": "PASS",
+    "actualBaselineQualification": "EXPECTED_BLOCK"
+  },
+  "gates": {
+    "G23": "BLOCKED_EXTERNAL_CONSUMER_PATH_MISSING",
+    "G24": "BLOCKED_EXTERNAL_CONSUMER_PATH_MISSING",
+    "G32": "BLOCKED_CONSUMER_AND_LIVE_QUERY_PENDING"
+  }
+}

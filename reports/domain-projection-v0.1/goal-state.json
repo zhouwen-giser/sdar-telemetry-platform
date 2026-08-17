@@ -1,7 +1,7 @@
 {
   "goalId": "sdar-telemetry-domain-projection-benchmark-handoff-v1",
   "status": "in_progress",
-  "phase": 16,
+  "phase": 17,
   "gates": {
     "G01": "PASS",
     "G02": "PASS",
@@ -25,8 +25,8 @@
     "G20": "PASS",
     "G21": "PASS",
     "G22": "PASS",
-    "G23": "PENDING_PHASE_16_ACTUAL_CONSUMER",
-    "G24": "PENDING_PHASE_16_ACTUAL_CONSUMER",
+    "G23": "BLOCKED_EXTERNAL_CONSUMER_PATH_MISSING",
+    "G24": "BLOCKED_EXTERNAL_CONSUMER_PATH_MISSING",
     "G25": "PASS",
     "G26": "PASS",
     "G27": "PARTIAL_REAL_ADMIN_HTTP_CONTROL_POSTGRES_PENDING",
@@ -34,16 +34,16 @@
     "G29": "PENDING_ACTUAL_COMPOSE_PROCESS_SMOKE",
     "G30": "PENDING_REAL_RUN_HARNESS_READY",
     "G31": "PENDING_REAL_RUN_HARNESS_READY",
-    "G32": "PARTIAL_LIVE_CLICKHOUSE_CONSUMER_QUERIES_PENDING"
+    "G32": "BLOCKED_CONSUMER_AND_LIVE_QUERY_PENDING"
   },
-  "lastVerifiedHead": "c207787",
+  "lastVerifiedHead": "46e2086",
   "blockers": [
     "G14/G30/G31 real ClickHouse and SIGKILL harness is implemented, but external execution permission was unavailable; no fixture or focused test is counted as E2E.",
     "G19 and G27 require a real authenticated Admin HTTP to Control PostgreSQL integration run; the environment variable for the integration database was not configured in Phase 12.",
     "G28 requires a live Domain Projection worker health/readiness/metrics probe; required Control PostgreSQL/Admin secret files are absent.",
     "G29 requires an actual external-ClickHouse Compose process smoke; only static Compose parsing ran because Docker API access was denied.",
-    "G23/G24 require qualification in the actual Benchmark consumer; Telemetry fixtures are not counted as consumer evidence.",
-    "G32 static manifest/checksum verification passes, but the live consumer queries were blocked by sandbox networking and the external execution request was rejected at the platform usage limit.",
+    "G23/G24 are blocked because frozen Benchmark baseline ee7f737 lacks all seven Domain view references, not_required/blocked_drift and both required profile gates.",
+    "G32 static manifest/checksum verification passes, but the Benchmark consumer path is absent and live consumer queries remain unavailable.",
     "Final npm run verify rerun with loopback permission is pending because the execution environment reported its usage limit."
   ]
 }
