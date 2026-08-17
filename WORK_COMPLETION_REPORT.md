@@ -25,7 +25,8 @@ This repository is actively executing the Domain Projection Benchmark Handoff V1
 | Phase 11 | complete and pushed — safe lifecycle, four projection sets and no false-ready empty state |
 | Phase 12 | complete and pushed — bounded Query contract plus authenticated Admin and worker probe surfaces; live integration gates remain open |
 | Phase 13 | complete and pushed — frozen Benchmark handoff assets and static verifier; actual consumer/live query gates remain open |
-| Phases 14–17 | not yet complete |
+| Phase 14 | complete and pushed — Domain/Admin Compose and safe configuration; actual process smoke remains open |
+| Phases 15–17 | not yet complete |
 | Real Domain Projection E2E | not run; reserved for Phase 15 |
 | Benchmark Server handoff qualification | not run; reserved for Phase 16 |
 
@@ -33,7 +34,7 @@ Authority remains split correctly: SDAR Runtime PostgreSQL owns execution, the G
 accepted-batch durability, Control PostgreSQL owns operational leases/actions, and ClickHouse is
 fact/projection/analytical storage. This repository will not implement Benchmark scoring.
 
-Current status: `IN_PROGRESS_PHASE_13_HANDOFF_STATIC_PASS_LIVE_GATES_PENDING_PROJECTIONS_DISABLED`.
+Current status: `IN_PROGRESS_PHASE_14_DEPLOYMENT_WIRED_LIVE_PROCESS_AND_E2E_GATES_PENDING`.
 
 Phase 9 closed G15–G18 with deterministic port tests covering ten exact target descriptors,
 100% produced lineage, skip/fail audit and post-target/pre-lineage crash recovery. G14 remains
@@ -54,5 +55,9 @@ recorded as skips/pending work, never as passes.
 Phase 13 closes G25 and freezes `sdar.telemetry-domain-handoff/v1`. Its static verifier passes, but
 G23/G24 remain assigned to the actual Benchmark consumer and G32 remains partial until all seven
 consumer queries run against the rebuilt database. The blocked live attempt is not counted as E2E.
+
+Phase 14 adds the Domain worker/Admin services, independent secrets and fail-closed configuration.
+G28/G29 remain open: Docker and required untracked Control PostgreSQL/Admin secrets were not
+available, so no process smoke or live runtime probe is claimed.
 
 The completion marker must not be emitted until Phases 0–17 and G01–G35 all pass.

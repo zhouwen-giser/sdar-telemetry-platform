@@ -149,8 +149,8 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 11 — sets/lifecycle | COMPLETE_PUBLISHED | seven-state lifecycle, four sets and no false-ready empty/disabled state |
 | Phase 12 — APIs/metrics/health | COMPLETE_PUBLISHED | bounded Query plus authenticated Admin/runtime contracts; live gates retained |
 | Phase 13 — Benchmark handoff contracts | COMPLETE_PUBLISHED | immutable eight-asset consumer handoff; live qualification retained |
-| Phase 14 — Compose/operations | IN_PROGRESS | wire processes with projections disabled by default |
-| Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
+| Phase 14 — Compose/operations | COMPLETE_PUBLISHED | safe configuration/entry points wired; actual process smoke retained |
+| Phase 15 — real ClickHouse E2E | IN_PROGRESS | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
 
@@ -280,8 +280,17 @@ partial because the live `readonly=2` query run was blocked by sandbox networkin
 external execution was rejected at the platform usage limit. No mock or fixture is counted as that
 live qualification.
 
+## Phase 14 deployment evidence
+
+External-ClickHouse Compose now includes the Domain worker and the authenticated Admin/Control PG
+boundary with per-service secret allowlists, loopback host publication and a centralized validated
+Domain configuration whose default cap is `shadow`. Typecheck/build, five focused config/API cases,
+static verification and Compose config parsing pass. G28/G29 remain open because the required
+untracked Control PostgreSQL/Admin secrets are absent and Docker API access was denied; no static
+parse is counted as a running process.
+
 ## Resume point
 
-Resume at Phase 14 Compose and operational documentation. Keep all projections disabled, preserve
-the existing Evidence v1 path, do not implement Benchmark scoring, retain G14/G30/G31 for real
-Phase 15 E2E, and close G19/G27/G28/G32 only with their required live evidence.
+Resume at Phase 15 controlled real ClickHouse E2E and recovery. Keep all projections disabled
+outside isolated qualification, preserve the existing Evidence v1 path, do not implement Benchmark
+scoring, and close G14/G30/G31 only with real 24.10.2.1 evidence.

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "phase": 14,
+  "name": "Compose and operational documentation",
+  "status": "implementation_passed_live_process_smoke_pending",
+  "phaseCommit": "0e009eb",
+  "phasePushed": true,
+  "verification": {
+    "typecheck": "PASS",
+    "build": "PASS",
+    "focusedConfigAndApi": "PASS_2_FILES_5_SOURCE_CASES",
+    "staticVerify": "PASS",
+    "composeConfig": "PASS",
+    "dockerProcessSmoke": "NOT_RUN_DOCKER_API_PERMISSION_DENIED",
+    "liveAdminWorkerProbe": "NOT_RUN_REQUIRED_UNTRACKED_SECRETS_ABSENT"
+  },
+  "deployment": {
+    "externalClickHouse": true,
+    "packagedClickHouseServer": false,
+    "domainWorkerAdded": true,
+    "defaultModeCap": "shadow",
+    "hostPublishDefault": "127.0.0.1",
+    "perServiceSecrets": true
+  },
+  "gates": {
+    "G28": "PARTIAL_LIVE_PROCESS_PROBE_PENDING",
+    "G29": "PENDING_ACTUAL_COMPOSE_PROCESS_SMOKE"
+  }
+}
