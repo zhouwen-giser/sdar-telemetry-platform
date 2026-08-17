@@ -1,7 +1,7 @@
 {
   "goalId": "sdar-telemetry-domain-projection-benchmark-handoff-v1",
   "status": "in_progress",
-  "phase": 11,
+  "phase": 12,
   "gates": {
     "G01": "PASS",
     "G02": "PASS",
@@ -22,9 +22,12 @@
     "G17": "PASS",
     "G18": "PASS",
     "G19": "PARTIAL_SERVICE_PASS_ADMIN_INTEGRATION_PHASE_12",
-    "G20": "PASS"
+    "G20": "PASS",
+    "G21": "PASS",
+    "G22": "PASS",
+    "G23": "PENDING_PHASE_16_CONSUMER_QUALIFICATION"
   },
-  "lastVerifiedHead": "ffc6f50",
+  "lastVerifiedHead": "0fef484",
   "blockers": [
     "G14 requires real ClickHouse same-hash target replay in Phase 15; Phase 9 port tests are not counted as real E2E.",
     "G19 requires authenticated Admin API integration in Phase 12; Phase 10 closes the service semantics only.",

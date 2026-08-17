@@ -1,6 +1,6 @@
 # ExecPlan — SDAR Telemetry Domain Projection Worker v0.1
 
-Last updated: 2026-08-17T09:36:27.520Z
+Last updated: 2026-08-17T09:43:12.993Z
 
 ## Goal
 
@@ -12,8 +12,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_10_PUBLISHED_PHASE_11_IN_PROGRESS` |
-| Implementation state | `RECONCILE_REPLAY_DRIFT_GUARDS_VERIFIED_PROJECTIONS_DISABLED` |
+| Phase state | `PHASE_11_PUBLISHED_PHASE_12_IN_PROGRESS` |
+| Implementation state | `LIFECYCLE_SET_READINESS_VERIFIED_PROJECTIONS_DISABLED` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
@@ -146,8 +146,9 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 8 — NPC mappings | COMPLETE_PUBLISHED | DP-N01 through DP-N05; G11/G12 complete at 10/10 |
 | Phase 9 — target/lineage/DLQ | COMPLETE_PUBLISHED | exact target validation, idempotent writes, lineage and conflict closure; G14 reserved for real E2E |
 | Phase 10 — reconcile/replay/drift | COMPLETE_PUBLISHED | eight-way reconciliation, bounded replay, DLQ service and drift fail-closed |
-| Phase 11 — sets/lifecycle | IN_PROGRESS | projection-set readiness and safe mode transitions |
-| Phases 12–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
+| Phase 11 — sets/lifecycle | COMPLETE_PUBLISHED | seven-state lifecycle, four sets and no false-ready empty/disabled state |
+| Phase 12 — APIs/metrics/health | IN_PROGRESS | bounded Query and authenticated Admin/runtime probes |
+| Phases 13–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
 | Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
@@ -249,8 +250,15 @@ five-object schema preflight, mapping/column drift, bounded replay and scope-pin
 actions. G20 is closed. G19 remains partial until Phase 12 connects these controls to the
 authenticated Admin API. The phase used no live ClickHouse DML.
 
+## Phase 11 lifecycle and set-readiness evidence
+
+Six focused tests cover the seven-state transition graph, revision/action conflicts, hash and
+producer prerequisites, the default shadow cap, four exact set definitions and readiness outcomes.
+G21/G22 are closed. G23 remains reserved for Phase 16 consumer qualification. No live projection
+was activated.
+
 ## Resume point
 
-Resume at Phase 11 projection sets and lifecycle. Keep all projections disabled, preserve the
-existing Evidence v1 path, retain G14 for real Phase 15 E2E, G19 for Phase 12 Admin integration and
-the final loopback rerun obligation.
+Resume at Phase 12 Query/Admin/metrics/health. Keep all projections disabled, preserve the existing
+Evidence v1 path, retain G14 for real Phase 15 E2E, close G19 through authenticated Admin
+integration, and retain G23 for Phase 16.
