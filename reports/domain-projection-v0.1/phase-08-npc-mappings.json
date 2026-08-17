@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "phase": 8,
+  "name": "NPC mappings DP-N01 through DP-N05",
+  "status": "passed_with_full_gate_rerun_pending",
+  "phaseCommit": "fcbadc2",
+  "phasePushed": true,
+  "mappings": {
+    "implemented": ["DP-N01", "DP-N02", "DP-N03", "DP-N04", "DP-N05"],
+    "phaseCount": 5,
+    "totalMappingCount": 10,
+    "mappingDocuments": 10,
+    "mappedPayloadSchemas": 10,
+    "manifestComplete": true,
+    "defaultState": "disabled",
+    "nearNameAliases": 0
+  },
+  "verification": {
+    "focusedCommander": "PASS_7_OF_7",
+    "focusedNpc": "PASS_8_OF_8",
+    "deterministicFixtureMappings": "PASS_10_OF_10",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "staticVerify": "PASS",
+    "contractLocks": "PASS",
+    "fullVerify": "PENDING_RERUN_WITH_LOOPBACK_PERMISSION",
+    "sandboxFullRun": "20_FILES_PASS_3_LISTENER_FILES_BLOCKED_BY_SANDBOX"
+  },
+  "gates": {
+    "G11": "PASS",
+    "G12": "PASS"
+  },
+  "limitations": [
+    "The escalated full rerun could not start because the execution environment reported its usage limit; this is not recorded as a code pass.",
+    "Fixtures and schema validation are not real ClickHouse E2E.",
+    "No target write, projection activation or Benchmark scoring occurred."
+  ]
+}

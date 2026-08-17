@@ -1,7 +1,7 @@
 {
   "goalId": "sdar-telemetry-domain-projection-benchmark-handoff-v1",
   "status": "in_progress",
-  "phase": 8,
+  "phase": 9,
   "gates": {
     "G01": "PASS",
     "G02": "PASS",
@@ -13,8 +13,12 @@
     "G08": "PASS",
     "G09": "PASS",
     "G10": "PASS",
+    "G11": "PASS",
+    "G12": "PASS",
     "G13": "PASS"
   },
-  "lastVerifiedHead": "d19a64d",
-  "blockers": []
+  "lastVerifiedHead": "fcbadc2",
+  "blockers": [
+    "Final npm run verify rerun with loopback permission is pending because the execution environment reported its usage limit."
+  ]
 }
