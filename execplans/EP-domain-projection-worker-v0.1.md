@@ -1,6 +1,6 @@
 # ExecPlan — SDAR Telemetry Domain Projection Worker v0.1
 
-Last updated: 2026-08-17T08:49:30.717Z
+Last updated: 2026-08-17T09:05:35.338Z
 
 ## Goal
 
@@ -12,8 +12,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_6_PUBLISHED_PHASE_7_IN_PROGRESS` |
-| Implementation state | `SOURCE_READER_LIVE_COMPATIBILITY_VERIFIED_PROJECTIONS_DISABLED` |
+| Phase state | `PHASE_7_PUBLISHED_PHASE_8_IN_PROGRESS` |
+| Implementation state | `COMMANDER_MAPPERS_VERIFIED_PROJECTIONS_DISABLED` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
@@ -142,8 +142,9 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 4 — Control PostgreSQL and leases | COMPLETE_PUBLISHED | real PostgreSQL lease fencing plus action/replay/producer repositories |
 | Phase 5 — registry, identity, envelope | COMPLETE_PUBLISHED | ten definitions, RFC 9562 identity and common target envelope |
 | Phase 6 — SourceReader / late arrival | COMPLETE_PUBLISHED | bounded lookback, stable identity/hash deduplication and real 10/10 read-only smoke |
-| Phase 7 — Commander mappings | IN_PROGRESS | implement DP-C01 through DP-C05 with exact source contracts |
-| Phases 8–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
+| Phase 7 — Commander mappings | COMPLETE_PUBLISHED | DP-C01 through DP-C05 plus five hash-locked mapping documents/schemas |
+| Phase 8 — NPC mappings | IN_PROGRESS | implement DP-N01 through DP-N05 and freeze the complete 10/10 manifest |
+| Phases 9–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
 | Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
@@ -211,7 +212,15 @@ row from each exact source (10/10). It closed two actual compatibility defects: 
 for the ordinary MergeTree sources, and UInt64 ordering must not use `length()`. No ClickHouse
 write, mapping execution, projection activation or live late-arrival fault injection occurred.
 
+## Phase 7 Commander mapping evidence
+
+Five pure Commander mappers implement explicit `produce | skip | fail` decisions against only the
+exact RC2 source contracts. Five mapping documents and five mapped-payload schemas are canonically
+hash locked. Golden fixture/replay, schema validation and failure-path tests passed 7/7; full
+verification passed 115 tests with two explicit database-only skips. G11/G12 remain partial 5/10.
+
 ## Resume point
 
-Resume at Phase 7 Commander mappings DP-C01 through DP-C05. Keep all projections disabled and
-preserve the existing Evidence v1 path unchanged.
+Resume at Phase 8 NPC mappings DP-N01 through DP-N05 and close G11/G12 only after the full 10/10
+manifest and deterministic fixture suite pass. Keep all projections disabled and preserve the
+existing Evidence v1 path unchanged.

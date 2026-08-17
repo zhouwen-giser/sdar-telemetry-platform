@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "phase": 7,
+  "name": "Commander mappings DP-C01 through DP-C05",
+  "status": "passed",
+  "phaseCommit": "d19a64d",
+  "phasePushed": true,
+  "mappings": {
+    "implemented": ["DP-C01", "DP-C02", "DP-C03", "DP-C04", "DP-C05"],
+    "count": 5,
+    "mappingDocuments": 5,
+    "mappedPayloadSchemas": 5,
+    "decisionContract": ["produce", "skip", "fail"],
+    "defaultState": "disabled",
+    "nearNameAliases": 0
+  },
+  "verification": {
+    "focused": "PASS_7_OF_7",
+    "deterministicFixtureMappings": "PASS_5_OF_5",
+    "fullVerify": "PASS_115_WITH_2_EXPLICIT_DATABASE_SKIPS"
+  },
+  "gates": {
+    "G11": "PARTIAL_5_OF_10",
+    "G12": "PARTIAL_5_OF_10"
+  },
+  "limitations": [
+    "G11 and G12 remain open until Phase 8 freezes and verifies all five NPC mappings.",
+    "Tests use frozen Domain Source fixtures and are not real ClickHouse E2E.",
+    "No target write, projection activation or Benchmark scoring occurred."
+  ]
+}

@@ -18,8 +18,9 @@ This repository is actively executing the Domain Projection Benchmark Handoff V1
 | Phase 4 | complete and pushed — real PostgreSQL lease fencing, action/replay/producer repositories |
 | Phase 5 | complete and pushed — ten disabled definitions, RFC 9562 identity, common envelope |
 | Phase 6 | complete and pushed — checkpointed exact-source reader, bounded lookback, live read-only 10/10 smoke |
-| Phase 7 | in progress — five Commander mappings |
-| Phases 8–17 | not yet complete |
+| Phase 7 | complete and pushed — five Commander mappings, five hash-locked documents/schemas |
+| Phase 8 | in progress — five NPC mappings and 10/10 mapping closure |
+| Phases 9–17 | not yet complete |
 | Real Domain Projection E2E | not run; reserved for Phase 15 |
 | Benchmark Server handoff qualification | not run; reserved for Phase 16 |
 
@@ -27,6 +28,6 @@ Authority remains split correctly: SDAR Runtime PostgreSQL owns execution, the G
 accepted-batch durability, Control PostgreSQL owns operational leases/actions, and ClickHouse is
 fact/projection/analytical storage. This repository will not implement Benchmark scoring.
 
-Current status: `IN_PROGRESS_SOURCE_READER_VERIFIED_PROJECTIONS_DISABLED`.
+Current status: `IN_PROGRESS_COMMANDER_MAPPERS_VERIFIED_PROJECTIONS_DISABLED`.
 
 The completion marker must not be emitted until Phases 0–17 and G01–G35 all pass.
