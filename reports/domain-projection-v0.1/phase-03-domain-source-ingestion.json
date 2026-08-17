@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "phase": 3,
   "name": "Durable Domain Source ingestion and WAL routing",
-  "status": "passed_pending_publication",
-  "phaseCommit": null,
-  "phasePushed": false,
+  "status": "passed",
+  "phaseCommit": "19ea1c2",
+  "phasePushed": true,
   "contractVersion": "sdar.domain-source/v1",
   "routes": [
     "/v1/domain-source/batches",

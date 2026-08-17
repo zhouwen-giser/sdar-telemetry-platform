@@ -14,8 +14,9 @@ This repository is actively executing the Domain Projection Benchmark Handoff V1
 | Phase 0 | complete and pushed |
 | Phase 1 | complete and pushed — reproducible ClickHouse contract and live verifier |
 | Phase 2 | complete and pushed — `sdar.domain-source/v1`, 10 source types, 2 seals, 16 fixtures |
-| Phase 3 | complete, pending publication commit — durable Gateway/WAL, exact 12-table landing, real ClickHouse E2E |
-| Phases 4–17 | not yet complete |
+| Phase 3 | complete and pushed — durable Gateway/WAL, exact 12-table landing, real ClickHouse E2E |
+| Phase 4 | in progress — Control PostgreSQL operational state and leases |
+| Phases 5–17 | not yet complete |
 | Real Domain Projection E2E | not run; reserved for Phase 15 |
 | Benchmark Server handoff qualification | not run; reserved for Phase 16 |
 

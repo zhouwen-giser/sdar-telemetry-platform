@@ -65,7 +65,8 @@ that remains reserved for Phase 15.
 
 ## Commit / push
 
-Phase 3 implementation commit: `PENDING_PUBLICATION`. It will be pushed before Phase 4 starts.
+Phase 3 implementation commit `19ea1c2` (`feat(domain-projection): add durable Domain Source
+landing`) was pushed to `origin/feature/domain-projection-worker-v0.1` and Draft PR #1.
 
 ## Next phase
 
