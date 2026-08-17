@@ -1,6 +1,6 @@
 # ExecPlan — SDAR Telemetry Domain Projection Worker v0.1
 
-Last updated: 2026-08-17T08:39:34.242Z
+Last updated: 2026-08-17T08:49:30.717Z
 
 ## Goal
 
@@ -12,8 +12,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_5_PUBLISHED_PHASE_6_IN_PROGRESS` |
-| Implementation state | `DOMAIN_CORE_IDENTITY_VERIFIED_PROJECTIONS_DISABLED` |
+| Phase state | `PHASE_6_PUBLISHED_PHASE_7_IN_PROGRESS` |
+| Implementation state | `SOURCE_READER_LIVE_COMPATIBILITY_VERIFIED_PROJECTIONS_DISABLED` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
@@ -141,8 +141,9 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 3 — durable source ingestion | COMPLETE_PUBLISHED | authenticated routes, fsync-before-ACK, real exact-table landing |
 | Phase 4 — Control PostgreSQL and leases | COMPLETE_PUBLISHED | real PostgreSQL lease fencing plus action/replay/producer repositories |
 | Phase 5 — registry, identity, envelope | COMPLETE_PUBLISHED | ten definitions, RFC 9562 identity and common target envelope |
-| Phase 6 — SourceReader / late arrival | IN_PROGRESS | bounded lookback and stable identity/hash deduplication |
-| Phases 7–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
+| Phase 6 — SourceReader / late arrival | COMPLETE_PUBLISHED | bounded lookback, stable identity/hash deduplication and real 10/10 read-only smoke |
+| Phase 7 — Commander mappings | IN_PROGRESS | implement DP-C01 through DP-C05 with exact source contracts |
+| Phases 8–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
 | Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
@@ -198,7 +199,19 @@ prove exact-source-only routing, application isolation, canonical UInt64 revisio
 hashes and the prohibition on arbitrary table identifiers. These assets are not live ingestion or
 ClickHouse E2E evidence.
 
+## Phase 6 SourceReader evidence
+
+The separate Domain SourceReader is bounded to a 30-minute lookback and 1,000-row pages, reads
+only the ten exact RC2 sources under `readonly=2`, and uses versioned ordinary/state composite
+cursors. Stable identity/content checks recover a late row once without moving a newer checkpoint
+backward. Focused tests passed 4/4 and G10 is closed.
+
+Real read-only run `codex_dp6_20260817t084700z` passed the RC2 preflight and accepted one existing
+row from each exact source (10/10). It closed two actual compatibility defects: `FINAL` is invalid
+for the ordinary MergeTree sources, and UInt64 ordering must not use `length()`. No ClickHouse
+write, mapping execution, projection activation or live late-arrival fault injection occurred.
+
 ## Resume point
 
-Resume at Phase 6 checkpointed SourceReader and late-arrival handling. Keep all projections
-disabled and preserve the existing Evidence v1 path unchanged.
+Resume at Phase 7 Commander mappings DP-C01 through DP-C05. Keep all projections disabled and
+preserve the existing Evidence v1 path unchanged.
