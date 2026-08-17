@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked",
+  "staticAssets": "PASS",
+  "actualConsumer": "BENCHMARK_DOMAIN_CONSUMER_PATH_MISSING",
+  "liveQueries": "NOT_RUN",
+  "gate": "G32"
+}

@@ -152,7 +152,7 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 14 — Compose/operations | COMPLETE_PUBLISHED | safe configuration/entry points wired; actual process smoke retained |
 | Phase 15 — real ClickHouse E2E | BLOCKED_HARNESS_PUBLISHED | real 10/10 + SIGKILL harness ready; external execution unavailable |
 | Phase 16 — Benchmark consumer qualification | BLOCKED_PUBLISHED | frozen baseline lacks Domain path; no consumer worktree mutation |
-| Phase 17 — release acceptance | IN_PROGRESS | run every available gate and retain required blockers |
+| Phase 17 — release acceptance | BLOCKED_PUBLISHED | 23/35 pass; exact live/consumer/PR/full-verify blockers retained |
 
 ## Baseline command evidence
 
@@ -306,7 +306,15 @@ references, `not_required`, `blocked_drift`, General independence and the formal
 absent. G23/G24/G32 therefore remain blocked. Telemetry's helper/fixture tests are not counted as
 actual consumer qualification, and no scoring code was added here.
 
+## Phase 17 final acceptance evidence
+
+The fail-closed release verifier covers exactly G01–G35. Local contracts, 15 focused files/78
+source-level cases, typecheck/build/static checks and Git synchronization pass. The complete
+sandbox verify reaches 27/30 files; three listener files fail under `EPERM` and are not relabeled.
+Final acceptance is BLOCKED at 23/35 by real ClickHouse E2E, Admin/Compose runtime, actual Benchmark
+consumer/live queries, PR body publication and the full release gate.
+
 ## Resume point
 
-Resume at Phase 17 final local acceptance while retaining the exact Phase 15 live command and Phase
-16 external consumer action. Do not declare completion until all blocking gates have real evidence.
+Resume from the ordered actions in `reports/domain-projection-v0.1/phase-17-final-acceptance.md`.
+Do not declare completion until `npm run check:domain-projection-release` reports 35/35 PASS.

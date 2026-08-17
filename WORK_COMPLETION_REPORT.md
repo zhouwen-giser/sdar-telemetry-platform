@@ -28,7 +28,7 @@ This repository is actively executing the Domain Projection Benchmark Handoff V1
 | Phase 14 | complete and pushed — Domain/Admin Compose and safe configuration; actual process smoke remains open |
 | Phase 15 | harness complete and pushed — real 10/10/SIGKILL execution blocked; G14/G30/G31 remain open |
 | Phase 16 | qualifier complete and pushed — frozen Benchmark baseline lacks the formal Domain consumer path |
-| Phase 17 | not yet complete |
+| Phase 17 | acceptance published BLOCKED — 23/35 pass; no completion marker |
 | Real Domain Projection E2E | not run; reserved for Phase 15 |
 | Benchmark Server handoff qualification | not run; reserved for Phase 16 |
 
@@ -36,7 +36,7 @@ Authority remains split correctly: SDAR Runtime PostgreSQL owns execution, the G
 accepted-batch durability, Control PostgreSQL owns operational leases/actions, and ClickHouse is
 fact/projection/analytical storage. This repository will not implement Benchmark scoring.
 
-Current status: `IN_PROGRESS_PHASE_16_CONSUMER_PATH_BLOCKED_FINAL_LOCAL_GATES_PENDING`.
+Current status: `BLOCKED_23_OF_35_REQUIRED_GATES_PASS`.
 
 Phase 9 closed G15–G18 with deterministic port tests covering ten exact target descriptors,
 100% produced lineage, skip/fail audit and post-target/pre-lineage crash recovery. G14 remains
@@ -70,4 +70,8 @@ Phase 16 proves the frozen Benchmark baseline lacks the required Domain consumer
 remain blocked; the adjacent dirty Benchmark worktree was not modified and Telemetry still contains
 no scoring implementation.
 
-The completion marker must not be emitted until Phases 0–17 and G01–G35 all pass.
+Phase 17 completed every locally available verification and published the exact 12-gate resume
+set. Full acceptance is not complete: real ClickHouse E2E, live Admin/Compose probes, the actual
+Benchmark consumer, PR body publication and a fully passing `npm run verify` remain required.
+
+The completion marker is prohibited while the final release verifier remains 23/35.

@@ -41,6 +41,12 @@ Benchmark consumer 的冻结交付位于
 只验证本地清单、哈希和 fixture；只有 `npm run check:benchmark-handoff:live` 在真实重建库成功后
 才构成 live consumer-query 证据。
 
+当前 Domain Projection v0.1 最终验收为 **BLOCKED (23/35)**。静态/本地合同与实现已发布，
+但真实 10/10 ClickHouse replay/SIGKILL、Admin/Compose 进程、实际 Benchmark consumer 与 live
+queries 尚未闭合。权威状态与恢复命令见
+`reports/domain-projection-v0.1/phase-17-final-acceptance.md`。只有
+`npm run check:domain-projection-release` 返回 35/35 PASS 才允许宣告完成。
+
 ## 本地门禁
 
 ```bash

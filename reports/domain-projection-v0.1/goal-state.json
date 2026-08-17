@@ -1,6 +1,6 @@
 {
   "goalId": "sdar-telemetry-domain-projection-benchmark-handoff-v1",
-  "status": "in_progress",
+  "status": "blocked",
   "phase": 17,
   "gates": {
     "G01": "PASS",
@@ -34,9 +34,12 @@
     "G29": "PENDING_ACTUAL_COMPOSE_PROCESS_SMOKE",
     "G30": "PENDING_REAL_RUN_HARNESS_READY",
     "G31": "PENDING_REAL_RUN_HARNESS_READY",
-    "G32": "BLOCKED_CONSUMER_AND_LIVE_QUERY_PENDING"
+    "G32": "BLOCKED_CONSUMER_AND_LIVE_QUERY_PENDING",
+    "G33": "BLOCKED_PR_BODY_UPDATE_UNAVAILABLE",
+    "G34": "PASS",
+    "G35": "BLOCKED_REQUIRED_GATES_AND_FULL_VERIFY"
   },
-  "lastVerifiedHead": "46e2086",
+  "lastVerifiedHead": "2d89ef2",
   "blockers": [
     "G14/G30/G31 real ClickHouse and SIGKILL harness is implemented, but external execution permission was unavailable; no fixture or focused test is counted as E2E.",
     "G19 and G27 require a real authenticated Admin HTTP to Control PostgreSQL integration run; the environment variable for the integration database was not configured in Phase 12.",
@@ -44,6 +47,7 @@
     "G29 requires an actual external-ClickHouse Compose process smoke; only static Compose parsing ran because Docker API access was denied.",
     "G23/G24 are blocked because frozen Benchmark baseline ee7f737 lacks all seven Domain view references, not_required/blocked_drift and both required profile gates.",
     "G32 static manifest/checksum verification passes, but the Benchmark consumer path is absent and live consumer queries remain unavailable.",
-    "Final npm run verify rerun with loopback permission is pending because the execution environment reported its usage limit."
+    "G33 documentation artifacts are current, but the Draft PR body could not be updated because the GitHub connector reported the platform usage limit.",
+    "G35 is blocked by the required open gates and by the full sandbox verify result (27/30 test files; three loopback-listener files failed under EPERM)."
   ]
 }

@@ -48,5 +48,15 @@
     "Re-read execution-time Git heads before editing.",
     "Do not silently sync Runtime Evidence if hashes drift.",
     "Live ClickHouse preflight is a hard gate before mapper or writer activation."
-  ]
+  ],
+  "deliveryAudit": {
+    "observedAt": "2026-08-17T17:00:00+08:00",
+    "lastImplementationHead": "2d89ef2",
+    "phase": 17,
+    "result": "blocked_required_live_and_consumer_gates",
+    "branchPushed": true,
+    "pullRequestRemainsDraft": true,
+    "pullRequestBodyUpdate": "blocked_platform_usage_limit",
+    "projectionsActivated": false
+  }
 }

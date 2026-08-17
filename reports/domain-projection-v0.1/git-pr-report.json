@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "branch": "feature/domain-projection-worker-v0.1",
+  "remoteDivergenceBeforePublication": {"ahead":0,"behind":0},
+  "forcePush": false,
+  "rebase": false,
+  "amend": false,
+  "pullRequest": 1,
+  "pullRequestDraft": true,
+  "pullRequestBodyCurrent": false,
+  "G33": "BLOCKED_PR_BODY_UPDATE_UNAVAILABLE",
+  "G34": "PASS"
+}
