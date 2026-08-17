@@ -1,0 +1,13 @@
+{
+  "goalId": "sdar-telemetry-domain-projection-benchmark-handoff-v1",
+  "status": "in_progress",
+  "phase": 0,
+  "gates": {
+    "G01": "PASS",
+    "G02": "PASS",
+    "G03": "PASS",
+    "G04": "PASS"
+  },
+  "lastVerifiedHead": "301189599a9cf63ee7b51ee594aa1714441dee9d",
+  "blockers": []
+}

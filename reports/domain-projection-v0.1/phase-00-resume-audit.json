@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "phase": 0,
+  "name": "Resume audit and decision closure",
+  "status": "passed",
+  "observedAt": "2026-08-17T07:28:12.565Z",
+  "branch": "feature/domain-projection-worker-v0.1",
+  "startingHead": "301189599a9cf63ee7b51ee594aa1714441dee9d",
+  "remoteAligned": true,
+  "draftPullRequest": 1,
+  "taskPackage": {
+    "files": 40,
+    "checksum": "passed",
+    "validator": "passed",
+    "projections": 10,
+    "gates": 35
+  },
+  "sourceLocks": {
+    "runtimeExecution": "0da6075f2581279909efb69fc8e48cb01d95552c",
+    "runtimeMain": "2275bc52759914bc80113358a9083e6f00d59e6d",
+    "benchmarkServer": "ee7f73735595382072b8205b891af554e8496582",
+    "clickHousePackageSha256": "99fd093201cecbd97eec8579d316d3d96b155330feef9a8a8bf57b1d1ac51496"
+  },
+  "clickHousePreflight": {
+    "status": "passed",
+    "serverVersion": "24.10.2.1",
+    "releaseVersion": "1.5.1-rc.2",
+    "migrationRange": "00..26",
+    "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+    "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+    "objects": 472,
+    "columns": 15949,
+    "tableDescriptorHash": "sha256:40ff8c3e8c162df6c9a5007859b4b4345253e66f087618b9359777dc9bfd2c49",
+    "columnDescriptorHash": "sha256:a0aa5014f4e26f1ec90166a38e5661ea3f457fb5e0acf7fc59ad9b58853987d8",
+    "tableDiffCount": 0,
+    "columnDiffCount": 0,
+    "activeProjections": 0
+  },
+  "gates": {
+    "G01": "PASS",
+    "G02": "PASS",
+    "G03": "PASS",
+    "G04": "PASS"
+  },
+  "repositoryVerification": {
+    "fullVerify": "PASS_83_OF_83",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "staticVerify": "PASS",
+    "evidenceContractLock": "PASS_121_FILES_100_95_5",
+    "domainProjectionContractVerifier": "PASS_5_SCHEMAS_21_FIXTURES",
+    "gitDiffCheck": "PASS"
+  },
+  "limitations": [
+    "No Domain Source batch has been ingested in Phase 0.",
+    "No target, lineage, checkpoint or DLQ write has been performed in Phase 0.",
+    "Real Domain Projection E2E remains not run until Phase 15."
+  ]
+}

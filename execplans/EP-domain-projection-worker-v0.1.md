@@ -1,6 +1,6 @@
 # ExecPlan — SDAR Telemetry Domain Projection Worker v0.1
 
-Last updated: 2026-08-14T14:12:43.193Z
+Last updated: 2026-08-17T07:28:12.565Z
 
 ## Goal
 
@@ -12,8 +12,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_1_COMPLETE_COMPATIBILITY_PACKET_READY` |
-| Implementation state | `BLOCKED_SCHEMA_COMPATIBILITY` |
+| Phase state | `RESUME_PHASE_0_COMPLETE` |
+| Implementation state | `SCHEMA_COMPATIBILITY_CLEARED_PROJECTIONS_DISABLED` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
@@ -24,8 +24,9 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 | Phase 0 publication commit | `3c8b22b0e3bc6430eca292cd7651e34b8bdb52bd` (pushed) |
 | Phase 1 contract commit | `4d47235f5e3ffdeffda4eede94023c3755ca1f4e` (pushed) |
 | Phase 1 publication commit | `72b35c35700d038ab1c80729dfabc8a704947b80` (pushed) |
-| Compatibility decision packet | `reports/domain-projection-v0.1/compatibility-decision-packet.md` and `.json` |
-| Mapper coding allowed | **No** |
+| Decision closure | `reports/domain-projection-v0.1/decision-closure.md` and `.json` |
+| RC2 live evidence | `reports/clickhouse/192.168.1.7-schema-snapshot/domain-projection-rc2-preflight/` |
+| Mapper coding allowed | **After Phase 1 contract synchronization; projections remain disabled** |
 
 ## Repository architecture
 
@@ -49,41 +50,38 @@ Constraints:
 
 | Input | Observation |
 | --- | --- |
-| Goal package | Domain Projection Worker v0.1 task package read completely |
+| Goal package | Benchmark Handoff V1.0: 40/40 files checksum-valid; bundled verifier PASS (10 projections / 35 gates) |
 | `README.md`, `package.json`, apps, packages, migrations, deploy, scripts, tests | Read-only inventory complete |
 | `AGENTS.md`, nested `AGENTS.md`, `CONTRIBUTING.md` | Not present in this repository |
 | Runtime Evidence contract | `sdar.evidence/v1` remains unchanged |
-| Runtime execution lock | `7246c263bbb5554d01a7aa343ef6f857378e7bf4` |
-| Runtime main lock | `34ce7a7a43971de37566b24f969b4f0aeadec2b2` |
+| Runtime main lock | `2275bc52759914bc80113358a9083e6f00d59e6d` (remote re-read exact) |
+| Benchmark consumer lock | `ee7f73735595382072b8205b891af554e8496582` (remote re-read exact) |
 | Canonical contract hash | `sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f` |
 | Canonical registry hash | `sha256:eac67fcc0cd02c55da750156af42f3ea2130ee470f0670aba980c08ddec41c71` |
 
 ## ClickHouse authority
 
-The Goal-specific read-only snapshot is frozen at
-`reports/clickhouse/192.168.1.7-schema-snapshot/domain-projection-v0-1-phase0/`.
-It was observed at `2026-08-14T13:17:39.818Z` with `readonly=2` and records:
+The obsolete RC1 snapshot remains historical evidence. The execution authority is now the
+read-only snapshot at
+`reports/clickhouse/192.168.1.7-schema-snapshot/domain-projection-rc2-preflight/`,
+observed at `2026-08-17T07:28:12.565Z`.
 
-- ClickHouse `24.10.2.1`;
-- all six allowlisted Atomic databases;
-- 430 objects: 310 non-View objects and 120 Views;
-- 14,885 columns and 430 `SHOW CREATE` records;
-- exact requested source tables `0/10`;
-- required `sdar_embodied` targets `6/6`;
-- required `sdar_meta.projection_*` governance tables `6/6`.
+- live ClickHouse is the locked `24.10.2.1`;
+- release is `1.5.1-rc.2`, migrations `00..26`;
+- schema contract hash is `sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8`;
+- release descriptor hash is `sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335`;
+- all six databases are Atomic;
+- 472 objects and 15,949 columns exactly match the locked `fresh_all.sql` rebuilt under
+  isolated ClickHouse local 25.3;
+- table descriptor hash is `sha256:40ff8c3e8c162df6c9a5007859b4b4345253e66f087618b9359777dc9bfd2c49`;
+- column descriptor hash is `sha256:a0aa5014f4e26f1ec90166a38e5661ea3f457fb5e0acf7fc59ad9b58853987d8`;
+- table and column diff counts are both zero;
+- all ten exact source tables, two seals, six targets, six governance tables and required views
+  exist; seven critical views compile at `LIMIT 0` with no dotted output columns;
+- ten source definitions, ten projection definitions and four sets exist; active projections are
+  exactly zero.
 
-The DDL footprint contains the 1.5 Benchmark objects, but the latest live
-`sdar_meta.warehouse_release_definition FINAL` row still declares
-`1.4.1-rc.1`, migration range `00..17`, status `candidate`. The server thus
-has no internally consistent 1.5 release marker.
-
-The supplied `1.5.0-rc.1` package is not release-lock clean:
-`sha256sum -c` fails for `all.sql`, while `tools/build_package.py --check`
-reports stale `all.sql` and `manifest.json`. Its authoritative migrations also
-contain none of the ten exact source table names.
-
-Implementation is blocked until an explicit compatibility decision exists.
-Observed near-name tables are not substitutes for the missing exact source contracts.
+No remote DDL or DML was executed during this preflight.
 
 ## Existing Projection Registry
 
@@ -101,56 +99,48 @@ The expected additive design is a `DomainProjectionRegistry` inside the same pac
 - control migration: `migrations/control-postgres/001_init.sql`;
 - vendored historical DDL: `vendor/sdar-clickhouse-schema/sdar_clickhouse_schema_v1_0/migrations/00..13`.
 
-The vendor bundle is not accepted as the target 1.5.x authority. No Domain migration may be authored or applied until the schema-gap report is resolved. Any approved change must be additive, idempotent and reuse existing `sdar_meta.projection_*` tables.
+The vendored historical bundle remains non-authoritative. The immutable
+`SDAR_ClickHouse_Schema_1.5.1_RC2_Clean_Rebuild.zip` locked by `SOURCE_LOCK.json` is the schema
+authority. Telemetry must not execute its destructive rebuild aggregate; it consumes the exact
+live source/target/governance contracts and keeps operational authority in Control PostgreSQL.
 
-## Mandatory compatibility decisions
+## Closed compatibility decisions
 
 ### D1 — Exact source contract
 
-The ten source names required by the task are absent from both the fresh live snapshot and the supplied RC1 migrations. A user-approved compatibility decision must bind each exact logical source to an authoritative physical table/schema, or keep the mapping blocked. Similar names must not be selected implicitly.
-
-The decision-ready audit found four `SAFE_CANDIDATE_FOR_REVIEW` rows (C02,
-C05, N02 and N03) and six `SEMANTICALLY_INSUFFICIENT` rows (C01, C03, C04,
-N01, N04 and N05). All ten remain blocked because no physical binding has been
-approved. The complete field-level gap is frozen in
-`reports/domain-projection-v0.1/compatibility-candidate-matrix.csv`.
+D1 is approved for the ten exact RC2 `domain_*_source_v1` tables and two exact Episode Seal
+tables only. Every near-name legacy candidate remains non-authoritative and must never be used as
+an alias.
 
 ### D2 — Projection identity model
 
-The vendored seed models P1 as one coarse `application_to_embodied@1.1.0` projection, while the Goal requires ten formal DP-C/N projections and a set containing ten projection IDs/versions. A user-approved decision must choose:
-
-1. ten independent projection IDs; or
-2. one coarse projection ID plus ten mapping-rule IDs, with an explicit task-book compatibility exception.
+D2 is approved for ten independent projection identities
+`application_to_embodied.dp-c01` through `application_to_embodied.dp-n05`, projection version
+`1`, with mapper identities `domain.mapper.dp-*` at `0.1.0`. The coarse historical definition is
+legacy umbrella metadata only.
 
 ### D3 — Schema authority
 
-The supplied 1.5 RC1 package is not integrity-clean and the live release row
-still declares `1.4.1-rc.1` despite a 1.5-like DDL footprint. A user-approved
-decision must repair the package/release marker or explicitly accept the frozen
-live per-table schema fingerprints as the compatibility authority.
-
-The frozen live snapshot combined fingerprint is
-`sha256:c3b9e327b1072c8063db5c65220f848890c7da6e4390afdce68f93e706e05170`.
-The package's expected aggregate hash is `bd7534...f38f0f`, while the actual
-mixed RC1/RC2 `all.sql` is `5a175b...80ea`. Exact D3-A and D3-B approval text
-is recorded in `compatibility-decision-packet.md`.
+D3 is approved only for an exact live match to the checksum-clean RC2 authority. The Phase 0
+live comparison passed release, schema hash, release descriptor hash, all object descriptors and
+all column descriptors with zero differences.
 
 ## Hard stop
 
-**Do not start Mapper, SourceReader, TargetWriter or Domain Worker implementation until D1 and D2 are explicitly resolved and the inconsistent live/reference 1.5 schema authority is accepted or repaired.**
+**Cleared on `2026-08-17T07:28:12.565Z` by the exact RC2 live preflight.** This does not activate
+any projection. A future release/hash/object/column drift must fail closed as
+`CLICKHOUSE_SCHEMA_CONTRACT_DRIFT` and suspend affected projection work.
 
 ## Phase progress
 
 | Phase | Status | Exit requirement |
 | --- | --- | --- |
-| 0 — Baseline/discovery | COMPLETE | evidence frozen; implementation remains behind the compatibility gate |
-| 1 — Domain contracts | COMPLETE | five immutable types + schemas + validator + 7 valid/14 invalid fixtures; canonical schema hashes frozen |
-| Compatibility gate | DECISION_PACKET_READY | D1 has 4 reviewable and 6 insufficient candidates; D2-A and D3-A/B are decision-ready; no implementation authorization |
-| 2–9 — Runtime/mappings/reconcile | BLOCKED | D1/D2/D3 compatibility hard stop cleared |
-| 10 — Query/Admin/Metrics | NOT_STARTED | endpoints, config, permissions, Compose, health/readiness/metrics |
-| 11 — Projection Set | NOT_STARTED | `embodied-standard/1` immutable artifact and hash |
-| 12–13 — Acceptance/adversarial | NOT_STARTED | deterministic/restart/conflict/replay/drift and 10/10 mapping evidence |
-| 14 — Release acceptance | NOT_STARTED | required scripts, reports and real ClickHouse pass |
+| Resume Phase 0 — audit/decision closure | COMPLETE | package/heads/decisions/live RC2 exact-match evidence frozen |
+| Resume Phase 1 — RC2 contract sync | NEXT | immutable integration contract and repeatable preflight verifier |
+| Phases 2–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
+| Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
+| Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
+| Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
 
 ## Baseline command evidence
 
@@ -195,8 +185,7 @@ The following baseline maintenance changes were isolated in commit `40b269b` and
 
 ## Resume point
 
-Resume at the compatibility gate after Phase 1 using
-`reports/domain-projection-v0.1/compatibility-decision-packet.md`. Obtain and
-record D1/D2/D3 before Phase 2 or any mapper/source/target implementation. Do
-not resume from mapper code and do not treat the four reviewable candidates as
-approved aliases.
+Resume at Phase 1 contract synchronization. The compatibility hard stop is closed by
+`decision-closure.md` and the live RC2 descriptor comparison. Keep all projections disabled,
+import only the exact ten source contracts, and retain the historical compatibility packet as an
+audit record rather than an active mapping authority.
