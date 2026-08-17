@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "phase": 1,
+  "name": "ClickHouse 1.5.1-rc.2 contract synchronization",
+  "status": "passed",
+  "releaseVersion": "1.5.1-rc.2",
+  "migrationRange": "00..26",
+  "integrationRoot": "integrations/sdar-clickhouse/1.5.1-rc.2",
+  "contract": {
+    "databases": 6,
+    "sources": 10,
+    "episodeSeals": 2,
+    "projections": 10,
+    "projectionSets": 4,
+    "targets": 6,
+    "governanceTables": 6,
+    "views": 7,
+    "requiredObjects": 31,
+    "nearNameAliases": 0,
+    "activeProjections": 0
+  },
+  "descriptorLock": {
+    "objects": 472,
+    "columns": 15949,
+    "tableDescriptorHash": "sha256:40ff8c3e8c162df6c9a5007859b4b4345253e66f087618b9359777dc9bfd2c49",
+    "columnDescriptorHash": "sha256:a0aa5014f4e26f1ec90166a38e5661ea3f457fb5e0acf7fc59ad9b58853987d8",
+    "tableDiffCount": 0,
+    "columnDiffCount": 0
+  },
+  "verification": {
+    "offlineContractCheck": "PASS",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "focusedTests": "PASS_4_OF_4",
+    "fullVerify": "PASS_87_OF_87_TYPECHECK_BUILD_STATIC",
+    "liveReadonlyPreflight": "PASS",
+    "liveE2E": "NOT_RUN"
+  },
+  "limitations": [
+    "This phase verifies schema compatibility and contract locks only.",
+    "No Domain Source data was ingested and no target row was projected.",
+    "All projections remain disabled."
+  ]
+}

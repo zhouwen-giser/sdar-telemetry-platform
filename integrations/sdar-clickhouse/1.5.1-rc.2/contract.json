@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "release": {
+    "serverVersion": "24.10.2.1",
+    "releaseVersion": "1.5.1-rc.2",
+    "migrationRange": "00..26",
+    "packageGeneration": "sdar-clickhouse/1.5.1-rc.2",
+    "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+    "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+    "sourceContractCount": 10,
+    "episodeSealContractCount": 2,
+    "projectionIdentityCount": 10,
+    "projectionSetCount": 4,
+    "activeDomainProjectionCount": 0
+  },
+  "databases": ["sdar_commander", "sdar_core", "sdar_embodied", "sdar_mart", "sdar_meta", "sdar_npc"],
+  "sources": [
+    {"id":"sdar.domain-source/commander/capability-track-sample","version":"1","database":"sdar_commander","table":"domain_capability_track_sample_source_v1","schemaHash":"sha256:a7effb6fdc96b9e91acfe62d550588e1f64fa192b2eb18339e75e5ce41f2dc92"},
+    {"id":"sdar.domain-source/commander/error-recovery","version":"1","database":"sdar_commander","table":"domain_error_recovery_source_v1","schemaHash":"sha256:822178f025017ca3264ea5cb5a99c8f07b34a2d887e27e354a3283068cb5cf1a"},
+    {"id":"sdar.domain-source/commander/mcp-action","version":"1","database":"sdar_commander","table":"domain_mcp_action_source_v1","schemaHash":"sha256:ba4522f56698e64c8c056331ff2979fdb756de36bfb6539cba43aa43c69abb63"},
+    {"id":"sdar.domain-source/commander/mcp-receipt","version":"1","database":"sdar_commander","table":"domain_mcp_receipt_source_v1","schemaHash":"sha256:add8b6335405a315e669475589fbcf767848841abea21f81a4554322e1a30b99"},
+    {"id":"sdar.domain-source/commander/ugv-state-snapshot","version":"1","database":"sdar_commander","table":"domain_ugv_state_snapshot_source_v1","schemaHash":"sha256:755f01a3719d741a9fe9343f7975d4185cd903846ab6b98917bac493daa3dfd2"},
+    {"id":"sdar.domain-source/npc/blackboard-snapshot","version":"1","database":"sdar_npc","table":"domain_blackboard_snapshot_source_v1","schemaHash":"sha256:8eb4de4e516c46fe070b52c7ab3fe2b4c6e23afc4f12f0899b600762019342df"},
+    {"id":"sdar.domain-source/npc/hmi-approval","version":"1","database":"sdar_npc","table":"domain_hmi_approval_source_v1","schemaHash":"sha256:8e3997d81321b3cdca30d292f07716904ba50214be8e86c281d8f4ab5cb75860"},
+    {"id":"sdar.domain-source/npc/mcp-receipt","version":"1","database":"sdar_npc","table":"domain_mcp_receipt_source_v1","schemaHash":"sha256:aadb7c93112f4015146155f778a2032d41f1d4105abac9ca9847882b2c4c4d5f"},
+    {"id":"sdar.domain-source/npc/mission-tool-call","version":"1","database":"sdar_npc","table":"domain_mission_tool_call_source_v1","schemaHash":"sha256:bf00f944595f2e87953b45ae7a1c383830da7f5fe7f2b3917b4ead5d7ca158ef"},
+    {"id":"sdar.domain-source/npc/preemption-record","version":"1","database":"sdar_npc","table":"domain_preemption_record_source_v1","schemaHash":"sha256:57a6cbf38479cad440f72b3d2e7d4cb7d728617a9c2128329cd69a41a9ad4810"}
+  ],
+  "episodeSeals": [
+    {"database":"sdar_commander","table":"domain_source_episode_seal_v1"},
+    {"database":"sdar_npc","table":"domain_source_episode_seal_v1"}
+  ],
+  "projections": [
+    {"mappingId":"DP-C01","id":"application_to_embodied.dp-c01","version":"1","mapperId":"domain.mapper.dp-c01","mapperVersion":"0.1.0","source":"sdar_commander.domain_mcp_action_source_v1","target":"sdar_embodied.control_action","status":"disabled"},
+    {"mappingId":"DP-C02","id":"application_to_embodied.dp-c02","version":"1","mapperId":"domain.mapper.dp-c02","mapperVersion":"0.1.0","source":"sdar_commander.domain_mcp_receipt_source_v1","target":"sdar_embodied.control_receipt","status":"disabled"},
+    {"mappingId":"DP-C03","id":"application_to_embodied.dp-c03","version":"1","mapperId":"domain.mapper.dp-c03","mapperVersion":"0.1.0","source":"sdar_commander.domain_capability_track_sample_source_v1","target":"sdar_embodied.physical_verification","status":"disabled"},
+    {"mappingId":"DP-C04","id":"application_to_embodied.dp-c04","version":"1","mapperId":"domain.mapper.dp-c04","mapperVersion":"0.1.0","source":"sdar_commander.domain_error_recovery_source_v1","target":"sdar_embodied.preemption_recovery","status":"disabled"},
+    {"mappingId":"DP-C05","id":"application_to_embodied.dp-c05","version":"1","mapperId":"domain.mapper.dp-c05","mapperVersion":"0.1.0","source":"sdar_commander.domain_ugv_state_snapshot_source_v1","target":"sdar_embodied.state_freshness_check","status":"disabled"},
+    {"mappingId":"DP-N01","id":"application_to_embodied.dp-n01","version":"1","mapperId":"domain.mapper.dp-n01","mapperVersion":"0.1.0","source":"sdar_npc.domain_mission_tool_call_source_v1","target":"sdar_embodied.control_action","status":"disabled"},
+    {"mappingId":"DP-N02","id":"application_to_embodied.dp-n02","version":"1","mapperId":"domain.mapper.dp-n02","mapperVersion":"0.1.0","source":"sdar_npc.domain_mcp_receipt_source_v1","target":"sdar_embodied.control_receipt","status":"disabled"},
+    {"mappingId":"DP-N03","id":"application_to_embodied.dp-n03","version":"1","mapperId":"domain.mapper.dp-n03","mapperVersion":"0.1.0","source":"sdar_npc.domain_hmi_approval_source_v1","target":"sdar_embodied.human_confirmation","status":"disabled"},
+    {"mappingId":"DP-N04","id":"application_to_embodied.dp-n04","version":"1","mapperId":"domain.mapper.dp-n04","mapperVersion":"0.1.0","source":"sdar_npc.domain_preemption_record_source_v1","target":"sdar_embodied.preemption_recovery","status":"disabled"},
+    {"mappingId":"DP-N05","id":"application_to_embodied.dp-n05","version":"1","mapperId":"domain.mapper.dp-n05","mapperVersion":"0.1.0","source":"sdar_npc.domain_blackboard_snapshot_source_v1","target":"sdar_embodied.state_freshness_check","status":"disabled"}
+  ],
+  "projectionSets": [
+    {"id":"commander-standard","version":"1","memberCount":5,"status":"defined_disabled","contentHash":"sha256:7fedf9cf60960dd451b5289c1b979d979bdaeb92f8de56c73e11fc39e75ebfce"},
+    {"id":"embodied-diagnostic","version":"0.1","memberCount":4,"status":"defined_disabled","contentHash":"sha256:c245d9bd5939d04a61d10e1bc50ae5c1053ddff6b453c8954ad30462eaaf68cb"},
+    {"id":"embodied-standard","version":"1","memberCount":10,"status":"defined_disabled","contentHash":"sha256:6fd248c5b13bb7c5784560f6f540532cbd307cac77fde9248abf850c1494e0bb"},
+    {"id":"npc-standard","version":"1","memberCount":5,"status":"defined_disabled","contentHash":"sha256:7acc53cbc1ebee9ed765853da5080c03613c72f480e13440ff185a7686bfbc28"}
+  ],
+  "targets": [
+    {"database":"sdar_embodied","table":"control_action"},
+    {"database":"sdar_embodied","table":"control_receipt"},
+    {"database":"sdar_embodied","table":"human_confirmation"},
+    {"database":"sdar_embodied","table":"physical_verification"},
+    {"database":"sdar_embodied","table":"preemption_recovery"},
+    {"database":"sdar_embodied","table":"state_freshness_check"}
+  ],
+  "governance": [
+    {"database":"sdar_meta","table":"projection_definition","requiredV2Columns":[]},
+    {"database":"sdar_meta","table":"projection_version","requiredV2Columns":["source_database","source_table","target_table","mapper_id","mapper_version","definition_hash"]},
+    {"database":"sdar_meta","table":"projection_run","requiredV2Columns":["definition_hash","mapper_id","mapper_version","projection_set_id","projection_set_version","projection_set_hash","produced_count","skipped_count","failed_count","schema_drift_status","episode_key"]},
+    {"database":"sdar_meta","table":"projection_checkpoint","requiredV2Columns":["source_database","source_table","last_source_revision","last_source_sequence","checkpoint_version","produced_count","skipped_count","failed_count","lookback_ms","source_cursor_json","episode_key"]},
+    {"database":"sdar_meta","table":"projection_lineage","requiredV2Columns":["mapper_id","mapper_version","source_revision","decision","reason_code","source_content_hash","target_content_hash","episode_key","source_cursor"]},
+    {"database":"sdar_meta","table":"projection_dead_letter","requiredV2Columns":["source_revision","failure_class","first_failed_at","last_failed_at","management_action_id","resolution_action","source_content_hash","episode_key","source_cursor"]}
+  ],
+  "views": [
+    "sdar_meta.v_schema_contract_release_current",
+    "sdar_meta.v_domain_source_contract_definition_current",
+    "sdar_meta.v_domain_projection_health",
+    "sdar_meta.v_domain_projection_set_readiness",
+    "sdar_meta.v_episode_projection_readiness",
+    "sdar_mart.v_episode_domain_readiness",
+    "sdar_embodied.v_episode_domain_fact_index"
+  ]
+}

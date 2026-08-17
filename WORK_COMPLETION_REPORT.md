@@ -1,12 +1,26 @@
 # Work Completion Report
 
-| Category | Status |
-|---|---|
-| implemented | Independent TypeScript Monorepo; v1.3 outbox relay contract; future v1.4 fact contracts; SMPP ProviderOpsEnvelope 1.1.0 adapter; fsync WAL ACK; central Projection Registry; external ClickHouse client/schema wrapper; Query API; Admin API; Data Quality; Reconciliation; minimal Console |
-| verified_local | TypeScript compilation; 12 unit/contract/WAL tests; static guards; source and manifest checks |
-| repository_baseline | SDAR `feature/v1.3-sequential-implementation` @ `27fddc25...`; SMPP main @ `53a799d4...`, read-only web verified |
-| verified_external_clickhouse | no — environment blocked |
-| sdar_patch_git_apply_check | no — complete local checkout unavailable because container DNS blocked clone |
-| authority_boundary | SDAR PostgreSQL remains authoritative; ClickHouse is projection only; Redis/BullMQ is non-authoritative |
+This repository is actively executing the Domain Projection Benchmark Handoff V1.0 on
+`feature/domain-projection-worker-v0.1` and Draft PR #1. It is not yet a final completion report.
 
-Final status: PARTIAL_ENVIRONMENT_BLOCKED.
+| Category | Status |
+| --- | --- |
+| Existing `sdar.evidence/v1` path | verified — 121 imported files, 100 record types, 95 required / 5 diagnostic, unchanged a99/eac hashes |
+| Domain governance contracts | verified — five schemas, 21 fixtures and hostile-input tests |
+| ClickHouse schema authority | verified live — `24.10.2.1`, release `1.5.1-rc.2`, migrations `00..26` |
+| ClickHouse descriptor comparison | verified — 472 objects / 15,949 columns, zero table and column differences against isolated RC2 reconstruction |
+| Exact Domain Source availability | verified — 10 sources + 2 Episode Seals; no near-name alias |
+| Domain projection definitions | verified disabled — ten independent IDs, four sets, zero active |
+| Phase 0 | complete and pushed |
+| Phase 1 | in progress — reproducible ClickHouse contract and live verifier |
+| Phases 2–17 | not yet complete |
+| Real Domain Projection E2E | not run; reserved for Phase 15 |
+| Benchmark Server handoff qualification | not run; reserved for Phase 16 |
+
+Authority remains split correctly: SDAR Runtime PostgreSQL owns execution, the Gateway WAL owns
+accepted-batch durability, Control PostgreSQL owns operational leases/actions, and ClickHouse is
+fact/projection/analytical storage. This repository will not implement Benchmark scoring.
+
+Current status: `IN_PROGRESS_SCHEMA_CONTRACT_ACCEPTED_PROJECTIONS_DISABLED`.
+
+The completion marker must not be emitted until Phases 0–17 and G01–G35 all pass.

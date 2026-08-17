@@ -4,6 +4,26 @@
 
 Runtime contract 的可重复快照位于 `integrations/skill-driven-agent-runtime/v1.4.1`。其中 `source-lock.json` 分别记录 canonical contract/registry hash 和每个源文件的 byte SHA-256；旧的 v1.3 integration 文件仅为 **compatibility-only**。
 
+## Domain Projection v0.1（进行中）
+
+ClickHouse `1.5.1-rc.2` 的精确消费合同位于
+`integrations/sdar-clickhouse/1.5.1-rc.2`。它只承认 10 张新的
+`domain_*_source_v1` 表与 2 张 Episode Seal 表；任何 near-name legacy table 都不是 alias。
+十个 `application_to_embodied.dp-c01..dp-n05` 投影保持独立且默认 disabled。
+
+```bash
+npm run check:sdar-clickhouse-contract
+npm run clickhouse:domain-preflight
+```
+
+第二条命令以 `readonly=2` 实时核对 release/hash、全部 472 object descriptors、15,949
+column descriptors、精确 sources/seals/targets/governance 和关键 View。通过 Preflight 仅表示
+schema 可兼容，不表示投影已激活，也不是 Domain Projection 真实 E2E。真实 source ingestion、
+target/lineage/checkpoint/DLQ 和 Benchmark consumer 验收将在后续阶段单独证明。
+
+Domain Projection 只提供标准事实、readiness、lineage 与不可变 fact index，不在本仓库实现
+Benchmark M1–M15、F/HG、baseline、comparison 或评分逻辑。
+
 ## 本地门禁
 
 ```bash

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "releaseVersion": "1.5.1-rc.2",
+  "migrationRange": "00..26",
+  "package": {
+    "filename": "SDAR_ClickHouse_Schema_1.5.1_RC2_Clean_Rebuild.zip",
+    "sha256": "99fd093201cecbd97eec8579d316d3d96b155330feef9a8a8bf57b1d1ac51496",
+    "allSqlSha256": "d1989414f95cc333458fc56494bc8dff1b2e24c84229769857b58f588987d3e7",
+    "referenceEngine": "ClickHouse local 25.3.14.14"
+  },
+  "observedAt": "2026-08-17T07:28:12.565Z",
+  "liveEngine": "ClickHouse 24.10.2.1",
+  "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+  "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+  "descriptorLock": {
+    "objectCount": 472,
+    "columnCount": 15949,
+    "tableDescriptorHash": "sha256:40ff8c3e8c162df6c9a5007859b4b4345253e66f087618b9359777dc9bfd2c49",
+    "columnDescriptorHash": "sha256:a0aa5014f4e26f1ec90166a38e5661ea3f457fb5e0acf7fc59ad9b58853987d8",
+    "expectedTableDescriptorHash": "sha256:40ff8c3e8c162df6c9a5007859b4b4345253e66f087618b9359777dc9bfd2c49",
+    "expectedColumnDescriptorHash": "sha256:a0aa5014f4e26f1ec90166a38e5661ea3f457fb5e0acf7fc59ad9b58853987d8",
+    "tableDiffCount": 0,
+    "columnDiffCount": 0
+  },
+  "sourceSnapshot": "reports/clickhouse/192.168.1.7-schema-snapshot/domain-projection-rc2-preflight",
+  "files": [
+    {
+      "path": "columns.json",
+      "bytes": 5677009,
+      "byteSha256": "sha256:2f57f6358fb0e68b283f2054450750bc784b3ad937e1d4669ef8ecf1f25cec84"
+    },
+    {
+      "path": "databases.json",
+      "bytes": 353,
+      "byteSha256": "sha256:361d7a521ba79bec5d251e8b9eee965de30ae9a5106e3c6f6d2b8a1e6b4bcdea"
+    },
+    {
+      "path": "descriptor-comparison.json",
+      "bytes": 984,
+      "byteSha256": "sha256:758948414ea5ba8ec89f4f0e4b615a1f56d4b09d72f2845611c6a3495470bfbf"
+    },
+    {
+      "path": "release.json",
+      "bytes": 872,
+      "byteSha256": "sha256:d4d2081995685b00745a7ff86a9af00906ffb0e9ea161f998ee4c4bf11994507"
+    },
+    {
+      "path": "server.json",
+      "bytes": 74,
+      "byteSha256": "sha256:3f9f7187e3a3913cab2f786167f27b3d4305f018367425e70783cd2771628e55"
+    },
+    {
+      "path": "show-create.json",
+      "bytes": 958353,
+      "byteSha256": "sha256:543c05c899fe2219bf0cc2fc98c94b5c189766a424ec545a077746bf16b59ba9"
+    },
+    {
+      "path": "snapshot-manifest.json",
+      "bytes": 413,
+      "byteSha256": "sha256:7e399322a9b666ba2f90825f48cbb0b829e28cc807ae564d58315baa92a53cdf"
+    },
+    {
+      "path": "tables.json",
+      "bytes": 163827,
+      "byteSha256": "sha256:1f6501fb8025620eb4676413923763e09887a34927d3bc97bc2e0ff14dbe69ab"
+    },
+    {
+      "path": "view-analysis.json",
+      "bytes": 897,
+      "byteSha256": "sha256:573e129bba9893065516607ee9a713ac29056682f832ed6675419861751db3fb"
+    }
+  ]
+}
