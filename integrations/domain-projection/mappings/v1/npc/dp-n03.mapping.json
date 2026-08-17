@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "mappingId": "DP-N03",
+  "projectionId": "application_to_embodied.dp-n03",
+  "projectionVersion": 1,
+  "mapperId": "domain.mapper.dp-n03",
+  "mapperVersion": "0.1.0",
+  "source": { "contractId": "sdar.domain-source/npc/hmi-approval", "contractVersion": "1", "table": "sdar_npc.domain_hmi_approval_source_v1", "schemaHash": "sha256:8e3997d81321b3cdca30d292f07716904ba50214be8e86c281d8f4ab5cb75860" },
+  "target": { "table": "sdar_embodied.human_confirmation", "descriptorHash": "sha256:c563d22f7df0d4faa9a54618f4a145b08ef805894bd463f45e3b088cb2293d31" },
+  "mappedPayloadSchema": { "path": "payload-schemas/dp-n03.mapped-payload.schema.json", "canonicalHash": "sha256:f1cc2b4c3fd2a9a74f0ffd7f28a42b3e5bde10b1fe5e77f1115a132a3d575baa" },
+  "cursor": ["occurred_at", "sequence", "record_id", "source_revision"],
+  "identity": "uuidv5-rfc9562-v1",
+  "enumMaps": { "subject_type": { "constant": "action" }, "confirmation_status": ["approved", "rejected", "expired", "cancelled"] },
+  "requiredSourceFields": ["confirmationId", "approvalId", "actionId", "decision", "requestedAt", "confirmationScope"],
+  "targetFieldMappings": { "confirmation_id": "payload.confirmationId", "action_id": "payload.actionId", "subject_type": "action", "subject_id": "payload.actionId", "confirmation_status": "payload.decision", "requested_at": "payload.requestedAt", "decided_at": "payload.respondedAt", "decided_by": "payload.approvedBy", "valid_from": "payload.validFrom", "valid_until": "payload.expiresAt", "invalidation_conditions": "payload.invalidationConditions|payload.invalidationReason", "evidence_refs": "payload.evidenceRefs" },
+  "skipReasons": ["SOURCE_NOT_APPLICABLE"],
+  "failureCodes": ["SOURCE_CONTRACT_INVALID", "MAPPING_REQUIRED_FIELD_MISSING", "MAPPING_ENUM_UNSUPPORTED", "HMI_APPROVAL_ACTION_LINK_UNRESOLVED"],
+  "status": "disabled"
+}

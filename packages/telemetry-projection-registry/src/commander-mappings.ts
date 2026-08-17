@@ -99,21 +99,23 @@ function mapTargetFields(
   }
   switch (mappingId) {
     case "DP-C01":
-      return mapControlAction(source.payload);
+      return mapControlActionTargetFields(source.payload);
     case "DP-C02":
-      return mapControlReceipt(source.payload);
+      return mapControlReceiptTargetFields(source.payload);
     case "DP-C03":
       return mapPhysicalVerification(source.payload);
     case "DP-C04":
-      return mapPreemptionRecovery(source.payload);
+      return mapPreemptionRecoveryTargetFields(source.payload);
     case "DP-C05":
-      return mapStateFreshness(source);
+      return mapStateFreshnessTargetFields(source, "commander");
     default:
       throw mappingFailure("SOURCE_CONTRACT_INVALID", "sourceContractId");
   }
 }
 
-function mapControlAction(payload: Readonly<Record<string, unknown>>): CommanderTargetFields {
+export function mapControlActionTargetFields(
+  payload: Readonly<Record<string, unknown>>,
+): CommanderTargetFields {
   const targetEntityId = requiredString(payload, "targetEntityId");
   const targetEntityType = requiredString(payload, "targetEntityType");
   return deepFreeze({
@@ -139,7 +141,9 @@ function mapControlAction(payload: Readonly<Record<string, unknown>>): Commander
   });
 }
 
-function mapControlReceipt(payload: Readonly<Record<string, unknown>>): CommanderTargetFields {
+export function mapControlReceiptTargetFields(
+  payload: Readonly<Record<string, unknown>>,
+): CommanderTargetFields {
   requiredString(payload, "deviceId");
   requiredString(payload, "resourceChannel");
   return deepFreeze({
@@ -197,7 +201,7 @@ function mapPhysicalVerification(
   });
 }
 
-function mapPreemptionRecovery(
+export function mapPreemptionRecoveryTargetFields(
   payload: Readonly<Record<string, unknown>>,
 ): CommanderTargetFields {
   requiredString(payload, "resourceChannel");
@@ -230,7 +234,10 @@ function mapPreemptionRecovery(
   });
 }
 
-function mapStateFreshness(source: DomainSourceRecord): CommanderTargetFields {
+export function mapStateFreshnessTargetFields(
+  source: DomainSourceRecord,
+  sourceAgentType: "commander" | "npc",
+): CommanderTargetFields {
   const payload = source.payload;
   const snapshotId = requiredString(payload, "stateSnapshotId");
   const stateField = requiredString(payload, "stateField");
@@ -242,7 +249,7 @@ function mapStateFreshness(source: DomainSourceRecord): CommanderTargetFields {
   const checkIdentity = createCanonicalDomainIdentity({
     tenantId: source.tenantId,
     projectId: source.projectId,
-    sourceAgentType: "commander",
+    sourceAgentType,
     sourceEntityType: "state_freshness_check",
     sourceId: createDerivedDomainSourceId(snapshotId, stateField),
   });

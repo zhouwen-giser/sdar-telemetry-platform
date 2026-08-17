@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "mappingId": "DP-N04",
+  "projectionId": "application_to_embodied.dp-n04",
+  "projectionVersion": 1,
+  "mapperId": "domain.mapper.dp-n04",
+  "mapperVersion": "0.1.0",
+  "source": { "contractId": "sdar.domain-source/npc/preemption-record", "contractVersion": "1", "table": "sdar_npc.domain_preemption_record_source_v1", "schemaHash": "sha256:57a6cbf38479cad440f72b3d2e7d4cb7d728617a9c2128329cd69a41a9ad4810" },
+  "target": { "table": "sdar_embodied.preemption_recovery", "descriptorHash": "sha256:444728910c31ae2e25843367e134fe74cd3f930b5b03806c4308478e91de1515" },
+  "mappedPayloadSchema": { "path": "payload-schemas/dp-n04.mapped-payload.schema.json", "canonicalHash": "sha256:ad6da361511c23d3a2d4554063d780b8df1f6a7d355317fe69a96326cbc051ad" },
+  "cursor": ["occurred_at", "sequence", "record_id", "source_revision"],
+  "identity": "uuidv5-rfc9562-v1",
+  "enumMaps": { "phase": ["requested", "stopping", "stopped", "recovering", "resumed", "failed"] },
+  "requiredSourceFields": ["preemptionId", "preemptedActionId", "deviceId", "resourceChannel", "phase", "triggerType", "stopConfirmed", "recoveryStrategy", "recoveryResult", "recoveryBasisRef", "recoveryBasisVersion", "preemptedBasisId", "preemptedBasisVersion", "selectedIntent", "actualLatencyMs"],
+  "targetFieldMappings": { "preemption_id": "payload.preemptionId", "phase": "payload.phase", "device_id": "payload.deviceId", "trigger_type": "payload.triggerType", "preempted_basis_id": "payload.preemptedBasisId", "preempted_basis_version": "payload.preemptedBasisVersion", "preempted_action_id": "payload.preemptedActionId", "selected_basis_id": "payload.recoveryBasisRef", "selected_basis_version": "payload.recoveryBasisVersion", "selected_intent": "payload.selectedIntent", "actual_latency_ms": "payload.actualLatencyMs", "stop_confirmed": "payload.stopConfirmed", "recovery_strategy": "payload.recoveryStrategy", "recovery_result": "payload.recoveryResult" },
+  "skipReasons": ["SOURCE_NOT_APPLICABLE"],
+  "failureCodes": ["SOURCE_CONTRACT_INVALID", "MAPPING_REQUIRED_FIELD_MISSING", "MAPPING_ENUM_UNSUPPORTED"],
+  "status": "disabled"
+}

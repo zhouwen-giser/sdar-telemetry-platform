@@ -4,6 +4,7 @@ import type {CanonicalFact, EvidenceV1Record} from "../../telemetry-types/src/in
 
 export * from "./domain.js";
 export * from "./commander-mappings.js";
+export * from "./npc-mappings.js";
 
 const EVIDENCE_V1_CANONICAL_TABLE = "sdar_core.sdar_evidence_v1_record";
 const EVIDENCE_V1_CANONICAL_PROJECTION_ID = "sdar-evidence-v1-canonical";

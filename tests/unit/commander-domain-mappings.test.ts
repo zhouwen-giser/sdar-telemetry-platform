@@ -144,10 +144,10 @@ test("five immutable mapping documents and mapped-payload schemas match their fr
     await readFile(path.join(root, "mapping-manifest.json"), "utf8"),
   ) as MappingManifest;
   assert.equal(manifest.releaseVersion, "1.5.1-rc.2");
-  assert.equal(manifest.mappingCount, 5);
-  assert.equal(manifest.complete, false);
+  assert.equal(manifest.mappingCount, 10);
+  assert.equal(manifest.complete, true);
   assert.deepEqual(
-    manifest.mappings.map((entry) => entry.mappingId),
+    manifest.mappings.slice(0, 5).map((entry) => entry.mappingId),
     COMMANDER_MAPPING_IDS,
   );
   const decisions = (await commanderBatch()).records.map((record) =>
@@ -156,7 +156,7 @@ test("five immutable mapping documents and mapped-payload schemas match their fr
   const ajv = new Ajv2020({ strict: true, allErrors: true });
   ajv.addFormat("date-time", { type: "string", validate: (value: string) => !Number.isNaN(Date.parse(value)) });
   ajv.addFormat("uuid", { type: "string", validate: (value: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(value) });
-  for (const [index, entry] of manifest.mappings.entries()) {
+  for (const [index, entry] of manifest.mappings.slice(0, 5).entries()) {
     const document = JSON.parse(await readFile(path.join(root, entry.documentPath), "utf8")) as MappingDocument;
     const schema = JSON.parse(await readFile(path.join(root, entry.payloadSchemaPath), "utf8"));
     assert.equal(hashCanonicalDomainProjectionJson(document), entry.documentHash);

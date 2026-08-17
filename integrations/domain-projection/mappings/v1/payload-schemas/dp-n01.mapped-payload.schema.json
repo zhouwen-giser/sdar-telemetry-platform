@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sdar://domain-projection/mappings/v1/dp-n01/mapped-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action_id", "device_id", "action_type", "action_name", "capability", "resource_channel", "target_id", "target_json", "risk_level", "idempotency_key", "input_hash", "side_effect", "execution_status", "controller_ref", "basis_id", "input_summary"],
+  "properties": {
+    "action_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "device_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "action_type": { "const": "device_control" },
+    "action_name": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "capability": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "resource_channel": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "target_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "target_json": { "type": "string", "minLength": 2, "maxLength": 4096 },
+    "risk_level": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "idempotency_key": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "input_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "side_effect": { "const": 1 },
+    "execution_status": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "controller_ref": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "basis_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "input_summary": { "type": "string", "maxLength": 4096 }
+  }
+}

@@ -3,8 +3,8 @@
   "releaseVersion": "1.5.1-rc.2",
   "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
   "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
-  "mappingCount": 5,
-  "complete": false,
+  "mappingCount": 10,
+  "complete": true,
   "mappings": [
     {
       "mappingId": "DP-C01",
@@ -40,6 +40,41 @@
       "documentHash": "sha256:4a95f1073e2531039074936fc904d8da5d87730a6506d1c7ad2ecd14320de11a",
       "payloadSchemaPath": "payload-schemas/dp-c05.mapped-payload.schema.json",
       "payloadSchemaHash": "sha256:dcbb539a374ae0192e4d263fe3de278c18272aa08250f386b3c0c73e41470310"
+    },
+    {
+      "mappingId": "DP-N01",
+      "documentPath": "npc/dp-n01.mapping.json",
+      "documentHash": "sha256:51adf58016166e53d70c5046e1e69e64619ce1ce83d4c9b94582b80843ea98aa",
+      "payloadSchemaPath": "payload-schemas/dp-n01.mapped-payload.schema.json",
+      "payloadSchemaHash": "sha256:06ede5fdfea8c1a06d4029357a41b544568806d7178ad0e5f34c3446e1c55481"
+    },
+    {
+      "mappingId": "DP-N02",
+      "documentPath": "npc/dp-n02.mapping.json",
+      "documentHash": "sha256:1530dc2e78c5167d119b1a2b1ec0fa54c91e718755d2fd6173846609f542745c",
+      "payloadSchemaPath": "payload-schemas/dp-n02.mapped-payload.schema.json",
+      "payloadSchemaHash": "sha256:7c93855981206803f9feb109552cc0fd965aee9a318bdcdf9aac252682653fb8"
+    },
+    {
+      "mappingId": "DP-N03",
+      "documentPath": "npc/dp-n03.mapping.json",
+      "documentHash": "sha256:c715035dfe759568b3df0f666a783c2aa3a72ff8ad1ad515b420f2fb03c10136",
+      "payloadSchemaPath": "payload-schemas/dp-n03.mapped-payload.schema.json",
+      "payloadSchemaHash": "sha256:f1cc2b4c3fd2a9a74f0ffd7f28a42b3e5bde10b1fe5e77f1115a132a3d575baa"
+    },
+    {
+      "mappingId": "DP-N04",
+      "documentPath": "npc/dp-n04.mapping.json",
+      "documentHash": "sha256:96d2bb25427b6a0fa0aaa5272b596c1fe618a050383aeffcc45fd82b6c31e2ce",
+      "payloadSchemaPath": "payload-schemas/dp-n04.mapped-payload.schema.json",
+      "payloadSchemaHash": "sha256:ad6da361511c23d3a2d4554063d780b8df1f6a7d355317fe69a96326cbc051ad"
+    },
+    {
+      "mappingId": "DP-N05",
+      "documentPath": "npc/dp-n05.mapping.json",
+      "documentHash": "sha256:0619b69509badb8e2b0bebbae302d44226bac551993fd43a5321006043ca49dd",
+      "payloadSchemaPath": "payload-schemas/dp-n05.mapped-payload.schema.json",
+      "payloadSchemaHash": "sha256:6c546c0003277e4b86a9ccaf6478835e3e031545a6f20d6a1419d1a573ec0735"
     }
   ]
 }
