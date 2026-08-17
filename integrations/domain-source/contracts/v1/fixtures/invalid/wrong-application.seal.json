@@ -1,0 +1,23 @@
+{
+  "contractVersion": "sdar.domain-source/v1",
+  "application": "npc",
+  "tenantId": "tenant-domain-golden",
+  "projectId": "project-domain-golden",
+  "environment": "test",
+  "sealId": "seal-commander-1",
+  "sealRevision": "1",
+  "sourceContractId": "sdar.domain-source/commander/mcp-action",
+  "sourceContractVersion": "1",
+  "episodeId": "episode-domain-golden",
+  "finalSequence": "100",
+  "finalSourceRevision": "1",
+  "sourceRecordCount": "1",
+  "sourceSnapshotHash": "sha256:39e8e66d5665c151c26a8e129fe25f3336724d65be46b89f3c784e98a15a3419",
+  "sealStatus": "sealed",
+  "producerId": "domain-golden-producer",
+  "producerVersion": "1.0.0",
+  "payload": {
+    "reason": "golden fixture episode closure"
+  },
+  "sealedAt": "2026-08-17T08:10:00.000Z"
+}

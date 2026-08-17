@@ -6,8 +6,9 @@
     "G01": "PASS",
     "G02": "PASS",
     "G03": "PASS",
-    "G04": "PASS"
+    "G04": "PASS",
+    "G05": "PASS"
   },
-  "lastVerifiedHead": "3c87aae",
+  "lastVerifiedHead": "f7d4778",
   "blockers": []
 }

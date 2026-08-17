@@ -12,8 +12,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_1_PUBLISHED_PHASE_2_IN_PROGRESS` |
-| Implementation state | `SCHEMA_COMPATIBILITY_CLEARED_PROJECTIONS_DISABLED` |
+| Phase state | `PHASE_2_IMPLEMENTED_PUBLICATION_PENDING` |
+| Implementation state | `DOMAIN_SOURCE_V1_FROZEN_PROJECTIONS_DISABLED` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
@@ -137,7 +137,8 @@ any projection. A future release/hash/object/column drift must fail closed as
 | --- | --- | --- |
 | Resume Phase 0 — audit/decision closure | COMPLETE | package/heads/decisions/live RC2 exact-match evidence frozen |
 | Resume Phase 1 — RC2 contract sync | COMPLETE_PUBLISHED | immutable integration contract and repeatable preflight verifier |
-| Phases 2–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
+| Phase 2 — Domain Source v1 contracts | COMPLETE_UNPUBLISHED | 10 exact types, 2 seals, batch/ACK, Golden fixtures |
+| Phases 3–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
 | Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
@@ -183,9 +184,17 @@ The following baseline maintenance changes were isolated in commit `40b269b` and
 - `tests/fixtures/worker-crash-child.ts`
 - `tests/unit/sdar-contract-lock.test.ts`
 
+## Phase 2 contract evidence
+
+Phase 2 adds `sdar.domain-source/v1` under `integrations/domain-source/contracts/v1`. Four
+hash-locked JSON Schemas cover batch, Episode Seal, batch acknowledgement and seal
+acknowledgement. The batch has ten exact source-contract variants with strict per-source payloads;
+two five-record Golden batches cover all ten variants. Six valid and ten adversarial fixtures
+prove exact-source-only routing, application isolation, canonical UInt64 revisions, payload/batch
+hashes and the prohibition on arbitrary table identifiers. These assets are not live ingestion or
+ClickHouse E2E evidence.
+
 ## Resume point
 
-Resume at Phase 1 contract synchronization. The compatibility hard stop is closed by
-`decision-closure.md` and the live RC2 descriptor comparison. Keep all projections disabled,
-import only the exact ten source contracts, and retain the historical compatibility packet as an
-audit record rather than an active mapping authority.
+Publish Phase 2, then resume at Phase 3 durable Domain Source ingestion and WAL routing. Keep all
+projections disabled and preserve the existing Evidence v1 path unchanged.

@@ -12,8 +12,9 @@ This repository is actively executing the Domain Projection Benchmark Handoff V1
 | Exact Domain Source availability | verified — 10 sources + 2 Episode Seals; no near-name alias |
 | Domain projection definitions | verified disabled — ten independent IDs, four sets, zero active |
 | Phase 0 | complete and pushed |
-| Phase 1 | in progress — reproducible ClickHouse contract and live verifier |
-| Phases 2–17 | not yet complete |
+| Phase 1 | complete and pushed — reproducible ClickHouse contract and live verifier |
+| Phase 2 | complete, pending publication commit — `sdar.domain-source/v1`, 10 source types, 2 seals, 16 fixtures |
+| Phases 3–17 | not yet complete |
 | Real Domain Projection E2E | not run; reserved for Phase 15 |
 | Benchmark Server handoff qualification | not run; reserved for Phase 16 |
 
@@ -21,6 +22,6 @@ Authority remains split correctly: SDAR Runtime PostgreSQL owns execution, the G
 accepted-batch durability, Control PostgreSQL owns operational leases/actions, and ClickHouse is
 fact/projection/analytical storage. This repository will not implement Benchmark scoring.
 
-Current status: `IN_PROGRESS_SCHEMA_CONTRACT_ACCEPTED_PROJECTIONS_DISABLED`.
+Current status: `IN_PROGRESS_DOMAIN_SOURCE_CONTRACT_FROZEN_PROJECTIONS_DISABLED`.
 
 The completion marker must not be emitted until Phases 0–17 and G01–G35 all pass.

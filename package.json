@@ -15,6 +15,8 @@
     "sync:sdar-evidence-contract": "node --experimental-strip-types scripts/sync-sdar-evidence-contract.ts",
     "check:sdar-evidence-contract": "node --experimental-strip-types scripts/sync-sdar-evidence-contract.ts --check",
     "verify:domain-projection-contracts": "npm run build && node dist/scripts/verify-domain-projection-contracts.js",
+    "sync:domain-source-contracts": "npm run build && node dist/scripts/sync-domain-source-contracts.js",
+    "check:domain-source-contracts": "npm run build && node dist/scripts/sync-domain-source-contracts.js --check",
     "sync:sdar-clickhouse-contract": "node --experimental-strip-types scripts/sync-sdar-clickhouse-contract.ts",
     "check:sdar-clickhouse-contract": "node --experimental-strip-types scripts/sync-sdar-clickhouse-contract.ts --check",
     "test:sdar-contract": "npm run build && node --test dist/tests/unit/evidence-v1-contract.test.js dist/tests/unit/sdar-contract-lock.test.js dist/tests/unit/normalizers.test.js dist/tests/integration/ingestion-gateway.test.js",

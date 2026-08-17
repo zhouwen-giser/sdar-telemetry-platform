@@ -14,12 +14,18 @@ ClickHouse `1.5.1-rc.2` 的精确消费合同位于
 ```bash
 npm run check:sdar-clickhouse-contract
 npm run clickhouse:domain-preflight
+npm run check:domain-source-contracts
 ```
 
 第二条命令以 `readonly=2` 实时核对 release/hash、全部 472 object descriptors、15,949
 column descriptors、精确 sources/seals/targets/governance 和关键 View。通过 Preflight 仅表示
 schema 可兼容，不表示投影已激活，也不是 Domain Projection 真实 E2E。真实 source ingestion、
 target/lineage/checkpoint/DLQ 和 Benchmark consumer 验收将在后续阶段单独证明。
+
+`integrations/domain-source/contracts/v1` 冻结 `sdar.domain-source/v1` 的 10 个精确
+source contract、两类 Episode Seal、batch/seal ACK 和 Golden/adversarial fixtures。它不接受
+near-name legacy alias，也不允许请求携带数据库名、表名或 SQL 标识符。该合同目前只完成离线
+资格验证；Gateway durable routing 与真实 ClickHouse 写入从 Phase 3 开始验收。
 
 Domain Projection 只提供标准事实、readiness、lineage 与不可变 fact index，不在本仓库实现
 Benchmark M1–M15、F/HG、baseline、comparison 或评分逻辑。
