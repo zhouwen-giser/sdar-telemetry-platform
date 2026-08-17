@@ -150,8 +150,8 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 12 — APIs/metrics/health | COMPLETE_PUBLISHED | bounded Query plus authenticated Admin/runtime contracts; live gates retained |
 | Phase 13 — Benchmark handoff contracts | COMPLETE_PUBLISHED | immutable eight-asset consumer handoff; live qualification retained |
 | Phase 14 — Compose/operations | COMPLETE_PUBLISHED | safe configuration/entry points wired; actual process smoke retained |
-| Phase 15 — real ClickHouse E2E | IN_PROGRESS | must use real 24.10 and must not be replaced by fixtures |
-| Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
+| Phase 15 — real ClickHouse E2E | BLOCKED_HARNESS_PUBLISHED | real 10/10 + SIGKILL harness ready; external execution unavailable |
+| Phase 16 — Benchmark consumer qualification | IN_PROGRESS | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
 
 ## Baseline command evidence
@@ -289,8 +289,17 @@ static verification and Compose config parsing pass. G28/G29 remain open because
 untracked Control PostgreSQL/Admin secrets are absent and Docker API access was denied; no static
 parse is counted as a running process.
 
+## Phase 15 real E2E harness evidence
+
+The real harness chains the existing Gateway/WAL/source landing into all ten exact mappers and real
+target/lineage/ClickHouse checkpoint writes. It performs a real child-process SIGKILL after target
+and before lineage, then restart/replay verification. Production checkpoint idempotency was added
+and nine source-level focused cases pass. G14/G30/G31 remain pending because external ClickHouse
+execution permission was unavailable; the compiled harness and in-memory regression are not
+reported as live E2E.
+
 ## Resume point
 
-Resume at Phase 15 controlled real ClickHouse E2E and recovery. Keep all projections disabled
-outside isolated qualification, preserve the existing Evidence v1 path, do not implement Benchmark
-scoring, and close G14/G30/G31 only with real 24.10.2.1 evidence.
+Resume implementation at Phase 16 Benchmark consumer qualification while retaining the exact Phase
+15 live resume command. Keep all projections disabled outside isolated qualification, do not
+implement Benchmark scoring, and close G14/G30/G31 only with real 24.10.2.1 evidence.

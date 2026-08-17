@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "phase": 15,
+  "name": "Controlled real ClickHouse E2E and recovery",
+  "status": "blocked_external_execution_harness_ready",
+  "phaseCommit": "c207787",
+  "phasePushed": true,
+  "verification": {
+    "typecheck": "PASS",
+    "build": "PASS",
+    "targetCheckpointFocused": "PASS_9_SOURCE_CASES",
+    "staticVerify": "PASS",
+    "realClickHouseE2E": "NOT_RUN_EXTERNAL_PERMISSION_UNAVAILABLE"
+  },
+  "harness": {
+    "exactMappings": 10,
+    "gatewayWalSourceLanding": true,
+    "targetLineageCheckpoint": true,
+    "sameHashReplay": true,
+    "realChildSignal": "SIGKILL",
+    "mockCountsAsE2E": false
+  },
+  "gates": {
+    "G14": "PENDING_REAL_RUN",
+    "G30": "PENDING_REAL_RUN",
+    "G31": "PENDING_REAL_RUN"
+  },
+  "resumeCommand": "SDAR_DOMAIN_PHASE15_RUN_ID=codex_dp15_<new-unique-id> npm run test:domain-projection-e2e"
+}

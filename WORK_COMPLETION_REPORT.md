@@ -26,7 +26,8 @@ This repository is actively executing the Domain Projection Benchmark Handoff V1
 | Phase 12 | complete and pushed — bounded Query contract plus authenticated Admin and worker probe surfaces; live integration gates remain open |
 | Phase 13 | complete and pushed — frozen Benchmark handoff assets and static verifier; actual consumer/live query gates remain open |
 | Phase 14 | complete and pushed — Domain/Admin Compose and safe configuration; actual process smoke remains open |
-| Phases 15–17 | not yet complete |
+| Phase 15 | harness complete and pushed — real 10/10/SIGKILL execution blocked; G14/G30/G31 remain open |
+| Phases 16–17 | not yet complete |
 | Real Domain Projection E2E | not run; reserved for Phase 15 |
 | Benchmark Server handoff qualification | not run; reserved for Phase 16 |
 
@@ -34,7 +35,7 @@ Authority remains split correctly: SDAR Runtime PostgreSQL owns execution, the G
 accepted-batch durability, Control PostgreSQL owns operational leases/actions, and ClickHouse is
 fact/projection/analytical storage. This repository will not implement Benchmark scoring.
 
-Current status: `IN_PROGRESS_PHASE_14_DEPLOYMENT_WIRED_LIVE_PROCESS_AND_E2E_GATES_PENDING`.
+Current status: `IN_PROGRESS_PHASE_15_HARNESS_READY_REAL_EXECUTION_BLOCKED`.
 
 Phase 9 closed G15–G18 with deterministic port tests covering ten exact target descriptors,
 100% produced lineage, skip/fail audit and post-target/pre-lineage crash recovery. G14 remains
@@ -59,5 +60,9 @@ consumer queries run against the rebuilt database. The blocked live attempt is n
 Phase 14 adds the Domain worker/Admin services, independent secrets and fail-closed configuration.
 G28/G29 remain open: Docker and required untracked Control PostgreSQL/Admin secrets were not
 available, so no process smoke or live runtime probe is claimed.
+
+Phase 15 publishes a real Gateway/WAL → 10 mapper → target/lineage/checkpoint harness with an actual
+SIGKILL boundary. Only compile and focused code tests ran; G14/G30/G31 remain open until the harness
+writes and verifies the real ClickHouse instance.
 
 The completion marker must not be emitted until Phases 0–17 and G01–G35 all pass.

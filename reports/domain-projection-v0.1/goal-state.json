@@ -1,7 +1,7 @@
 {
   "goalId": "sdar-telemetry-domain-projection-benchmark-handoff-v1",
   "status": "in_progress",
-  "phase": 15,
+  "phase": 16,
   "gates": {
     "G01": "PASS",
     "G02": "PASS",
@@ -16,7 +16,7 @@
     "G11": "PASS",
     "G12": "PASS",
     "G13": "PASS",
-    "G14": "PENDING_REAL_CLICKHOUSE_REPLAY",
+    "G14": "PENDING_REAL_RUN_HARNESS_READY",
     "G15": "PASS",
     "G16": "PASS",
     "G17": "PASS",
@@ -32,11 +32,13 @@
     "G27": "PARTIAL_REAL_ADMIN_HTTP_CONTROL_POSTGRES_PENDING",
     "G28": "PARTIAL_LIVE_PROCESS_PROBE_PENDING",
     "G29": "PENDING_ACTUAL_COMPOSE_PROCESS_SMOKE",
+    "G30": "PENDING_REAL_RUN_HARNESS_READY",
+    "G31": "PENDING_REAL_RUN_HARNESS_READY",
     "G32": "PARTIAL_LIVE_CLICKHOUSE_CONSUMER_QUERIES_PENDING"
   },
-  "lastVerifiedHead": "0e009eb",
+  "lastVerifiedHead": "c207787",
   "blockers": [
-    "G14 requires real ClickHouse same-hash target replay in Phase 15; Phase 9 port tests are not counted as real E2E.",
+    "G14/G30/G31 real ClickHouse and SIGKILL harness is implemented, but external execution permission was unavailable; no fixture or focused test is counted as E2E.",
     "G19 and G27 require a real authenticated Admin HTTP to Control PostgreSQL integration run; the environment variable for the integration database was not configured in Phase 12.",
     "G28 requires a live Domain Projection worker health/readiness/metrics probe; required Control PostgreSQL/Admin secret files are absent.",
     "G29 requires an actual external-ClickHouse Compose process smoke; only static Compose parsing ran because Docker API access was denied.",
