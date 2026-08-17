@@ -148,8 +148,8 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 10 — reconcile/replay/drift | COMPLETE_PUBLISHED | eight-way reconciliation, bounded replay, DLQ service and drift fail-closed |
 | Phase 11 — sets/lifecycle | COMPLETE_PUBLISHED | seven-state lifecycle, four sets and no false-ready empty/disabled state |
 | Phase 12 — APIs/metrics/health | COMPLETE_PUBLISHED | bounded Query plus authenticated Admin/runtime contracts; live gates retained |
-| Phase 13 — Benchmark handoff contracts | IN_PROGRESS | immutable consumer handoff and verifier; no scoring logic |
-| Phase 14 — Compose/operations | NOT_STARTED | wire processes with projections disabled by default |
+| Phase 13 — Benchmark handoff contracts | COMPLETE_PUBLISHED | immutable eight-asset consumer handoff; live qualification retained |
+| Phase 14 — Compose/operations | IN_PROGRESS | wire processes with projections disabled by default |
 | Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
@@ -270,8 +270,18 @@ PostgreSQL integration test was explicitly skipped without `SDAR_TEST_CONTROL_PO
 remains partial until the wired worker is probed live. No skipped test or pure-port test is counted
 as a real database, HTTP or ClickHouse E2E.
 
+## Phase 13 Benchmark handoff evidence
+
+`sdar.telemetry-domain-handoff/v1` freezes eight hash-locked assets covering 10 exact sources, two
+Episode Seals, ten projections, six targets, four sets, seven direct views and all five readiness
+states. Static verification and two consumer/query contract cases pass. G25 closes on the frozen
+fact-index provenance contract. G23/G24 remain with the actual Benchmark consumer, and G32 remains
+partial because the live `readonly=2` query run was blocked by sandbox networking and the requested
+external execution was rejected at the platform usage limit. No mock or fixture is counted as that
+live qualification.
+
 ## Resume point
 
-Resume at Phase 13 Benchmark Server handoff contracts. Keep all projections disabled, preserve the
-existing Evidence v1 path, do not implement Benchmark scoring, retain G14 for real Phase 15 E2E,
-and close G19/G27/G28 only with their required live evidence.
+Resume at Phase 14 Compose and operational documentation. Keep all projections disabled, preserve
+the existing Evidence v1 path, do not implement Benchmark scoring, retain G14/G30/G31 for real
+Phase 15 E2E, and close G19/G27/G28/G32 only with their required live evidence.

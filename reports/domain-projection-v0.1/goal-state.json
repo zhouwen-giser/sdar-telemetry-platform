@@ -1,7 +1,7 @@
 {
   "goalId": "sdar-telemetry-domain-projection-benchmark-handoff-v1",
   "status": "in_progress",
-  "phase": 13,
+  "phase": 14,
   "gates": {
     "G01": "PASS",
     "G02": "PASS",
@@ -25,16 +25,21 @@
     "G20": "PASS",
     "G21": "PASS",
     "G22": "PASS",
-    "G23": "PENDING_PHASE_16_CONSUMER_QUALIFICATION",
+    "G23": "PENDING_PHASE_16_ACTUAL_CONSUMER",
+    "G24": "PENDING_PHASE_16_ACTUAL_CONSUMER",
+    "G25": "PASS",
     "G26": "PASS",
     "G27": "PARTIAL_REAL_ADMIN_HTTP_CONTROL_POSTGRES_PENDING",
-    "G28": "PARTIAL_LIVE_WORKER_PROBE_PENDING"
+    "G28": "PARTIAL_LIVE_WORKER_PROBE_PENDING",
+    "G32": "PARTIAL_LIVE_CLICKHOUSE_CONSUMER_QUERIES_PENDING"
   },
-  "lastVerifiedHead": "608c251",
+  "lastVerifiedHead": "c7335bf",
   "blockers": [
     "G14 requires real ClickHouse same-hash target replay in Phase 15; Phase 9 port tests are not counted as real E2E.",
     "G19 and G27 require a real authenticated Admin HTTP to Control PostgreSQL integration run; the environment variable for the integration database was not configured in Phase 12.",
     "G28 requires a live Domain Projection worker health/readiness/metrics probe after operational wiring.",
+    "G23/G24 require qualification in the actual Benchmark consumer; Telemetry fixtures are not counted as consumer evidence.",
+    "G32 static manifest/checksum verification passes, but the live consumer queries were blocked by sandbox networking and the external execution request was rejected at the platform usage limit.",
     "Final npm run verify rerun with loopback permission is pending because the execution environment reported its usage limit."
   ]
 }
