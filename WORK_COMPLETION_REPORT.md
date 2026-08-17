@@ -13,8 +13,9 @@ This repository is actively executing the Domain Projection Benchmark Handoff V1
 | Domain projection definitions | verified disabled — ten independent IDs, four sets, zero active |
 | Phase 0 | complete and pushed |
 | Phase 1 | complete and pushed — reproducible ClickHouse contract and live verifier |
-| Phase 2 | complete, pending publication commit — `sdar.domain-source/v1`, 10 source types, 2 seals, 16 fixtures |
-| Phases 3–17 | not yet complete |
+| Phase 2 | complete and pushed — `sdar.domain-source/v1`, 10 source types, 2 seals, 16 fixtures |
+| Phase 3 | in progress — durable Domain Source Gateway/WAL routing |
+| Phases 4–17 | not yet complete |
 | Real Domain Projection E2E | not run; reserved for Phase 15 |
 | Benchmark Server handoff qualification | not run; reserved for Phase 16 |
 

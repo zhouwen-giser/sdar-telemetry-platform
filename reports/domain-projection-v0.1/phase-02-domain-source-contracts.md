@@ -49,7 +49,8 @@ as real ClickHouse evidence.
 
 ## Commit / push
 
-Phase 2 implementation commit: `PENDING_PUBLICATION`. It will be pushed before Phase 3 starts.
+Phase 2 implementation commit `af8b92a` (`feat(domain-projection): freeze Domain Source v1
+contract`) was pushed to `origin/feature/domain-projection-worker-v0.1` and Draft PR #1.
 
 ## Next phase
 
