@@ -47,7 +47,8 @@ fixture, mock or static test is labeled as source ingestion or target projection
 
 ## Commit / push
 
-To be filled after the focused Phase 1 commit is created and pushed.
+Phase 1 implementation commit `3c87aae` (`feat(domain-projection): lock ClickHouse RC2 contract`)
+was pushed to `origin/feature/domain-projection-worker-v0.1` and Draft PR #1.
 
 ## Next phase or exact blocker
 

@@ -3,6 +3,8 @@
   "phase": 1,
   "name": "ClickHouse 1.5.1-rc.2 contract synchronization",
   "status": "passed",
+  "phaseCommit": "3c87aae",
+  "phasePushed": true,
   "releaseVersion": "1.5.1-rc.2",
   "migrationRange": "00..26",
   "integrationRoot": "integrations/sdar-clickhouse/1.5.1-rc.2",
