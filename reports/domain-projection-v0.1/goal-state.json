@@ -1,7 +1,7 @@
 {
   "goalId": "sdar-telemetry-domain-projection-benchmark-handoff-v1",
   "status": "in_progress",
-  "phase": 9,
+  "phase": 10,
   "gates": {
     "G01": "PASS",
     "G02": "PASS",
@@ -15,10 +15,16 @@
     "G10": "PASS",
     "G11": "PASS",
     "G12": "PASS",
-    "G13": "PASS"
+    "G13": "PASS",
+    "G14": "PENDING_REAL_CLICKHOUSE_REPLAY",
+    "G15": "PASS",
+    "G16": "PASS",
+    "G17": "PASS",
+    "G18": "PASS"
   },
-  "lastVerifiedHead": "fcbadc2",
+  "lastVerifiedHead": "1ac5699",
   "blockers": [
+    "G14 requires real ClickHouse same-hash target replay in Phase 15; Phase 9 port tests are not counted as real E2E.",
     "Final npm run verify rerun with loopback permission is pending because the execution environment reported its usage limit."
   ]
 }

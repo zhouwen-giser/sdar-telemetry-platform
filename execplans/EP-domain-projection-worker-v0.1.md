@@ -1,6 +1,6 @@
 # ExecPlan — SDAR Telemetry Domain Projection Worker v0.1
 
-Last updated: 2026-08-17T09:14:31.494Z
+Last updated: 2026-08-17T09:28:14.930Z
 
 ## Goal
 
@@ -12,8 +12,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_8_PUBLISHED_PHASE_9_IN_PROGRESS` |
-| Implementation state | `TEN_MAPPERS_VERIFIED_PROJECTIONS_DISABLED` |
+| Phase state | `PHASE_9_PUBLISHED_PHASE_10_IN_PROGRESS` |
+| Implementation state | `TARGET_LINEAGE_DLQ_CLOSURE_VERIFIED_PROJECTIONS_DISABLED` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
@@ -144,8 +144,9 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 6 — SourceReader / late arrival | COMPLETE_PUBLISHED | bounded lookback, stable identity/hash deduplication and real 10/10 read-only smoke |
 | Phase 7 — Commander mappings | COMPLETE_PUBLISHED | DP-C01 through DP-C05 plus five hash-locked mapping documents/schemas |
 | Phase 8 — NPC mappings | COMPLETE_PUBLISHED | DP-N01 through DP-N05; G11/G12 complete at 10/10 |
-| Phase 9 — target/lineage/DLQ | IN_PROGRESS | exact target validation, idempotent writes, lineage and conflict closure |
-| Phases 10–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
+| Phase 9 — target/lineage/DLQ | COMPLETE_PUBLISHED | exact target validation, idempotent writes, lineage and conflict closure; G14 reserved for real E2E |
+| Phase 10 — reconcile/replay/drift | IN_PROGRESS | bounded reconciliation/replay and fail-closed schema drift |
+| Phases 11–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
 | Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
@@ -228,7 +229,20 @@ and NPC 8/8 focused tests passed, closing G11/G12. The final full loopback rerun
 because the execution environment rejected the escalation at its usage limit; the sandbox-only
 listener failures are not reported as a code pass or failure.
 
+## Phase 9 target, lineage and DLQ evidence
+
+The exact writer closes produced, duplicate, skipped, failed and blocked terminal outcomes against
+the six RC2 target descriptors and RC2 lineage/DLQ shapes. All ten mapper paths passed required and
+allowed-column checks and emitted produced lineage. Different target content blocks with a durable
+`TARGET_CONTENT_CONFLICT`; injected failure after target and before lineage proved checkpoint-last
+ordering. Focused tests passed 8/8, with adjacent mapper/reader suites at 7/7, 8/8 and 4/4.
+
+These are port-level deterministic tests, not live ClickHouse E2E. G15–G18 are closed by their
+specified conflict/coverage/audit/crash tests; G14 remains pending until the real ClickHouse replay
+in Phase 15. No target DML or projection activation occurred in Phase 9.
+
 ## Resume point
 
-Resume at Phase 9 TargetWriter, lineage, DLQ and conflict closure. Keep all projections disabled,
-preserve the existing Evidence v1 path and retain the final loopback rerun obligation.
+Resume at Phase 10 reconciliation, bounded replay and schema-drift fail-closed. Keep all
+projections disabled, preserve the existing Evidence v1 path, retain G14 for real Phase 15 E2E and
+retain the final loopback rerun obligation.
