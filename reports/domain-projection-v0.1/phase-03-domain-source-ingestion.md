@@ -70,5 +70,6 @@ landing`) was pushed to `origin/feature/domain-projection-worker-v0.1` and Draft
 
 ## Next phase
 
-Phase 4 adds Control PostgreSQL operational authority, per-projection/version/partition leases and
-CAS checkpoints. ClickHouse remains analytical/fact storage and all ten projections stay disabled.
+Phase 4 adds Control PostgreSQL operational authority for per-projection/version/partition leases,
+management actions, replay requests and producer registrations. Projection checkpoints remain in
+ClickHouse; all ten projections stay disabled.
