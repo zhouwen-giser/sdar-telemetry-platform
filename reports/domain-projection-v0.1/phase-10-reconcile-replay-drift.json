@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "phase": 10,
+  "name": "Reconciliation, replay and schema-drift fail-closed",
+  "status": "passed_with_admin_integration_pending",
+  "phaseCommit": "ffc6f50",
+  "phasePushed": true,
+  "verification": {
+    "focused": "PASS_7_OF_7",
+    "phase9Regression": "PASS_8_OF_8",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "staticVerify": "PASS",
+    "clickHouseContractLock": "PASS_472_OBJECTS_15949_COLUMNS_ZERO_DIFF",
+    "realClickHouseDml": "NOT_RUN"
+  },
+  "capabilities": {
+    "reconciliationIssueTypes": 8,
+    "emptyIsHealthy": false,
+    "replayMaximumRecords": 1000,
+    "schemaObjectsPerProjection": 5,
+    "mappingHashPinned": true,
+    "dlqActions": ["retry", "resolve", "ignore"]
+  },
+  "gates": {
+    "G19": "PARTIAL_SERVICE_PASS_ADMIN_INTEGRATION_PHASE_12",
+    "G20": "PASS"
+  },
+  "limitations": [
+    "Schema drift and replay tests use deterministic ports and locked descriptors, not live ClickHouse DML.",
+    "G19 remains open until the scope-pinned DLQ service is exposed through authenticated Admin API integration in Phase 12.",
+    "No projection was activated and no Benchmark scoring logic was added."
+  ]
+}

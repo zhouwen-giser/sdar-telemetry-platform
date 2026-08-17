@@ -21,7 +21,8 @@ This repository is actively executing the Domain Projection Benchmark Handoff V1
 | Phase 7 | complete and pushed — five Commander mappings, five hash-locked documents/schemas |
 | Phase 8 | complete and pushed — five NPC mappings; G11/G12 close at 10/10 |
 | Phase 9 | complete and pushed — exact target writer, lineage/DLQ terminal closure and checkpoint-last crash tests |
-| Phases 10–17 | not yet complete |
+| Phase 10 | complete and pushed — reconciliation, bounded replay, DLQ service and schema-drift fail-closed |
+| Phases 11–17 | not yet complete |
 | Real Domain Projection E2E | not run; reserved for Phase 15 |
 | Benchmark Server handoff qualification | not run; reserved for Phase 16 |
 
@@ -29,11 +30,14 @@ Authority remains split correctly: SDAR Runtime PostgreSQL owns execution, the G
 accepted-batch durability, Control PostgreSQL owns operational leases/actions, and ClickHouse is
 fact/projection/analytical storage. This repository will not implement Benchmark scoring.
 
-Current status: `IN_PROGRESS_TARGET_LINEAGE_DLQ_CLOSED_PROJECTIONS_DISABLED`.
+Current status: `IN_PROGRESS_RECONCILE_REPLAY_DRIFT_GUARDS_PROJECTIONS_DISABLED`.
 
 Phase 9 closed G15–G18 with deterministic port tests covering ten exact target descriptors,
 100% produced lineage, skip/fail audit and post-target/pre-lineage crash recovery. G14 remains
 explicitly pending for real ClickHouse same-hash replay in Phase 15; no fixture result is counted
 as real E2E.
+
+Phase 10 closes G20 with exact mapping/descriptor drift tests. G19 service semantics pass, while
+the required authenticated Admin integration remains explicitly scheduled for Phase 12.
 
 The completion marker must not be emitted until Phases 0–17 and G01–G35 all pass.

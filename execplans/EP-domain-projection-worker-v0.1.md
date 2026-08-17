@@ -1,6 +1,6 @@
 # ExecPlan — SDAR Telemetry Domain Projection Worker v0.1
 
-Last updated: 2026-08-17T09:28:14.930Z
+Last updated: 2026-08-17T09:36:27.520Z
 
 ## Goal
 
@@ -12,8 +12,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_9_PUBLISHED_PHASE_10_IN_PROGRESS` |
-| Implementation state | `TARGET_LINEAGE_DLQ_CLOSURE_VERIFIED_PROJECTIONS_DISABLED` |
+| Phase state | `PHASE_10_PUBLISHED_PHASE_11_IN_PROGRESS` |
+| Implementation state | `RECONCILE_REPLAY_DRIFT_GUARDS_VERIFIED_PROJECTIONS_DISABLED` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
@@ -145,8 +145,9 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 7 — Commander mappings | COMPLETE_PUBLISHED | DP-C01 through DP-C05 plus five hash-locked mapping documents/schemas |
 | Phase 8 — NPC mappings | COMPLETE_PUBLISHED | DP-N01 through DP-N05; G11/G12 complete at 10/10 |
 | Phase 9 — target/lineage/DLQ | COMPLETE_PUBLISHED | exact target validation, idempotent writes, lineage and conflict closure; G14 reserved for real E2E |
-| Phase 10 — reconcile/replay/drift | IN_PROGRESS | bounded reconciliation/replay and fail-closed schema drift |
-| Phases 11–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
+| Phase 10 — reconcile/replay/drift | COMPLETE_PUBLISHED | eight-way reconciliation, bounded replay, DLQ service and drift fail-closed |
+| Phase 11 — sets/lifecycle | IN_PROGRESS | projection-set readiness and safe mode transitions |
+| Phases 12–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
 | Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
@@ -241,8 +242,15 @@ These are port-level deterministic tests, not live ClickHouse E2E. G15–G18 are
 specified conflict/coverage/audit/crash tests; G14 remains pending until the real ClickHouse replay
 in Phase 15. No target DML or projection activation occurred in Phase 9.
 
+## Phase 10 reconciliation, replay and drift evidence
+
+Seven focused tests cover eight reconciliation gaps, empty-is-not-healthy semantics, exact
+five-object schema preflight, mapping/column drift, bounded replay and scope-pinned idempotent DLQ
+actions. G20 is closed. G19 remains partial until Phase 12 connects these controls to the
+authenticated Admin API. The phase used no live ClickHouse DML.
+
 ## Resume point
 
-Resume at Phase 10 reconciliation, bounded replay and schema-drift fail-closed. Keep all
-projections disabled, preserve the existing Evidence v1 path, retain G14 for real Phase 15 E2E and
-retain the final loopback rerun obligation.
+Resume at Phase 11 projection sets and lifecycle. Keep all projections disabled, preserve the
+existing Evidence v1 path, retain G14 for real Phase 15 E2E, G19 for Phase 12 Admin integration and
+the final loopback rerun obligation.

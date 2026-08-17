@@ -1,7 +1,7 @@
 {
   "goalId": "sdar-telemetry-domain-projection-benchmark-handoff-v1",
   "status": "in_progress",
-  "phase": 10,
+  "phase": 11,
   "gates": {
     "G01": "PASS",
     "G02": "PASS",
@@ -20,11 +20,14 @@
     "G15": "PASS",
     "G16": "PASS",
     "G17": "PASS",
-    "G18": "PASS"
+    "G18": "PASS",
+    "G19": "PARTIAL_SERVICE_PASS_ADMIN_INTEGRATION_PHASE_12",
+    "G20": "PASS"
   },
-  "lastVerifiedHead": "1ac5699",
+  "lastVerifiedHead": "ffc6f50",
   "blockers": [
     "G14 requires real ClickHouse same-hash target replay in Phase 15; Phase 9 port tests are not counted as real E2E.",
+    "G19 requires authenticated Admin API integration in Phase 12; Phase 10 closes the service semantics only.",
     "Final npm run verify rerun with loopback permission is pending because the execution environment reported its usage limit."
   ]
 }
