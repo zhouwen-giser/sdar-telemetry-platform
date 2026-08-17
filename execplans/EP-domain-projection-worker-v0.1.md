@@ -1,6 +1,6 @@
 # ExecPlan — SDAR Telemetry Domain Projection Worker v0.1
 
-Last updated: 2026-08-17T08:28:42.817Z
+Last updated: 2026-08-17T08:39:34.242Z
 
 ## Goal
 
@@ -12,8 +12,8 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `PHASE_4_PUBLISHED_PHASE_5_IN_PROGRESS` |
-| Implementation state | `CONTROL_POSTGRES_REAL_LEASE_VERIFIED_PROJECTIONS_DISABLED` |
+| Phase state | `PHASE_5_PUBLISHED_PHASE_6_IN_PROGRESS` |
+| Implementation state | `DOMAIN_CORE_IDENTITY_VERIFIED_PROJECTIONS_DISABLED` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
 | Domain Projection base SHA | `44fb583034d350d429c45ab065bd95e8792b74c1` |
@@ -140,8 +140,9 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 2 — Domain Source v1 contracts | COMPLETE_PUBLISHED | 10 exact types, 2 seals, batch/ACK, Golden fixtures |
 | Phase 3 — durable source ingestion | COMPLETE_PUBLISHED | authenticated routes, fsync-before-ACK, real exact-table landing |
 | Phase 4 — Control PostgreSQL and leases | COMPLETE_PUBLISHED | real PostgreSQL lease fencing plus action/replay/producer repositories |
-| Phase 5 — registry, identity, envelope | IN_PROGRESS | ten independent definitions and deterministic common primitives |
-| Phases 6–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
+| Phase 5 — registry, identity, envelope | COMPLETE_PUBLISHED | ten definitions, RFC 9562 identity and common target envelope |
+| Phase 6 — SourceReader / late arrival | IN_PROGRESS | bounded lookback and stable identity/hash deduplication |
+| Phases 7–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
 | Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
@@ -199,5 +200,5 @@ ClickHouse E2E evidence.
 
 ## Resume point
 
-Resume at Phase 5 DomainProjectionRegistry, deterministic identity and common target envelope.
-Keep all projections disabled and preserve the existing Evidence v1 path unchanged.
+Resume at Phase 6 checkpointed SourceReader and late-arrival handling. Keep all projections
+disabled and preserve the existing Evidence v1 path unchanged.
