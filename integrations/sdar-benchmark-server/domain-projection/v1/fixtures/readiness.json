@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {"name":"general-not-required","profile":"general","status":"not_required","reasonCodes":["DOMAIN_NOT_REQUIRED"],"expected":{"mayProceed":true,"maySnapshotDomainInput":false,"resultDisposition":"proceed_without_domain"}},
+    {"name":"formal-not-ready","profile":"domain_formal","status":"not_ready","reasonCodes":["EPISODE_SEAL_UNVERIFIED"],"expected":{"mayProceed":false,"maySnapshotDomainInput":false,"resultDisposition":"not_rated"}},
+    {"name":"formal-degraded","profile":"domain_formal","status":"degraded","reasonCodes":["DIAGNOSTIC_GAP"],"expected":{"mayProceed":false,"maySnapshotDomainInput":false,"resultDisposition":"not_rated"}},
+    {"name":"formal-ready","profile":"domain_formal","status":"ready","reasonCodes":[],"expected":{"mayProceed":true,"maySnapshotDomainInput":true,"resultDisposition":"formal_domain_ready"}},
+    {"name":"formal-blocked-drift","profile":"domain_formal","status":"blocked_drift","reasonCodes":["SCHEMA_CONTRACT_DRIFT"],"expected":{"mayProceed":false,"maySnapshotDomainInput":false,"resultDisposition":"blocked"}}
+  ]
+}

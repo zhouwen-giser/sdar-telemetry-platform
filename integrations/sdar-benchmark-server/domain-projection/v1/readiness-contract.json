@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "statuses": ["not_required", "not_ready", "degraded", "ready", "blocked_drift"],
+  "reasonCodes": [
+    "BLOCKING_DLQ_OPEN",
+    "DIAGNOSTIC_GAP",
+    "DOMAIN_NOT_REQUIRED",
+    "EPISODE_SEAL_UNVERIFIED",
+    "PROJECTION_MEMBER_MISSING",
+    "PROJECTION_NOT_ACTIVE",
+    "SCHEMA_CONTRACT_DRIFT",
+    "SOURCE_EMPTY",
+    "TERMINAL_COVERAGE_INCOMPLETE"
+  ],
+  "profileRules": {
+    "general": {"acceptedStatus":"not_required","domainInputRequired":false,"onNotReady":"proceed_without_domain_input"},
+    "domainFormal": {"acceptedStatus":"ready","domainInputRequired":true,"onNotReady":"return_not_rated_never_zero"}
+  },
+  "statusSemantics": {
+    "not_required":"The evaluation profile does not require Domain Projection and may proceed without it.",
+    "not_ready":"Required Domain facts are incomplete; the consumer returns NR and must not substitute score zero.",
+    "degraded":"Required facts are complete while supporting or diagnostic inputs have gaps.",
+    "ready":"The consumer may create its own immutable formal Domain input snapshot.",
+    "blocked_drift":"A release, schema, definition or mapping contract drift was detected; fail closed."
+  },
+  "telemetryProhibitions": [
+    "create_evaluation_input_snapshot",
+    "calculate_benchmark_score",
+    "select_benchmark_weights",
+    "rank_benchmark_results"
+  ]
+}
