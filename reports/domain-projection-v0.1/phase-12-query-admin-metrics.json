@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "phase": 12,
+  "name": "Query API, Admin API, metrics and health",
+  "status": "implementation_passed_live_integration_pending",
+  "phaseCommit": "608c251",
+  "phasePushed": true,
+  "verification": {
+    "domainAdminWorkerContract": "PASS_3_OF_3",
+    "domainQueryContract": "PASS_1_OF_1",
+    "typecheck": "PASS",
+    "staticVerify": "PASS",
+    "controlPostgresIntegration": "SKIPPED_ENV_NOT_CONFIGURED_NOT_COUNTED",
+    "queryHttpListener": "NOT_RUN_SANDBOX_LOOPBACK_EPERM"
+  },
+  "surface": {
+    "queryRoutes": 10,
+    "adminRoutes": 6,
+    "workerProbeRoutes": 3,
+    "arbitrarySql": false,
+    "benchmarkScoringLogic": false
+  },
+  "gates": {
+    "G19": "PARTIAL_REAL_ADMIN_HTTP_CONTROL_POSTGRES_PENDING",
+    "G26": "PASS",
+    "G27": "PARTIAL_REAL_ADMIN_HTTP_CONTROL_POSTGRES_PENDING",
+    "G28": "PARTIAL_LIVE_WORKER_PROBE_PENDING"
+  },
+  "limitations": [
+    "No Control PostgreSQL connection was available for this phase's new integration test.",
+    "No HTTP listener was started in the restricted sandbox.",
+    "No ClickHouse DML, projection activation or real projection E2E occurred."
+  ]
+}

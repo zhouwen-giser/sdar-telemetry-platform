@@ -147,8 +147,9 @@ any projection. A future release/hash/object/column drift must fail closed as
 | Phase 9 — target/lineage/DLQ | COMPLETE_PUBLISHED | exact target validation, idempotent writes, lineage and conflict closure; G14 reserved for real E2E |
 | Phase 10 — reconcile/replay/drift | COMPLETE_PUBLISHED | eight-way reconciliation, bounded replay, DLQ service and drift fail-closed |
 | Phase 11 — sets/lifecycle | COMPLETE_PUBLISHED | seven-state lifecycle, four sets and no false-ready empty/disabled state |
-| Phase 12 — APIs/metrics/health | IN_PROGRESS | bounded Query and authenticated Admin/runtime probes |
-| Phases 13–14 — implementation | NOT_STARTED | implement in order with projections disabled by default |
+| Phase 12 — APIs/metrics/health | COMPLETE_PUBLISHED | bounded Query plus authenticated Admin/runtime contracts; live gates retained |
+| Phase 13 — Benchmark handoff contracts | IN_PROGRESS | immutable consumer handoff and verifier; no scoring logic |
+| Phase 14 — Compose/operations | NOT_STARTED | wire processes with projections disabled by default |
 | Phase 15 — real ClickHouse E2E | NOT_STARTED | must use real 24.10 and must not be replaced by fixtures |
 | Phase 16 — Benchmark consumer qualification | NOT_STARTED | contract/readiness/fact consumption only; no scoring code here |
 | Phase 17 — release acceptance | NOT_STARTED | G01–G35, reports, PR and final delivery |
@@ -257,8 +258,20 @@ producer prerequisites, the default shadow cap, four exact set definitions and r
 G21/G22 are closed. G23 remains reserved for Phase 16 consumer qualification. No live projection
 was activated.
 
+## Phase 12 Query/Admin/runtime API evidence
+
+Ten fixed Query routes, six independently authenticated Admin routes and three worker probe routes
+are implemented. Query inputs cannot select tables or inject SQL; lifecycle/replay/reconciliation/
+DLQ commands carry frozen scope and expected revision/hash fields. Focused contract tests passed
+3/3 for Admin/worker and 1/1 for Query, with typecheck and static verification passing.
+
+G26 is closed by the bounded typed API contract. G19/G27 remain partial because the new Control
+PostgreSQL integration test was explicitly skipped without `SDAR_TEST_CONTROL_POSTGRES_URL`; G28
+remains partial until the wired worker is probed live. No skipped test or pure-port test is counted
+as a real database, HTTP or ClickHouse E2E.
+
 ## Resume point
 
-Resume at Phase 12 Query/Admin/metrics/health. Keep all projections disabled, preserve the existing
-Evidence v1 path, retain G14 for real Phase 15 E2E, close G19 through authenticated Admin
-integration, and retain G23 for Phase 16.
+Resume at Phase 13 Benchmark Server handoff contracts. Keep all projections disabled, preserve the
+existing Evidence v1 path, do not implement Benchmark scoring, retain G14 for real Phase 15 E2E,
+and close G19/G27/G28 only with their required live evidence.

@@ -23,7 +23,8 @@ This repository is actively executing the Domain Projection Benchmark Handoff V1
 | Phase 9 | complete and pushed — exact target writer, lineage/DLQ terminal closure and checkpoint-last crash tests |
 | Phase 10 | complete and pushed — reconciliation, bounded replay, DLQ service and schema-drift fail-closed |
 | Phase 11 | complete and pushed — safe lifecycle, four projection sets and no false-ready empty state |
-| Phases 12–17 | not yet complete |
+| Phase 12 | complete and pushed — bounded Query contract plus authenticated Admin and worker probe surfaces; live integration gates remain open |
+| Phases 13–17 | not yet complete |
 | Real Domain Projection E2E | not run; reserved for Phase 15 |
 | Benchmark Server handoff qualification | not run; reserved for Phase 16 |
 
@@ -31,16 +32,22 @@ Authority remains split correctly: SDAR Runtime PostgreSQL owns execution, the G
 accepted-batch durability, Control PostgreSQL owns operational leases/actions, and ClickHouse is
 fact/projection/analytical storage. This repository will not implement Benchmark scoring.
 
-Current status: `IN_PROGRESS_LIFECYCLE_SET_READINESS_PROJECTIONS_DISABLED`.
+Current status: `IN_PROGRESS_PHASE_12_API_IMPLEMENTED_LIVE_GATES_PENDING_PROJECTIONS_DISABLED`.
 
 Phase 9 closed G15–G18 with deterministic port tests covering ten exact target descriptors,
 100% produced lineage, skip/fail audit and post-target/pre-lineage crash recovery. G14 remains
 explicitly pending for real ClickHouse same-hash replay in Phase 15; no fixture result is counted
 as real E2E.
 
-Phase 10 closes G20 with exact mapping/descriptor drift tests. G19 service semantics pass, while
-the required authenticated Admin integration remains explicitly scheduled for Phase 12.
+Phase 10 closes G20 with exact mapping/descriptor drift tests. Phase 12 exposes those service
+semantics through the authenticated Admin contract, while the required real HTTP/Control
+PostgreSQL integration remains explicitly open.
 
 Phase 11 closes G21/G22 without activating a projection. G23 remains a Phase 16 consumer gate.
+
+Phase 12 closes G26 with fixed, typed, bounded Query routes. G19/G27 remain partial until an
+authenticated HTTP-to-Control-PostgreSQL integration run succeeds; G28 remains partial until the
+wired worker is probed live. The missing database environment and sandbox listener restriction are
+recorded as skips/pending work, never as passes.
 
 The completion marker must not be emitted until Phases 0–17 and G01–G35 all pass.
