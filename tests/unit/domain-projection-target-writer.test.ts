@@ -12,6 +12,7 @@ import { DomainProjectionRegistry } from "../../packages/telemetry-projection-re
 import { NpcDomainMapper } from "../../packages/telemetry-projection-registry/src/npc-mappings.js";
 import {
   ClickHouseDomainTargetWriter,
+  ClickHouseDomainCheckpointCommitter,
   DomainProjectionTerminalCloser,
   buildExactTargetRow,
   type DomainCheckpointCommitter,
@@ -168,6 +169,38 @@ test("crash after target but before lineage replays safely and checkpoint stays 
   assert.deepEqual(checkpoint.outcomes, ["duplicate"]);
 });
 
+test("ClickHouse checkpoint is stable, terminal-only and same-hash replay idempotent", async () => {
+  const source = await sourceFixture("commander", 0);
+  const input = producedInput(source);
+  const clickHouse = new MemoryTargetClickHouse();
+  const checkpoint = new ClickHouseDomainCheckpointCommitter(clickHouse, {
+    descriptor: input.descriptor,
+    mappingHash: input.mappingHash,
+    projectionRunId: input.projectionRunId,
+    sourceCursor: input.sourceCursor,
+    projectedAt: input.projectedAt,
+    lookbackMs: 1_800_000,
+  });
+  const closure: DomainTerminalClosure = {
+    outcome: "produced",
+    checkpointEligible: true,
+    targetWritten: true,
+    lineageWritten: true,
+    deadLetterWritten: false,
+    reasonCode: "TARGET_PRODUCED",
+  };
+  await checkpoint.commit({source, closure});
+  await checkpoint.commit({source, closure});
+  assert.equal(clickHouse.checkpointRows.length, 1);
+  assert.equal(clickHouse.checkpointRows[0]!.last_source_record_id, source.recordId);
+  assert.equal(clickHouse.checkpointRows[0]!.last_source_payload_hash, source.payloadHash);
+  assert.equal(clickHouse.writeOrder.at(-1), "sdar_meta.projection_checkpoint");
+  await assert.rejects(
+    checkpoint.commit({source, closure: {...closure, checkpointEligible: false}}),
+    (error: unknown) => hasCode(error, "CHECKPOINT_TERMINAL_REQUIRED"),
+  );
+});
+
 test("exact writer rejects target field drift before any query or write", async () => {
   const source = await sourceFixture("commander", 0);
   const input = producedInput(source);
@@ -232,10 +265,19 @@ class MemoryTargetClickHouse implements DomainTargetClickHouseClient {
   readonly targetRows: Record<string, unknown>[] = [];
   readonly lineageRows: Record<string, unknown>[] = [];
   readonly deadLetterRows: Record<string, unknown>[] = [];
+  readonly checkpointRows: Record<string, unknown>[] = [];
   readonly writeOrder: string[] = [];
   failLineageOnce = false;
 
   async query(sql: string): Promise<string> {
+    if (sql.includes("FROM sdar_meta.projection_checkpoint")) {
+      return JSON.stringify({data: this.checkpointRows.map((row) => ({
+        last_source_sequence: row.last_source_sequence,
+        last_source_record_id: row.last_source_record_id,
+        last_source_payload_hash: row.last_source_payload_hash,
+        checkpoint_token: row.checkpoint_token,
+      }))});
+    }
     if (sql.includes("FROM sdar_meta.projection_lineage")) {
       return JSON.stringify({
         data: this.lineageRows.map((row) => ({
@@ -259,6 +301,7 @@ class MemoryTargetClickHouse implements DomainTargetClickHouseClient {
     this.writeOrder.push(table);
     if (table === "sdar_meta.projection_lineage") this.lineageRows.push(...structuredClone(rows));
     else if (table === "sdar_meta.projection_dead_letter") this.deadLetterRows.push(...structuredClone(rows));
+    else if (table === "sdar_meta.projection_checkpoint") this.checkpointRows.push(...structuredClone(rows));
     else this.targetRows.push(...structuredClone(rows));
   }
 }

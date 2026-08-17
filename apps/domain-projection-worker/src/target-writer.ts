@@ -234,6 +234,119 @@ export class DomainProjectionTerminalCloser {
   }
 }
 
+export class ClickHouseDomainCheckpointCommitter implements DomainCheckpointCommitter {
+  constructor(
+    private readonly clickHouse: DomainTargetClickHouseClient,
+    private readonly scope: Readonly<{
+      descriptor: DomainProjectionDescriptor;
+      mappingHash: DomainSourceSha256;
+      projectionRunId: string;
+      sourceCursor: string;
+      projectedAt: string;
+      lookbackMs: number;
+    }>,
+  ) {
+    rawHash(scope.mappingHash);
+    requiredUuid({ value: scope.projectionRunId }, "value");
+    if (!Number.isSafeInteger(scope.lookbackMs) || scope.lookbackMs < 0) {
+      throw targetWriterError("DOMAIN_CHECKPOINT_SCOPE_INVALID");
+    }
+  }
+
+  async commit(
+    input: Readonly<{source: DomainSourceRecord; closure: DomainTerminalClosure}>,
+  ): Promise<void> {
+    if (!input.closure.checkpointEligible) throw targetWriterError("CHECKPOINT_TERMINAL_REQUIRED");
+    const {descriptor} = this.scope;
+    if (input.source.sourceContractId !== descriptor.sourceContractId) {
+      throw targetWriterError("SOURCE_CONTRACT_INVALID");
+    }
+    const sourcePartition = [
+      input.source.tenantId,
+      input.source.projectId,
+      input.source.episodeId,
+      descriptor.definition.projectionId,
+    ].join("\u001f");
+    const recordId = uuidV5(
+      DOMAIN_CANONICAL_ID_NAMESPACE,
+      ["sdar-domain-checkpoint-v1", sourcePartition].join("\u001f"),
+    );
+    const checkpointToken = hashCanonicalDomainProjectionJson({
+      projectionId: descriptor.definition.projectionId,
+      projectionVersion: descriptor.definition.projectionVersion,
+      mappingHash: this.scope.mappingHash,
+      sourceRecordId: input.source.recordId,
+      sourceRevision: input.source.sourceRevision,
+      sourceSequence: input.source.sequence,
+      sourcePayloadHash: input.source.payloadHash,
+      sourceCursor: this.scope.sourceCursor,
+      outcome: input.closure.outcome === "duplicate" ? "produced" : input.closure.outcome,
+    });
+    const existing = parseRows(await this.clickHouse.query(
+      `SELECT last_source_sequence,last_source_record_id,last_source_payload_hash,checkpoint_token
+FROM sdar_meta.projection_checkpoint FINAL
+WHERE tenant_id=${stringExpression(input.source.tenantId)}
+  AND project_id=${stringExpression(input.source.projectId)}
+  AND projection_id=${stringExpression(descriptor.definition.projectionId)}
+  AND projection_version=${stringExpression(String(descriptor.definition.projectionVersion))}
+  AND consumer_group='sdar-domain-projection-v1'
+  AND source_stream='sdar.domain-source/v1'
+  AND source_partition=${stringExpression(sourcePartition)}
+LIMIT 1 FORMAT JSON`,
+      {readonly: 2, maxResultRows: 1},
+    ));
+    const current = existing[0];
+    if (current !== undefined) {
+      const currentSequence = BigInt(requiredUInt64String(current, "last_source_sequence"));
+      const candidateSequence = BigInt(input.source.sequence);
+      if (currentSequence > candidateSequence) return;
+      if (currentSequence === candidateSequence) {
+        if (
+          requiredString(current, "last_source_record_id") === input.source.recordId &&
+          normalizeHash(requiredString(current, "last_source_payload_hash")) === input.source.payloadHash &&
+          normalizeHash(requiredString(current, "checkpoint_token")) === checkpointToken
+        ) return;
+        throw targetWriterError("CHECKPOINT_CONTENT_CONFLICT");
+      }
+    }
+    const outcomeCounts = {
+      produced_count: input.closure.outcome === "produced" || input.closure.outcome === "duplicate" ? 1 : 0,
+      skipped_count: input.closure.outcome === "skipped" ? 1 : 0,
+      failed_count: input.closure.outcome === "failed" ? 1 : 0,
+    };
+    await this.clickHouse.insert("sdar_meta.projection_checkpoint", [{
+      tenant_id: input.source.tenantId,
+      project_id: input.source.projectId,
+      record_id: recordId,
+      projection_id: descriptor.definition.projectionId,
+      projection_version: String(descriptor.definition.projectionVersion),
+      consumer_group: "sdar-domain-projection-v1",
+      source_stream: "sdar.domain-source/v1",
+      source_partition: sourcePartition,
+      source_offset: input.source.sequence,
+      source_watermark: input.source.occurredAt,
+      last_source_record_id: input.source.recordId,
+      last_source_payload_hash: input.source.payloadHash,
+      checkpoint_token: checkpointToken,
+      projection_run_id: this.scope.projectionRunId,
+      processed_count: 1,
+      status: "active",
+      committed_at: this.scope.projectedAt,
+      updated_at: this.scope.projectedAt,
+      sequence: input.source.sequence,
+      source_database: descriptor.definition.source.database,
+      source_table: descriptor.definition.source.table,
+      last_source_revision: input.source.sourceRevision,
+      last_source_sequence: input.source.sequence,
+      checkpoint_version: 1,
+      ...outcomeCounts,
+      lookback_ms: this.scope.lookbackMs,
+      source_cursor_json: this.scope.sourceCursor,
+      episode_key: input.source.episodeId,
+    }], {deduplicationToken: rawHash(checkpointToken)});
+  }
+}
+
 export function buildExactTargetRow(
   envelope: DomainCommonTargetEnvelope,
   targetFields: Readonly<Record<string, unknown>>,
@@ -558,6 +671,15 @@ function requiredString(value: Record<string, unknown>, field: string): string {
   const candidate = value[field];
   if (typeof candidate !== "string" || candidate === "") throw targetWriterError("TARGET_SCHEMA_INVALID");
   return candidate;
+}
+
+function requiredUInt64String(value: Record<string, unknown>, field: string): string {
+  const candidate = value[field];
+  const normalized = typeof candidate === "number" ? String(candidate) : candidate;
+  if (typeof normalized !== "string" || !/^(?:0|[1-9][0-9]*)$/u.test(normalized)) {
+    throw targetWriterError("TARGET_SCHEMA_INVALID");
+  }
+  return normalized;
 }
 
 function requiredStringAllowEmpty(value: Record<string, unknown>, field: string): string {
