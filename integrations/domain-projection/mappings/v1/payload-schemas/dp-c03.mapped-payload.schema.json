@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sdar://domain-projection/mappings/v1/dp-c03/mapped-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["physical_verification_id", "verification_id", "criterion_id", "action_id", "device_id", "capability", "verification_channel", "expected_json", "actual_json", "comparator", "verification_result", "critical", "stable_duration_ms", "device_timestamp", "verified_at", "confirmation_latency_ms", "source_state_id", "evidence_refs"],
+  "properties": {
+    "physical_verification_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "verification_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "criterion_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "action_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "device_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "capability": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "verification_channel": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "expected_json": { "type": "string", "minLength": 1, "maxLength": 65536 },
+    "actual_json": { "type": "string", "minLength": 1, "maxLength": 65536 },
+    "comparator": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "verification_result": { "enum": ["passed", "failed", "inconclusive", "not_observed"] },
+    "critical": { "type": "integer", "minimum": 0, "maximum": 1 },
+    "stable_duration_ms": { "type": "string", "pattern": "^(?:0|[1-9][0-9]*)$", "maxLength": 20 },
+    "device_timestamp": { "type": "string", "format": "date-time" },
+    "verified_at": { "type": "string", "format": "date-time" },
+    "confirmation_latency_ms": { "type": "string", "pattern": "^(?:0|[1-9][0-9]*)$", "maxLength": 20 },
+    "source_state_id": { "type": "string", "maxLength": 256 },
+    "evidence_refs": { "type": "array", "maxItems": 256, "items": { "type": "string", "minLength": 1, "maxLength": 512 } }
+  }
+}

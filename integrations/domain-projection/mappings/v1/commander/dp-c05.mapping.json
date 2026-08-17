@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "mappingId": "DP-C05",
+  "projectionId": "application_to_embodied.dp-c05",
+  "projectionVersion": 1,
+  "mapperId": "domain.mapper.dp-c05",
+  "mapperVersion": "0.1.0",
+  "source": {
+    "contractId": "sdar.domain-source/commander/ugv-state-snapshot",
+    "contractVersion": "1",
+    "table": "sdar_commander.domain_ugv_state_snapshot_source_v1",
+    "schemaHash": "sha256:755f01a3719d741a9fe9343f7975d4185cd903846ab6b98917bac493daa3dfd2"
+  },
+  "target": {
+    "table": "sdar_embodied.state_freshness_check",
+    "descriptorHash": "sha256:7009773eb9216f5d5f8a9ec7ff29c636d19c78136070c399f78d2e45a92bf43c"
+  },
+  "mappedPayloadSchema": {
+    "path": "payload-schemas/dp-c05.mapped-payload.schema.json",
+    "canonicalHash": "sha256:dcbb539a374ae0192e4d263fe3de278c18272aa08250f386b3c0c73e41470310"
+  },
+  "cursor": ["occurred_at", "state_snapshot_version", "record_id", "source_revision"],
+  "identity": "uuidv5-rfc9562-v1",
+  "enumMaps": { "check_result": ["fresh", "stale", "unknown"] },
+  "requiredSourceFields": ["stateSnapshotId", "stateSnapshotVersion", "entityId", "deviceId", "stateField", "sourceComponent", "observedAt", "evaluatedAt", "ageMs", "thresholdMs", "thresholdPolicyId", "thresholdPolicyVersion", "freshnessResult", "conflictDetected", "missing"],
+  "targetFieldMappings": {
+    "check_id": "uuidv5(payload.stateSnapshotId+payload.stateField)", "state_field": "payload.stateField", "source_component": "payload.sourceComponent", "observed_at": "payload.observedAt", "checked_at": "payload.evaluatedAt", "age_ms": "payload.ageMs", "max_allowed_age_ms": "payload.thresholdMs", "check_result": "payload.freshnessResult", "conflict_detected": "payload.conflictDetected", "missing": "payload.missing"
+  },
+  "skipReasons": ["SOURCE_NOT_APPLICABLE"],
+  "failureCodes": ["SOURCE_CONTRACT_INVALID", "MAPPING_REQUIRED_FIELD_MISSING", "MAPPING_ENUM_UNSUPPORTED"],
+  "status": "disabled"
+}

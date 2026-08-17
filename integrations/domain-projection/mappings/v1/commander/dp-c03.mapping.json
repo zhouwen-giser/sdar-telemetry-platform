@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "mappingId": "DP-C03",
+  "projectionId": "application_to_embodied.dp-c03",
+  "projectionVersion": 1,
+  "mapperId": "domain.mapper.dp-c03",
+  "mapperVersion": "0.1.0",
+  "source": {
+    "contractId": "sdar.domain-source/commander/capability-track-sample",
+    "contractVersion": "1",
+    "table": "sdar_commander.domain_capability_track_sample_source_v1",
+    "schemaHash": "sha256:a7effb6fdc96b9e91acfe62d550588e1f64fa192b2eb18339e75e5ce41f2dc92"
+  },
+  "target": {
+    "table": "sdar_embodied.physical_verification",
+    "descriptorHash": "sha256:a4e1edf756f9cd23b45f07f9a910fec32d1944c35e454b50d849ea1ccc5fcf05"
+  },
+  "mappedPayloadSchema": {
+    "path": "payload-schemas/dp-c03.mapped-payload.schema.json",
+    "canonicalHash": "sha256:a151945a7fabcfac476e7f9b97bd6d940626fa8ff3f412ce3470081cd6a7311f"
+  },
+  "cursor": ["occurred_at", "sequence", "record_id", "source_revision"],
+  "identity": "uuidv5-rfc9562-v1",
+  "enumMaps": { "verification_result": ["passed", "failed", "inconclusive", "not_observed"] },
+  "requiredSourceFields": ["physicalVerificationId", "verificationId", "criterionId", "actionId", "deviceId", "resourceChannel", "capability", "verificationChannel", "expected", "actual", "comparator", "verificationResult", "critical", "deviceTimestamp", "verifiedAt", "evidenceRefs"],
+  "targetFieldMappings": {
+    "physical_verification_id": "payload.physicalVerificationId", "verification_id": "payload.verificationId", "criterion_id": "payload.criterionId", "action_id": "payload.actionId", "device_id": "payload.deviceId", "capability": "payload.capability", "verification_channel": "payload.verificationChannel", "expected_json": "canonical(payload.expected)", "actual_json": "canonical(payload.actual)", "comparator": "payload.comparator", "verification_result": "payload.verificationResult", "confirmation_latency_ms": "payload.verifiedAt-payload.deviceTimestamp", "evidence_refs": "payload.evidenceRefs"
+  },
+  "skipReasons": ["SOURCE_NOT_APPLICABLE"],
+  "failureCodes": ["SOURCE_CONTRACT_INVALID", "MAPPING_REQUIRED_FIELD_MISSING", "MAPPING_ENUM_UNSUPPORTED"],
+  "status": "disabled"
+}

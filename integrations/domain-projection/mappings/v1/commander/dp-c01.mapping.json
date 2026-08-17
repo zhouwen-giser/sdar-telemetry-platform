@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "mappingId": "DP-C01",
+  "projectionId": "application_to_embodied.dp-c01",
+  "projectionVersion": 1,
+  "mapperId": "domain.mapper.dp-c01",
+  "mapperVersion": "0.1.0",
+  "source": {
+    "contractId": "sdar.domain-source/commander/mcp-action",
+    "contractVersion": "1",
+    "table": "sdar_commander.domain_mcp_action_source_v1",
+    "schemaHash": "sha256:ba4522f56698e64c8c056331ff2979fdb756de36bfb6539cba43aa43c69abb63"
+  },
+  "target": {
+    "table": "sdar_embodied.control_action",
+    "descriptorHash": "sha256:d4b4bf8de2c2a447fa313d581e637eb2eaf0027fe70ce708e27d6d2c7d57a01d"
+  },
+  "mappedPayloadSchema": {
+    "path": "payload-schemas/dp-c01.mapped-payload.schema.json",
+    "canonicalHash": "sha256:799b965e454b2d92408004a42ee08c907fca408c331e13fcc0b8eb55cb751e36"
+  },
+  "cursor": ["occurred_at", "sequence", "record_id", "source_revision"],
+  "identity": "uuidv5-rfc9562-v1",
+  "enumMaps": { "action_type": { "constant": "device_control" }, "side_effect": { "constant": 1 } },
+  "requiredSourceFields": ["actionId", "actionName", "targetEntityId", "targetEntityType", "deviceId", "resourceChannel", "capabilityRef", "controlAuthorityRef", "executionBasisRef", "idempotencyKey", "parametersHash", "dispatchStatus", "riskLevel", "inputSummary"],
+  "targetFieldMappings": {
+    "action_id": "payload.actionId", "device_id": "payload.deviceId", "action_name": "payload.actionName", "capability": "payload.capabilityRef", "resource_channel": "payload.resourceChannel", "target_id": "payload.targetEntityId", "risk_level": "payload.riskLevel", "idempotency_key": "payload.idempotencyKey", "input_hash": "payload.parametersHash", "execution_status": "payload.dispatchStatus", "controller_ref": "payload.controlAuthorityRef", "basis_id": "payload.executionBasisRef", "input_summary": "payload.inputSummary"
+  },
+  "skipReasons": ["SOURCE_NOT_APPLICABLE"],
+  "failureCodes": ["SOURCE_CONTRACT_INVALID", "MAPPING_REQUIRED_FIELD_MISSING", "MAPPING_ENUM_UNSUPPORTED"],
+  "status": "disabled"
+}

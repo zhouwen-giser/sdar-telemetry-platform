@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "releaseVersion": "1.5.1-rc.2",
+  "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+  "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+  "mappingCount": 5,
+  "complete": false,
+  "mappings": [
+    {
+      "mappingId": "DP-C01",
+      "documentPath": "commander/dp-c01.mapping.json",
+      "documentHash": "sha256:f0f728705a747a3a6632237887ab583c7b1de53a929e5299c199403f6ab6b495",
+      "payloadSchemaPath": "payload-schemas/dp-c01.mapped-payload.schema.json",
+      "payloadSchemaHash": "sha256:799b965e454b2d92408004a42ee08c907fca408c331e13fcc0b8eb55cb751e36"
+    },
+    {
+      "mappingId": "DP-C02",
+      "documentPath": "commander/dp-c02.mapping.json",
+      "documentHash": "sha256:6b8ac6bbf3b4ff80c129f4f818ea12551b7c77998df79d271da015a161cc2285",
+      "payloadSchemaPath": "payload-schemas/dp-c02.mapped-payload.schema.json",
+      "payloadSchemaHash": "sha256:2f8e0000ce4f49d6f1abac0810196b57a24148239468ecb660b7ea6a5b02cfa9"
+    },
+    {
+      "mappingId": "DP-C03",
+      "documentPath": "commander/dp-c03.mapping.json",
+      "documentHash": "sha256:74e97f1a0fb4a1a33f50c3937a9407f1960c896b166781aa67045d12fd90f695",
+      "payloadSchemaPath": "payload-schemas/dp-c03.mapped-payload.schema.json",
+      "payloadSchemaHash": "sha256:a151945a7fabcfac476e7f9b97bd6d940626fa8ff3f412ce3470081cd6a7311f"
+    },
+    {
+      "mappingId": "DP-C04",
+      "documentPath": "commander/dp-c04.mapping.json",
+      "documentHash": "sha256:2959b2da2809ca5451cb449644c17dec86e4b4c80bc36a7a5985af7397b8d73d",
+      "payloadSchemaPath": "payload-schemas/dp-c04.mapped-payload.schema.json",
+      "payloadSchemaHash": "sha256:13f3fde88c50e8f7a84b8d469d43fedc4b1b0688684ff881bc1dd563dc899df6"
+    },
+    {
+      "mappingId": "DP-C05",
+      "documentPath": "commander/dp-c05.mapping.json",
+      "documentHash": "sha256:4a95f1073e2531039074936fc904d8da5d87730a6506d1c7ad2ecd14320de11a",
+      "payloadSchemaPath": "payload-schemas/dp-c05.mapped-payload.schema.json",
+      "payloadSchemaHash": "sha256:dcbb539a374ae0192e4d263fe3de278c18272aa08250f386b3c0c73e41470310"
+    }
+  ]
+}
