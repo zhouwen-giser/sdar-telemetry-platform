@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+
 import { loadConfig } from "../../../packages/telemetry-config/src/index.js";
 import {
   ControlPostgres,
@@ -9,10 +11,7 @@ import {
   type DomainAdminPort,
 } from "./server.js";
 
-const databaseUrl = process.env["CONTROL_POSTGRES_URL"];
-if (databaseUrl === undefined || databaseUrl.trim() === "") {
-  throw new Error("CONTROL_POSTGRES_URL_REQUIRED");
-}
+const databaseUrl = await controlPostgresUrl();
 const database = new ControlPostgres(databaseUrl);
 const repository = database.domainProjections;
 
@@ -90,6 +89,15 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.once(signal, () => {
     server.close(() => { void database.close().finally(() => process.exit(0)); });
   });
+}
+
+async function controlPostgresUrl(): Promise<string> {
+  const inline = process.env["CONTROL_POSTGRES_URL"];
+  const file = process.env["CONTROL_POSTGRES_URL_FILE"];
+  if ((inline === undefined) === (file === undefined)) throw new Error("CONTROL_POSTGRES_CONFIGURATION_INVALID");
+  const value = inline ?? (await readFile(file!, "utf8")).trim();
+  if (value.trim() === "" || /[\r\n]/u.test(value)) throw new Error("CONTROL_POSTGRES_CONFIGURATION_INVALID");
+  return value;
 }
 
 function actionInput(

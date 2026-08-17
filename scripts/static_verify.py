@@ -84,6 +84,8 @@ for ignored_path in [".git", ".env", "deploy/secrets", "node_modules", "dist"]:
 gateway = compose_service(compose, "ingestion-gateway")
 worker = compose_service(compose, "telemetry-worker")
 query = compose_service(compose, "query-api")
+admin = compose_service(compose, "admin-api")
+domain_worker = compose_service(compose, "domain-projection-worker")
 legacy_relay = compose_service(compose, "sdar-outbox-relay")
 control_postgres = compose_service(compose, "control-postgres")
 
@@ -91,6 +93,8 @@ for service_name, service in [
     ("ingestion-gateway", gateway),
     ("telemetry-worker", worker),
     ("query-api", query),
+    ("admin-api", admin),
+    ("domain-projection-worker", domain_worker),
 ]:
     assert "env_file:" not in service, f"{service_name} receives the complete root .env"
     assert "./secrets:/run/secrets" not in service, f"{service_name} mounts the complete secret directory"
@@ -108,6 +112,16 @@ assert "DOMAIN_SOURCE_INGEST_BEARER_TOKEN_FILE: /run/secrets/domain_source_inges
 assert "CLICKHOUSE_PASSWORD_FILE: /run/secrets/clickhouse_password" in worker
 assert "CLICKHOUSE_QUERY_PASSWORD_FILE: /run/secrets/clickhouse_query_password" in query
 assert "QUERY_API_BEARER_TOKEN_FILE: /run/secrets/query_api_bearer_token" in query
+assert "ADMIN_API_BEARER_TOKEN_FILE: /run/secrets/admin_api_bearer_token" in admin
+assert "CONTROL_POSTGRES_URL_FILE: /run/secrets/control_postgres_url" in admin
+assert "CONTROL_POSTGRES_URL_FILE: /run/secrets/control_postgres_url" in domain_worker
+assert "secrets: [admin_api_bearer_token, control_postgres_url]" in admin
+assert "secrets: [clickhouse_password, control_postgres_url]" in domain_worker
+assert "DOMAIN_PROJECTION_MAX_MODE: ${DOMAIN_PROJECTION_MAX_MODE:-shadow}" in domain_worker
+assert "DOMAIN_PROJECTION_ENABLED: ${DOMAIN_PROJECTION_ENABLED:-true}" in domain_worker
+assert "DOMAIN_PROJECTION_BIND_HOST: 0.0.0.0" in domain_worker
+assert "${ADMIN_PUBLISH_HOST:-127.0.0.1}" in admin
+assert "${DOMAIN_PROJECTION_PUBLISH_HOST:-127.0.0.1}" in domain_worker
 assert "${GATEWAY_PUBLISH_HOST:-127.0.0.1}" in gateway
 assert "${QUERY_PUBLISH_HOST:-127.0.0.1}" in query
 assert "SDAR_EVIDENCE_SCHEMA_ROOT: /app/integrations/" in gateway
@@ -130,11 +144,15 @@ for required_setting in [
     "EVIDENCE_INGEST_BEARER_TOKEN_FILE=/run/secrets/evidence_ingest_bearer_token",
     "DOMAIN_SOURCE_INGEST_BEARER_TOKEN_FILE=/run/secrets/domain_source_ingest_bearer_token",
     "QUERY_API_BEARER_TOKEN_FILE=/run/secrets/query_api_bearer_token",
+    "ADMIN_API_BEARER_TOKEN_FILE=/run/secrets/admin_api_bearer_token",
+    "CONTROL_POSTGRES_URL_FILE=/run/secrets/control_postgres_url",
+    "DOMAIN_PROJECTION_MAX_MODE=shadow",
+    "DOMAIN_PROJECTION_HEALTH_PORT=8083",
     "SDAR_EVIDENCE_SCHEMA_ROOT=/app/integrations/skill-driven-agent-runtime/v1.4.1/schemas/evidence/v1",
 ]:
     assert required_setting in env_example, f"missing safe example setting: {required_setting}"
 assert not re.search(
-    r"^(?:CLICKHOUSE(?:_QUERY)?_PASSWORD|EVIDENCE_INGEST_BEARER_TOKEN|QUERY_API_BEARER_TOKEN)=.+$",
+    r"^(?:CLICKHOUSE(?:_QUERY)?_PASSWORD|EVIDENCE_INGEST_BEARER_TOKEN|QUERY_API_BEARER_TOKEN|ADMIN_API_BEARER_TOKEN|CONTROL_POSTGRES_URL)=.+$",
     env_example,
     re.MULTILINE,
 ), "tracked env example contains an inline credential"

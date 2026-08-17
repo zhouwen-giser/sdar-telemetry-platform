@@ -36,6 +36,11 @@ token 与 Evidence token 必须分离。
 Domain Projection 只提供标准事实、readiness、lineage 与不可变 fact index，不在本仓库实现
 Benchmark M1–M15、F/HG、baseline、comparison 或评分逻辑。
 
+Benchmark consumer 的冻结交付位于
+`integrations/sdar-benchmark-server/domain-projection/v1`。`npm run check:benchmark-handoff`
+只验证本地清单、哈希和 fixture；只有 `npm run check:benchmark-handoff:live` 在真实重建库成功后
+才构成 live consumer-query 证据。
+
 ## 本地门禁
 
 ```bash
@@ -69,7 +74,13 @@ Gateway 与 Query API 的进程默认绑定 `127.0.0.1`。Compose 容器内显�
 
 ```bash
 docker compose -f deploy/compose.external-clickhouse.yaml up --build \
-  ingestion-gateway telemetry-worker query-api
+  ingestion-gateway telemetry-worker query-api admin-api domain-projection-worker
 ```
+
+Domain worker 复用 ClickHouse writer 凭据，但代码目标 allowlist 仍只允许 `sdar_embodied` 与
+`sdar_meta` 的冻结对象；Admin 和 Domain worker 通过独立的
+`control_postgres_url` secret 访问 Control PostgreSQL，Admin 另用独立 Bearer。所有 Domain
+配置在启动时集中校验，默认 `DOMAIN_PROJECTION_MAX_MODE=shadow`，因此启用进程不等于激活
+projection。宿主 Admin/Domain health 端口默认只发布到 `127.0.0.1`。
 
 Runtime v1.4.1 只能通过带 Bearer 和 `x-sdar-evidence-contract: sdar.evidence/v1` 的 `/v1/evidence/batches` HTTP contract 接入。`sdar-outbox-relay` 及 `SDAR_DATABASE_URL` 只保留给 v1.3 `telemetry_outbox`，已隔离在 `legacy-v1.3` profile；它不能读取或更新 v1.4 的 `evidence_outbox`，也不能替代 Evidence v1 Gateway。

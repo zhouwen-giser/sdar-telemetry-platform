@@ -451,6 +451,11 @@ export class ControlPostgres {
     ).rows;
   }
 
+  async health(): Promise<boolean> {
+    const result = await this.pool.query<{healthy: number}>("SELECT 1 AS healthy");
+    return result.rows[0]?.healthy === 1;
+  }
+
   async close(): Promise<void> {
     await this.pool.end();
   }

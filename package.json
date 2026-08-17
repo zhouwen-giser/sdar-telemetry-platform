@@ -36,6 +36,7 @@
     "start:worker": "node --env-file-if-exists=.env dist/apps/telemetry-worker/src/main.js",
     "start:query": "node --env-file-if-exists=.env dist/apps/query-api/src/main.js",
     "start:admin": "node --env-file-if-exists=.env dist/apps/admin-api/src/main.js",
+    "start:domain-worker": "node --env-file-if-exists=.env dist/apps/domain-projection-worker/src/main.js",
     "start:relay": "node --env-file-if-exists=.env dist/apps/sdar-outbox-relay/src/main.js"
   },
   "dependencies": {
