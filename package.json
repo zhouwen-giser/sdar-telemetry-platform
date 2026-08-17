@@ -17,6 +17,7 @@
     "verify:domain-projection-contracts": "npm run build && node dist/scripts/verify-domain-projection-contracts.js",
     "check:benchmark-handoff": "npm run build && node integrations/sdar-benchmark-server/domain-projection/v1/verify.mjs",
     "check:benchmark-handoff:live": "npm run build && node --env-file-if-exists=.env integrations/sdar-benchmark-server/domain-projection/v1/verify.mjs --live",
+    "check:benchmark-consumer": "npm run build && node dist/scripts/qualify-benchmark-consumer.js",
     "sync:domain-source-contracts": "npm run build && node dist/scripts/sync-domain-source-contracts.js",
     "check:domain-source-contracts": "npm run build && node dist/scripts/sync-domain-source-contracts.js --check",
     "sync:sdar-clickhouse-contract": "node --experimental-strip-types scripts/sync-sdar-clickhouse-contract.ts",
