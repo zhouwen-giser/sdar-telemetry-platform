@@ -6,6 +6,8 @@
   "observedAt": "2026-08-17T07:28:12.565Z",
   "branch": "feature/domain-projection-worker-v0.1",
   "startingHead": "301189599a9cf63ee7b51ee594aa1714441dee9d",
+  "phaseCommit": "52502ae",
+  "phasePushed": true,
   "remoteAligned": true,
   "draftPullRequest": 1,
   "taskPackage": {

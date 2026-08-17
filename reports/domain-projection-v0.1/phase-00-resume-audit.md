@@ -64,7 +64,8 @@ Projection E2E; no source batch or projected target was fabricated.
 
 ## Commit / push
 
-To be filled after the focused Phase 0 commit is created and pushed.
+Phase 0 evidence commit `52502ae` (`docs(domain-projection): clear RC2 schema gate`) was pushed
+to `origin/feature/domain-projection-worker-v0.1` and is visible in Draft PR #1.
 
 ## Next phase or exact blocker
 

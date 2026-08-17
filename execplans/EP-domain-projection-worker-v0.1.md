@@ -12,7 +12,7 @@ This goal does not implement benchmark, scoring, M1–M15, hard-gate, fatal or r
 
 | Item | Value |
 | --- | --- |
-| Phase state | `RESUME_PHASE_0_COMPLETE` |
+| Phase state | `RESUME_PHASE_0_PUBLISHED_PHASE_1_IN_PROGRESS` |
 | Implementation state | `SCHEMA_COMPATIBILITY_CLEARED_PROJECTIONS_DISABLED` |
 | Branch | `feature/domain-projection-worker-v0.1` |
 | Branch tracking | `origin/feature/domain-projection-worker-v0.1` |
