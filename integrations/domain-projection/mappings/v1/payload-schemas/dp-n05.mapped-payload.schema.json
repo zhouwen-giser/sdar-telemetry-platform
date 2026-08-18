@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sdar://domain-projection/mappings/v1/dp-n05/mapped-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["check_id", "state_field", "source_component", "observed_at", "checked_at", "age_ms", "max_allowed_age_ms", "check_result", "conflict_detected", "missing"],
+  "properties": {
+    "check_id": { "type": "string", "format": "uuid" },
+    "state_field": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "source_component": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "age_ms": { "type": "string", "pattern": "^(?:0|[1-9][0-9]*)$", "maxLength": 20 },
+    "max_allowed_age_ms": { "type": "string", "pattern": "^(?:0|[1-9][0-9]*)$", "maxLength": 20 },
+    "check_result": { "enum": ["fresh", "stale", "unknown"] },
+    "conflict_detected": { "type": "integer", "minimum": 0, "maximum": 1 },
+    "missing": { "type": "integer", "minimum": 0, "maximum": 1 }
+  }
+}

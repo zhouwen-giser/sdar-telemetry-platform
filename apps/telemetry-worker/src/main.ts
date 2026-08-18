@@ -13,8 +13,13 @@ import {
   v14Projection,
 } from "../../../packages/telemetry-projection-registry/src/index.js";
 import type { EvidenceV1WalPayload } from "../../../packages/telemetry-types/src/index.js";
+import {
+  loadDomainSourceV1Validator,
+  type DomainSourceWalPayload,
+} from "../../../packages/telemetry-contracts/src/index.js";
 import { DurableSegmentWal } from "../../../packages/telemetry-wal/src/index.js";
 import { TelemetryWorker } from "./worker.js";
+import { DomainSourceLandingWorker } from "./domain-source-worker.js";
 
 const config = loadConfig();
 const walRoot = path.join(config.walDir, "sdar-evidence-v1");
@@ -31,6 +36,16 @@ const worker = new TelemetryWorker({
   projector: registry,
   stateRoot: path.join(config.walDir, "sdar-evidence-v1-worker"),
 });
+const domainSourceWal = new DurableSegmentWal<DomainSourceWalPayload>(
+  path.join(config.walDir, "sdar-domain-source-v1"),
+  config.walHighWaterBytes,
+);
+const domainSourceWorker = new DomainSourceLandingWorker({
+  wal: domainSourceWal,
+  validator: await loadDomainSourceV1Validator(process.env["SDAR_DOMAIN_SOURCE_SCHEMA_ROOT"]),
+  clickhouse,
+  stateRoot: path.join(config.walDir, "sdar-domain-source-v1-worker"),
+});
 
 let stopping = false;
 async function run(): Promise<void> {
@@ -38,6 +53,7 @@ async function run(): Promise<void> {
     const started = Date.now();
     try {
       await worker.processOnce();
+      await domainSourceWorker.processOnce();
     } catch (error) {
       const message = error instanceof Error ? error.message : "WORKER_UNKNOWN_ERROR";
       console.error("telemetry-worker", message);

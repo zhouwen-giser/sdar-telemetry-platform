@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sdar://domain-projection/mappings/v1/dp-n03/mapped-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["confirmation_id", "action_id", "subject_type", "subject_id", "confirmation_status", "requested_at", "decided_at", "decided_by", "valid_from", "valid_until", "invalidation_conditions", "evidence_refs"],
+  "properties": {
+    "confirmation_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "action_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "subject_type": { "const": "action" },
+    "subject_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "confirmation_status": { "enum": ["approved", "rejected", "expired", "cancelled"] },
+    "requested_at": { "type": "string", "format": "date-time" },
+    "decided_at": { "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+    "decided_by": { "type": "string", "maxLength": 256 },
+    "valid_from": { "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+    "valid_until": { "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+    "invalidation_conditions": { "type": "array", "maxItems": 256, "items": { "type": "string", "minLength": 1, "maxLength": 512 } },
+    "evidence_refs": { "type": "array", "maxItems": 256, "items": { "type": "string", "minLength": 1, "maxLength": 512 } }
+  }
+}

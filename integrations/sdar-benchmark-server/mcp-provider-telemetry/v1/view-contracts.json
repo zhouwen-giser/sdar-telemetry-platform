@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "objects": [
+    {"name":"sdar_core.external_provider_fact","requiredFields":["smpp_source_id","fact_id","fact_hash","fact_type","source_record_id","source_record_hash","external_task_id","lifecycle_status","runtime_revision","provider_revision","occurred_at","projected_at","projection_id","projection_version"]},
+    {"name":"sdar_core.external_entity_relation_fact","requiredFields":["smpp_source_id","relation_id","relation_type","source_entity_urn","source_entity_type","source_entity_id","target_entity_urn","target_entity_type","target_entity_id","evidence_fact_ids","source_record_hash","projected_at","projection_id","projection_version"]},
+    {"name":"sdar_core.remote_task_binding","requiredFields":["episode_id","a2a_task_id","remote_task_id","protocol_status","current_provider_substate","current_observation_revision","updated_at"]},
+    {"name":"sdar_core.v_smpp_provider_task_timeline","requiredFields":["smpp_source_id","external_task_id","lifecycle_status","occurred_at","projected_at"]},
+    {"name":"sdar_core.v_smpp_resource_current_state","requiredFields":["smpp_source_id","resource_id","lifecycle_status","last_occurred_at","last_projected_at"]},
+    {"name":"sdar_core.v_smpp_resource_current_health","requiredFields":["smpp_source_id","resource_id","health_status","last_occurred_at","last_projected_at"]},
+    {"name":"sdar_core.v_smpp_execution_latest_progress","requiredFields":["smpp_source_id","external_execution_id","progress_percent","last_occurred_at","last_projected_at"]},
+    {"name":"sdar_core.v_sdar_smpp_task_reconciliation","requiredFields":["binding_id","remote_task_id","smpp_source_id","local_protocol_status","provider_lifecycle_status","status_mismatch","revision_mismatch","last_provider_fact_time"]},
+    {"name":"sdar_core.v_sdar_smpp_execution_topology","requiredFields":["smpp_source_id","relation_id","relation_type","source_entity_urn","target_entity_urn","evidence_fact_ids","projected_at"]}
+  ]
+}

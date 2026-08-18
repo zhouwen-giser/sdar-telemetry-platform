@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-17T07:28:12.565Z",
+  "authority": "SDAR_Telemetry_Domain_Projection_Benchmark_Handoff_Codex_Goal_Package_V1.0",
+  "taskPackageVerified": true,
+  "taskPackageFiles": 40,
+  "decisions": {
+    "D1": "approved_exact_rc2_sources_only",
+    "D2": "approved_ten_independent_projection_ids",
+    "D3": "approved_rc2_live_exact_match",
+    "D4": "approved_domain_source_v1_via_gateway_wal",
+    "D5": "approved_bounded_lookback_identity_hash_conflict",
+    "D6": "approved_disabled_first_lifecycle",
+    "D7": "approved_benchmark_readiness_handoff_without_scoring",
+    "D8": "approved_telemetry_ownership_boundary",
+    "D9": "approved_security_preservation",
+    "D10": "approved_control_postgres_operational_authority"
+  },
+  "nearNameAliasesApproved": 0,
+  "schemaCompatibilityHardStop": "CLEARED",
+  "activationState": "disabled",
+  "livePreflight": {
+    "release": "1.5.1-rc.2",
+    "schemaContractHashMatch": true,
+    "releaseDescriptorHashMatch": true,
+    "objectDescriptorMatch": true,
+    "columnDescriptorMatch": true,
+    "tableDiffCount": 0,
+    "columnDiffCount": 0
+  }
+}

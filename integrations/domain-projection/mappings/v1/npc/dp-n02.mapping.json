@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "mappingId": "DP-N02",
+  "projectionId": "application_to_embodied.dp-n02",
+  "projectionVersion": 1,
+  "mapperId": "domain.mapper.dp-n02",
+  "mapperVersion": "0.1.0",
+  "source": { "contractId": "sdar.domain-source/npc/mcp-receipt", "contractVersion": "1", "table": "sdar_npc.domain_mcp_receipt_source_v1", "schemaHash": "sha256:aadb7c93112f4015146155f778a2032d41f1d4105abac9ca9847882b2c4c4d5f" },
+  "target": { "table": "sdar_embodied.control_receipt", "descriptorHash": "sha256:f961a9a4656709f3dd09e76332313b097d3049232323f37c1b0814a13a839f2a" },
+  "mappedPayloadSchema": { "path": "payload-schemas/dp-n02.mapped-payload.schema.json", "canonicalHash": "sha256:7c93855981206803f9feb109552cc0fd965aee9a318bdcdf9aac252682653fb8" },
+  "cursor": ["occurred_at", "sequence", "record_id", "source_revision"],
+  "identity": "uuidv5-rfc9562-v1",
+  "enumMaps": { "transport_status": "identity_exact", "acceptance_status": "identity_exact", "execution_status": "identity_exact" },
+  "requiredSourceFields": ["receiptId", "actionId", "deviceId", "resourceChannel", "providerId", "transportStatus", "acceptanceStatus", "executionStatus", "receivedAt"],
+  "targetFieldMappings": { "receipt_id": "payload.receiptId", "action_id": "payload.actionId", "provider_id": "payload.providerId", "transport_status": "payload.transportStatus", "acceptance_status": "payload.acceptanceStatus", "execution_status": "payload.executionStatus", "received_at": "payload.receivedAt", "error_json": "payload.error|{}", "metrics_json": "payload.metrics|[]" },
+  "skipReasons": ["SOURCE_NOT_APPLICABLE"],
+  "failureCodes": ["SOURCE_CONTRACT_INVALID", "MAPPING_REQUIRED_FIELD_MISSING", "MAPPING_ENUM_UNSUPPORTED"],
+  "status": "disabled"
+}

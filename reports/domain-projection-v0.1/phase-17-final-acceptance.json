@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "phase": 17,
+  "name": "Final acceptance",
+  "status": "blocked",
+  "phaseCommit": "2d89ef2",
+  "phasePushed": true,
+  "gates": {"passed":23,"open":12,"total":35},
+  "openGates": ["G14","G19","G23","G24","G27","G28","G29","G30","G31","G32","G33","G35"],
+  "verification": {
+    "typecheck": "PASS",
+    "build": "PASS",
+    "clickHouseContract": "PASS_472_OBJECTS_15949_COLUMNS_ZERO_DIFF",
+    "domainSourceContract": "PASS_4_SCHEMAS_10_IDS_16_FIXTURES",
+    "evidenceContract": "PASS_121_FILES_100_95_5",
+    "domainProjectionContract": "PASS_5_SCHEMAS_21_FIXTURES",
+    "benchmarkHandoffStatic": "PASS_8_ASSETS_7_VIEWS_5_FIXTURES",
+    "focusedDomainRecovery": "PASS_15_FILES_78_CASES",
+    "fullVerify": "FAIL_SANDBOX_27_OF_30_FILES_THREE_LOOPBACK_EPERM",
+    "realPhase15E2E": "NOT_RUN",
+    "benchmarkConsumer": "BLOCKED_PATH_MISSING"
+  },
+  "safety": {
+    "nearNameLegacySourceUsed": false,
+    "benchmarkScoringImplemented": false,
+    "projectionActivated": false,
+    "mockClaimedAsRealE2E": false,
+    "pullRequestDraft": true
+  }
+}

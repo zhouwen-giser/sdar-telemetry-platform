@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-18",
+  "telemetry": {
+    "repository": "zhouwen-giser/sdar-telemetry-platform",
+    "branch": "feature/domain-projection-worker-v0.1",
+    "qualificationBaseHead": "7881433921fb4aceb969e0ce010d30409d225022",
+    "pullRequest": 1,
+    "pullRequestDraft": true
+  },
+  "smppTelemetry": {
+    "repository": "zhouwen-giser/smpp-telemetry-platform",
+    "branch": "main",
+    "head": "8f500c5743818c776a5f01cca65aa188c3869430",
+    "providerOpsEnvelope": "1.1.0",
+    "providerOpsSchemaBlob": "dc4c8608249acb29c677b2ea9a4f11e47e7f66b1",
+    "companionBranch": "feature/sdar-shared-warehouse-handoff-v0.1",
+    "companionHead": "40510f423b5c6f4959a3b33182c4c1e45c0156fb",
+    "companionPullRequest": 1
+  },
+  "clickHouse": {
+    "serverVersion": "24.10.2.1",
+    "releaseVersion": "1.5.1-rc.2",
+    "migrationRange": "00..26",
+    "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+    "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+    "objects": 472,
+    "columns": 15949,
+    "smppViewsCompiled": 6,
+    "readonly": 2
+  },
+  "tableMapOnlyCompatible": false
+}

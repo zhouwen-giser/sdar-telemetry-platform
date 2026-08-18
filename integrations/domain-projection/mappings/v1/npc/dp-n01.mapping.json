@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "mappingId": "DP-N01",
+  "projectionId": "application_to_embodied.dp-n01",
+  "projectionVersion": 1,
+  "mapperId": "domain.mapper.dp-n01",
+  "mapperVersion": "0.1.0",
+  "source": { "contractId": "sdar.domain-source/npc/mission-tool-call", "contractVersion": "1", "table": "sdar_npc.domain_mission_tool_call_source_v1", "schemaHash": "sha256:bf00f944595f2e87953b45ae7a1c383830da7f5fe7f2b3917b4ead5d7ca158ef" },
+  "target": { "table": "sdar_embodied.control_action", "descriptorHash": "sha256:d4b4bf8de2c2a447fa313d581e637eb2eaf0027fe70ce708e27d6d2c7d57a01d" },
+  "mappedPayloadSchema": { "path": "payload-schemas/dp-n01.mapped-payload.schema.json", "canonicalHash": "sha256:06ede5fdfea8c1a06d4029357a41b544568806d7178ad0e5f34c3446e1c55481" },
+  "cursor": ["occurred_at", "sequence", "record_id", "source_revision"],
+  "identity": "uuidv5-rfc9562-v1",
+  "enumMaps": { "action_type": { "constant": "device_control" }, "side_effect": { "constant": 1 } },
+  "requiredSourceFields": ["actionId", "actionName", "targetEntityId", "targetEntityType", "deviceId", "resourceChannel", "capabilityRef", "controlAuthorityRef", "executionBasisRef", "idempotencyKey", "parametersHash", "dispatchStatus", "riskLevel", "inputSummary"],
+  "targetFieldMappings": { "action_id": "payload.actionId", "device_id": "payload.deviceId", "action_name": "payload.actionName", "capability": "payload.capabilityRef", "resource_channel": "payload.resourceChannel", "target_id": "payload.targetEntityId", "risk_level": "payload.riskLevel", "idempotency_key": "payload.idempotencyKey", "input_hash": "payload.parametersHash", "execution_status": "payload.dispatchStatus", "controller_ref": "payload.controlAuthorityRef", "basis_id": "payload.executionBasisRef", "input_summary": "payload.inputSummary" },
+  "skipReasons": ["SOURCE_NOT_APPLICABLE"],
+  "failureCodes": ["SOURCE_CONTRACT_INVALID", "MAPPING_REQUIRED_FIELD_MISSING", "MAPPING_ENUM_UNSUPPORTED"],
+  "status": "disabled"
+}

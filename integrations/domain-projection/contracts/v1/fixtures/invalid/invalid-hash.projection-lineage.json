@@ -1,0 +1,20 @@
+{
+  "contractVersion": "sdar.domain-projection/v1",
+  "lineageId": "fixture-lineage-invalid-hash",
+  "projectionId": "fixture.projection.alpha",
+  "projectionVersion": 1,
+  "mapperId": "fixture.mapper.alpha",
+  "mapperVersion": "1.0.0",
+  "mappingRuleId": "fixture.mapping-rule.alpha",
+  "mappingRuleVersion": "1.0.0",
+  "sourceDatabase": "sdar_commander",
+  "sourceTable": "fixture_source_fact",
+  "sourceRecordId": "fixture-source-record-0001",
+  "sourceRevision": "1",
+  "sourceContentHash": "sha256:not-a-hash",
+  "targetDatabase": "sdar_embodied",
+  "targetTable": "control_action",
+  "targetRecordId": "fixture-target-record-0001",
+  "targetContentHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "projectedAt": "2026-08-14T00:01:01.000Z"
+}

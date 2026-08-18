@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdar.dev/schemas/domain-source/v1/domain-source-seal-acknowledgement.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sealId",
+    "sealRevision"
+  ],
+  "properties": {
+    "sealId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "sealRevision": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$",
+      "maxLength": 20
+    }
+  }
+}

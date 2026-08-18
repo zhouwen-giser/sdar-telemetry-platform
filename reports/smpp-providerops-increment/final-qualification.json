@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "phase": "S10",
+  "passedGates": 28,
+  "failedGates": 0,
+  "completionMarker": "SDAR_TELEMETRY_SMPP_PROVIDEROPS_INCREMENT_COMPLETE",
+  "sourceLocks": {
+    "telemetryQualificationBaseHead": "7881433921fb4aceb969e0ce010d30409d225022",
+    "smppMain": "8f500c5743818c776a5f01cca65aa188c3869430",
+    "smppCompanionHead": "40510f423b5c6f4959a3b33182c4c1e45c0156fb",
+    "providerOpsSchemaBlob": "dc4c8608249acb29c677b2ea9a4f11e47e7f66b1"
+  },
+  "clickHouse": {
+    "serverVersion": "24.10.2.1",
+    "releaseVersion": "1.5.1-rc.2",
+    "migrationRange": "00..26",
+    "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+    "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+    "readonly": 2
+  },
+  "realE2e": {
+    "runId": "codex-smpp-s8-20260818T023207Z",
+    "evidence": "reports/smpp-providerops-increment/evidence/codex-smpp-s8-20260818T023207Z.json",
+    "providerFactCountPerTarget": 17,
+    "relationFactCountPerTarget": 48,
+    "recordTypeCount": 16,
+    "watermarkLagMs": 0,
+    "relationCoverage": 1
+  },
+  "regression": {
+    "telemetry": {"passed": 165, "failed": 0, "skipped": 2},
+    "smppCompanion": {"passed": 44, "failed": 0, "skipped": 0},
+    "clickHouseDdlModified": false,
+    "benchmarkScoringImplementedInTelemetry": false,
+    "queryPollingUsedAsDurableProjection": false,
+    "providerCompletedPromotedToGoalSuccess": false,
+    "providerCompletedPromotedToPhysicalSuccess": false
+  },
+  "parentGoal": {
+    "status": "blocked",
+    "passedGates": 23,
+    "totalGates": 35,
+    "completionMarkerEmitted": false
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "phase": 5,
+  "name": "DomainProjectionRegistry, identity and common target envelope",
+  "status": "passed",
+  "phaseCommit": "3c01af4",
+  "phasePushed": true,
+  "catalog": {
+    "projectionCount": 10,
+    "sourceContractCount": 10,
+    "targetTableCount": 6,
+    "projectionVersion": 1,
+    "mapperVersion": "0.1.0",
+    "enabledCount": 0
+  },
+  "identity": {
+    "algorithm": "RFC 9562 UUIDv5 SHA-1",
+    "namespace": "5832c301-3d9e-5927-8f15-fa6262c8fc4e",
+    "namespaceVersion": 1,
+    "environmentMapVersion": "identity/1",
+    "rfcVector": "21f7f8de-8051-5b89-8680-0195ef798b6a",
+    "sdarUnicodeVector": "8ea47267-0799-5640-8359-eb2bab0210f5",
+    "sourceKeyHash": "sha256:50491fb8ee6c07faf6553cad677f0670cdea64840d0287463722c42d80f23c5c",
+    "independentProcesses": 2,
+    "stableAcrossReplay": true
+  },
+  "commonEnvelope": {
+    "sourceAndRootLineagePreserved": true,
+    "sourceAndMappedHashesSeparated": true,
+    "positiveUInt64RevisionPreservedAsDecimal": true,
+    "canonicalMappedPayload": true,
+    "deepFrozen": true
+  },
+  "verification": {
+    "focused": "PASS_6_OF_6",
+    "fullVerify": "PASS_104_WITH_2_EXPLICIT_DATABASE_SKIPS"
+  },
+  "gates": {
+    "G13": "PASS"
+  },
+  "limitations": [
+    "G11 mapping documents are not implemented by this phase.",
+    "No mapper, SourceReader, target writer or ClickHouse E2E ran.",
+    "All ten Domain Projections remain disabled."
+  ]
+}

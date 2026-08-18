@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-14T13:16:21.953Z",
+  "goal": "SDAR Telemetry Domain Projection Worker v0.1",
+  "phase": 0,
+  "phaseStatus": "PHASE_0_COMPLETE",
+  "implementationStatus": "BLOCKED_SCHEMA_COMPATIBILITY",
+  "repository": {
+    "branch": "feature/domain-projection-worker-v0.1",
+    "trackingBranch": "origin/feature/domain-projection-worker-v0.1",
+    "baseSha": "44fb583034d350d429c45ab065bd95e8792b74c1",
+    "headBeforePhaseDocumentationCommit": "40b269b",
+    "originMain": "44fb583034d350d429c45ab065bd95e8792b74c1",
+    "draftPullRequest": {
+      "status": "draft_open",
+      "number": 1,
+      "url": "https://github.com/zhouwen-giser/sdar-telemetry-platform/pull/1"
+    },
+    "phaseCommit": "be086281cef5c2c65c7d22acbbc8bfdb086d09f9",
+    "baselineMaintenanceCommit": "40b269b"
+  },
+  "runtimeContract": {
+    "contractVersion": "sdar.evidence/v1",
+    "executionSha": "7246c263bbb5554d01a7aa343ef6f857378e7bf4",
+    "mainSha": "34ce7a7a43971de37566b24f969b4f0aeadec2b2",
+    "canonicalContractHash": "sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f",
+    "canonicalRegistryHash": "sha256:eac67fcc0cd02c55da750156af42f3ea2130ee470f0670aba980c08ddec41c71",
+    "status": "synchronized"
+  },
+  "baselineCommands": [
+    {
+      "command": "npm ci",
+      "status": "NOT_APPLICABLE_NO_NPM_LOCK"
+    },
+    {
+      "command": "npm run check:sdar-evidence-contract",
+      "status": "PASS",
+      "importedFiles": 121,
+      "records": 100,
+      "required": 95,
+      "diagnostic": 5
+    },
+    {
+      "command": "npm run verify",
+      "status": "PASS",
+      "testCount": 70,
+      "failedTests": 0
+    },
+    {
+      "command": "npm run clickhouse:preflight",
+      "status": "PASS",
+      "serverVersion": "24.10.2.1"
+    },
+    {
+      "command": "npm run clickhouse:verify",
+      "status": "PASS",
+      "databaseCount": 6
+    },
+    {
+      "command": "npm run clickhouse:smoke",
+      "status": "PASS",
+      "result": 1
+    }
+  ],
+  "clickHouse": {
+    "requiredSchemaFamily": "SDAR ClickHouse Schema 1.5.x",
+    "rc1Package": {
+      "version": "1.5.0-rc.1",
+      "integrity": "FAIL",
+      "checksumMismatch": ["all.sql"],
+      "stale": ["all.sql", "manifest.json"],
+      "allSqlActualSha256": "5a175b8749f911ae862482908ed8ef4bf179bbfa7f404140bb424394129c80ea",
+      "allSqlLockedSha256": "bd7534a250429fa1202a2c53962dce6e5c5b0e908b0efa3fe6055f4259f38f0f"
+    },
+    "repositoryVendorSchema": "Embodied Schema 1.0.0",
+    "liveRefreshStatus": "PASS_WITH_SCHEMA_COMPATIBILITY_FAILURE",
+    "snapshot": {
+      "classification": "REAL_CLICKHOUSE_READ_ONLY",
+      "path": "reports/clickhouse/192.168.1.7-schema-snapshot/domain-projection-v0-1-phase0",
+      "observedAt": "2026-08-14T13:17:39.818Z",
+      "serverVersion": "24.10.2.1",
+      "databaseCount": 6,
+      "objectCount": 430,
+      "nonViewCount": 310,
+      "viewCount": 120,
+      "columnCount": 14885,
+      "showCreateCount": 430,
+      "queryPolicy": {
+        "readonly": 2,
+        "maxResultRows": 100000
+      }
+    },
+    "liveReleaseMarker": {
+      "releaseVersion": "1.4.1-rc.1",
+      "migrationRange": "00..17",
+      "implementationStatus": "static_validated_runtime_contract_pending",
+      "status": "candidate"
+    },
+    "compatibility": {
+      "ddlHasV15BenchmarkFootprint": true,
+      "releaseMarkerMatchesRequiredV15": false,
+      "exactSourcesExistInLive": false,
+      "exactSourcesExistInRc1Migrations": false,
+      "status": "BLOCKED_PENDING_EXPLICIT_DECISION"
+    },
+    "contractCoverage": {
+      "exactRequiredSources": {
+        "observed": 0,
+        "required": 10,
+        "status": "FAIL"
+      },
+      "requiredTargets": {
+        "observed": 6,
+        "required": 6,
+        "status": "PASS_LIVE_SNAPSHOT"
+      },
+      "requiredGovernanceTables": {
+        "observed": 6,
+        "required": 6,
+        "status": "PASS_LIVE_SNAPSHOT"
+      }
+    }
+  },
+  "architecture": {
+    "centralProjectionRegistry": "present_requires_domain_extension",
+    "domainProjectionWorker": "missing",
+    "domainReconciler": "missing_existing_reconciler_inadequate",
+    "domainMetrics": "missing",
+    "domainReadiness": "missing",
+    "secondGatewayAllowed": false,
+    "secondProjectionPlatformAllowed": false,
+    "kafkaAllowed": false,
+    "llmMapperAllowed": false
+  },
+  "api": {
+    "query": {
+      "currentRoutes": [
+        "GET /health",
+        "GET /v1/tasks/{taskId}/timeline",
+        "GET /v1/tasks/{taskId}/capability-chain",
+        "GET /v1/evidence/trace"
+      ],
+      "requiredDomainRoutesImplemented": 0,
+      "requiredDomainRoutes": 3
+    },
+    "admin": {
+      "classification": "in_memory_placeholder",
+      "requiredDomainReadRoutesImplemented": 0,
+      "requiredDomainReadRoutes": 5,
+      "requiredDomainControlRoutesImplemented": 0,
+      "requiredDomainControlRoutes": 4
+    }
+  },
+  "compose": {
+    "externalClickHouseOnly": true,
+    "perServiceEnvironmentAllowlists": true,
+    "separateSecretFiles": true,
+    "domainProjectionWorkerService": false,
+    "domainWorkerWalVolume": false,
+    "domainCredentialBoundary": "missing"
+  },
+  "phaseArtifacts": {
+    "execplan": "committed_pushed",
+    "baselineMarkdown": "committed_pushed",
+    "baselineJson": "committed_pushed",
+    "schemaInventory": "committed_pushed",
+    "projectionGapMatrix": "committed_pushed",
+    "sourceTargetMapping": "committed_pushed"
+  },
+  "requiredDecisions": [
+    {
+      "id": "D1",
+      "subject": "exact_source_to_physical_contract",
+      "status": "PENDING_USER_COMPATIBILITY_DECISION"
+    },
+    {
+      "id": "D2",
+      "subject": "ten_projection_ids_vs_coarse_p1_projection",
+      "status": "PENDING_USER_COMPATIBILITY_DECISION"
+    }
+  ],
+  "gates": {
+    "mapperCodingAllowed": false,
+    "reasonCodes": [
+      "RC1_PACKAGE_INTEGRITY_FAIL",
+      "LIVE_RELEASE_MARKER_V141_VS_V15_DDL_FOOTPRINT",
+      "EXACT_SOURCE_CONTRACTS_0_OF_10",
+      "D1_PENDING",
+      "D2_PENDING"
+    ]
+  }
+}

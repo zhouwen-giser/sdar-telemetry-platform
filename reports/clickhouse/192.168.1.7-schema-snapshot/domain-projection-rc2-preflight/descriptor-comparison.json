@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-08-17T07:28:12.565Z",
+  "authority": {
+    "package": "SDAR_ClickHouse_Schema_1.5.1_RC2_Clean_Rebuild.zip",
+    "packageSha256": "99fd093201cecbd97eec8579d316d3d96b155330feef9a8a8bf57b1d1ac51496",
+    "aggregate": "fresh_all.sql",
+    "referenceEngine": "ClickHouse local 25.3.14.14"
+  },
+  "live": {
+    "engine": "ClickHouse 24.10.2.1",
+    "objects": 472,
+    "columns": 15949,
+    "tableDescriptorHash": "sha256:40ff8c3e8c162df6c9a5007859b4b4345253e66f087618b9359777dc9bfd2c49",
+    "columnDescriptorHash": "sha256:a0aa5014f4e26f1ec90166a38e5661ea3f457fb5e0acf7fc59ad9b58853987d8"
+  },
+  "expected": {
+    "objects": 472,
+    "columns": 15949,
+    "tableDescriptorHash": "sha256:40ff8c3e8c162df6c9a5007859b4b4345253e66f087618b9359777dc9bfd2c49",
+    "columnDescriptorHash": "sha256:a0aa5014f4e26f1ec90166a38e5661ea3f457fb5e0acf7fc59ad9b58853987d8"
+  },
+  "tableDiffCount": 0,
+  "columnDiffCount": 0,
+  "governanceV2MissingColumns": 0,
+  "result": "PASS"
+}

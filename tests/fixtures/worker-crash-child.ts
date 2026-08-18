@@ -36,7 +36,9 @@ try {
         if (mode === "crash" && table === "sdar_core.b_projection") {
           await writeDurableJson(path.join(sinkRoot, "pending-b.json"), write);
           process.send?.({ type: "blocked-before-second-write" });
-          await new Promise<never>(() => undefined);
+          await new Promise<never>(() => {
+            setInterval(() => undefined, 60_000);
+          });
         }
         if (mode === "recover") recoveryCalls.push(write);
         await writeDurableJson(

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sdar://domain-projection/mappings/v1/dp-c02/mapped-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["receipt_id", "action_id", "provider_id", "provider_request_id", "transport_status", "acceptance_status", "execution_status", "received_at", "output_summary", "error_code", "raw_response_ref", "observed_state_ref", "error_json", "metrics_json"],
+  "properties": {
+    "receipt_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "action_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "provider_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "provider_request_id": { "type": "string", "maxLength": 256 },
+    "transport_status": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "acceptance_status": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "execution_status": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "received_at": { "type": "string", "format": "date-time" },
+    "output_summary": { "type": "string", "maxLength": 4096 },
+    "error_code": { "type": "string", "maxLength": 256 },
+    "raw_response_ref": { "type": "string", "maxLength": 256 },
+    "observed_state_ref": { "type": "string", "maxLength": 256 },
+    "error_json": { "type": "string", "minLength": 2, "maxLength": 65536 },
+    "metrics_json": { "type": "string", "minLength": 2, "maxLength": 65536 }
+  }
+}

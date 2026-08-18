@@ -1,0 +1,5 @@
+repository,branch,changes,pr_strategy
+sdar-telemetry-platform,feature/domain-projection-worker-v0.1,packages/* consumer/readiness/reconciliation; query/admin docs; benchmark handoff,primary existing PR #1
+smpp-telemetry-platform,feature/sdar-shared-warehouse-handoff-v0.1,source mapping v4; payload catalog; target-specific mapper; preflight; tests/config,companion Draft PR if audit confirms missing support
+sdar-clickhouse,none in this increment,read-only contract consumption of 1.5.1-rc.2,schema delta only through separate approved package
+sdar-benchmark-server,no implementation in this increment,consumer contract fixture/verifier only,follow-up server integration

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "phase": 6,
+  "name": "Checkpointed Domain SourceReader and late-arrival handling",
+  "status": "passed",
+  "phaseCommit": "245af9a",
+  "phasePushed": true,
+  "reader": {
+    "source": "ten exact RC2 Domain Source tables",
+    "lookbackMs": 1800000,
+    "maxPageRows": 1000,
+    "readonly": 2,
+    "ordinaryCursor": ["occurredAt", "sequence", "recordId", "sourceRevision"],
+    "stateCursor": ["occurredAt", "stateSnapshotVersion", "recordId", "sourceRevision"],
+    "checkpointMonotonic": true,
+    "stableIdentityContentGuard": true,
+    "payloadHashRevalidated": true
+  },
+  "verification": {
+    "focused": "PASS_4_OF_4",
+    "fullVerify": "PASS_108_WITH_2_EXPLICIT_DATABASE_SKIPS",
+    "realClickHouseReadOnlySmoke": "PASS_10_OF_10",
+    "evidence": "reports/domain-projection-v0.1/evidence/codex_dp6_20260817t084700z-phase-06-source-reader.json"
+  },
+  "gates": {
+    "G10": "PASS"
+  },
+  "limitations": [
+    "The bounded late-arrival case is a deterministic adapter test, not a live ClickHouse fault injection.",
+    "The real ClickHouse smoke was read-only and did not execute mapping or target writes.",
+    "All ten Domain Projections remain disabled."
+  ]
+}

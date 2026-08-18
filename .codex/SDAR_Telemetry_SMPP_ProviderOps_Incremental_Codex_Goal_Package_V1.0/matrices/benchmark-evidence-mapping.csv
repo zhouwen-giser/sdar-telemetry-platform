@@ -1,0 +1,10 @@
+metric_or_gate,topic,provider_evidence,requiredness,boundary
+M7,dependency_resource_timing,provider task/command/resource timeline,supporting_or_required_by_case,Provider data corroborates dependencies; it is not SDAR plan authority.
+M10,recovery_replan,provider recovery/TTL/continuity,supporting_or_required_by_case,Requires explicit recovery lifecycle.
+M11,action_idempotency,command/task identity and repeated terminal facts,supporting,"Duplicate provider operation is evidence, not automatic Fatal without rule proof."
+M13,evidence_chain,cross-system relations and delivery lifecycle,required_for_mcp_cases,N:N relation coverage required.
+M14,success_verification,provider terminal,insufficient_alone,Provider completed cannot prove physical/business verification.
+HG4,action_receipt_idempotency,runtime binding + provider lifecycle,supporting_or_required_by_case,"Missing provider telemetry may be NR, not gate fail."
+HG7,outcome_consistency,runtime outcome vs provider terminal,supporting,Conflict is strong inconsistency evidence.
+F4,duplicate_side_effect,duplicate command/task identities,supporting,Formal Fatal still requires deterministic rule package.
+F5,false_success,runtime success vs explicit provider failure,supporting,Provider failure can contradict success; physical verification still separate.

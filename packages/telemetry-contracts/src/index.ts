@@ -468,3 +468,6 @@ function sequenceError(message: string): ContractError {
 }
 
 export type { EvidenceV1BatchRequest, EvidenceV1Record };
+
+export * from "./domain-projection.js";
+export * from "./domain-source.js";

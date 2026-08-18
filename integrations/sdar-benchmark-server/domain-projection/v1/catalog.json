@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "sourceContract": "sdar.domain-source/v1",
+  "sources": [
+    {"id":"sdar.domain-source/commander/capability-track-sample","version":"1","object":"sdar_commander.domain_capability_track_sample_source_v1","schemaHash":"sha256:a7effb6fdc96b9e91acfe62d550588e1f64fa192b2eb18339e75e5ce41f2dc92"},
+    {"id":"sdar.domain-source/commander/error-recovery","version":"1","object":"sdar_commander.domain_error_recovery_source_v1","schemaHash":"sha256:822178f025017ca3264ea5cb5a99c8f07b34a2d887e27e354a3283068cb5cf1a"},
+    {"id":"sdar.domain-source/commander/mcp-action","version":"1","object":"sdar_commander.domain_mcp_action_source_v1","schemaHash":"sha256:ba4522f56698e64c8c056331ff2979fdb756de36bfb6539cba43aa43c69abb63"},
+    {"id":"sdar.domain-source/commander/mcp-receipt","version":"1","object":"sdar_commander.domain_mcp_receipt_source_v1","schemaHash":"sha256:add8b6335405a315e669475589fbcf767848841abea21f81a4554322e1a30b99"},
+    {"id":"sdar.domain-source/commander/ugv-state-snapshot","version":"1","object":"sdar_commander.domain_ugv_state_snapshot_source_v1","schemaHash":"sha256:755f01a3719d741a9fe9343f7975d4185cd903846ab6b98917bac493daa3dfd2"},
+    {"id":"sdar.domain-source/npc/blackboard-snapshot","version":"1","object":"sdar_npc.domain_blackboard_snapshot_source_v1","schemaHash":"sha256:8eb4de4e516c46fe070b52c7ab3fe2b4c6e23afc4f12f0899b600762019342df"},
+    {"id":"sdar.domain-source/npc/hmi-approval","version":"1","object":"sdar_npc.domain_hmi_approval_source_v1","schemaHash":"sha256:8e3997d81321b3cdca30d292f07716904ba50214be8e86c281d8f4ab5cb75860"},
+    {"id":"sdar.domain-source/npc/mcp-receipt","version":"1","object":"sdar_npc.domain_mcp_receipt_source_v1","schemaHash":"sha256:aadb7c93112f4015146155f778a2032d41f1d4105abac9ca9847882b2c4c4d5f"},
+    {"id":"sdar.domain-source/npc/mission-tool-call","version":"1","object":"sdar_npc.domain_mission_tool_call_source_v1","schemaHash":"sha256:bf00f944595f2e87953b45ae7a1c383830da7f5fe7f2b3917b4ead5d7ca158ef"},
+    {"id":"sdar.domain-source/npc/preemption-record","version":"1","object":"sdar_npc.domain_preemption_record_source_v1","schemaHash":"sha256:57a6cbf38479cad440f72b3d2e7d4cb7d728617a9c2128329cd69a41a9ad4810"}
+  ],
+  "episodeSeals": [
+    "sdar_commander.domain_source_episode_seal_v1",
+    "sdar_npc.domain_source_episode_seal_v1"
+  ],
+  "projections": [
+    {"mappingId":"DP-C01","projectionId":"application_to_embodied.dp-c01","version":"1","mappingHash":"sha256:f0f728705a747a3a6632237887ab583c7b1de53a929e5299c199403f6ab6b495","source":"sdar_commander.domain_mcp_action_source_v1","target":"sdar_embodied.control_action"},
+    {"mappingId":"DP-C02","projectionId":"application_to_embodied.dp-c02","version":"1","mappingHash":"sha256:6b8ac6bbf3b4ff80c129f4f818ea12551b7c77998df79d271da015a161cc2285","source":"sdar_commander.domain_mcp_receipt_source_v1","target":"sdar_embodied.control_receipt"},
+    {"mappingId":"DP-C03","projectionId":"application_to_embodied.dp-c03","version":"1","mappingHash":"sha256:74e97f1a0fb4a1a33f50c3937a9407f1960c896b166781aa67045d12fd90f695","source":"sdar_commander.domain_capability_track_sample_source_v1","target":"sdar_embodied.physical_verification"},
+    {"mappingId":"DP-C04","projectionId":"application_to_embodied.dp-c04","version":"1","mappingHash":"sha256:2959b2da2809ca5451cb449644c17dec86e4b4c80bc36a7a5985af7397b8d73d","source":"sdar_commander.domain_error_recovery_source_v1","target":"sdar_embodied.preemption_recovery"},
+    {"mappingId":"DP-C05","projectionId":"application_to_embodied.dp-c05","version":"1","mappingHash":"sha256:4a95f1073e2531039074936fc904d8da5d87730a6506d1c7ad2ecd14320de11a","source":"sdar_commander.domain_ugv_state_snapshot_source_v1","target":"sdar_embodied.state_freshness_check"},
+    {"mappingId":"DP-N01","projectionId":"application_to_embodied.dp-n01","version":"1","mappingHash":"sha256:51adf58016166e53d70c5046e1e69e64619ce1ce83d4c9b94582b80843ea98aa","source":"sdar_npc.domain_mission_tool_call_source_v1","target":"sdar_embodied.control_action"},
+    {"mappingId":"DP-N02","projectionId":"application_to_embodied.dp-n02","version":"1","mappingHash":"sha256:1530dc2e78c5167d119b1a2b1ec0fa54c91e718755d2fd6173846609f542745c","source":"sdar_npc.domain_mcp_receipt_source_v1","target":"sdar_embodied.control_receipt"},
+    {"mappingId":"DP-N03","projectionId":"application_to_embodied.dp-n03","version":"1","mappingHash":"sha256:c715035dfe759568b3df0f666a783c2aa3a72ff8ad1ad515b420f2fb03c10136","source":"sdar_npc.domain_hmi_approval_source_v1","target":"sdar_embodied.human_confirmation"},
+    {"mappingId":"DP-N04","projectionId":"application_to_embodied.dp-n04","version":"1","mappingHash":"sha256:96d2bb25427b6a0fa0aaa5272b596c1fe618a050383aeffcc45fd82b6c31e2ce","source":"sdar_npc.domain_preemption_record_source_v1","target":"sdar_embodied.preemption_recovery"},
+    {"mappingId":"DP-N05","projectionId":"application_to_embodied.dp-n05","version":"1","mappingHash":"sha256:0619b69509badb8e2b0bebbae302d44226bac551993fd43a5321006043ca49dd","source":"sdar_npc.domain_blackboard_snapshot_source_v1","target":"sdar_embodied.state_freshness_check"}
+  ],
+  "targets": [
+    "sdar_embodied.control_action",
+    "sdar_embodied.control_receipt",
+    "sdar_embodied.human_confirmation",
+    "sdar_embodied.physical_verification",
+    "sdar_embodied.preemption_recovery",
+    "sdar_embodied.state_freshness_check"
+  ],
+  "projectionSets": [
+    {"id":"commander-standard","version":"1","memberCount":5,"contentHash":"sha256:7fedf9cf60960dd451b5289c1b979d979bdaeb92f8de56c73e11fc39e75ebfce"},
+    {"id":"embodied-diagnostic","version":"0.1","memberCount":4,"contentHash":"sha256:c245d9bd5939d04a61d10e1bc50ae5c1053ddff6b453c8954ad30462eaaf68cb"},
+    {"id":"embodied-standard","version":"1","memberCount":10,"contentHash":"sha256:6fd248c5b13bb7c5784560f6f540532cbd307cac77fde9248abf850c1494e0bb"},
+    {"id":"npc-standard","version":"1","memberCount":5,"contentHash":"sha256:7acc53cbc1ebee9ed765853da5080c03613c72f480e13440ff185a7686bfbc28"}
+  ]
+}

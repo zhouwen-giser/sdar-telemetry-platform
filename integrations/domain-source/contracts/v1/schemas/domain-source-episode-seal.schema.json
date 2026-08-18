@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdar.dev/schemas/domain-source/v1/domain-source-episode-seal.schema.json",
+  "title": "SDAR Domain Source v1 episode seal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "application",
+    "tenantId",
+    "projectId",
+    "environment",
+    "sealId",
+    "sealRevision",
+    "sourceContractId",
+    "sourceContractVersion",
+    "episodeId",
+    "finalSequence",
+    "finalSourceRevision",
+    "sourceRecordCount",
+    "sourceSnapshotHash",
+    "sealStatus",
+    "producerId",
+    "producerVersion",
+    "payload",
+    "sealedAt"
+  ],
+  "properties": {
+    "contractVersion": {
+      "const": "sdar.domain-source/v1"
+    },
+    "application": {
+      "type": "string",
+      "enum": [
+        "commander",
+        "npc"
+      ]
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "projectId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "dev",
+        "test",
+        "staging",
+        "prod"
+      ]
+    },
+    "sealId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "sealRevision": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$",
+      "maxLength": 20
+    },
+    "sourceContractId": {
+      "type": "string",
+      "enum": [
+        "sdar.domain-source/commander/mcp-action",
+        "sdar.domain-source/commander/mcp-receipt",
+        "sdar.domain-source/commander/capability-track-sample",
+        "sdar.domain-source/commander/error-recovery",
+        "sdar.domain-source/commander/ugv-state-snapshot",
+        "sdar.domain-source/npc/mission-tool-call",
+        "sdar.domain-source/npc/mcp-receipt",
+        "sdar.domain-source/npc/hmi-approval",
+        "sdar.domain-source/npc/preemption-record",
+        "sdar.domain-source/npc/blackboard-snapshot"
+      ]
+    },
+    "sourceContractVersion": {
+      "const": "1"
+    },
+    "episodeId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "finalSequence": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)$",
+      "maxLength": 20
+    },
+    "finalSourceRevision": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$",
+      "maxLength": 20
+    },
+    "sourceRecordCount": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)$",
+      "maxLength": 20
+    },
+    "sourceSnapshotHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "sealStatus": {
+      "type": "string",
+      "enum": [
+        "sealed",
+        "superseded",
+        "invalid"
+      ]
+    },
+    "producerId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "producerVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "payload": {
+      "type": "object",
+      "maxProperties": 64,
+      "additionalProperties": true
+    },
+    "sealedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

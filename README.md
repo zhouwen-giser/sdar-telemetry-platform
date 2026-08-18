@@ -4,6 +4,49 @@
 
 Runtime contract 的可重复快照位于 `integrations/skill-driven-agent-runtime/v1.4.1`。其中 `source-lock.json` 分别记录 canonical contract/registry hash 和每个源文件的 byte SHA-256；旧的 v1.3 integration 文件仅为 **compatibility-only**。
 
+## Domain Projection v0.1（进行中）
+
+ClickHouse `1.5.1-rc.2` 的精确消费合同位于
+`integrations/sdar-clickhouse/1.5.1-rc.2`。它只承认 10 张新的
+`domain_*_source_v1` 表与 2 张 Episode Seal 表；任何 near-name legacy table 都不是 alias。
+十个 `application_to_embodied.dp-c01..dp-n05` 投影保持独立且默认 disabled。
+
+```bash
+npm run check:sdar-clickhouse-contract
+npm run clickhouse:domain-preflight
+npm run check:domain-source-contracts
+```
+
+第二条命令以 `readonly=2` 实时核对 release/hash、全部 472 object descriptors、15,949
+column descriptors、精确 sources/seals/targets/governance 和关键 View。通过 Preflight 仅表示
+schema 可兼容，不表示投影已激活，也不是 Domain Projection 真实 E2E。真实 source ingestion、
+target/lineage/checkpoint/DLQ 和 Benchmark consumer 验收将在后续阶段单独证明。
+
+`integrations/domain-source/contracts/v1` 冻结 `sdar.domain-source/v1` 的 10 个精确
+source contract、两类 Episode Seal、batch/seal ACK 和 Golden/adversarial fixtures。它不接受
+near-name legacy alias，也不允许请求携带数据库名、表名或 SQL 标识符。该合同目前只完成离线
+资格验证；Gateway durable routing 与真实 ClickHouse 写入从 Phase 3 开始验收。
+
+Phase 3 已加入独立认证的 `/v1/domain-source/batches` 与
+`/v1/domain-source/episode-seals`。Gateway 把已验证请求写入独立
+`sdar-domain-source-v1` immutable segment WAL，并在文件 fsync、原子 rename 和目录 fsync
+完成后才 ACK；Worker 只允许写入 RC2 锁定的 10 张 source 表和 2 张 seal 表。Domain Source
+token 与 Evidence token 必须分离。
+
+Domain Projection 只提供标准事实、readiness、lineage 与不可变 fact index，不在本仓库实现
+Benchmark M1–M15、F/HG、baseline、comparison 或评分逻辑。
+
+Benchmark consumer 的冻结交付位于
+`integrations/sdar-benchmark-server/domain-projection/v1`。`npm run check:benchmark-handoff`
+只验证本地清单、哈希和 fixture；只有 `npm run check:benchmark-handoff:live` 在真实重建库成功后
+才构成 live consumer-query 证据。
+
+当前 Domain Projection v0.1 最终验收为 **BLOCKED (23/35)**。静态/本地合同与实现已发布，
+但真实 10/10 ClickHouse replay/SIGKILL、Admin/Compose 进程、实际 Benchmark consumer 与 live
+queries 尚未闭合。权威状态与恢复命令见
+`reports/domain-projection-v0.1/phase-17-final-acceptance.md`。只有
+`npm run check:domain-projection-release` 返回 35/35 PASS 才允许宣告完成。
+
 ## 本地门禁
 
 ```bash
@@ -37,7 +80,13 @@ Gateway 与 Query API 的进程默认绑定 `127.0.0.1`。Compose 容器内显�
 
 ```bash
 docker compose -f deploy/compose.external-clickhouse.yaml up --build \
-  ingestion-gateway telemetry-worker query-api
+  ingestion-gateway telemetry-worker query-api admin-api domain-projection-worker
 ```
+
+Domain worker 复用 ClickHouse writer 凭据，但代码目标 allowlist 仍只允许 `sdar_embodied` 与
+`sdar_meta` 的冻结对象；Admin 和 Domain worker 通过独立的
+`control_postgres_url` secret 访问 Control PostgreSQL，Admin 另用独立 Bearer。所有 Domain
+配置在启动时集中校验，默认 `DOMAIN_PROJECTION_MAX_MODE=shadow`，因此启用进程不等于激活
+projection。宿主 Admin/Domain health 端口默认只发布到 `127.0.0.1`。
 
 Runtime v1.4.1 只能通过带 Bearer 和 `x-sdar-evidence-contract: sdar.evidence/v1` 的 `/v1/evidence/batches` HTTP contract 接入。`sdar-outbox-relay` 及 `SDAR_DATABASE_URL` 只保留给 v1.3 `telemetry_outbox`，已隔离在 `legacy-v1.3` profile；它不能读取或更新 v1.4 的 `evidence_outbox`，也不能替代 Evidence v1 Gateway。

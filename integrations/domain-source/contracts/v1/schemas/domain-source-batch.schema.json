@@ -1,0 +1,2235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdar.dev/schemas/domain-source/v1/domain-source-batch.schema.json",
+  "title": "SDAR Domain Source v1 batch",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "batchId",
+    "application",
+    "firstSequence",
+    "lastSequence",
+    "records",
+    "batchHash"
+  ],
+  "properties": {
+    "contractVersion": {
+      "const": "sdar.domain-source/v1"
+    },
+    "batchId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "application": {
+      "type": "string",
+      "enum": [
+        "commander",
+        "npc"
+      ]
+    },
+    "firstSequence": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)$",
+      "maxLength": 20
+    },
+    "lastSequence": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)$",
+      "maxLength": 20
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceContractId",
+              "sourceContractVersion",
+              "tenantId",
+              "projectId",
+              "environment",
+              "recordId",
+              "episodeId",
+              "agentId",
+              "sequence",
+              "sourceRevision",
+              "producerId",
+              "producerVersion",
+              "occurredAt",
+              "payload",
+              "payloadHash"
+            ],
+            "properties": {
+              "sourceContractId": {
+                "const": "sdar.domain-source/commander/mcp-action"
+              },
+              "sourceContractVersion": {
+                "const": "1"
+              },
+              "tenantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "environment": {
+                "type": "string",
+                "enum": [
+                  "dev",
+                  "test",
+                  "staging",
+                  "prod"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "episodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "taskId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "contextId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "agentVersion": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "scenarioId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "correlationId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "sequence": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$",
+                "maxLength": 20
+              },
+              "sourceRevision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$",
+                "maxLength": 20
+              },
+              "producerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "producerVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "actionId",
+                  "actionName",
+                  "targetEntityId",
+                  "targetEntityType",
+                  "deviceId",
+                  "resourceChannel",
+                  "capabilityRef",
+                  "controlAuthorityRef",
+                  "executionBasisRef",
+                  "idempotencyKey",
+                  "parametersHash",
+                  "dispatchStatus",
+                  "riskLevel",
+                  "inputSummary"
+                ],
+                "properties": {
+                  "actionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "actionName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "targetEntityId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "targetEntityType": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "deviceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "resourceChannel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "capabilityRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "controlAuthorityRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "executionBasisRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "idempotencyKey": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "parametersHash": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  "dispatchStatus": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "riskLevel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "inputSummary": {
+                    "type": "string",
+                    "maxLength": 4096
+                  }
+                }
+              },
+              "payloadHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceContractId",
+              "sourceContractVersion",
+              "tenantId",
+              "projectId",
+              "environment",
+              "recordId",
+              "episodeId",
+              "agentId",
+              "sequence",
+              "sourceRevision",
+              "producerId",
+              "producerVersion",
+              "occurredAt",
+              "payload",
+              "payloadHash"
+            ],
+            "properties": {
+              "sourceContractId": {
+                "const": "sdar.domain-source/commander/mcp-receipt"
+              },
+              "sourceContractVersion": {
+                "const": "1"
+              },
+              "tenantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "environment": {
+                "type": "string",
+                "enum": [
+                  "dev",
+                  "test",
+                  "staging",
+                  "prod"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "episodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "taskId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "contextId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "agentVersion": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "scenarioId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "correlationId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "sequence": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$",
+                "maxLength": 20
+              },
+              "sourceRevision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$",
+                "maxLength": 20
+              },
+              "producerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "producerVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "receiptId",
+                  "actionId",
+                  "deviceId",
+                  "resourceChannel",
+                  "providerId",
+                  "transportStatus",
+                  "acceptanceStatus",
+                  "executionStatus",
+                  "receivedAt"
+                ],
+                "properties": {
+                  "receiptId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "actionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "deviceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "resourceChannel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "providerId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "providerRequestId": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "transportStatus": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "acceptanceStatus": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "executionStatus": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "receivedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "outputSummary": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "errorCode": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "rawResponseRef": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "observedStateRef": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "error": {
+                    "type": "object",
+                    "maxProperties": 64,
+                    "additionalProperties": true
+                  },
+                  "metrics": {
+                    "type": "array",
+                    "maxItems": 256,
+                    "items": {}
+                  }
+                }
+              },
+              "payloadHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceContractId",
+              "sourceContractVersion",
+              "tenantId",
+              "projectId",
+              "environment",
+              "recordId",
+              "episodeId",
+              "agentId",
+              "sequence",
+              "sourceRevision",
+              "producerId",
+              "producerVersion",
+              "occurredAt",
+              "payload",
+              "payloadHash"
+            ],
+            "properties": {
+              "sourceContractId": {
+                "const": "sdar.domain-source/commander/capability-track-sample"
+              },
+              "sourceContractVersion": {
+                "const": "1"
+              },
+              "tenantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "environment": {
+                "type": "string",
+                "enum": [
+                  "dev",
+                  "test",
+                  "staging",
+                  "prod"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "episodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "taskId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "contextId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "agentVersion": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "scenarioId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "correlationId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "sequence": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$",
+                "maxLength": 20
+              },
+              "sourceRevision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$",
+                "maxLength": 20
+              },
+              "producerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "producerVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "physicalVerificationId",
+                  "verificationId",
+                  "criterionId",
+                  "actionId",
+                  "deviceId",
+                  "resourceChannel",
+                  "capability",
+                  "verificationChannel",
+                  "expected",
+                  "actual",
+                  "comparator",
+                  "verificationResult",
+                  "critical",
+                  "deviceTimestamp",
+                  "verifiedAt",
+                  "evidenceRefs"
+                ],
+                "properties": {
+                  "physicalVerificationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "verificationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "criterionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "actionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "receiptId": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "deviceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "resourceChannel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "capability": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "verificationChannel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "expected": {},
+                  "actual": {},
+                  "comparator": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "verificationResult": {
+                    "type": "string",
+                    "enum": [
+                      "passed",
+                      "failed",
+                      "inconclusive",
+                      "not_observed"
+                    ]
+                  },
+                  "critical": {
+                    "type": "boolean"
+                  },
+                  "stableDurationMs": {
+                    "type": "string",
+                    "pattern": "^(?:0|[1-9][0-9]*)$",
+                    "maxLength": 20
+                  },
+                  "deviceTimestamp": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "verifiedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "sourceStateId": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "evidenceRefs": {
+                    "type": "array",
+                    "maxItems": 256,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 512
+                    }
+                  }
+                }
+              },
+              "payloadHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceContractId",
+              "sourceContractVersion",
+              "tenantId",
+              "projectId",
+              "environment",
+              "recordId",
+              "episodeId",
+              "agentId",
+              "sequence",
+              "sourceRevision",
+              "producerId",
+              "producerVersion",
+              "occurredAt",
+              "payload",
+              "payloadHash"
+            ],
+            "properties": {
+              "sourceContractId": {
+                "const": "sdar.domain-source/commander/error-recovery"
+              },
+              "sourceContractVersion": {
+                "const": "1"
+              },
+              "tenantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "environment": {
+                "type": "string",
+                "enum": [
+                  "dev",
+                  "test",
+                  "staging",
+                  "prod"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "episodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "taskId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "contextId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "agentVersion": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "scenarioId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "correlationId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "sequence": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$",
+                "maxLength": 20
+              },
+              "sourceRevision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$",
+                "maxLength": 20
+              },
+              "producerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "producerVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "preemptionId",
+                  "preemptedActionId",
+                  "deviceId",
+                  "resourceChannel",
+                  "phase",
+                  "triggerType",
+                  "stopConfirmed",
+                  "stopConfirmedAt",
+                  "recoveryStrategy",
+                  "recoveryResult",
+                  "recoveryBasisRef",
+                  "recoveryBasisVersion",
+                  "preemptedBasisId",
+                  "preemptedBasisVersion",
+                  "selectedIntent",
+                  "actualLatencyMs"
+                ],
+                "properties": {
+                  "preemptionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "preemptedActionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "deviceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "resourceChannel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "phase": {
+                    "type": "string",
+                    "enum": [
+                      "requested",
+                      "stopping",
+                      "stopped",
+                      "recovering",
+                      "resumed",
+                      "failed"
+                    ]
+                  },
+                  "triggerType": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "triggerEventId": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "requiredDeadlineMs": {
+                    "type": "string",
+                    "pattern": "^(?:0|[1-9][0-9]*)$",
+                    "maxLength": 20
+                  },
+                  "stopConfirmed": {
+                    "type": "boolean"
+                  },
+                  "stopConfirmedAt": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "recoveryStrategy": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "recoveryResult": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "recoveryBasisRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "recoveryBasisVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]*$",
+                    "maxLength": 20
+                  },
+                  "resumedBasisId": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "resumedBasisVersion": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]*$",
+                        "maxLength": 20
+                      },
+                      {
+                        "const": ""
+                      }
+                    ]
+                  },
+                  "preemptedBasisId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "preemptedBasisVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]*$",
+                    "maxLength": 20
+                  },
+                  "selectedIntent": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "actualLatencyMs": {
+                    "type": "string",
+                    "pattern": "^(?:0|[1-9][0-9]*)$",
+                    "maxLength": 20
+                  }
+                }
+              },
+              "payloadHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceContractId",
+              "sourceContractVersion",
+              "tenantId",
+              "projectId",
+              "environment",
+              "recordId",
+              "episodeId",
+              "agentId",
+              "sequence",
+              "sourceRevision",
+              "producerId",
+              "producerVersion",
+              "occurredAt",
+              "payload",
+              "payloadHash"
+            ],
+            "properties": {
+              "sourceContractId": {
+                "const": "sdar.domain-source/commander/ugv-state-snapshot"
+              },
+              "sourceContractVersion": {
+                "const": "1"
+              },
+              "tenantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "environment": {
+                "type": "string",
+                "enum": [
+                  "dev",
+                  "test",
+                  "staging",
+                  "prod"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "episodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "taskId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "contextId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "agentVersion": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "scenarioId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "correlationId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "sequence": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$",
+                "maxLength": 20
+              },
+              "sourceRevision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$",
+                "maxLength": 20
+              },
+              "producerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "producerVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "stateSnapshotId",
+                  "stateSnapshotVersion",
+                  "entityId",
+                  "deviceId",
+                  "stateField",
+                  "sourceComponent",
+                  "observedAt",
+                  "evaluatedAt",
+                  "ageMs",
+                  "thresholdMs",
+                  "thresholdPolicyId",
+                  "thresholdPolicyVersion",
+                  "freshnessResult",
+                  "conflictDetected",
+                  "missing"
+                ],
+                "properties": {
+                  "stateSnapshotId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "stateSnapshotVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]*$",
+                    "maxLength": 20
+                  },
+                  "entityId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "deviceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "stateField": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "sourceComponent": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "observedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "evaluatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "ageMs": {
+                    "type": "string",
+                    "pattern": "^(?:0|[1-9][0-9]*)$",
+                    "maxLength": 20
+                  },
+                  "thresholdMs": {
+                    "type": "string",
+                    "pattern": "^(?:0|[1-9][0-9]*)$",
+                    "maxLength": 20
+                  },
+                  "thresholdPolicyId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "thresholdPolicyVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]*$",
+                    "maxLength": 20
+                  },
+                  "freshnessResult": {
+                    "type": "string",
+                    "enum": [
+                      "fresh",
+                      "stale",
+                      "unknown"
+                    ]
+                  },
+                  "conflictDetected": {
+                    "type": "boolean"
+                  },
+                  "missing": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "payloadHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceContractId",
+              "sourceContractVersion",
+              "tenantId",
+              "projectId",
+              "environment",
+              "recordId",
+              "episodeId",
+              "agentId",
+              "sequence",
+              "sourceRevision",
+              "producerId",
+              "producerVersion",
+              "occurredAt",
+              "payload",
+              "payloadHash"
+            ],
+            "properties": {
+              "sourceContractId": {
+                "const": "sdar.domain-source/npc/mission-tool-call"
+              },
+              "sourceContractVersion": {
+                "const": "1"
+              },
+              "tenantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "environment": {
+                "type": "string",
+                "enum": [
+                  "dev",
+                  "test",
+                  "staging",
+                  "prod"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "episodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "taskId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "contextId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "agentVersion": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "scenarioId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "correlationId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "sequence": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$",
+                "maxLength": 20
+              },
+              "sourceRevision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$",
+                "maxLength": 20
+              },
+              "producerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "producerVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "actionId",
+                  "actionName",
+                  "targetEntityId",
+                  "targetEntityType",
+                  "deviceId",
+                  "resourceChannel",
+                  "capabilityRef",
+                  "controlAuthorityRef",
+                  "executionBasisRef",
+                  "idempotencyKey",
+                  "parametersHash",
+                  "dispatchStatus",
+                  "riskLevel",
+                  "inputSummary"
+                ],
+                "properties": {
+                  "actionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "actionName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "targetEntityId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "targetEntityType": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "deviceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "resourceChannel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "capabilityRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "controlAuthorityRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "executionBasisRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "idempotencyKey": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "parametersHash": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  "dispatchStatus": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "riskLevel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "inputSummary": {
+                    "type": "string",
+                    "maxLength": 4096
+                  }
+                }
+              },
+              "payloadHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceContractId",
+              "sourceContractVersion",
+              "tenantId",
+              "projectId",
+              "environment",
+              "recordId",
+              "episodeId",
+              "agentId",
+              "sequence",
+              "sourceRevision",
+              "producerId",
+              "producerVersion",
+              "occurredAt",
+              "payload",
+              "payloadHash"
+            ],
+            "properties": {
+              "sourceContractId": {
+                "const": "sdar.domain-source/npc/mcp-receipt"
+              },
+              "sourceContractVersion": {
+                "const": "1"
+              },
+              "tenantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "environment": {
+                "type": "string",
+                "enum": [
+                  "dev",
+                  "test",
+                  "staging",
+                  "prod"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "episodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "taskId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "contextId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "agentVersion": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "scenarioId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "correlationId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "sequence": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$",
+                "maxLength": 20
+              },
+              "sourceRevision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$",
+                "maxLength": 20
+              },
+              "producerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "producerVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "receiptId",
+                  "actionId",
+                  "deviceId",
+                  "resourceChannel",
+                  "providerId",
+                  "transportStatus",
+                  "acceptanceStatus",
+                  "executionStatus",
+                  "receivedAt"
+                ],
+                "properties": {
+                  "receiptId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "actionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "deviceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "resourceChannel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "providerId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "providerRequestId": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "transportStatus": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "acceptanceStatus": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "executionStatus": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "receivedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "outputSummary": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "errorCode": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "rawResponseRef": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "observedStateRef": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "error": {
+                    "type": "object",
+                    "maxProperties": 64,
+                    "additionalProperties": true
+                  },
+                  "metrics": {
+                    "type": "array",
+                    "maxItems": 256,
+                    "items": {}
+                  }
+                }
+              },
+              "payloadHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceContractId",
+              "sourceContractVersion",
+              "tenantId",
+              "projectId",
+              "environment",
+              "recordId",
+              "episodeId",
+              "agentId",
+              "sequence",
+              "sourceRevision",
+              "producerId",
+              "producerVersion",
+              "occurredAt",
+              "payload",
+              "payloadHash"
+            ],
+            "properties": {
+              "sourceContractId": {
+                "const": "sdar.domain-source/npc/hmi-approval"
+              },
+              "sourceContractVersion": {
+                "const": "1"
+              },
+              "tenantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "environment": {
+                "type": "string",
+                "enum": [
+                  "dev",
+                  "test",
+                  "staging",
+                  "prod"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "episodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "taskId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "contextId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "agentVersion": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "scenarioId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "correlationId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "sequence": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$",
+                "maxLength": 20
+              },
+              "sourceRevision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$",
+                "maxLength": 20
+              },
+              "producerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "producerVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "confirmationId",
+                  "approvalId",
+                  "actionId",
+                  "decision",
+                  "requestedAt",
+                  "confirmationScope"
+                ],
+                "properties": {
+                  "confirmationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "approvalId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "actionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "decision": {
+                    "type": "string",
+                    "enum": [
+                      "approved",
+                      "rejected",
+                      "expired",
+                      "cancelled"
+                    ]
+                  },
+                  "requestedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "respondedAt": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "approvedBy": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "validFrom": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "expiresAt": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "invalidatedAt": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "invalidationReason": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "confirmationScope": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "confirmationBasisRef": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "stateVersionAtApproval": {
+                    "type": "string",
+                    "pattern": "^(?:0|[1-9][0-9]*)$",
+                    "maxLength": 20
+                  },
+                  "evidenceRefs": {
+                    "type": "array",
+                    "maxItems": 256,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 512
+                    }
+                  },
+                  "invalidationConditions": {
+                    "type": "array",
+                    "maxItems": 256,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 512
+                    }
+                  }
+                }
+              },
+              "payloadHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceContractId",
+              "sourceContractVersion",
+              "tenantId",
+              "projectId",
+              "environment",
+              "recordId",
+              "episodeId",
+              "agentId",
+              "sequence",
+              "sourceRevision",
+              "producerId",
+              "producerVersion",
+              "occurredAt",
+              "payload",
+              "payloadHash"
+            ],
+            "properties": {
+              "sourceContractId": {
+                "const": "sdar.domain-source/npc/preemption-record"
+              },
+              "sourceContractVersion": {
+                "const": "1"
+              },
+              "tenantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "environment": {
+                "type": "string",
+                "enum": [
+                  "dev",
+                  "test",
+                  "staging",
+                  "prod"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "episodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "taskId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "contextId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "agentVersion": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "scenarioId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "correlationId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "sequence": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$",
+                "maxLength": 20
+              },
+              "sourceRevision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$",
+                "maxLength": 20
+              },
+              "producerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "producerVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "preemptionId",
+                  "preemptedActionId",
+                  "deviceId",
+                  "resourceChannel",
+                  "phase",
+                  "triggerType",
+                  "stopConfirmed",
+                  "stopConfirmedAt",
+                  "recoveryStrategy",
+                  "recoveryResult",
+                  "recoveryBasisRef",
+                  "recoveryBasisVersion",
+                  "preemptedBasisId",
+                  "preemptedBasisVersion",
+                  "selectedIntent",
+                  "actualLatencyMs"
+                ],
+                "properties": {
+                  "preemptionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "preemptedActionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "deviceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "resourceChannel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "phase": {
+                    "type": "string",
+                    "enum": [
+                      "requested",
+                      "stopping",
+                      "stopped",
+                      "recovering",
+                      "resumed",
+                      "failed"
+                    ]
+                  },
+                  "triggerType": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "triggerEventId": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "requiredDeadlineMs": {
+                    "type": "string",
+                    "pattern": "^(?:0|[1-9][0-9]*)$",
+                    "maxLength": 20
+                  },
+                  "stopConfirmed": {
+                    "type": "boolean"
+                  },
+                  "stopConfirmedAt": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "recoveryStrategy": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "recoveryResult": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "recoveryBasisRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "recoveryBasisVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]*$",
+                    "maxLength": 20
+                  },
+                  "resumedBasisId": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "resumedBasisVersion": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]*$",
+                        "maxLength": 20
+                      },
+                      {
+                        "const": ""
+                      }
+                    ]
+                  },
+                  "preemptedBasisId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "preemptedBasisVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]*$",
+                    "maxLength": 20
+                  },
+                  "selectedIntent": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "actualLatencyMs": {
+                    "type": "string",
+                    "pattern": "^(?:0|[1-9][0-9]*)$",
+                    "maxLength": 20
+                  }
+                }
+              },
+              "payloadHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sourceContractId",
+              "sourceContractVersion",
+              "tenantId",
+              "projectId",
+              "environment",
+              "recordId",
+              "episodeId",
+              "agentId",
+              "sequence",
+              "sourceRevision",
+              "producerId",
+              "producerVersion",
+              "occurredAt",
+              "payload",
+              "payloadHash"
+            ],
+            "properties": {
+              "sourceContractId": {
+                "const": "sdar.domain-source/npc/blackboard-snapshot"
+              },
+              "sourceContractVersion": {
+                "const": "1"
+              },
+              "tenantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "environment": {
+                "type": "string",
+                "enum": [
+                  "dev",
+                  "test",
+                  "staging",
+                  "prod"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "episodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "taskId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "contextId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "agentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "agentVersion": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "scenarioId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "correlationId": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "sequence": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$",
+                "maxLength": 20
+              },
+              "sourceRevision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$",
+                "maxLength": 20
+              },
+              "producerId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "producerVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "occurredAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "payload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "stateSnapshotId",
+                  "stateSnapshotVersion",
+                  "entityId",
+                  "deviceId",
+                  "stateField",
+                  "sourceComponent",
+                  "observedAt",
+                  "evaluatedAt",
+                  "ageMs",
+                  "thresholdMs",
+                  "thresholdPolicyId",
+                  "thresholdPolicyVersion",
+                  "freshnessResult",
+                  "conflictDetected",
+                  "missing"
+                ],
+                "properties": {
+                  "stateSnapshotId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "stateSnapshotVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]*$",
+                    "maxLength": 20
+                  },
+                  "entityId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "deviceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "stateField": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "sourceComponent": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "observedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "evaluatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "ageMs": {
+                    "type": "string",
+                    "pattern": "^(?:0|[1-9][0-9]*)$",
+                    "maxLength": 20
+                  },
+                  "thresholdMs": {
+                    "type": "string",
+                    "pattern": "^(?:0|[1-9][0-9]*)$",
+                    "maxLength": 20
+                  },
+                  "thresholdPolicyId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "thresholdPolicyVersion": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]*$",
+                    "maxLength": 20
+                  },
+                  "freshnessResult": {
+                    "type": "string",
+                    "enum": [
+                      "fresh",
+                      "stale",
+                      "unknown"
+                    ]
+                  },
+                  "conflictDetected": {
+                    "type": "boolean"
+                  },
+                  "missing": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "payloadHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "batchHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

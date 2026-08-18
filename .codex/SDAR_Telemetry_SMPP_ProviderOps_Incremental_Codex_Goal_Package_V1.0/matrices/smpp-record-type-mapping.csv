@@ -1,0 +1,17 @@
+record_type,semantic_class,requiredness,benchmark_relevance,formalization_note
+provider.task.lifecycle,task_lifecycle,required,M7|M10|M11|M13|HG4|HG7,Provider terminal is not Goal completion.
+provider.command.lifecycle,command_lifecycle,required,M7|M11|M13|HG4|F4,Requires explicit command identity/status payload.
+provider.scheduler.decision,scheduler_decision,supporting,M7|M8,Decision evidence only; not SDAR planner authority.
+provider.recovery.lifecycle,recovery_lifecycle,required_when_recovery,M10|M13|F7,Requires recovery phase/reason contract.
+provider.ttl.lifecycle,ttl_lifecycle,supporting,M7|M10,Expiry is not cancellation completion.
+provider.resource.state,resource_state,supporting,M3|M7,ObservedAt required for freshness use.
+provider.resource.metric,resource_metric,diagnostic,Operational KPI,Never enters Quality Score directly.
+provider.resource.health,resource_health,supporting,M3|M7,Health is not task success.
+provider.execution.progress,execution_progress,supporting,M7|M10|M13,Progress must be explicit and revisioned.
+provider.business_event.source.lifecycle,business_event_source,diagnostic,M13,Delivery chain evidence.
+provider.business_event.ingest.lifecycle,business_event_ingest,diagnostic,M13,Delivery chain evidence.
+provider.business_event.publication.lifecycle,business_event_publication,diagnostic,M13,Delivery chain evidence.
+provider.business_event.stream.lifecycle,business_event_stream,diagnostic,M13,Delivery chain evidence.
+provider.business_event.continuity,business_event_continuity,supporting,M10|M13,Continuity/recovery evidence.
+provider.business_event.delivery.lifecycle,business_event_delivery,supporting,M13|HG4,Delivery does not prove business outcome.
+provider.business_event.relation.lifecycle,business_event_relation,supporting,M13,Relation provenance only.

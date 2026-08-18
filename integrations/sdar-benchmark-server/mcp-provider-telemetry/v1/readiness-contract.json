@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "statuses": ["not_required", "not_ready", "degraded", "ready", "conflict"],
+  "statusSemantics": {
+    "not_required": "The case has no MCP Provider telemetry requirement and proceeds without Provider input.",
+    "not_ready": "Required Provider observations or exact relations are absent; return NR, never score zero.",
+    "degraded": "The required task path exists while supporting progress, resource or reconciliation evidence is incomplete.",
+    "ready": "Required typed facts, exact relations and terminal observations are complete and conflict-free.",
+    "conflict": "Identity/hash, terminal, revision or relation evidence conflicts; fail closed for Provider input."
+  },
+  "invariants": {
+    "goalSuccessProven": false,
+    "physicalSuccessProven": false,
+    "durableCheckpointAuthority": "smpp_companion_target_worker",
+    "queryPollingIsProjection": false
+  },
+  "telemetryProhibitions": [
+    "calculate_benchmark_score",
+    "select_benchmark_weights",
+    "assign_fatal_or_hard_gate",
+    "promote_provider_terminal_to_goal_success",
+    "promote_provider_terminal_to_physical_success"
+  ]
+}

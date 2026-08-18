@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "reasonCodes": [
+    {"code":"SMPP_SCHEMA_DRIFT","result":"blocked"},
+    {"code":"SMPP_SOURCE_MAPPING_ID_MISSING","result":"blocked"},
+    {"code":"SMPP_PAYLOAD_CONTRACT_MISSING","result":"blocked"},
+    {"code":"SMPP_TARGET_ROW_CONTRACT_MISMATCH","result":"blocked"},
+    {"code":"SMPP_SOURCE_CONTENT_CONFLICT","result":"conflict"},
+    {"code":"SMPP_FACT_CONTENT_CONFLICT","result":"conflict"},
+    {"code":"SMPP_RELATION_URN_INVALID","result":"dlq"},
+    {"code":"SMPP_RELATION_AMBIGUOUS","result":"not_ready"},
+    {"code":"SMPP_PROVIDER_TELEMETRY_MISSING","result":"not_ready"},
+    {"code":"SMPP_PROVIDER_TERMINAL_MISMATCH","result":"conflict"},
+    {"code":"SMPP_REVISION_MISMATCH","result":"degraded_or_conflict"},
+    {"code":"SMPP_SHADOW_TARGET_UNAVAILABLE","result":"retry_without_blocking_standalone"},
+    {"code":"SMPP_PROJECTION_LAGGING","result":"degraded"},
+    {"code":"SMPP_RELATION_COVERAGE_LOW","result":"degraded"},
+    {"code":"SMPP_COMPANION_NOT_DEPLOYED","result":"blocked"}
+  ]
+}

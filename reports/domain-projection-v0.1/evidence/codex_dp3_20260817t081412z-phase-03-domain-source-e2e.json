@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "event": "domain_source_phase3.real_clickhouse_e2e",
+  "status": "passed",
+  "runId": "codex_dp3_20260817t081412z",
+  "clickHouse": {
+    "host": "192.168.1.7",
+    "expectedVersion": "24.10.2.1",
+    "readonlyChecks": true
+  },
+  "contractVersion": "sdar.domain-source/v1",
+  "gateway": {
+    "batchAcknowledgements": 2,
+    "sealAcknowledgements": 2,
+    "acknowledgementAfterDurableWal": true
+  },
+  "wal": {
+    "partitions": 2,
+    "frames": 4
+  },
+  "worker": {
+    "firstCycle": {
+      "partitionsVisited": 2,
+      "framesCompleted": 4,
+      "writesCompleted": 12
+    },
+    "idleCycle": {
+      "partitionsVisited": 2,
+      "framesCompleted": 0,
+      "writesCompleted": 0
+    }
+  },
+  "routing": [
+    {
+      "table": "sdar_commander.domain_mcp_action_source_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_commander.domain_mcp_receipt_source_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_commander.domain_capability_track_sample_source_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_commander.domain_error_recovery_source_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_commander.domain_ugv_state_snapshot_source_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_npc.domain_mission_tool_call_source_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_npc.domain_mcp_receipt_source_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_npc.domain_hmi_approval_source_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_npc.domain_preemption_record_source_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_npc.domain_blackboard_snapshot_source_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_commander.domain_source_episode_seal_v1",
+      "rows": 1
+    },
+    {
+      "table": "sdar_npc.domain_source_episode_seal_v1",
+      "rows": 1
+    }
+  ],
+  "checks": {
+    "exactTenSourceTables": true,
+    "exactTwoSealTables": true,
+    "noNearNameTable": true,
+    "allRowsVisible": true,
+    "idleReplayStable": true,
+    "projectionsActivated": false,
+    "benchmarkScoringExecuted": false
+  },
+  "fixtureNotice": "Controlled producer data was sent through the real Gateway/WAL/worker/ClickHouse path; static fixtures alone are not the E2E evidence."
+}

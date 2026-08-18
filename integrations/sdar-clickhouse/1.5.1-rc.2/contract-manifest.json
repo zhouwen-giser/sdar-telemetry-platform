@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "releaseVersion": "1.5.1-rc.2",
+  "assets": [
+    {
+      "path": "contract.json",
+      "bytes": 8536,
+      "byteSha256": "sha256:cb9ae48e3e9f9a303d58a82e1354c142a646b5692d9478aa35119143d741f3c0"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1087,
+      "byteSha256": "sha256:775c4bdcde2f34d3e8ed44492ae1926cc60a362eae2f73296ddc967dd2a48678"
+    },
+    {
+      "path": "required-object-descriptors.json",
+      "bytes": 513803,
+      "byteSha256": "sha256:5359e2c9f0cfc72b56b6a61b8f7714648048fdf844e58eb5ebe6117c5c9b8d3c"
+    },
+    {
+      "path": "source-lock.json",
+      "bytes": 2815,
+      "byteSha256": "sha256:38986f83025ff9b85fe811d81a5982e16efeb91ff549135d83328e7c7eccefc9"
+    },
+    {
+      "path": "verify.sql",
+      "bytes": 1184,
+      "byteSha256": "sha256:c14c2175ba137e9f809d26c984327d067b9553cca173f906edd804789fc6cd4d"
+    }
+  ]
+}

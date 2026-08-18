@@ -1,0 +1,16 @@
+{
+  "contractVersion": "sdar.domain-projection/v1",
+  "projectionId": "fixture.projection.alpha",
+  "projectionVersion": 1,
+  "sourceDatabase": "sdar_commander",
+  "sourceTable": "fixture_source_fact",
+  "lastOccurredAt": "2026-08-14T00:01:00.000Z",
+  "lastSourceRecordId": "fixture-source-record-0001",
+  "lastSourceRevision": "1",
+  "checkpointVersion": 2,
+  "processedSourceCount": 1,
+  "producedTargetCount": 1,
+  "skippedSourceCount": 0,
+  "failedSourceCount": 0,
+  "updatedAt": "2026-08-14T00:01:01.000Z"
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "runId": "codex_dp4_20260817t082842z",
+  "observedAt": "2026-08-17T08:28:42.817Z",
+  "status": "passed",
+  "implementationCommit": "c082942",
+  "database": {
+    "kind": "real PostgreSQL",
+    "isolation": "dedicated temporary database",
+    "migrationsApplied": [
+      "001_init.sql",
+      "002_domain_projection_runtime.sql"
+    ],
+    "removedAfterRun": true,
+    "credentialsRecorded": false
+  },
+  "leaseConcurrency": {
+    "contenders": 12,
+    "winners": 1,
+    "blockedWhileActive": true,
+    "initialFencingToken": 1,
+    "reclaimedFencingToken": 2,
+    "staleRenewRejected": true,
+    "staleReleaseRejected": true,
+    "independentPartitionLease": true
+  },
+  "controlRepositories": {
+    "managementActionIdempotence": true,
+    "managementActionConflictRejected": true,
+    "boundedReplayRequestIdempotence": true,
+    "producerRegistration": true,
+    "producerHeartbeat": true
+  },
+  "testResult": {
+    "tests": 2,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0
+  },
+  "scope": {
+    "clickHouseRead": false,
+    "clickHouseWrite": false,
+    "projectionActivated": false,
+    "benchmarkScoringExecuted": false
+  }
+}

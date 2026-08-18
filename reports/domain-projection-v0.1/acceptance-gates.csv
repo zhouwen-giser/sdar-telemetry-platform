@@ -1,0 +1,36 @@
+gate_id,result,evidence_or_blocker
+G01,PASS,source lock and execution branch recorded
+G02,PASS,121 imported Evidence files and 100/95/5 a99/eac lock
+G03,PASS,live RC2 release schema and descriptor hashes exact
+G04,PASS,live 10 sources 2 seals 6 targets governance and views
+G05,PASS,Domain Source schemas and 16 fixtures
+G06,PASS,fsync-before-ACK durability integration
+G07,PASS,real Phase 3 exact-table ClickHouse routing
+G08,PASS,source duplicate and conflict tests
+G09,PASS,real Control PostgreSQL lease fencing
+G10,PASS,bounded lookback and late-arrival test plus live read smoke
+G11,PASS,10 mapping documents and payload schemas frozen
+G12,PASS,10 deterministic mapper suites
+G13,PASS,RFC 9562 UUIDv5 golden replay
+G14,PENDING_REAL_RUN_HARNESS_READY,real same-hash ClickHouse replay not run
+G15,PASS,different-hash target conflict blocks
+G16,PASS,produced lineage coverage contract 100 percent
+G17,PASS,skip and fail audit tests
+G18,PASS,checkpoint-last crash tests
+G19,PARTIAL_REAL_ADMIN_HTTP_CONTROL_POSTGRES_PENDING,service contract present but live integration absent
+G20,PASS,schema and mapping drift fail closed
+G21,PASS,seven-state lifecycle tests
+G22,PASS,empty disabled and drift readiness tests
+G23,BLOCKED_EXTERNAL_CONSUMER_PATH_MISSING,frozen Benchmark baseline lacks General not_required path
+G24,BLOCKED_EXTERNAL_CONSUMER_PATH_MISSING,frozen Benchmark baseline lacks formal ready gate
+G25,PASS,fact index provenance and lineage reference query contract
+G26,PASS,ten fixed typed bounded Query routes
+G27,PARTIAL_REAL_ADMIN_HTTP_CONTROL_POSTGRES_PENDING,authenticated live Admin integration absent
+G28,PARTIAL_LIVE_PROCESS_PROBE_PENDING,worker process probe absent
+G29,PENDING_ACTUAL_COMPOSE_PROCESS_SMOKE,Docker API and required secrets unavailable
+G30,PENDING_REAL_RUN_HARNESS_READY,real 10 of 10 mapping E2E not run
+G31,PENDING_REAL_RUN_HARNESS_READY,real SIGKILL ClickHouse harness not run
+G32,BLOCKED_CONSUMER_AND_LIVE_QUERY_PENDING,static handoff passes but consumer path and live query absent
+G33,BLOCKED_PR_BODY_UPDATE_UNAVAILABLE,docs current but PR body update blocked by platform limit
+G34,PASS,all commits pushed no force rebase amend and PR remains Draft
+G35,BLOCKED_REQUIRED_GATES_AND_FULL_VERIFY,12 gates open and sandbox full verify is 27 of 30 files

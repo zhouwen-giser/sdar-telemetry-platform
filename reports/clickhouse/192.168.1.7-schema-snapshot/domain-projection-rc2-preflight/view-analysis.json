@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-08-17T07:28:12.565Z",
+  "queryPolicy": {
+    "readonly": 2,
+    "limit": 0
+  },
+  "views": [
+    {"view":"sdar_meta.v_domain_projection_health","analyzed":true,"columnCount":18,"dottedColumns":[]},
+    {"view":"sdar_meta.v_domain_projection_set_readiness","analyzed":true,"columnCount":12,"dottedColumns":[]},
+    {"view":"sdar_meta.v_episode_projection_readiness","analyzed":true,"columnCount":30,"dottedColumns":[]},
+    {"view":"sdar_mart.v_episode_domain_readiness","analyzed":true,"columnCount":19,"dottedColumns":[]},
+    {"view":"sdar_embodied.v_episode_domain_fact_index","analyzed":true,"columnCount":19,"dottedColumns":[]},
+    {"view":"sdar_meta.v_domain_source_contract_definition_current","analyzed":true,"columnCount":22,"dottedColumns":[]},
+    {"view":"sdar_meta.v_schema_contract_release_current","analyzed":true,"columnCount":19,"dottedColumns":[]}
+  ]
+}

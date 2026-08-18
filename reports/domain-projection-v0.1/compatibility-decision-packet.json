@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-14T14:12:43.193Z",
+  "status": "blocked_pending_explicit_compatibility_decisions",
+  "baseline": {
+    "originMainSha": "44fb583034d350d429c45ab065bd95e8792b74c1",
+    "reviewHeadSha": "72b35c35700d038ab1c80729dfabc8a704947b80"
+  },
+  "liveSnapshot": {
+    "observedAt": "2026-08-14T13:17:39.818Z",
+    "clickHouseVersion": "24.10.2.1",
+    "databaseCount": 6,
+    "objectCount": 430,
+    "columnCount": 14885,
+    "exactSourceTablesPresent": 0,
+    "requiredSourceTableCount": 10,
+    "targetTablesPresent": 6,
+    "requiredTargetTableCount": 6,
+    "governanceTablesPresent": 6,
+    "requiredGovernanceTableCount": 6,
+    "releaseMarker": {
+      "releaseVersion": "1.4.1-rc.1",
+      "migrationRange": "00..17",
+      "status": "candidate"
+    },
+    "combinedFingerprint": "sha256:c3b9e327b1072c8063db5c65220f848890c7da6e4390afdce68f93e706e05170"
+  },
+  "decisions": {
+    "D1": {
+      "status": "pending",
+      "approvedMappingCount": 0,
+      "safeCandidateForReviewCount": 4,
+      "semanticallyInsufficientCount": 6,
+      "noCandidateCount": 0,
+      "projections": [
+        {
+          "projectionId": "DP-C01",
+          "requiredSource": "sdar_commander.mcp_action",
+          "candidates": [
+            "sdar_commander.action_record",
+            "sdar_commander.mcp_call_detail"
+          ],
+          "assessment": "SEMANTICALLY_INSUFFICIENT",
+          "missingContracts": [
+            "resource_channel",
+            "device_identity_predicate"
+          ]
+        },
+        {
+          "projectionId": "DP-C02",
+          "requiredSource": "sdar_commander.mcp_receipt",
+          "candidates": ["sdar_commander.receipt_record"],
+          "assessment": "SAFE_CANDIDATE_FOR_REVIEW",
+          "missingContracts": [
+            "immutable_revision_1",
+            "status_enum_mapping"
+          ]
+        },
+        {
+          "projectionId": "DP-C03",
+          "requiredSource": "sdar_commander.capability_track_sample",
+          "candidates": [
+            "sdar_commander.capability_track_detail",
+            "sdar_commander.verification_record"
+          ],
+          "assessment": "SEMANTICALLY_INSUFFICIENT",
+          "missingContracts": [
+            "stable_verification_relation",
+            "device_id",
+            "verification_channel",
+            "device_timestamp",
+            "physical_result_semantics"
+          ]
+        },
+        {
+          "projectionId": "DP-C04",
+          "requiredSource": "sdar_commander.error_recovery",
+          "candidates": [
+            "sdar_commander.failure_record",
+            "sdar_commander.recovery_record"
+          ],
+          "assessment": "SEMANTICALLY_INSUFFICIENT",
+          "missingContracts": [
+            "preemption_id",
+            "phase",
+            "device_id",
+            "trigger_type",
+            "deadline",
+            "stop_confirmation",
+            "basis_relations"
+          ]
+        },
+        {
+          "projectionId": "DP-C05",
+          "requiredSource": "sdar_commander.ugv_state_snapshot",
+          "candidates": ["sdar_commander.state_snapshot"],
+          "assessment": "SAFE_CANDIDATE_FOR_REVIEW",
+          "missingContracts": [
+            "check_granularity",
+            "freshness_threshold_policy",
+            "result_enum_mapping"
+          ],
+          "observedTimeField": "quality_observed_at"
+        },
+        {
+          "projectionId": "DP-N01",
+          "requiredSource": "sdar_npc.mission_tool_call",
+          "candidates": [
+            "sdar_npc.mission_tool_call_detail",
+            "sdar_npc.action_record"
+          ],
+          "assessment": "SEMANTICALLY_INSUFFICIENT",
+          "missingContracts": [
+            "resource_channel",
+            "device_identity_relation"
+          ]
+        },
+        {
+          "projectionId": "DP-N02",
+          "requiredSource": "sdar_npc.mcp_receipt",
+          "candidates": ["sdar_npc.receipt_record"],
+          "assessment": "SAFE_CANDIDATE_FOR_REVIEW",
+          "missingContracts": [
+            "immutable_revision_1",
+            "status_enum_mapping"
+          ]
+        },
+        {
+          "projectionId": "DP-N03",
+          "requiredSource": "sdar_npc.hmi_approval",
+          "candidates": [
+            "sdar_npc.hmi_approval_detail",
+            "sdar_npc.mission_tool_call_detail"
+          ],
+          "assessment": "SAFE_CANDIDATE_FOR_REVIEW",
+          "missingContracts": ["unique_bounded_approval_to_action_relation"]
+        },
+        {
+          "projectionId": "DP-N04",
+          "requiredSource": "sdar_npc.preemption_record",
+          "candidates": [
+            "sdar_npc.preemption_detail",
+            "sdar_npc.action_record"
+          ],
+          "assessment": "SEMANTICALLY_INSUFFICIENT",
+          "missingContracts": [
+            "phase",
+            "device_relation",
+            "basis_relations",
+            "trigger_event_relation"
+          ]
+        },
+        {
+          "projectionId": "DP-N05",
+          "requiredSource": "sdar_npc.blackboard_snapshot",
+          "candidates": ["sdar_npc.blackboard_snapshot_detail"],
+          "assessment": "SEMANTICALLY_INSUFFICIENT",
+          "missingContracts": [
+            "observed_at",
+            "stable_state_snapshot_relation"
+          ]
+        }
+      ]
+    },
+    "D2": {
+      "status": "pending",
+      "recommendedOption": "D2-A",
+      "projectionIdentityModel": "ten_independent_projection_ids",
+      "legacyUmbrella": "application_to_embodied@1.1.0",
+      "legacyUmbrellaAction": "preserve_without_scheduling",
+      "newProjectionVersion": 1,
+      "warehouseProjectionVersion": "1",
+      "mapperVersion": "0.1.0",
+      "projectionIds": [
+        "application_to_embodied.dp-c01",
+        "application_to_embodied.dp-c02",
+        "application_to_embodied.dp-c03",
+        "application_to_embodied.dp-c04",
+        "application_to_embodied.dp-c05",
+        "application_to_embodied.dp-n01",
+        "application_to_embodied.dp-n02",
+        "application_to_embodied.dp-n03",
+        "application_to_embodied.dp-n04",
+        "application_to_embodied.dp-n05"
+      ],
+      "reuseGovernanceTables": true,
+      "parallelGovernanceTablesAllowed": false,
+      "additiveCompatibilityColumnGroups": {
+        "projection_version": [
+          "source_table",
+          "target_table",
+          "mapper_id",
+          "mapper_version",
+          "definition_hash"
+        ],
+        "projection_run": [
+          "definition_hash",
+          "mapper_id",
+          "mapper_version",
+          "projection_set_id",
+          "projection_set_version",
+          "projection_set_hash"
+        ],
+        "projection_checkpoint": [
+          "source_database",
+          "source_table",
+          "last_source_revision",
+          "checkpoint_version",
+          "produced_count",
+          "skipped_count",
+          "failed_count"
+        ],
+        "projection_lineage": [
+          "mapper_id",
+          "mapper_version",
+          "source_revision"
+        ],
+        "projection_dead_letter": [
+          "source_revision",
+          "failure_class",
+          "first_failed_at",
+          "last_failed_at",
+          "management_action_id",
+          "resolution_action"
+        ]
+      },
+      "identityContract": "reference_rfc9562_uuidv5",
+      "hashAdapter": "strict_sha256_prefix_strip_restore"
+    },
+    "D3": {
+      "status": "pending",
+      "recommendedOption": "D3-A",
+      "referencePackage": {
+        "claimedVersion": "1.5.0-rc.1",
+        "expectedAllSqlBytes": 815392,
+        "expectedAllSqlSha256": "bd7534a250429fa1202a2c53962dce6e5c5b0e908b0efa3fe6055f4259f38f0f",
+        "actualAllSqlBytes": 815482,
+        "actualAllSqlSha256": "5a175b8749f911ae862482908ed8ef4bf179bbfa7f404140bb424394129c80ea",
+        "checksumStatus": "failed_all_sql_only",
+        "buildCheckStatus": "stale_all_sql_and_manifest",
+        "semanticDrift": true,
+        "warehouseReleaseMarkerMissingForMigrations18Through21": true
+      },
+      "options": {
+        "D3-A": {
+          "description": "upstream immutable rebuild and release-marker repair",
+          "risk": "low",
+          "unblocksSchemaAuthority": true,
+          "requiresExternalCoordination": true
+        },
+        "D3-B": {
+          "description": "temporary frozen live schema-shape exception",
+          "risk": "high",
+          "unblocksSchemaAuthority": true,
+          "provesInstallOrUpgradePath": false,
+          "authorizesClickHouseWrites": false,
+          "authorizesNearNameSourceAliases": false,
+          "fingerprint": "sha256:c3b9e327b1072c8063db5c65220f848890c7da6e4390afdce68f93e706e05170"
+        }
+      }
+    }
+  },
+  "implementationAuthorization": {
+    "contractsAndReports": true,
+    "sourceReader": false,
+    "mapper": false,
+    "targetWriter": false,
+    "domainProjectionWorker": false,
+    "clickHouseMigration": false,
+    "clickHouseWrite": false
+  }
+}

@@ -1,0 +1,16 @@
+reason_code,meaning,result
+SMPP_SCHEMA_DRIFT,ClickHouse target/release differs from lock,blocked
+SMPP_SOURCE_MAPPING_ID_MISSING,smppSourceId is absent,blocked
+SMPP_PAYLOAD_CONTRACT_MISSING,record type payload schema unavailable,blocked
+SMPP_TARGET_ROW_CONTRACT_MISMATCH,mapped row cannot satisfy target columns,blocked
+SMPP_SOURCE_CONTENT_CONFLICT,same source identity has different hash,conflict
+SMPP_FACT_CONTENT_CONFLICT,same fact identity has different hash,conflict
+SMPP_RELATION_URN_INVALID,entity URN cannot be parsed by frozen contract,dlq
+SMPP_RELATION_AMBIGUOUS,cross-system relation is ambiguous,not_ready
+SMPP_PROVIDER_TELEMETRY_MISSING,required provider facts absent,not_ready
+SMPP_PROVIDER_TERMINAL_MISMATCH,SDAR/provider terminal states conflict,conflict
+SMPP_REVISION_MISMATCH,runtime/provider revisions conflict,degraded_or_conflict
+SMPP_SHADOW_TARGET_UNAVAILABLE,optional SDAR target unavailable,retry_without_blocking_standalone
+SMPP_PROJECTION_LAGGING,SDAR target watermark behind bound,degraded
+SMPP_RELATION_COVERAGE_LOW,expected relation coverage not met,degraded
+SMPP_COMPANION_NOT_DEPLOYED,required smpp companion change not deployed,blocked

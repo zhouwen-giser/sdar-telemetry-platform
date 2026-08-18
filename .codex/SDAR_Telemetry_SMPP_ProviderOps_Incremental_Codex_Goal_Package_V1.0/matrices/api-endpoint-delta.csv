@@ -1,0 +1,12 @@
+method,path,status,purpose,source
+GET,/v1/smpp/provider-facts,NEW,List external provider facts,ClickHouse external_provider_fact
+GET,/v1/smpp/provider-facts/{factId},NEW,Get provider fact,ClickHouse external_provider_fact
+GET,/v1/smpp/relations,NEW,List external N:N relations,ClickHouse external_entity_relation_fact
+GET,/v1/smpp/tasks/{externalTaskId}/timeline,NEW,Provider task timeline,v_smpp_provider_task_timeline
+GET,/v1/smpp/resources/{resourceId}/state,NEW,Current resource state,v_smpp_resource_current_state
+GET,/v1/smpp/resources/{resourceId}/health,NEW,Current resource health,v_smpp_resource_current_health
+GET,/v1/smpp/executions/{externalExecutionId}/progress,NEW,Latest execution progress,v_smpp_execution_latest_progress
+GET,/v1/smpp/reconciliation,NEW,Runtime/provider reconciliation,v_sdar_smpp_task_reconciliation
+GET,/v1/episodes/{episodeId}/mcp-provider-telemetry,NEW,Assemble episode provider telemetry,typed service over external facts/relations
+GET,/v1/episodes/{episodeId}/mcp-provider-readiness,NEW,Provider telemetry readiness,typed readiness service
+GET,/v1/smpp/projection-status,NEW,SMPP shadow target/consumer status,target checkpoint + watermark + schema preflight

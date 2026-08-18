@@ -1,0 +1,85 @@
+{
+  "contractVersion": "sdar.domain-source/v1",
+  "cases": [
+    {
+      "path": "invalid/arbitrary-table.batch.json",
+      "kind": "batch",
+      "valid": false
+    },
+    {
+      "path": "invalid/extra-property.batch-ack.json",
+      "kind": "batchAck",
+      "valid": false
+    },
+    {
+      "path": "invalid/mixed-application.batch.json",
+      "kind": "batch",
+      "valid": false
+    },
+    {
+      "path": "invalid/near-name-source.batch.json",
+      "kind": "batch",
+      "valid": false
+    },
+    {
+      "path": "invalid/noncanonical-revision.batch.json",
+      "kind": "batch",
+      "valid": false
+    },
+    {
+      "path": "invalid/tampered-batch-hash.batch.json",
+      "kind": "batch",
+      "valid": false
+    },
+    {
+      "path": "invalid/tampered-payload-hash.batch.json",
+      "kind": "batch",
+      "valid": false
+    },
+    {
+      "path": "invalid/unexpected-payload-field.batch.json",
+      "kind": "batch",
+      "valid": false
+    },
+    {
+      "path": "invalid/wrong-application.seal.json",
+      "kind": "seal",
+      "valid": false
+    },
+    {
+      "path": "invalid/zero-revision.seal-ack.json",
+      "kind": "sealAck",
+      "valid": false
+    },
+    {
+      "path": "valid/commander-five-records.batch.json",
+      "kind": "batch",
+      "valid": true
+    },
+    {
+      "path": "valid/commander-source.seal.json",
+      "kind": "seal",
+      "valid": true
+    },
+    {
+      "path": "valid/durable.seal-ack.json",
+      "kind": "sealAck",
+      "valid": true
+    },
+    {
+      "path": "valid/full.batch-ack.json",
+      "kind": "batchAck",
+      "valid": true
+    },
+    {
+      "path": "valid/npc-five-records.batch.json",
+      "kind": "batch",
+      "valid": true
+    },
+    {
+      "path": "valid/npc-source.seal.json",
+      "kind": "seal",
+      "valid": true
+    }
+  ]
+}

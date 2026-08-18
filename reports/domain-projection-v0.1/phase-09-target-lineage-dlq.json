@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "phase": 9,
+  "name": "TargetWriter, lineage, DLQ and conflict closure",
+  "status": "passed_with_real_clickhouse_replay_pending",
+  "phaseCommit": "1ac5699",
+  "phasePushed": true,
+  "closure": {
+    "terminalOutcomes": ["produced", "duplicate", "skipped", "failed", "blocked"],
+    "targetTables": 6,
+    "mappingPaths": 10,
+    "exactDescriptorValidation": "PASS_10_OF_10",
+    "producedLineageCoverage": "PASS_10_OF_10",
+    "nearNameAliases": 0,
+    "projectionsActivated": 0
+  },
+  "verification": {
+    "focusedTargetWriter": "PASS_8_OF_8",
+    "commanderMappings": "PASS_7_OF_7",
+    "npcMappings": "PASS_8_OF_8",
+    "sourceReader": "PASS_4_OF_4",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "staticVerify": "PASS",
+    "clickHouseContractLock": "PASS_472_OBJECTS_15949_COLUMNS_ZERO_DIFF",
+    "domainSourceContractLock": "PASS_10_TYPES_2_SEALS_16_FIXTURES",
+    "fullVerify": "PENDING_RERUN_WITH_LOOPBACK_PERMISSION",
+    "realClickHouseTargetReplay": "NOT_RUN_RESERVED_FOR_PHASE_15"
+  },
+  "gates": {
+    "G14": "PENDING_REAL_CLICKHOUSE_REPLAY",
+    "G15": "PASS",
+    "G16": "PASS",
+    "G17": "PASS",
+    "G18": "PASS"
+  },
+  "limitations": [
+    "Phase 9 target/lineage/DLQ tests use an in-memory ClickHouse port and are not real ClickHouse E2E.",
+    "G14 remains open until same-hash target replay succeeds against the real locked ClickHouse in Phase 15.",
+    "No ClickHouse DML, projection activation, near-name source alias or Benchmark scoring logic was used."
+  ]
+}

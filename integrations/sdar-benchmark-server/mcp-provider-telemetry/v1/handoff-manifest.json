@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "contract": "sdar.telemetry-smpp-providerops-handoff/v1",
+  "sourceRelease": "1.1.0",
+  "sourceMappingVersion": 4,
+  "sourceMain": "8f500c5743818c776a5f01cca65aa188c3869430",
+  "companionHead": "40510f423b5c6f4959a3b33182c4c1e45c0156fb",
+  "companionPullRequest": "https://github.com/zhouwen-giser/smpp-telemetry-platform/pull/1",
+  "clickHouseRelease": "1.5.1-rc.2",
+  "migrationRange": "00..26",
+  "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+  "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+  "targets": ["sdar_core.external_provider_fact", "sdar_core.external_entity_relation_fact"],
+  "views": [
+    "sdar_core.v_smpp_provider_task_timeline",
+    "sdar_core.v_smpp_resource_current_state",
+    "sdar_core.v_smpp_resource_current_health",
+    "sdar_core.v_smpp_execution_latest_progress",
+    "sdar_core.v_sdar_smpp_task_reconciliation",
+    "sdar_core.v_sdar_smpp_execution_topology"
+  ],
+  "readinessStatuses": ["not_required", "not_ready", "degraded", "ready", "conflict"],
+  "assets": [
+    {"path":"README.md","bytes":1238,"byteSha256":"sha256:ecd32dcddc241594f8aaec336fb9cb2d346eee8a1d4fccc4de22bef0f9e05b96"},
+    {"path":"benchmark-evidence-mapping.csv","bytes":1370,"byteSha256":"sha256:d141c408ddd7802a84e970a86582a5bbcc5d4a61fa3929817efb58003851cd90"},
+    {"path":"consumer-contract.ts","bytes":3080,"byteSha256":"sha256:50519db5ad71a2978aab55dba779c4e1df66329b97452a2d041c1657ce2d7e96"},
+    {"path":"fixtures/readiness.json","bytes":1169,"byteSha256":"sha256:a876612e4c7df01d2c4a678a6004ee48fb6a5a1790298cb2e8c50b859dca142b"},
+    {"path":"queries.sql","bytes":1671,"byteSha256":"sha256:6b63a06a85aa99c7e78790c36f3344c16bb9b600e057fa1822bca4ffb05ac69d"},
+    {"path":"readiness-contract.json","bytes":1136,"byteSha256":"sha256:4eff2d54de7fd48017925cb551a97d8b11ebdd3fbabc828b268b42508c79b9fc"},
+    {"path":"reason-codes.json","bytes":1033,"byteSha256":"sha256:635aee6360ca087314acbceeb833a7586e982d35ffa1fc8fc6e033b4e1f99f76"},
+    {"path":"verify.mjs","bytes":88,"byteSha256":"sha256:5a19ab95aa8676be36bb38fca9bc869a2aa7319deeaac72772ea0505281f30f1"},
+    {"path":"view-contracts.json","bytes":1980,"byteSha256":"sha256:8296ffd7d1f83a77e87e7f897069f534bbaa53a82f385ebd7c27e045c8c000ec"}
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sdar://domain-projection/mappings/v1/dp-c04/mapped-payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["preemption_id", "phase", "device_id", "trigger_type", "trigger_event_id", "preempted_basis_id", "preempted_basis_version", "preempted_action_id", "selected_basis_id", "selected_basis_version", "selected_intent", "required_deadline_ms", "actual_latency_ms", "stop_confirmed", "recovery_strategy", "recovery_result", "resumed_basis_id", "resumed_basis_version"],
+  "properties": {
+    "preemption_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "phase": { "enum": ["requested", "stopping", "stopped", "recovering", "resumed", "failed"] },
+    "device_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "trigger_type": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "trigger_event_id": { "type": "string", "maxLength": 256 },
+    "preempted_basis_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "preempted_basis_version": { "type": "string", "pattern": "^[1-9][0-9]*$", "maxLength": 10 },
+    "preempted_action_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "selected_basis_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "selected_basis_version": { "type": "string", "pattern": "^[1-9][0-9]*$", "maxLength": 10 },
+    "selected_intent": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "required_deadline_ms": { "type": "string", "pattern": "^(?:0|[1-9][0-9]*)$", "maxLength": 20 },
+    "actual_latency_ms": { "type": "string", "pattern": "^(?:0|[1-9][0-9]*)$", "maxLength": 20 },
+    "stop_confirmed": { "type": "integer", "minimum": 0, "maximum": 1 },
+    "recovery_strategy": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "recovery_result": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "resumed_basis_id": { "type": "string", "maxLength": 256 },
+    "resumed_basis_version": { "type": "string", "pattern": "^(?:0|[1-9][0-9]*)$", "maxLength": 10 }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "contractVersion": "sdar.domain-projection/v1",
+  "projectionId": "fixture.projection.invalid-target",
+  "projectionVersion": 1,
+  "source": { "database": "sdar_npc", "table": "fixture_source_fact" },
+  "target": { "database": "sdar_mart", "table": "control_action" },
+  "mapperId": "fixture.mapper.alpha",
+  "mapperVersion": "1.0.0",
+  "cursorPolicy": { "fields": ["occurred_at", "record_id"], "uniqueTieBreakerFields": ["record_id"], "order": "asc" },
+  "identityPolicy": { "version": "sha256-v1" },
+  "enabled": true
+}

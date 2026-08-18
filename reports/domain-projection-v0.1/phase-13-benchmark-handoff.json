@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "phase": 13,
+  "name": "Benchmark Server handoff contracts",
+  "status": "static_pass_live_consumer_qualification_pending",
+  "phaseCommit": "c7335bf",
+  "phasePushed": true,
+  "handoff": {
+    "contract": "sdar.telemetry-domain-handoff/v1",
+    "assets": 8,
+    "sources": 10,
+    "episodeSeals": 2,
+    "projections": 10,
+    "targets": 6,
+    "projectionSets": 4,
+    "views": 7,
+    "readinessStatuses": 5,
+    "benchmarkScoringLogic": false
+  },
+  "verification": {
+    "staticVerifier": "PASS",
+    "consumerQueryContractCases": "PASS_2_OF_2",
+    "typecheck": "PASS",
+    "staticVerify": "PASS",
+    "liveVerifier": "NOT_RUN_PERMISSION_REJECTED_AFTER_SANDBOX_NETWORK_FAILURE"
+  },
+  "gates": {
+    "G23": "PENDING_PHASE_16_ACTUAL_CONSUMER",
+    "G24": "PENDING_PHASE_16_ACTUAL_CONSUMER",
+    "G25": "PASS",
+    "G32": "PARTIAL_LIVE_CLICKHOUSE_CONSUMER_QUERIES_PENDING"
+  },
+  "resumeCommand": "npm run check:benchmark-handoff:live"
+}

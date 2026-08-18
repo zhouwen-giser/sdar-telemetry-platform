@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {"name":"not-required","required":false,"status":"not_required","reasonCodes":[],"expected":{"mayProceed":true,"maySnapshotProviderInput":false,"resultDisposition":"provider_not_required"}},
+    {"name":"not-ready-missing-relation","required":true,"status":"not_ready","reasonCodes":["SMPP_RELATION_AMBIGUOUS"],"expected":{"mayProceed":false,"maySnapshotProviderInput":false,"resultDisposition":"not_rated"}},
+    {"name":"degraded-supporting-gap","required":true,"status":"degraded","reasonCodes":["SMPP_RELATION_COVERAGE_LOW"],"expected":{"mayProceed":true,"maySnapshotProviderInput":true,"resultDisposition":"provider_evidence_degraded"}},
+    {"name":"ready","required":true,"status":"ready","reasonCodes":[],"expected":{"mayProceed":true,"maySnapshotProviderInput":true,"resultDisposition":"provider_evidence_ready"}},
+    {"name":"conflict-terminal","required":true,"status":"conflict","reasonCodes":["SMPP_PROVIDER_TERMINAL_MISMATCH"],"expected":{"mayProceed":false,"maySnapshotProviderInput":false,"resultDisposition":"blocked_conflict"}}
+  ],
+  "assertions": {"goalSuccessProven":false,"physicalSuccessProven":false}
+}

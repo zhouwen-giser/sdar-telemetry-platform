@@ -1,57 +1,62 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-07-31T03:20:03.750145+00:00",
-  "repositories": {
-    "smppTelemetryReference": {
-      "repository": "zhouwen-giser/smpp-telemetry-platform",
-      "role": "read-only implementation pattern",
-      "inspectedCommit": "53a799d4c0166669411e61b816c6ed8ef63cc70f",
-      "expectedBranch": "main",
-      "allowExecutionCheckout": "exact commit preferred"
-    },
-    "sdarRuntime": {
+  "generatedAt": "2026-08-17T04:00:00Z",
+  "targetRepository": {
+    "repository": "zhouwen-giser/sdar-telemetry-platform",
+    "branch": "feature/domain-projection-worker-v0.1",
+    "observedHead": "301189599a9cf63ee7b51ee594aa1714441dee9d",
+    "baseMain": "44fb583034d350d429c45ab065bd95e8792b74c1",
+    "pullRequest": 1,
+    "pullRequestState": "open-draft"
+  },
+  "upstreams": {
+    "runtime": {
       "repository": "zhouwen-giser/skill-driven-agent-runtime",
-      "role": "read-only source authority plus additive integration patch target",
-      "inspectedBranch": "feature/v1.3-sequential-implementation",
-      "inspectedHead": "27fddc25c24919c4d64d1a63b34dd7c0593854de",
-      "minimumAccepted": "execution checkout must contain the inspected head or provide a newer local v1.3 final descendant",
-      "mainAtInspection": "940bb96439186acf2151935cc953a51b512abab1"
-    }
-  },
-  "artifacts": {
-    "telemetryDesignFreeze": {
-      "filename": "SDAR_Telemetry_Platform_独立遥测平台_完整设计冻结基线_V1.0.zip",
-      "sha256": "97ae56b4585fd29eff8000492ae98c678c4249f4d741550bd993121302c0ebac",
-      "role": "highest-priority architecture and contract baseline"
-    },
-    "clickhouseSchema": {
-      "filename": "sdar_clickhouse_schema.zip",
-      "sha256": "16dd6d6b170a27849f4ddaa9e5befa7d3eca4c0d12b3317b5413686ab02b7ce5",
-      "role": "external ClickHouse schema and migration source",
-      "expectedPackageLine": "1.3.0-rc.2 / target 1.3.0"
-    }
-  },
-  "priority": [
-    "SDAR_Telemetry_Platform_独立遥测平台_完整设计冻结基线_V1.0",
-    "sdar_clickhouse_schema.zip",
-    "current local skill-driven-agent-runtime v1.3 source",
-    "smpp-telemetry-platform implementation patterns"
-  ],
-  "repository_sources": {
-    "skill-driven-agent-runtime": {
-      "url": "https://github.com/zhouwen-giser/skill-driven-agent-runtime",
-      "branch": "feature/v1.3-sequential-implementation",
-      "commit": "27fddc25c24919c4d64d1a63b34dd7c0593854de",
-      "verification": "github_web_read_only",
-      "local_checkout": "unavailable_dns_blocked"
-    },
-    "smpp-telemetry-platform": {
-      "url": "https://github.com/zhouwen-giser/smpp-telemetry-platform",
       "branch": "main",
-      "commit": "53a799d4c0166669411e61b816c6ed8ef63cc70f",
-      "verification": "github_web_read_only",
-      "local_checkout": "unavailable_dns_blocked"
+      "observedHead": "2275bc52759914bc80113358a9083e6f00d59e6d",
+      "mode": "read-only-drift-audit"
+    },
+    "benchmarkServer": {
+      "repository": "zhouwen-giser/sdar-benchmark-server",
+      "branch": "feature/v0.1-benchmark-server",
+      "observedHead": "ee7f73735595382072b8205b891af554e8496582",
+      "mode": "read-only-consumer-contract"
     }
   },
-  "updated_at": "2026-07-31T11:36:00+08:00"
+  "clickHouse": {
+    "expectedServerVersion": "24.10.2.1",
+    "releaseVersion": "1.5.1-rc.2",
+    "migrationRange": "00..26",
+    "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+    "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+    "packageZip": "SDAR_ClickHouse_Schema_1.5.1_RC2_Clean_Rebuild.zip",
+    "packageSha256": "99fd093201cecbd97eec8579d316d3d96b155330feef9a8a8bf57b1d1ac51496",
+    "sourceContractCount": 10,
+    "episodeSealContractCount": 2,
+    "projectionIdentityCount": 10,
+    "projectionSetCount": 4
+  },
+  "evidence": {
+    "contract": "sdar.evidence/v1",
+    "contractHash": "sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f",
+    "registryHash": "sha256:eac67fcc0cd02c55da750156af42f3ea2130ee470f0670aba980c08ddec41c71",
+    "recordTypes": 100,
+    "required": 95,
+    "diagnostic": 5
+  },
+  "instructions": [
+    "Re-read execution-time Git heads before editing.",
+    "Do not silently sync Runtime Evidence if hashes drift.",
+    "Live ClickHouse preflight is a hard gate before mapper or writer activation."
+  ],
+  "deliveryAudit": {
+    "observedAt": "2026-08-17T17:00:00+08:00",
+    "lastImplementationHead": "2d89ef2",
+    "phase": 17,
+    "result": "blocked_required_live_and_consumer_gates",
+    "branchPushed": true,
+    "pullRequestRemainsDraft": true,
+    "pullRequestBodyUpdate": "blocked_platform_usage_limit",
+    "projectionsActivated": false
+  }
 }

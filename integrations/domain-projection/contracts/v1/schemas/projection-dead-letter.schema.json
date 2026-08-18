@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdar.dev/schemas/domain-projection/v1/projection-dead-letter.schema.json",
+  "title": "ProjectionDeadLetter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "deadLetterId",
+    "projectionId",
+    "projectionVersion",
+    "sourceDatabase",
+    "sourceTable",
+    "sourceRecordId",
+    "sourceRevision",
+    "sourceContentHash",
+    "failureCode",
+    "failureClass",
+    "failureSummary",
+    "attemptCount",
+    "firstFailedAt",
+    "lastFailedAt",
+    "status"
+  ],
+  "properties": {
+    "contractVersion": { "const": "sdar.domain-projection/v1" },
+    "deadLetterId": { "$ref": "#/$defs/id" },
+    "projectionId": { "$ref": "#/$defs/id" },
+    "projectionVersion": { "$ref": "#/$defs/version" },
+    "sourceDatabase": { "enum": ["sdar_commander", "sdar_npc"] },
+    "sourceTable": { "$ref": "#/$defs/table" },
+    "sourceRecordId": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/identity" }]
+    },
+    "sourceRevision": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/identity" }]
+    },
+    "sourceContentHash": { "$ref": "#/$defs/hash" },
+    "failureCode": {
+      "enum": [
+        "SOURCE_SCHEMA_INVALID",
+        "SOURCE_IDENTITY_MISSING",
+        "SOURCE_REVISION_INVALID",
+        "SOURCE_CONTENT_CONFLICT",
+        "MAPPING_UNSUPPORTED",
+        "MAPPING_REQUIRED_FIELD_MISSING",
+        "TARGET_SCHEMA_INVALID",
+        "TARGET_SEMANTIC_INVALID",
+        "TARGET_INSERT_FAILED",
+        "LINEAGE_WRITE_FAILED",
+        "CHECKPOINT_WRITE_FAILED",
+        "SCHEMA_DRIFT",
+        "PROJECTION_BUG"
+      ]
+    },
+    "failureClass": { "enum": ["retryable", "non_retryable", "blocking"] },
+    "failureSummary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^[^\\u0000]+$"
+    },
+    "attemptCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "firstFailedAt": { "type": "string", "format": "date-time" },
+    "lastFailedAt": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["open", "retrying", "resolved", "ignored"] },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["managementActionId", "action", "resolvedAt"],
+      "properties": {
+        "managementActionId": { "$ref": "#/$defs/id" },
+        "action": { "enum": ["resolve", "ignore"] },
+        "resolvedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "type": "object", "properties": { "status": { "const": "ignored" } }, "required": ["status"] },
+      "then": {
+        "type": "object",
+        "required": ["resolution"],
+        "properties": {
+          "resolution": {
+            "type": "object",
+            "properties": { "action": { "const": "ignore" } },
+            "required": ["action"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "type": "object", "properties": { "status": { "const": "resolved" } }, "required": ["status"] },
+      "then": {
+        "type": "object",
+        "required": ["resolution"],
+        "properties": {
+          "resolution": {
+            "type": "object",
+            "properties": { "action": { "const": "resolve" } },
+            "required": ["action"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "type": "object", "properties": { "status": { "enum": ["open", "retrying"] } }, "required": ["status"] },
+      "then": { "type": "object", "not": { "type": "object", "required": ["resolution"] } }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": { "failureCode": { "not": { "const": "SOURCE_IDENTITY_MISSING" } } },
+        "required": ["failureCode"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "sourceRecordId": { "$ref": "#/$defs/identity" } }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "failureCode": {
+            "not": { "enum": ["SOURCE_IDENTITY_MISSING", "SOURCE_REVISION_INVALID"] }
+          }
+        },
+        "required": ["failureCode"]
+      },
+      "then": {
+        "type": "object",
+        "properties": { "sourceRevision": { "$ref": "#/$defs/identity" } }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "table": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "identity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001F\\u007F]+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

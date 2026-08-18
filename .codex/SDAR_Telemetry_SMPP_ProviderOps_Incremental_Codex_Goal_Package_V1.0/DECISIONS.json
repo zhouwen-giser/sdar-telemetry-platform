@@ -1,0 +1,56 @@
+{
+  "decisionSet": "sdar-telemetry-smpp-providerops-increment/1",
+  "status": "APPROVED_INCREMENTAL_SCOPE",
+  "decisions": [
+    {
+      "id": "SMPP-I01",
+      "decision": "Use SMPP push projection into the SDAR shared ClickHouse warehouse.",
+      "details": "The supported path is ProviderOpsEnvelope -> SMPP WAL/normalization/core/relation -> target-specific sdar_shared_warehouse projection. Do not duplicate OTLP ingestion in SDAR Telemetry and do not poll the SMPP Query API as the primary data path."
+    },
+    {
+      "id": "SMPP-I02",
+      "decision": "Implement a target-specific SDAR warehouse row mapper in smpp-telemetry-platform.",
+      "details": "The current target manager only remaps table names, while the standalone Core row shape differs from sdar_core.external_provider_fact. A typed transformer is therefore required; tableMap alone is not sufficient."
+    },
+    {
+      "id": "SMPP-I03",
+      "decision": "SMPP ProviderOps remains source authority; SDAR external tables are immutable analytical projections.",
+      "details": "SDAR Telemetry must never mutate provider authority or use external facts for online provider registration/availability decisions."
+    },
+    {
+      "id": "SMPP-I04",
+      "decision": "Freeze an explicit smppSourceId in Source Mapping v4.",
+      "details": "smpp_source_id must be an explicit stable identifier. It must not be derived from URLs, providerId, runtime instance or deployment display names."
+    },
+    {
+      "id": "SMPP-I05",
+      "decision": "Freeze a per-record-type ProviderOps payload catalog.",
+      "details": "The envelope permits arbitrary payload. lifecycle_status, provider_substate, reason_code, revisions, progress and terminal semantics may only be extracted from versioned payload contracts, never by heuristic JSON field search."
+    },
+    {
+      "id": "SMPP-I06",
+      "decision": "Preserve N-to-N SDAR/SMPP entity relations.",
+      "details": "No unique sdar_task_id, smpp_task_id, resource owner or provider owner column may be introduced into neutral Core facts. Cross-system bindings belong in external_entity_relation_fact."
+    },
+    {
+      "id": "SMPP-I07",
+      "decision": "The SMPP SDAR target remains optional until parity qualification succeeds.",
+      "details": "Failure of the SDAR shadow target must not block the required standalone SMPP target. Promote the target only after count/hash/watermark/relation parity and restart tests pass."
+    },
+    {
+      "id": "SMPP-I08",
+      "decision": "Provider terminal is not Goal completion or physical verification.",
+      "details": "Provider task/command terminal state can support receipt, execution, recovery and reconciliation evidence, but cannot alone prove SDAR Goal achieved, business outcome, or physical verification."
+    },
+    {
+      "id": "SMPP-I09",
+      "decision": "SDAR Telemetry owns consumer preflight, readiness, reconciliation and Benchmark handoff.",
+      "details": "After data lands in sdar_core external tables, SDAR Telemetry exposes typed read/query contracts and readiness; Benchmark Server consumes those contracts rather than connecting to the SMPP standalone warehouse."
+    },
+    {
+      "id": "SMPP-I10",
+      "decision": "No ClickHouse DDL is authorized by this increment.",
+      "details": "Use the rebuilt 1.5.1-rc.2 tables/views. Any missing/incompatible column or view is a fail-closed schema-delta blocker, not an invitation to patch all.sql inside either telemetry repository."
+    }
+  ]
+}

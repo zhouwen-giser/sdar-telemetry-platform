@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sdar.dev/schemas/domain-projection/v1/projection-checkpoint.schema.json",
+  "title": "ProjectionCheckpoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "projectionId",
+    "projectionVersion",
+    "sourceDatabase",
+    "sourceTable",
+    "lastOccurredAt",
+    "lastSourceRecordId",
+    "lastSourceRevision",
+    "checkpointVersion",
+    "processedSourceCount",
+    "producedTargetCount",
+    "skippedSourceCount",
+    "failedSourceCount",
+    "updatedAt"
+  ],
+  "properties": {
+    "contractVersion": { "const": "sdar.domain-projection/v1" },
+    "projectionId": { "$ref": "#/$defs/id" },
+    "projectionVersion": { "$ref": "#/$defs/version" },
+    "sourceDatabase": { "enum": ["sdar_commander", "sdar_npc"] },
+    "sourceTable": { "$ref": "#/$defs/table" },
+    "lastOccurredAt": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "format": "date-time" }
+      ]
+    },
+    "lastSourceRecordId": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/identity" }]
+    },
+    "lastSourceRevision": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/identity" }]
+    },
+    "checkpointVersion": { "$ref": "#/$defs/version" },
+    "processedSourceCount": { "$ref": "#/$defs/count" },
+    "producedTargetCount": { "$ref": "#/$defs/count" },
+    "skippedSourceCount": { "$ref": "#/$defs/count" },
+    "failedSourceCount": { "$ref": "#/$defs/count" },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  },
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "lastOccurredAt": { "type": "null" },
+        "lastSourceRecordId": { "type": "null" },
+        "lastSourceRevision": { "type": "null" }
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "lastOccurredAt": { "type": "string", "format": "date-time" },
+        "lastSourceRecordId": { "$ref": "#/$defs/identity" },
+        "lastSourceRevision": { "$ref": "#/$defs/identity" }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "table": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "identity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001F\\u007F]+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    }
+  }
+}

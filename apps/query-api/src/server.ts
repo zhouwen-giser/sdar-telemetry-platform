@@ -5,8 +5,15 @@ import http, { type IncomingMessage, type Server, type ServerResponse } from "no
 
 import type { ClickHouseQueryOptions } from "../../../packages/telemetry-clickhouse/src/index.js";
 import { envelope } from "../../../packages/telemetry-query-model/src/index.js";
+import {
+  evaluateMcpProviderReadiness,
+  type SmppEntityRelation,
+  type SmppProviderFact,
+} from "../../../packages/telemetry-smpp-consumer/src/index.js";
 
 export const EVIDENCE_V1_CONTRACT = "sdar.evidence/v1";
+export const DOMAIN_PROJECTION_V1_CONTRACT = "sdar.domain-projection/v1";
+export const SMPP_PROVIDEROPS_V1_CONTRACT = "smpp.providerops/v1.1";
 export const EVIDENCE_V1_CANONICAL_TABLE = "sdar_core.sdar_evidence_v1_record";
 export const DEFAULT_QUERY_MAX_RESULT_ROWS = 10_000;
 
@@ -90,6 +97,8 @@ async function handleRequest(
 
   const taskRoute = /^\/v1\/tasks\/([^/]+)\/(timeline|capability-chain)$/u.exec(url.pathname);
   let sql: string;
+  let contract = EVIDENCE_V1_CONTRACT;
+  let smppEpisodeMode: "telemetry" | "readiness" | undefined;
   if (taskRoute !== null) {
     const taskId = decodeQueryValue(taskRoute[1] as string);
     sql =
@@ -98,6 +107,17 @@ async function handleRequest(
         : buildTaskCapabilityChainQuery(taskId);
   } else if (url.pathname === TRACE_ROUTE) {
     sql = buildEvidenceTraceQuery(url.searchParams);
+  } else if (url.pathname.startsWith("/v1/domain-")) {
+    if ([...url.searchParams.keys()].length !== 0) {
+      throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
+    }
+    sql = buildDomainProjectionQuery(url.pathname);
+    contract = DOMAIN_PROJECTION_V1_CONTRACT;
+  } else if (isSmppRoute(url.pathname)) {
+    sql = buildSmppProviderQuery(url.pathname, url.searchParams);
+    contract = SMPP_PROVIDEROPS_V1_CONTRACT;
+    if (/\/mcp-provider-telemetry$/u.test(url.pathname)) smppEpisodeMode = "telemetry";
+    if (/\/mcp-provider-readiness$/u.test(url.pathname)) smppEpisodeMode = "readiness";
   } else {
     throw new QueryApiError("QUERY_ROUTE_NOT_FOUND", 404);
   }
@@ -108,17 +128,251 @@ async function handleRequest(
   } catch {
     throw new QueryApiError("QUERY_BACKEND_UNAVAILABLE", 503);
   }
-  const { rows, watermark } = parseClickHouseResult(raw);
+  const { rows, watermark } = parseClickHouseResult(raw, contract === EVIDENCE_V1_CONTRACT);
+  const data =
+    smppEpisodeMode === undefined ? rows : assembleSmppEpisodeResult(rows, smppEpisodeMode);
   sendJson(
     response,
     200,
     envelope(
-      rows,
+      data,
       watermark,
-      [EVIDENCE_V1_CONTRACT],
-      rows.length === 0 ? [] : [EVIDENCE_V1_CONTRACT],
+      [contract],
+      rows.length === 0 ? [] : [contract],
     ),
   );
+}
+
+function isSmppRoute(pathname: string): boolean {
+  return pathname.startsWith("/v1/smpp/") ||
+    /^\/v1\/episodes\/[^/]+\/mcp-provider-(telemetry|readiness)$/u.test(pathname);
+}
+
+export function buildSmppProviderQuery(pathname: string, parameters = new URLSearchParams()): string {
+  let match: RegExpExecArray | null;
+  if (pathname === "/v1/smpp/provider-facts") {
+    const filters = smppFilters(parameters, {
+      smppSourceId: "smpp_source_id", providerId: "provider_id", externalTaskId: "external_task_id",
+      resourceId: "resource_id", externalExecutionId: "external_execution_id",
+    });
+    return smppQuery("sdar_core.external_provider_fact FINAL", filters, "occurred_at, fact_id", "projected_at");
+  }
+  match = /^\/v1\/smpp\/provider-facts\/([^/]+)$/u.exec(pathname);
+  if (match !== null) {
+    assertNoParameters(parameters);
+    return smppQuery("sdar_core.external_provider_fact FINAL", `fact_id = toUUID(${clickHouseStringExpression(decodeQueryValue(match[1]!))})`, "occurred_at, fact_id", "projected_at");
+  }
+  if (pathname === "/v1/smpp/relations") {
+    const filters = smppFilters(parameters, {
+      smppSourceId: "smpp_source_id", relationType: "relation_type",
+      sourceEntityType: "source_entity_type", sourceEntityId: "source_entity_id",
+      targetEntityType: "target_entity_type", targetEntityId: "target_entity_id",
+    });
+    return smppQuery("sdar_core.external_entity_relation_fact FINAL", filters, "valid_from, relation_id", "projected_at");
+  }
+  match = /^\/v1\/smpp\/tasks\/([^/]+)\/timeline$/u.exec(pathname);
+  if (match !== null) return fixedSmppView(parameters, "sdar_core.v_smpp_provider_task_timeline", "external_task_id", match[1]!, "occurred_at, projected_at", "projected_at");
+  match = /^\/v1\/smpp\/resources\/([^/]+)\/(state|health)$/u.exec(pathname);
+  if (match !== null) return fixedSmppView(parameters, match[2] === "state" ? "sdar_core.v_smpp_resource_current_state" : "sdar_core.v_smpp_resource_current_health", "resource_id", match[1]!, "smpp_source_id, provider_id, resource_id", match[2] === "state" ? "last_projected_at" : "last_projected_at");
+  match = /^\/v1\/smpp\/executions\/([^/]+)\/progress$/u.exec(pathname);
+  if (match !== null) return fixedSmppView(parameters, "sdar_core.v_smpp_execution_latest_progress", "external_execution_id", match[1]!, "smpp_source_id, provider_id, external_execution_id", "last_projected_at");
+  if (pathname === "/v1/smpp/reconciliation") {
+    assertNoParameters(parameters);
+    return smppQuery("sdar_core.v_sdar_smpp_task_reconciliation", "", "tenant_id, project_id, binding_id", "last_provider_fact_time");
+  }
+  match = /^\/v1\/episodes\/([^/]+)\/mcp-provider-(telemetry|readiness)$/u.exec(pathname);
+  if (match !== null) {
+    assertNoParameters(parameters);
+    return smppEpisodeQuery(decodeQueryValue(match[1]!));
+  }
+  if (pathname === "/v1/smpp/projection-status") {
+    assertNoParameters(parameters);
+    return `SELECT
+  'smpp_provider_ops_to_sdar_core' AS projection_id,
+  1 AS projection_version,
+  count() AS provider_fact_count,
+  uniqExact(smpp_source_id) AS source_count,
+  max(projected_at) AS last_projected_at,
+  toUnixTimestamp64Milli(max(projected_at)) AS ${WATERMARK_COLUMN},
+  'producer_owned_independent_checkpoint' AS checkpoint_authority,
+  '1.5.1-rc.2' AS clickhouse_release,
+  'sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8' AS schema_contract_hash
+FROM sdar_core.external_provider_fact FINAL
+FORMAT JSON`;
+  }
+  throw new QueryApiError("QUERY_ROUTE_NOT_FOUND", 404);
+}
+
+function fixedSmppView(parameters: URLSearchParams, table: string, column: string, rawValue: string, order: string, watermark: string): string {
+  assertNoParameters(parameters);
+  return smppQuery(table, `${column} = ${clickHouseStringExpression(decodeQueryValue(rawValue))}`, order, watermark);
+}
+
+function smppFilters(parameters: URLSearchParams, fields: Readonly<Record<string, string>>): string {
+  const filters: string[] = [];
+  for (const key of parameters.keys()) {
+    const column = fields[key];
+    if (column === undefined || parameters.getAll(key).length !== 1) throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
+    filters.push(`${column} = ${clickHouseStringExpression(assertQueryValue(parameters.get(key)!))}`);
+  }
+  return filters.join("\n  AND ");
+}
+
+function assertNoParameters(parameters: URLSearchParams): void {
+  if ([...parameters.keys()].length !== 0) throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
+}
+
+function smppQuery(table: string, predicate: string, order: string, watermarkColumn: string): string {
+  return `SELECT
+  *,
+  toUnixTimestamp64Milli(max(${watermarkColumn}) OVER ()) AS ${WATERMARK_COLUMN}
+FROM ${table}${predicate === "" ? "" : `\nWHERE ${predicate}`}
+ORDER BY ${order}
+FORMAT JSON`;
+}
+
+function smppEpisodeQuery(episodeId: string): string {
+  const value = clickHouseStringExpression(episodeId);
+  return `WITH episode_bindings AS
+(
+  SELECT DISTINCT arrayJoin(arrayFilter(value -> value != '', [a2a_task_id, remote_task_id])) AS task_id
+  FROM sdar_core.remote_task_binding FINAL
+  WHERE toString(episode_id) = ${value}
+), episode_relations AS
+(
+  SELECT r.*
+  FROM sdar_core.external_entity_relation_fact AS r FINAL
+  WHERE (r.source_entity_type = 'task' AND r.source_entity_id IN (SELECT task_id FROM episode_bindings))
+     OR (r.target_entity_type = 'task' AND r.target_entity_id IN (SELECT task_id FROM episode_bindings))
+)
+SELECT
+  p.*,
+  r.relation_id AS __relation_id,
+  r.relation_type AS __relation_type,
+  r.source_entity_type AS __source_entity_type,
+  r.source_entity_id AS __source_entity_id,
+  r.target_entity_type AS __target_entity_type,
+  r.target_entity_id AS __target_entity_id,
+  r.evidence_fact_ids AS __evidence_fact_ids,
+  r.source_record_hash AS __relation_source_hash,
+  r.projection_id AS __relation_projection_id,
+  r.projection_version AS __relation_projection_version,
+  toUnixTimestamp64Milli(max(p.projected_at) OVER ()) AS ${WATERMARK_COLUMN}
+FROM episode_relations AS r
+ARRAY JOIN r.evidence_fact_ids AS evidence_fact_id
+INNER JOIN sdar_core.external_provider_fact AS p FINAL
+  ON p.tenant_id = r.tenant_id AND p.project_id = r.project_id
+ AND p.environment = r.environment AND p.smpp_source_id = r.smpp_source_id
+ AND p.fact_id = evidence_fact_id
+ORDER BY p.occurred_at, p.fact_id, r.relation_id
+FORMAT JSON`;
+}
+
+function assembleSmppEpisodeResult(rows: Record<string, unknown>[], mode: "telemetry" | "readiness"): unknown {
+  const facts = new Map<string, SmppProviderFact>();
+  const relations = new Map<string, SmppEntityRelation>();
+  for (const row of rows) {
+    const factId = String(row["fact_id"] ?? "");
+    if (factId !== "") facts.set(factId, row as unknown as SmppProviderFact);
+    const relationId = String(row["__relation_id"] ?? "");
+    if (relationId !== "") {
+      relations.set(relationId, {
+        relation_id: relationId,
+        relation_type: String(row["__relation_type"] ?? ""),
+        source_entity_type: String(row["__source_entity_type"] ?? ""),
+        source_entity_id: String(row["__source_entity_id"] ?? ""),
+        target_entity_type: String(row["__target_entity_type"] ?? ""),
+        target_entity_id: String(row["__target_entity_id"] ?? ""),
+        evidence_fact_ids: Array.isArray(row["__evidence_fact_ids"]) ? row["__evidence_fact_ids"].map(String) : [],
+        source_record_hash: String(row["__relation_source_hash"] ?? ""),
+        projection_id: String(row["__relation_projection_id"] ?? ""),
+        projection_version: Number(row["__relation_projection_version"] ?? 0),
+      });
+    }
+  }
+  const providerFacts = [...facts.values()];
+  const entityRelations = [...relations.values()];
+  const readiness = evaluateMcpProviderReadiness({required: true, facts: providerFacts, relations: entityRelations});
+  return mode === "readiness" ? readiness : {providerFacts, relations: entityRelations, readiness};
+}
+
+export function buildDomainProjectionQuery(pathname: string): string {
+  if (pathname === "/v1/domain-projections") {
+    return domainQuery("sdar_meta.v_domain_projection_health", "", "projection_id, projection_version", "last_run_updated_at");
+  }
+  let match = /^\/v1\/domain-projections\/([^/]+)$/u.exec(pathname);
+  if (match !== null) {
+    return domainQuery(
+      "sdar_meta.v_domain_projection_health",
+      `projection_id = ${clickHouseStringExpression(decodeQueryValue(match[1]!))}`,
+      "projection_id, projection_version",
+      "last_run_updated_at",
+    );
+  }
+  if (pathname === "/v1/domain-projection-sets") {
+    return domainQuery(
+      "sdar_meta.v_domain_projection_set_readiness",
+      "",
+      "projection_set_id, projection_set_version",
+      null,
+    );
+  }
+  match = /^\/v1\/domain-projection-sets\/([^/]+)\/([^/]+)$/u.exec(pathname);
+  if (match !== null) {
+    return domainQuery(
+      "sdar_meta.v_domain_projection_set_readiness",
+      `projection_set_id = ${clickHouseStringExpression(decodeQueryValue(match[1]!))}\n  AND projection_set_version = ${clickHouseStringExpression(decodeQueryValue(match[2]!))}`,
+      "projection_set_id, projection_set_version",
+      null,
+    );
+  }
+  match = /^\/v1\/domain-episodes\/([^/]+)\/(readiness|facts)$/u.exec(pathname);
+  if (match !== null) {
+    const episodeId = clickHouseStringExpression(decodeQueryValue(match[1]!));
+    return match[2] === "readiness"
+      ? domainQuery(
+          "sdar_mart.v_episode_domain_readiness",
+          `episode_id = ${episodeId}`,
+          "projection_set_id, projection_set_version",
+          "as_of_watermark",
+        )
+      : domainQuery(
+          "sdar_embodied.v_episode_domain_fact_index",
+          `episode_key = ${episodeId}`,
+          "occurred_at, projection_id, target_table, target_record_id",
+          "ingested_at",
+        );
+  }
+  match = /^\/v1\/domain-projections\/([^/]+)\/(runs|checkpoints|lineage|dead-letters)$/u.exec(pathname);
+  if (match !== null) {
+    const projectionId = clickHouseStringExpression(decodeQueryValue(match[1]!));
+    const resources = {
+      runs: ["sdar_meta.projection_run", "updated_at", "updated_at, projection_run_id"],
+      checkpoints: ["sdar_meta.projection_checkpoint", "updated_at", "updated_at, source_partition"],
+      lineage: ["sdar_meta.projection_lineage", "projected_at", "projected_at, lineage_id"],
+      "dead-letters": ["sdar_meta.projection_dead_letter", "updated_at", "updated_at, dead_letter_id"],
+    } as const;
+    const resource = resources[match[2] as keyof typeof resources];
+    return domainQuery(resource[0], `projection_id = ${projectionId}`, resource[2], resource[1]);
+  }
+  throw new QueryApiError("QUERY_ROUTE_NOT_FOUND", 404);
+}
+
+function domainQuery(
+  table: string,
+  predicate: string,
+  order: string,
+  watermarkColumn: string | null,
+): string {
+  const watermark = watermarkColumn === null
+    ? `CAST(NULL, 'Nullable(Int64)')`
+    : `toUnixTimestamp64Milli(max(${watermarkColumn}) OVER ())`;
+  return `SELECT
+  *,
+  ${watermark} AS ${WATERMARK_COLUMN}
+FROM ${table}${predicate === "" ? "" : `\nWHERE ${predicate}`}
+ORDER BY ${order}
+FORMAT JSON`;
 }
 
 function assertAuthorization(request: IncomingMessage, expectedCredentialDigest: Buffer): void {
@@ -223,7 +477,7 @@ function parseRequestUrl(value: string | undefined): URL {
   }
 }
 
-function parseClickHouseResult(raw: string): {
+function parseClickHouseResult(raw: string, requireWatermark = true): {
   rows: Record<string, unknown>[];
   watermark: string | null;
 } {
@@ -243,7 +497,7 @@ function parseClickHouseResult(raw: string): {
     const copy = { ...candidate };
     const rawWatermark = copy[WATERMARK_COLUMN];
     delete copy[WATERMARK_COLUMN];
-    if (rawWatermark !== undefined) {
+    if (rawWatermark !== undefined && rawWatermark !== null) {
       const candidateWatermark = timestampMillisecondsToIso(rawWatermark);
       if (watermark !== null && watermark !== candidateWatermark) {
         throw new QueryApiError("QUERY_BACKEND_RESPONSE_INVALID", 503);
@@ -252,7 +506,7 @@ function parseClickHouseResult(raw: string): {
     }
     return copy;
   });
-  if (rows.length > 0 && watermark === null) {
+  if (requireWatermark && rows.length > 0 && watermark === null) {
     throw new QueryApiError("QUERY_BACKEND_RESPONSE_INVALID", 503);
   }
   return { rows, watermark };

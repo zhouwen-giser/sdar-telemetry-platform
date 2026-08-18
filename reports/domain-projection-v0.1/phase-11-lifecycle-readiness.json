@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "phase": 11,
+  "name": "Projection sets, shadow/dry-run/active lifecycle",
+  "status": "passed_projections_remain_disabled",
+  "phaseCommit": "0fef484",
+  "phasePushed": true,
+  "verification": {
+    "focusedLifecycle": "PASS_6_OF_6",
+    "domainCoreRegression": "PASS_6_OF_6",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "staticVerify": "PASS"
+  },
+  "lifecycle": {
+    "states": 7,
+    "defaultMaxMode": "shadow",
+    "actualActivatedProjections": 0,
+    "revisionCas": true,
+    "actionIdempotency": true
+  },
+  "projectionSets": {
+    "count": 4,
+    "memberCounts": [5, 5, 10, 4],
+    "emptyReady": false,
+    "disabledReady": false
+  },
+  "gates": {
+    "G21": "PASS",
+    "G22": "PASS",
+    "G23": "PENDING_PHASE_16_CONSUMER_QUALIFICATION"
+  },
+  "limitations": [
+    "Lifecycle tests are pure state-machine tests and did not activate a live projection.",
+    "G23 remains open for Benchmark consumer-contract qualification in Phase 16.",
+    "No Benchmark scoring logic was implemented."
+  ]
+}

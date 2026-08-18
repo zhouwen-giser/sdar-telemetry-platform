@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "contract": "sdar.telemetry-domain-handoff/v1",
+  "consumerBaseline": "zhouwen-giser/sdar-benchmark-server@ee7f73735595382072b8205b891af554e8496582",
+  "clickHouseRelease": "1.5.1-rc.2",
+  "migrationRange": "00..26",
+  "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+  "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+  "catalog": {"sources":10,"episodeSeals":2,"projections":10,"targets":6,"projectionSets":4,"views":7},
+  "readinessStatuses": ["not_required", "not_ready", "degraded", "ready", "blocked_drift"],
+  "assets": [
+    {"path":"README.md","bytes":1154,"byteSha256":"sha256:832e48f30339c62dbaa802e86dcbd14048891b04bbed983fb9a8a3a66131b06a"},
+    {"path":"catalog.json","bytes":6033,"byteSha256":"sha256:e6d74ed896fd4c774216885999d9962939e3c5b1615bef4b305548215cd50bd2"},
+    {"path":"consumer-contract.ts","bytes":1353,"byteSha256":"sha256:e188cd1c183868c74d699a906f2c51fea43f909a131363aff94c7bb071c13015"},
+    {"path":"fixtures/readiness.json","bytes":1104,"byteSha256":"sha256:8dc3fcfdc8e43668e65f8e60be121b152d8a5f3d9a5525cca5d32a089c1d3c7c"},
+    {"path":"queries.sql","bytes":1997,"byteSha256":"sha256:71f21f899330aac726fd5e6a47ab214160c69876e3a3c146cfa5efaae953b05b"},
+    {"path":"readiness-contract.json","bytes":1355,"byteSha256":"sha256:693bdb993417b5f95108f5d94bc5986697135991e127249e4effb9d48323a55f"},
+    {"path":"verify.mjs","bytes":83,"byteSha256":"sha256:4d645cce946ef9327edbb6744083768c5336f025d2cb498f8d22dbd4b9689c66"},
+    {"path":"view-contracts.json","bytes":2663,"byteSha256":"sha256:432d6a681938f734cbf759b7643d1162d28f781c5ce59eb2606728ffc5635c55"}
+  ]
+}

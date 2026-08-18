@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "phase": 2,
+  "name": "Domain Source v1 contracts and Golden fixtures",
+  "status": "passed",
+  "phaseCommit": "af8b92a",
+  "phasePushed": true,
+  "contractVersion": "sdar.domain-source/v1",
+  "header": "x-sdar-domain-source-contract",
+  "contractRoot": "integrations/domain-source/contracts/v1",
+  "coverage": {
+    "schemas": 4,
+    "sourceContractIds": 10,
+    "commanderSourceTypes": 5,
+    "npcSourceTypes": 5,
+    "episodeSealKinds": 2,
+    "validFixtures": 6,
+    "invalidFixtures": 10,
+    "nearNameAliases": 0
+  },
+  "schemaHashes": {
+    "batch": "sha256:37fa549d42896ba0ffdfd0b529f14b80f484b04566fb47d025b95c8623835f38",
+    "seal": "sha256:7f9ca6a81ba5fc7e11fc0ddf2fbe7073566cba0653b73bb85672d95bcdf26d4a",
+    "batchAck": "sha256:ee429c001cf748a93cf59cc72750eb18b34475fcce1c538f29d79b64f76f16d9",
+    "sealAck": "sha256:0733d4b8d8c0e91bc0e6fafe16f8b88b0c75e5a48c8ec26d0cb48444eb0fab35"
+  },
+  "verification": {
+    "contractCheck": "PASS_16_OF_16_FIXTURES",
+    "focusedTests": "PASS_6_GROUPS",
+    "fullVerify": "PASS_93_OF_93_TYPECHECK_BUILD_STATIC",
+    "liveDomainSourceIngestion": "NOT_RUN",
+    "liveClickHouseProjectionE2E": "NOT_RUN"
+  },
+  "gates": {
+    "G05": "PASS"
+  },
+  "limitations": [
+    "No Domain Source request was durably ingested in Phase 2.",
+    "No ClickHouse DML or projection activation was performed.",
+    "Golden fixtures are contract evidence, not real ClickHouse E2E evidence."
+  ]
+}

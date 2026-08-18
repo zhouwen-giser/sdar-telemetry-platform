@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-14T13:56:36.569Z",
+  "phase": 1,
+  "status": "PHASE_1_COMPLETE",
+  "branch": "feature/domain-projection-worker-v0.1",
+  "baseSha": "44fb583034d350d429c45ab065bd95e8792b74c1",
+  "preCommitHead": "3c8b22b0e3bc6430eca292cd7651e34b8bdb52bd",
+  "phaseCommitSha": "4d47235f5e3ffdeffda4eede94023c3755ca1f4e",
+  "contractVersion": "sdar.domain-projection/v1",
+  "canonicalizationVersion": "sdar.domain-projection-canonical-json/v1",
+  "validationPackage": "packages/telemetry-contracts",
+  "parallelValidationFrameworkCreated": false,
+  "contractCount": 5,
+  "schemaCount": 5,
+  "contractManifestHash": "sha256:f40ccdae2a7b416395089d1c99042ae16e1a9739256cbeec4677ea5ef73e1364",
+  "schemaHashes": {
+    "definition": "sha256:4ce1aac185d7fc67f7ec93a1a30030f56d6ebbf237ceff9ad839fbea9a7c02d1",
+    "checkpoint": "sha256:5ca78b5a81ffa8d47b1605bcc08e570d936b6ac01241bedf6bf2b432ca36255f",
+    "lineage": "sha256:bdd33a9759db1f78e4125f0e25d671e5f4f8b39a796ccdec55de97d6e8cf6e2c",
+    "deadLetter": "sha256:a80443f0c4e1f3d1bd81438961d3287ae8f2d397d26d24e8d1adaea67779ddc3",
+    "projectionSet": "sha256:c6428e67a0b99ce1fee6d7c1094767419a6746277eb73803ad7936f72b0bf3c2"
+  },
+  "fixtures": {
+    "total": 21,
+    "valid": 7,
+    "invalid": 14,
+    "allContractKindsHaveValidAndInvalid": true,
+    "productionSourceAliases": 0
+  },
+  "failureTaxonomy": {
+    "codes": 13,
+    "retryable": 3,
+    "nonRetryable": 7,
+    "blocking": 3
+  },
+  "targetAuthority": {
+    "database": "sdar_embodied",
+    "tables": [
+      "control_action",
+      "control_receipt",
+      "human_confirmation",
+      "physical_verification",
+      "preemption_recovery",
+      "state_freshness_check"
+    ]
+  },
+  "canonicalLimits": {
+    "bytes": 65536,
+    "depth": 16,
+    "arrayItems": 256,
+    "objectFields": 64
+  },
+  "tests": {
+    "focusedAdversarial": {
+      "status": "PASS",
+      "passed": 13,
+      "failed": 0
+    },
+    "contractVerifier": {
+      "status": "PASS",
+      "fixtureCount": 21
+    },
+    "fullVerify": {
+      "status": "PASS",
+      "passed": 83,
+      "failed": 0,
+      "staticVerify": "PASS"
+    },
+    "runtimeEvidenceLock": {
+      "status": "PASS",
+      "records": 100,
+      "required": 95,
+      "diagnostic": 5,
+      "files": 121
+    }
+  },
+  "clickHouse": {
+    "queriesExecutedThisPhase": 0,
+    "ddlExecutedThisPhase": 0,
+    "dmlExecutedThisPhase": 0,
+    "domainE2E": "NOT_RUN"
+  },
+  "projectionStatus": {
+    "DP-C01": "MAPPING_CONTRACT_BLOCKED",
+    "DP-C02": "MAPPING_CONTRACT_BLOCKED",
+    "DP-C03": "MAPPING_CONTRACT_BLOCKED",
+    "DP-C04": "MAPPING_CONTRACT_BLOCKED",
+    "DP-C05": "MAPPING_CONTRACT_BLOCKED",
+    "DP-N01": "MAPPING_CONTRACT_BLOCKED",
+    "DP-N02": "MAPPING_CONTRACT_BLOCKED",
+    "DP-N03": "MAPPING_CONTRACT_BLOCKED",
+    "DP-N04": "MAPPING_CONTRACT_BLOCKED",
+    "DP-N05": "MAPPING_CONTRACT_BLOCKED"
+  },
+  "blockingDecisions": ["D1_SOURCE_CONTRACT", "D2_PROJECTION_IDENTITY", "D3_SCHEMA_AUTHORITY"]
+}

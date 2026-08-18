@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "phase": 4,
+  "name": "Domain projection control PostgreSQL and leases",
+  "status": "passed",
+  "phaseCommit": "c082942",
+  "phasePushed": true,
+  "authority": {
+    "controlPostgres": [
+      "worker leases",
+      "management actions",
+      "replay requests",
+      "producer registrations"
+    ],
+    "clickHouse": [
+      "projection checkpoints",
+      "lineage",
+      "dead letters",
+      "runs",
+      "analytical governance"
+    ]
+  },
+  "leaseKey": [
+    "targetId",
+    "projectionId",
+    "projectionVersion",
+    "mappingHash",
+    "sourceStream",
+    "partitionId"
+  ],
+  "leaseSemantics": {
+    "databaseClock": true,
+    "atomicClaim": true,
+    "ownerTokenGuard": true,
+    "monotonicFencingToken": true,
+    "staleOwnerRejected": true,
+    "maximumLeaseMs": 300000
+  },
+  "verification": {
+    "realPostgres": "PASS_2_OF_2",
+    "concurrentContenders": 12,
+    "concurrentWinners": 1,
+    "fullVerify": "PASS_98_WITH_2_EXPLICIT_DATABASE_SKIPS",
+    "evidence": "reports/domain-projection-v0.1/evidence/codex_dp4_20260817t082842z-phase-04-control-postgres.json"
+  },
+  "gates": {
+    "G09": "PASS"
+  },
+  "limitations": [
+    "This phase did not read or write ClickHouse.",
+    "No Domain projection worker, mapper or target writer was started.",
+    "All ten Domain Projections remain disabled.",
+    "The PostgreSQL test database was isolated and removed after the run."
+  ]
+}

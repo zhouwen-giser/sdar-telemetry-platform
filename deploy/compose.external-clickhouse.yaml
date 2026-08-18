@@ -18,11 +18,13 @@ services:
       GATEWAY_PORT: ${GATEWAY_PORT:-8080}
       GATEWAY_BIND_HOST: 0.0.0.0
       SDAR_EVIDENCE_SCHEMA_ROOT: /app/integrations/skill-driven-agent-runtime/v1.4.1/schemas/evidence/v1
+      SDAR_DOMAIN_SOURCE_SCHEMA_ROOT: /app/integrations/domain-source/contracts/v1/schemas
       EVIDENCE_INGEST_BEARER_TOKEN_FILE: /run/secrets/evidence_ingest_bearer_token
+      DOMAIN_SOURCE_INGEST_BEARER_TOKEN_FILE: /run/secrets/domain_source_ingest_bearer_token
       EVIDENCE_MAX_REQUEST_BYTES: ${EVIDENCE_MAX_REQUEST_BYTES:-67108864}
     volumes:
       - telemetry_wal:/var/lib/sdar-telemetry/wal
-    secrets: [evidence_ingest_bearer_token]
+    secrets: [evidence_ingest_bearer_token, domain_source_ingest_bearer_token]
     ports: ["${GATEWAY_PUBLISH_HOST:-127.0.0.1}:${GATEWAY_PORT:-8080}:${GATEWAY_PORT:-8080}"]
   telemetry-worker:
     build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: telemetry-worker}}
@@ -30,6 +32,7 @@ services:
       WAL_DIR: ${WAL_DIR:-/var/lib/sdar-telemetry/wal}
       WAL_HIGH_WATER_BYTES: ${WAL_HIGH_WATER_BYTES:-536870912}
       WORKER_INTERVAL_MS: ${WORKER_INTERVAL_MS:-1000}
+      SDAR_DOMAIN_SOURCE_SCHEMA_ROOT: /app/integrations/domain-source/contracts/v1/schemas
       CLICKHOUSE_URL: ${CLICKHOUSE_URL:-}
       CLICKHOUSE_USER: ${CLICKHOUSE_USER:-}
       CLICKHOUSE_PASSWORD_FILE: /run/secrets/clickhouse_password
@@ -57,7 +60,35 @@ services:
     build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: admin-api}}
     environment:
       ADMIN_PORT: ${ADMIN_PORT:-8082}
+      ADMIN_BIND_HOST: 0.0.0.0
+      ADMIN_API_BEARER_TOKEN_FILE: /run/secrets/admin_api_bearer_token
+      CONTROL_POSTGRES_URL_FILE: /run/secrets/control_postgres_url
     ports: ["${ADMIN_PUBLISH_HOST:-127.0.0.1}:${ADMIN_PORT:-8082}:${ADMIN_PORT:-8082}"]
+    secrets: [admin_api_bearer_token, control_postgres_url]
+  domain-projection-worker:
+    build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: domain-projection-worker}}
+    environment:
+      DOMAIN_SOURCE_SCHEMA_ROOT: /app/integrations/domain-source/contracts/v1/schemas
+      DOMAIN_PROJECTION_ENABLED: ${DOMAIN_PROJECTION_ENABLED:-true}
+      DOMAIN_PROJECTION_MAX_MODE: ${DOMAIN_PROJECTION_MAX_MODE:-shadow}
+      DOMAIN_PROJECTION_BATCH_SIZE: ${DOMAIN_PROJECTION_BATCH_SIZE:-500}
+      DOMAIN_PROJECTION_POLL_INTERVAL_MS: ${DOMAIN_PROJECTION_POLL_INTERVAL_MS:-1000}
+      DOMAIN_PROJECTION_LOOKBACK_MS: ${DOMAIN_PROJECTION_LOOKBACK_MS:-1800000}
+      DOMAIN_PROJECTION_LEASE_MS: ${DOMAIN_PROJECTION_LEASE_MS:-30000}
+      DOMAIN_PROJECTION_HEARTBEAT_MS: ${DOMAIN_PROJECTION_HEARTBEAT_MS:-10000}
+      DOMAIN_PROJECTION_WORKER_ID: ${DOMAIN_PROJECTION_WORKER_ID:-domain-projection-worker-1}
+      DOMAIN_PROJECTION_HEALTH_PORT: ${DOMAIN_PROJECTION_HEALTH_PORT:-8083}
+      DOMAIN_PROJECTION_BIND_HOST: 0.0.0.0
+      DOMAIN_ENVIRONMENT_MAP_VERSION: ${DOMAIN_ENVIRONMENT_MAP_VERSION:-identity/1}
+      CONTROL_POSTGRES_URL_FILE: /run/secrets/control_postgres_url
+      CLICKHOUSE_URL: ${CLICKHOUSE_URL:-}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-}
+      CLICKHOUSE_PASSWORD_FILE: /run/secrets/clickhouse_password
+      CLICKHOUSE_SECURE: ${CLICKHOUSE_SECURE:-true}
+      CLICKHOUSE_CONNECT_TIMEOUT_MS: ${CLICKHOUSE_CONNECT_TIMEOUT_MS:-5000}
+      CLICKHOUSE_REQUEST_TIMEOUT_MS: ${CLICKHOUSE_REQUEST_TIMEOUT_MS:-30000}
+    ports: ["${DOMAIN_PROJECTION_PUBLISH_HOST:-127.0.0.1}:${DOMAIN_PROJECTION_HEALTH_PORT:-8083}:${DOMAIN_PROJECTION_HEALTH_PORT:-8083}"]
+    secrets: [clickhouse_password, control_postgres_url]
   sdar-outbox-relay:
     build: {context: .., dockerfile: deploy/Dockerfile, args: {APP: sdar-outbox-relay}}
     profiles: [legacy-v1.3]
@@ -71,7 +102,10 @@ services:
 secrets:
   control_postgres_password: {file: ./secrets/control_postgres_password}
   evidence_ingest_bearer_token: {file: ./secrets/evidence_ingest_bearer_token}
+  domain_source_ingest_bearer_token: {file: ./secrets/domain_source_ingest_bearer_token}
   clickhouse_password: {file: ./secrets/clickhouse_password}
   clickhouse_query_password: {file: ./secrets/clickhouse_query_password}
   query_api_bearer_token: {file: ./secrets/query_api_bearer_token}
+  admin_api_bearer_token: {file: ./secrets/admin_api_bearer_token}
+  control_postgres_url: {file: ./secrets/control_postgres_url}
 volumes: {control_pg_data: {}, telemetry_wal: {}}

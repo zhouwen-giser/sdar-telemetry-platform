@@ -1,0 +1,18 @@
+{
+  "contractVersion": "sdar.domain-projection/v1",
+  "deadLetterId": "fixture-dead-letter-invalid-enum",
+  "projectionId": "fixture.projection.alpha",
+  "projectionVersion": 1,
+  "sourceDatabase": "sdar_commander",
+  "sourceTable": "fixture_source_fact",
+  "sourceRecordId": "fixture-source-record-invalid",
+  "sourceRevision": "1",
+  "sourceContentHash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "failureCode": "MAPPING_UNSUPPORTED",
+  "failureClass": "non_retryable",
+  "failureSummary": "Invalid status fixture.",
+  "attemptCount": 1,
+  "firstFailedAt": "2026-08-14T00:02:00.000Z",
+  "lastFailedAt": "2026-08-14T00:02:00.000Z",
+  "status": "discarded"
+}

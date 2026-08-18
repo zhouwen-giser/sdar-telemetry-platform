@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "views": [
+    {"name":"sdar_meta.v_schema_contract_release_current","requiredFields":["release_version","migration_range","release_descriptor_hash","schema_contract_hash","source_contract_count","episode_seal_contract_count","projection_identity_count","projection_set_count","active_domain_projection_count","status"]},
+    {"name":"sdar_meta.v_domain_source_contract_definition_current","requiredFields":["source_contract_id","source_contract_version","application","source_database","source_table","schema_hash","activation_status"]},
+    {"name":"sdar_meta.v_domain_projection_health","requiredFields":["projection_id","projection_version","definition_status","version_status","schema_drift_status","checkpoint_watermark","unresolved_blocking_dlq_count","health_status","reason_codes"]},
+    {"name":"sdar_meta.v_domain_projection_set_readiness","requiredFields":["projection_set_id","projection_set_version","member_count","required_projection_count","active_required_projection_count","ready_required_projection_count","blocked_drift_projection_count","readiness_status","reason_codes"]},
+    {"name":"sdar_meta.v_episode_projection_readiness","requiredFields":["episode_id","projection_set_id","projection_set_version","projection_id","projection_version","source_contract_id","target_database","target_table","seal_id","seal_status","checkpoint_watermark","source_record_count","target_record_count","produced_lineage_count","unresolved_dlq_count","lineage_gap_count","projection_readiness_status","reason_codes"]},
+    {"name":"sdar_mart.v_episode_domain_readiness","requiredFields":["episode_id","projection_set_id","projection_set_version","required_projection_count","ready_required_projection_count","source_record_count","produced_count","skipped_count","failed_count","unresolved_dlq_count","lineage_gap_count","reason_codes","as_of_watermark","readiness_status"]},
+    {"name":"sdar_embodied.v_episode_domain_fact_index","requiredFields":["episode_key","canonical_episode_id","projection_id","projection_version","projection_revision","fact_type","target_table","target_record_id","record_id","source_database","source_table","source_record_id","source_content_hash","target_content_hash","occurred_at","ingested_at"],"lineageReferenceField":"record_id"}
+  ],
+  "episodeSealSemantics": {
+    "authorities":["sdar_commander.domain_source_episode_seal_v1","sdar_npc.domain_source_episode_seal_v1"],
+    "completeOnlyWhen":["seal_status is verified","checkpoint covers final_sequence","source_record_count equals sealed_source_record_count","terminal lineage covers every source record","blocking DLQ count is zero"]
+  }
+}
