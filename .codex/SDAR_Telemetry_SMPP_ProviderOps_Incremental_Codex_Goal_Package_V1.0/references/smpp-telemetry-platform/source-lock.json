@@ -1,0 +1,15 @@
+{
+  "fullName": "zhouwen-giser/smpp-telemetry-platform",
+  "branch": "main",
+  "observedHead": "8f500c5743818c776a5f01cca65aa188c3869430",
+  "packageVersion": "0.3.0",
+  "providerOpsEnvelope": {
+    "schemaName": "sdar.provider.ops.event",
+    "schemaVersion": "1.1.0",
+    "path": "contracts/provider-ops-envelope.schema.json",
+    "blobSha": "dc4c8608249acb29c677b2ea9a4f11e47e7f66b1"
+  },
+  "projectionGuidePath": "docs/SDAR_WAREHOUSE_PROJECTION_GUIDE.md",
+  "targetManagerPath": "telemetry-processor/src/packages/exporters/target-manager.ts",
+  "coreProjectionPath": "telemetry-processor/src/packages/projection/core-projection.ts"
+}

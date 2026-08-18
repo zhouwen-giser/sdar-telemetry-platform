@@ -1,0 +1,23 @@
+{
+  "taskId": "sdar-telemetry-smpp-providerops-benchmark-handoff-increment-v1",
+  "type": "codex-goal-increment",
+  "parentCompletionMarker": "SDAR_TELEMETRY_DOMAIN_PROJECTION_BENCHMARK_HANDOFF_GOAL_COMPLETE",
+  "incrementCompletionMarker": "SDAR_TELEMETRY_SMPP_PROVIDEROPS_INCREMENT_COMPLETE",
+  "primaryRepository": "zhouwen-giser/sdar-telemetry-platform",
+  "companionRepository": "zhouwen-giser/smpp-telemetry-platform",
+  "phases": [
+    "S0",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8",
+    "S9",
+    "S10"
+  ],
+  "acceptanceGateCount": 28,
+  "rule": "The increment completion marker does not authorize the parent completion marker unless every parent gate also passes."
+}

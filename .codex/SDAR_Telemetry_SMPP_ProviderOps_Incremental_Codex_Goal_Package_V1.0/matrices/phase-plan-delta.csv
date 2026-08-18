@@ -1,0 +1,12 @@
+phase,title,exit
+S0,Source locks and cross-repo audit,both repos and live schema verified
+S1,Contract drift and payload catalog,16 record types + Source Mapping v4 frozen
+S2,SMPP source ID and target preflight,explicit smppSourceId and exact target columns
+S3,Typed SDAR projection adapter,provider facts and relations map exactly
+S4,SDAR consumer/readiness/reconciliation,typed ports/services and episode assembly
+S5,Query APIs and metrics,11 endpoints and metrics
+S6,Benchmark handoff package,consumer contract verifier passes
+S7,Shadow parity and failure isolation,count/hash/watermark/relation parity
+S8,Real cross-repo E2E,OTLP through Benchmark handoff
+S9,Docs/reports/PR updates,two PRs updated honestly
+S10,Final delta qualification,28 gates pass

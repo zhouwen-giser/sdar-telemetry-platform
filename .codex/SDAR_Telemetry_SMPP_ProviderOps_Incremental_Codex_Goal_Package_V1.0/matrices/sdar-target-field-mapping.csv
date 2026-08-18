@@ -1,0 +1,45 @@
+target_field,source,requiredness,rule
+tenant_id,mapping.tenantId,required,exact
+project_id,mapping.projectId,required,exact
+environment,mapping.environment,required,exact
+smpp_source_id,mapping.smppSourceId,required,explicit; never derive
+source_deployment_id,mapping.deploymentId,required,exact
+source_runtime_instance_id,envelope.instanceId,required,exact
+fact_id,canonical.factId,required,UUID
+fact_hash,canonical.factHash,required,64 lower hex
+fact_type,canonical.factType,required,catalog value
+fact_version,canonical contract version,required,freeze as contract version
+source_system,canonical.sourceSystem,required,exact
+source_product,canonical.sourceProduct,required,exact
+source_record_id,canonical.sourceRecordId,required,exact
+source_record_hash,canonical.sourceRecordHash,required,exact
+source_schema_name,canonical.sourceSchemaName,required,exact
+source_schema_version,canonical.sourceSchemaVersion,required,exact
+provider_id,envelope.providerId/canonical provider entity,required,exact
+provider_instance_id,envelope.instanceId,required,exact
+resource_id,envelope.resourceId,conditional,no inference
+external_task_id,envelope.taskId,conditional,no time-based join
+external_execution_id,envelope.externalExecutionId,conditional,exact
+external_command_id,payload catalog externalCommandId,conditional,payload contract required
+operation_name,envelope.operationName,conditional,exact
+lifecycle_status,typed payload.status,conditional,payload catalog only
+provider_substate,typed payload.substate,conditional,payload catalog only
+reason_code,typed payload.reasonCode,conditional,payload catalog only
+runtime_revision,runtimeVersion/typed payload revision,conditional,do not conflate versions
+provider_revision,observationRevision/typed payload,conditional,explicit only
+progress_percent,typed payload.progressPercent,conditional,0..100 validation
+correlation_id,envelope.correlationId,conditional,exact
+trace_id,envelope.traceId,conditional,exact
+span_id,envelope.spanId,conditional,exact
+payload_json,canonical payload,required,canonical JSON
+provenance_json,normalizer/mapping/route metadata,required,must include source mapping and target adapter versions
+occurred_at,envelope.occurredAt,required,UTC
+observed_at,typed payload observedAt,conditional,never substitute ingest/project time
+received_at,collector receivedAt,required,UTC
+normalized_at,normalizer timestamp,required,UTC
+normalizer_id,canonical provenance,required,exact
+normalizer_version,canonical provenance,required,exact
+mapping_version,source mapping version,required,v4+
+policy_version,mapping policy version,required,exact
+projection_id,sdar-shared-warehouse adapter ID,required,versioned
+projection_version,adapter projection version,required,versioned

@@ -1,0 +1,29 @@
+gate_id,gate
+G-SMPP-01,Parent package/source lock verified
+G-SMPP-02,SMPP repo main SHA and ProviderOps schema locked
+G-SMPP-03,ClickHouse 1.5.1-rc.2 release/hash/columns/views preflight passes
+G-SMPP-04,Current tableMap-only incompatibility documented
+G-SMPP-05,Source Mapping v4 explicit smppSourceId contract passes
+G-SMPP-06,16-record ProviderOps payload catalog passes valid/invalid fixtures
+G-SMPP-07,SMPP target-specific adapter uses no heuristic field extraction
+G-SMPP-08,external_provider_fact exact typed mapping passes
+G-SMPP-09,external_entity_relation_fact exact typed mapping passes
+G-SMPP-10,N:N relation semantics preserved
+G-SMPP-11,Same identity/same hash replay is idempotent
+G-SMPP-12,Same identity/different hash fails closed
+G-SMPP-13,Standalone required target unaffected by SDAR target outage
+G-SMPP-14,SDAR target checkpoint/restart replay passes
+G-SMPP-15,Count parity passes
+G-SMPP-16,Fact hash parity passes
+G-SMPP-17,Watermark parity within declared bound
+G-SMPP-18,Relation coverage threshold passes
+G-SMPP-19,SDAR consumer schema/read preflight passes
+G-SMPP-20,Episode provider telemetry resolves through exact relations
+G-SMPP-21,Readiness states all tested
+G-SMPP-22,Terminal/revision mismatch reconciliation tested
+G-SMPP-23,Provider terminal never promoted to physical/Goal success
+G-SMPP-24,11 SDAR Query API delta endpoints pass contract tests
+G-SMPP-25,Benchmark handoff fixtures and verifier pass
+G-SMPP-26,Real OTLP→SMPP→SDAR→Telemetry→Benchmark consumer E2E passes
+G-SMPP-27,Both repositories reports/PR/source locks updated
+G-SMPP-28,No ClickHouse DDL or parent-goal regression introduced
