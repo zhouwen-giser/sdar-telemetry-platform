@@ -4,7 +4,7 @@
   "sourceRelease": "1.1.0",
   "sourceMappingVersion": 4,
   "sourceMain": "8f500c5743818c776a5f01cca65aa188c3869430",
-  "companionHead": "9142610d244b248508844abcc0cd20f7eb12e810",
+  "companionHead": "b06f78f501cf636df2d95128ef24b45a1825bd5a",
   "companionPullRequest": "https://github.com/zhouwen-giser/smpp-telemetry-platform/pull/1",
   "clickHouseRelease": "1.5.1-rc.2",
   "migrationRange": "00..26",
