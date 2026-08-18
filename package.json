@@ -28,6 +28,7 @@
     "test:sdar-contract": "npm run build && node --test dist/tests/unit/evidence-v1-contract.test.js dist/tests/unit/sdar-contract-lock.test.js dist/tests/unit/normalizers.test.js dist/tests/integration/ingestion-gateway.test.js",
     "test:clickhouse-schema": "npm run build && node --test dist/tests/unit/clickhouse.test.js dist/tests/unit/projection-v1.test.js",
     "test:sdar-e2e": "npm run build && node --env-file-if-exists=.env dist/scripts/run-sdar-e2e.js",
+    "test:smpp-providerops-consumer-e2e": "npm run build && node --env-file-if-exists=.env dist/scripts/verify-smpp-providerops-e2e-consumer.js",
     "test:domain-source-e2e": "npm run build && node --env-file-if-exists=.env dist/scripts/run-domain-source-e2e.js",
     "test:domain-projection-e2e": "npm run build && node --env-file-if-exists=.env dist/scripts/run-domain-projection-e2e.js",
     "test:domain-projection-control": "npm run build && node --env-file-if-exists=.env --test dist/tests/integration/domain-projection-control-postgres.test.js",
