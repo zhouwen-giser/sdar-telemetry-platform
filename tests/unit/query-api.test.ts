@@ -9,7 +9,9 @@ import test from "node:test";
 import {
   EVIDENCE_V1_CANONICAL_TABLE,
   EVIDENCE_V1_CONTRACT,
+  SMPP_PROVIDEROPS_V1_CONTRACT,
   buildDomainProjectionQuery,
+  buildSmppProviderQuery,
   clickHouseStringExpression,
   createQueryApi,
   loadQueryBearerCredential,
@@ -248,6 +250,76 @@ test("Domain Query matrix is typed, bounded and never embeds caller values", () 
     () => buildDomainProjectionQuery("/v1/domain-projections/x/arbitrary-sql"),
     /QUERY_ROUTE_NOT_FOUND/u,
   );
+});
+
+test("all 11 SMPP delta endpoints are allowlisted, bounded, and use only frozen targets/views", () => {
+  const unsafe = "id-' OR 1=1 -- 零";
+  const encoded = encodeURIComponent(unsafe);
+  const routes = [
+    ["/v1/smpp/provider-facts", new URLSearchParams({providerId: unsafe})],
+    [`/v1/smpp/provider-facts/${encoded}`, new URLSearchParams()],
+    ["/v1/smpp/relations", new URLSearchParams({sourceEntityId: unsafe})],
+    [`/v1/smpp/tasks/${encoded}/timeline`, new URLSearchParams()],
+    [`/v1/smpp/resources/${encoded}/state`, new URLSearchParams()],
+    [`/v1/smpp/resources/${encoded}/health`, new URLSearchParams()],
+    [`/v1/smpp/executions/${encoded}/progress`, new URLSearchParams()],
+    ["/v1/smpp/reconciliation", new URLSearchParams()],
+    [`/v1/episodes/${encoded}/mcp-provider-telemetry`, new URLSearchParams()],
+    [`/v1/episodes/${encoded}/mcp-provider-readiness`, new URLSearchParams()],
+    ["/v1/smpp/projection-status", new URLSearchParams()],
+  ] as const;
+  for (const [route, parameters] of routes) {
+    const sql = buildSmppProviderQuery(route, parameters);
+    assert.match(sql, /FORMAT JSON$/u);
+    assert.equal(sql.includes(unsafe), false);
+    assert.doesNotMatch(sql, /\b(INSERT|ALTER|DROP|TRUNCATE)\b/iu);
+    assert.match(sql, /sdar_core\.(external_provider_fact|external_entity_relation_fact|remote_task_binding|v_smpp_|v_sdar_smpp_)/u);
+  }
+  assert.throws(
+    () => buildSmppProviderQuery("/v1/smpp/provider-facts", new URLSearchParams({sql: "SELECT 1"})),
+    /QUERY_ARGUMENT_INVALID/u,
+  );
+});
+
+test("episode readiness follows exact task relations and provider completed remains non-Goal evidence", async () => {
+  const relation = {
+    __relation_id: "22222222-2222-5222-8222-222222222222",
+    __relation_type: "invokes",
+    __source_entity_type: "task",
+    __source_entity_id: "sdar-task-1",
+    __target_entity_type: "task",
+    __target_entity_id: "provider-task-1",
+    __evidence_fact_ids: ["11111111-1111-5111-8111-111111111111"],
+    __relation_source_hash: "b".repeat(64),
+    __relation_projection_id: "smpp_relations_to_sdar_core",
+    __relation_projection_version: 1,
+  };
+  const base = {
+    fact_id: "11111111-1111-5111-8111-111111111111",
+    fact_hash: "a".repeat(64), smpp_source_id: "smpp.test.provider-one",
+    external_task_id: "provider-task-1", occurred_at: watermark, projected_at: watermark,
+    ...relation,
+  };
+  const clickHouse = new FakeClickHouse(clickHouseJson([
+    {...base, fact_type: "provider.task.lifecycle", lifecycle_status: "completed"},
+    {...base, fact_id: "33333333-3333-5333-8333-333333333333", fact_hash: "c".repeat(64), fact_type: "provider.command.lifecycle"},
+    {...base, fact_id: "44444444-4444-5444-8444-444444444444", fact_hash: "d".repeat(64), fact_type: "provider.execution.progress"},
+  ]));
+  await withQueryApi(clickHouse, async (baseUrl) => {
+    const response = await queryFetch(`${baseUrl}/v1/episodes/episode-1/mcp-provider-readiness`);
+    assert.equal(response.status, 200);
+    const body = (await response.json()) as QueryEnvelope & {data: {status: string; goalSuccessProven: boolean; physicalSuccessProven: boolean}};
+    assert.equal(body.data.status, "ready");
+    assert.equal(body.data.goalSuccessProven, false);
+    assert.equal(body.data.physicalSuccessProven, false);
+    assert.deepEqual(body.sourceCoverage, {expected: [SMPP_PROVIDEROPS_V1_CONTRACT], observed: [SMPP_PROVIDEROPS_V1_CONTRACT]});
+  });
+  const sql = (clickHouse.calls[0] as QueryCall).sql;
+  assert.match(sql, /episode_bindings/u);
+  assert.match(sql, /FROM sdar_core\.remote_task_binding FINAL/u);
+  assert.match(sql, /source_entity_type = 'task'/u);
+  assert.match(sql, /target_entity_type = 'task'/u);
+  assert.doesNotMatch(sql, /dateDiff|time.?window/iu);
 });
 
 interface QueryCall {
