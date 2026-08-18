@@ -1,8 +1,8 @@
 # SMPP Increment Phase Report
 
 - Phase: S9 — Documentation, reports and PR updates
-- SDAR Telemetry SHA: pending S9 commit (parent `8ab9e7c`)
-- SMPP Telemetry SHA: `b06f78f501cf636df2d95128ef24b45a1825bd5a`
+- SDAR Telemetry SHA: `7881433921fb4aceb969e0ce010d30409d225022`
+- SMPP Telemetry SHA: `b06f78f5e3997d12353e57479970e6abb416e2af`
 - ClickHouse release/hash: `1.5.1-rc.2 / 00..26`; schema `sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8`; descriptor `sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335`
 - Commands run: report/source-lock audit; handoff verifier; secret-pattern scan; `git diff --check`; GitHub Draft PR metadata updates
 - Tests passed/failed/skipped: prior S8 real E2E PASS; final full qualification is S10
