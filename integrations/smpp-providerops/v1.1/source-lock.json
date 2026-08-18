@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "contract": "smpp.providerops/v1.1",
+  "providerOpsEnvelope": {
+    "schemaName": "sdar.provider.ops.event",
+    "schemaVersion": "1.1.0",
+    "sourceRepository": "zhouwen-giser/smpp-telemetry-platform",
+    "sourceMain": "8f500c5743818c776a5f01cca65aa188c3869430",
+    "schemaBlob": "dc4c8608249acb29c677b2ea9a4f11e47e7f66b1",
+    "companionBranch": "feature/sdar-shared-warehouse-handoff-v0.1",
+    "companionHead": "d7931b84960827eecb46f9e803bbd96797ec1a52",
+    "companionPullRequest": 1,
+    "recordTypeCount": 16,
+    "sourceMappingVersion": 4,
+    "payloadCatalog": "smpp.providerops-payload-catalog/v1.1"
+  },
+  "clickHouse": {
+    "serverVersion": "24.10.2.1",
+    "releaseVersion": "1.5.1-rc.2",
+    "migrationRange": "00..26",
+    "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+    "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+    "targetColumnCount": 81,
+    "targetColumnDescriptorHash": "sha256:c748a6f4cee199cc9f9485c77340026784ceb56333f6618469d59c038ca1e558",
+    "viewColumnCount": 97,
+    "viewColumnDescriptorHash": "sha256:23f3605076b0188efb43d72216000cbf193e4dc6a90d2b7970e14e0f6a1ca395",
+    "targets": ["sdar_core.external_provider_fact", "sdar_core.external_entity_relation_fact"],
+    "views": [
+      "sdar_core.v_smpp_provider_task_timeline",
+      "sdar_core.v_smpp_resource_current_state",
+      "sdar_core.v_smpp_resource_current_health",
+      "sdar_core.v_smpp_execution_latest_progress",
+      "sdar_core.v_sdar_smpp_task_reconciliation",
+      "sdar_core.v_sdar_smpp_execution_topology"
+    ]
+  }
+}

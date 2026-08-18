@@ -31,6 +31,7 @@
     "test:domain-projection-control": "npm run build && node --env-file-if-exists=.env --test dist/tests/integration/domain-projection-control-postgres.test.js",
     "clickhouse:preflight": "npm run build && node --env-file-if-exists=.env dist/scripts/clickhouse-cli.js preflight",
     "clickhouse:domain-preflight": "npm run build && node --env-file-if-exists=.env dist/scripts/verify-domain-projection-clickhouse-preflight.js",
+    "clickhouse:smpp-preflight": "npm run build && node --env-file-if-exists=.env dist/scripts/verify-smpp-providerops-clickhouse-preflight.js",
     "clickhouse:snapshot": "npm run build && node --env-file-if-exists=.env dist/scripts/clickhouse-schema-snapshot.js",
     "clickhouse:migrate": "npm run build && node --env-file-if-exists=.env dist/scripts/apply-evidence-v1-migration.js",
     "clickhouse:verify": "npm run build && node --env-file-if-exists=.env dist/scripts/clickhouse-cli.js verify",
