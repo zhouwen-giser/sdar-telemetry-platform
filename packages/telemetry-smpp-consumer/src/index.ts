@@ -1,5 +1,7 @@
 export const SMPP_PROVIDEROPS_CONTRACT = "smpp.providerops/v1.1";
 
+export * from "./closure-v2.js";
+
 export type McpProviderReadinessStatus =
   | "not_required"
   | "not_ready"

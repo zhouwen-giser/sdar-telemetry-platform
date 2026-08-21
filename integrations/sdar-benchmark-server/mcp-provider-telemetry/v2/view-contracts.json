@@ -1,0 +1,10 @@
+{
+  "contractId": "sdar.telemetry-smpp-providerops-handoff/v2",
+  "views": [
+    {"name":"sdar_mart.v_episode_smpp_provider_binding_closure","requiredFields":["tenant_id","project_id","environment","episode_id","binding_id","a2a_task_id","remote_task_id","provider_origin_source_id","external_provider_id","external_provider_instance_id","binding_revision","updated_at","projected_at"]},
+    {"name":"sdar_mart.v_episode_smpp_provider_fact_closure","requiredFields":["tenant_id","project_id","environment","episode_id","binding_id","remote_task_id","provider_origin_source_id","external_provider_id","external_provider_instance_id","fact_id","fact_hash","fact_type","external_task_id","occurred_at","projected_at"]},
+    {"name":"sdar_mart.v_episode_smpp_binding_relation_closure","requiredFields":["tenant_id","project_id","environment","episode_id","binding_id","relation_id","authority_source","content_hash","projected_at"]},
+    {"name":"sdar_mart.v_episode_smpp_origin_claim_reconciliation","requiredFields":["tenant_id","project_id","environment","episode_id","claim_id","claim_type","claim_values","authoritative_refs","status","blocking","reason_codes","evidence_fact_ids","relation_hint_ids","policy_id","policy_version","projected_at"]},
+    {"name":"sdar_mart.v_episode_smpp_provider_readiness","requiredFields":["tenant_id","project_id","environment","episode_id","binding_count","expected_fact_count","selected_fact_count","foreign_fact_count","unresolved_binding_count","page_count","truncated","hints_used_for_authority","as_of_projected_at","effective_watermark","selection_predicate_hash","reconciliation_hash","closure_content_hash","status","reason_codes"]}
+  ]
+}

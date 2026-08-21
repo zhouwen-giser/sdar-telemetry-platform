@@ -1,0 +1,6 @@
+claim,authoritative_mapping_source,current_verifiability,default_result,may_select_facts
+originRuntimeInstanceIds,explicit Runtime identity mapping absent,unverifiable,unverifiable,false
+originTaskIds,explicit Runtime identity mapping optional on binding,conditional,matched/ambiguous/conflict or unverifiable,false
+originInvocationIds,explicit invocation mapping absent,unverifiable,unverifiable,false
+originSystem,SDAR reconciliation scope,verifiable,out_of_scope when not sdar,false
+SMPP relation hint,remote_task_binding only,non-authoritative,reconciliation result,false

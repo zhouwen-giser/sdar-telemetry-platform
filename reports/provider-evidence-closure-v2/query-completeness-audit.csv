@@ -1,0 +1,6 @@
+path,baseline_pattern,risk,v2_disposition
+packages/telemetry-smpp-consumer/src/index.ts,"relation lookup LIMIT 1000 then fact by relation evidence IDs",relation used as selection bridge,replaced by closure-v2 binding-first port
+integrations/sdar-benchmark-server/mcp-provider-telemetry/v1/queries.sql,"Source-wide facts LIMIT 1000",cross-Episode contamination and truncation,formal path forbidden
+integrations/sdar-benchmark-server/mcp-provider-telemetry/v1/queries.sql,"tenant/project reconciliation LIMIT 1000",application-side filtering after global limit,formal path forbidden
+integrations/sdar-benchmark-server/mcp-provider-telemetry/v2/queries.sql,keyset pages with bound page size,page size is not completeness limit,selected equals expected gate
+packages/telemetry-smpp-consumer/src/closure-v2.ts,bounded page loop,volume safety limit,explicit blocking reason and truncated=true

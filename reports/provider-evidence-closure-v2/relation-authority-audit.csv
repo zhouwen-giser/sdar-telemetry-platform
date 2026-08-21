@@ -1,0 +1,4 @@
+producer,baseline_classification,v2_classification,authority,compatibility
+SDAR remote_task_binding,binding authority,binding-derived relation,true,current
+SMPP normalizer,authoritative,reconciliation hint,false,old erroneous classification rejected in development
+SMPP normalizer,declared/traced/derived,reconciliation hint,false,current
