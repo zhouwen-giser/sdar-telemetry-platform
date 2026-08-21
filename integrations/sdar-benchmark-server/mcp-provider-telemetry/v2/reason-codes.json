@@ -1,0 +1,22 @@
+{
+  "policyId": "sdar.provider-origin-claim-reconciliation/v1.1",
+  "reasonCodes": [
+    {"code":"SMPP_BINDING_MISSING","blocking":true},
+    {"code":"SMPP_BINDING_SOURCE_AMBIGUOUS","blocking":true},
+    {"code":"SMPP_PROVIDER_FACT_MISSING","blocking":true},
+    {"code":"SMPP_PROVIDER_FACT_FOREIGN","blocking":true},
+    {"code":"SMPP_PROVIDER_FACT_TRUNCATED","blocking":true},
+    {"code":"SMPP_PROVIDER_VOLUME_LIMIT_EXCEEDED","blocking":true},
+    {"code":"SMPP_BINDING_FACT_IDENTITY_MISMATCH","blocking":true},
+    {"code":"SMPP_ORIGIN_CLAIM_MATCHED","blocking":false},
+    {"code":"SMPP_ORIGIN_CLAIM_MISSING","blocking":false},
+    {"code":"SMPP_ORIGIN_CLAIM_UNVERIFIABLE","blocking":false},
+    {"code":"SMPP_ORIGIN_CLAIM_AMBIGUOUS","blocking":true},
+    {"code":"SMPP_ORIGIN_CLAIM_CONFLICT","blocking":true},
+    {"code":"SMPP_ORIGIN_CLAIM_OUT_OF_SCOPE","blocking":false},
+    {"code":"SMPP_RECONCILIATION_HINT_INVALID","blocking":true},
+    {"code":"SMPP_PROVIDER_TERMINAL_MISMATCH","blocking":true},
+    {"code":"SMPP_REVISION_MISMATCH","blocking":true},
+    {"code":"SMPP_SOURCE_MOVED_DURING_SNAPSHOT","blocking":true}
+  ]
+}

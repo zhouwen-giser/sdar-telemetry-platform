@@ -1,0 +1,20 @@
+{
+  "goal": "SDAR Provider Evidence Closure v2",
+  "status": "partial",
+  "observedBase": "ffa94df82e6056b351765478c4b8e6e393073bb9",
+  "baseDrift": false,
+  "completed": [
+    "binding-first closure domain model",
+    "origin claim reconciliation policy",
+    "keyset pagination contract",
+    "as-of capture/load/recapture",
+    "v2 static handoff assets",
+    "1500 and 10000 fact qualification"
+  ],
+  "blocked": [
+    "live remote_task_binding lacks frozen Provider authority keys",
+    "live Benchmark consumer ref not supplied",
+    "live ClickHouse qualification not executed"
+  ],
+  "crossRepoCompletionAuthorized": false
+}

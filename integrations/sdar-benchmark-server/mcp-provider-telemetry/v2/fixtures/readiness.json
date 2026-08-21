@@ -1,0 +1,10 @@
+{
+  "contractId": "sdar.telemetry-smpp-providerops-handoff/v2",
+  "cases": [
+    {"name":"exact-ready","status":"ready","expectedFactCount":1500,"selectedFactCount":1500,"foreignFactCount":0,"unresolvedBindingCount":0,"truncated":false,"hintsUsedForAuthority":false,"formal":true},
+    {"name":"claim-missing-nonblocking","status":"ready","missingClaimCount":1,"formal":true},
+    {"name":"claim-conflict","status":"conflict","conflictingClaimCount":1,"formal":false},
+    {"name":"foreign-fact","status":"conflict","foreignFactCount":1,"formal":false},
+    {"name":"truncated","status":"conflict","truncated":true,"formal":false}
+  ]
+}

@@ -1,0 +1,9 @@
+object,field_group,current_state,v2_role,disposition
+sdar_core.remote_task_binding,"episode_id,a2a_task_id,remote_task_id",present,binding authority,required
+sdar_core.remote_task_binding,"tenant_id,project_id,environment",not in current handoff inventory,scope authority,live blocker until projected
+sdar_core.remote_task_binding,provider_origin_source_id,not in current handoff inventory,selection authority,live blocker until projected
+sdar_core.remote_task_binding,"external_provider_id,external_provider_instance_id",not in current handoff inventory,selection authority,live blocker until projected
+sdar_core.external_provider_fact,"tenant_id,project_id,environment",present,scope match,required
+sdar_core.external_provider_fact,"smpp_source_id,provider_id,provider_instance_id,external_task_id",present,binding match,required
+sdar_core.external_provider_fact,"origin_sdar_runtime_ids,origin_sdar_task_ids,origin_sdar_invocation_ids",present,reconciliation only,preserved
+sdar_core.external_entity_relation_fact,"binding_source,confidence_class,projection_id",present,reconciliation hint only,authoritative SMPP value rejected

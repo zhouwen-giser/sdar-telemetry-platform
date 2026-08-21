@@ -1,0 +1,15 @@
+{
+  "contractId": "sdar.telemetry-smpp-providerops-handoff/v2",
+  "formalReadyWhen": [
+    "bindingCount > 0",
+    "selectedFactCount == expectedFactCount",
+    "foreignFactCount == 0",
+    "unresolvedBindingCount == 0",
+    "truncated == false",
+    "hintsUsedForAuthority == false",
+    "status == ready"
+  ],
+  "providerTerminalIsGoalSuccess": false,
+  "providerTerminalIsPhysicalSuccess": false,
+  "v1FallbackAllowed": false
+}
