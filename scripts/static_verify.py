@@ -26,6 +26,9 @@ OFFLINE_NPM_BUILD_LINES = [
 ]
 OFFLINE_NPM_BUILD_INSTRUCTION = "\n".join(OFFLINE_NPM_BUILD_LINES)
 VENDOR_CACHE_COPY = "COPY vendor/npm-cache /app/vendor/npm-cache"
+MIGRATION_REVIEW_PATH = "reports/sdar-integration/03_CLICKHOUSE_SCHEMA_DIFF.md"
+MIGRATION_REVIEW_MARKER = "Migration decision: APPROVED_ADDITIVE"
+MIGRATION_REVIEW_COPY = f"COPY {MIGRATION_REVIEW_PATH} ./{MIGRATION_REVIEW_PATH}"
 
 
 def compose_service(document: str, service_name: str) -> str:
@@ -379,6 +382,40 @@ def assert_integration_copy_contract(document: str) -> None:
     )
 
 
+def assert_migration_review_asset_contract(
+    root: Path,
+    document: str,
+    migration_program: str,
+) -> None:
+    build_stage, runtime_stage = dockerfile_build_and_runtime_stages(document)
+    runtime_lines = runtime_stage.splitlines()
+    migration_copy = "COPY migrations ./migrations"
+    source_review = root / MIGRATION_REVIEW_PATH
+
+    assert source_review.is_file(), "migration review asset source is missing"
+    assert MIGRATION_REVIEW_MARKER in source_review.read_text(encoding="utf-8"), (
+        "migration review asset is missing the additive approval marker"
+    )
+    assert f'path.resolve("{MIGRATION_REVIEW_PATH}")' in migration_program, (
+        "migration program must resolve the exact reviewed schema diff path"
+    )
+    assert MIGRATION_REVIEW_MARKER in migration_program, (
+        "migration program must require the exact additive approval marker"
+    )
+    assert runtime_lines.count("WORKDIR /app") == 1, (
+        "runtime image must use exactly WORKDIR /app for migration asset resolution"
+    )
+    assert MIGRATION_REVIEW_COPY not in build_stage, (
+        "migration review asset must not be copied into the build stage"
+    )
+    assert runtime_lines.count(MIGRATION_REVIEW_COPY) == 1, (
+        "runtime image must copy the exact migration review asset exactly once"
+    )
+    assert runtime_lines.index(MIGRATION_REVIEW_COPY) == runtime_lines.index(migration_copy) + 1, (
+        "runtime migration review asset copy must immediately follow migrations copy"
+    )
+
+
 root = Path(__file__).resolve().parents[1]
 compose_path = root / "deploy/compose.external-clickhouse.yaml"
 dockerfile_path = root / "deploy/Dockerfile"
@@ -407,6 +444,9 @@ readme = (root / "README.md").read_text(encoding="utf-8")
 relay = (root / "apps/sdar-outbox-relay/src/main.ts").read_text(encoding="utf-8")
 gitignore = (root / ".gitignore").read_text(encoding="utf-8")
 dockerignore = (root / ".dockerignore").read_text(encoding="utf-8")
+migration_program = (root / "scripts/apply-evidence-v1-migration.ts").read_text(
+    encoding="utf-8"
+)
 assert "env_file:" not in compose, "Compose must use per-service environment allowlists"
 
 # ClickHouse is external and must never become a service in the default Compose topology.
@@ -427,6 +467,27 @@ for required_copy in [
 ]:
     assert required_copy in runtime_stage, f"runtime image is missing: {required_copy}"
 assert_integration_copy_contract(dockerfile)
+assert_migration_review_asset_contract(root, dockerfile, migration_program)
+
+# Regression probe for the r15 final-image omission: removing the exact runtime asset copy must
+# fail with the migration-review-specific contract rather than a generic Dockerfile assertion.
+missing_migration_review_fixture = dockerfile.replace(
+    f"{MIGRATION_REVIEW_COPY}\n",
+    "",
+    1,
+)
+try:
+    assert_migration_review_asset_contract(
+        root,
+        missing_migration_review_fixture,
+        migration_program,
+    )
+except AssertionError as error:
+    assert "runtime image must copy the exact migration review asset exactly once" in str(error), (
+        "missing migration review asset probe failed for an unexpected reason"
+    )
+else:
+    raise AssertionError("missing migration review asset unexpectedly passed the runtime contract")
 
 # Regression probe for the exact r2 failure: a Dockerfile with only the runtime raw-assets copy
 # must not satisfy the build-input contract.

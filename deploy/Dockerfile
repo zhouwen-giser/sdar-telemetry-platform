@@ -23,6 +23,7 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY integrations ./integrations
 COPY migrations ./migrations
+COPY reports/sdar-integration/03_CLICKHOUSE_SCHEMA_DIFF.md ./reports/sdar-integration/03_CLICKHOUSE_SCHEMA_DIFF.md
 ARG APP
 ENV APP=$APP
 CMD ["sh","-c","node dist/apps/$APP/src/main.js"]
