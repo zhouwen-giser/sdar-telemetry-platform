@@ -20,6 +20,8 @@ const baseConfig = (password = "test-clickhouse-password"): ClickHouseConfig => 
 test("configFromEnv accepts a direct password and rejects ambiguous credentials", () => {
   withEnvironment(
     {
+      SDAR_CLICKHOUSE_ENDPOINT_POLICY: undefined,
+      NODE_ENV: undefined,
       TEST_CLICKHOUSE_URL: "https://192.168.1.7:8443",
       TEST_CLICKHOUSE_USER: "telemetry-reader",
       TEST_CLICKHOUSE_PASSWORD: "direct-password",
@@ -38,6 +40,8 @@ test("configFromEnv accepts a direct password and rejects ambiguous credentials"
 
   withEnvironment(
     {
+      SDAR_CLICKHOUSE_ENDPOINT_POLICY: undefined,
+      NODE_ENV: undefined,
       TEST_CLICKHOUSE_URL: "https://192.168.1.7:8443",
       TEST_CLICKHOUSE_USER: "telemetry-reader",
       TEST_CLICKHOUSE_PASSWORD: "direct-password",
@@ -51,6 +55,8 @@ test("configFromEnv accepts a direct password and rejects ambiguous credentials"
 test("writer and reader configurations reject every non-approved host", () => {
   withEnvironment(
     {
+      SDAR_CLICKHOUSE_ENDPOINT_POLICY: undefined,
+      NODE_ENV: undefined,
       TEST_WRITER_URL: "https://127.0.0.1:8443",
       TEST_WRITER_USER: "writer",
       TEST_WRITER_PASSWORD: "password",
@@ -60,6 +66,8 @@ test("writer and reader configurations reject every non-approved host", () => {
   );
   withEnvironment(
     {
+      SDAR_CLICKHOUSE_ENDPOINT_POLICY: undefined,
+      NODE_ENV: undefined,
       TEST_READER_URL: "https://clickhouse.example:8443",
       TEST_READER_USER: "reader",
       TEST_READER_PASSWORD: "password",
@@ -69,9 +77,187 @@ test("writer and reader configurations reject every non-approved host", () => {
   );
 });
 
+test("endpoint policy defaults to production-fixed and does not infer development authority", () => {
+  for (const selector of [undefined, "production-fixed"] as const) {
+    withEnvironment(
+      {
+        SDAR_CLICKHOUSE_ENDPOINT_POLICY: selector,
+        NODE_ENV: "development",
+        TEST_CLICKHOUSE_URL: "https://192.168.1.7:8443",
+        TEST_CLICKHOUSE_USER: "reader",
+        TEST_CLICKHOUSE_PASSWORD: "password",
+        TEST_CLICKHOUSE_SECURE: "true",
+      },
+      () => {
+        const config = configFromEnv("TEST_CLICKHOUSE_");
+        assert.equal(config.endpointPolicy, "production-fixed");
+        assert.equal(config.url, "https://192.168.1.7:8443/");
+      },
+    );
+
+    withEnvironment(
+      {
+        SDAR_CLICKHOUSE_ENDPOINT_POLICY: selector,
+        NODE_ENV: "development",
+        TEST_CLICKHOUSE_URL: "http://clickhouse:8123",
+        TEST_CLICKHOUSE_USER: "reader",
+        TEST_CLICKHOUSE_PASSWORD: "password",
+        TEST_CLICKHOUSE_SECURE: "false",
+      },
+      () =>
+        assert.throws(
+          () => configFromEnv("TEST_CLICKHOUSE_"),
+          hasErrorCode("CLICKHOUSE_HOST_FORBIDDEN"),
+        ),
+    );
+  }
+});
+
+test("writer and reader accept only the explicit development Compose endpoint", () => {
+  for (const prefix of ["TEST_WRITER_", "TEST_READER_"]) {
+    withEnvironment(
+      {
+        SDAR_CLICKHOUSE_ENDPOINT_POLICY: "development-compose",
+        NODE_ENV: "development",
+        [prefix + "URL"]: "http://clickhouse:8123",
+        [prefix + "USER"]: "telemetry",
+        [prefix + "PASSWORD"]: "password",
+        [prefix + "SECURE"]: "false",
+      },
+      () => {
+        const config = configFromEnv(prefix);
+        assert.equal(config.endpointPolicy, "development-compose");
+        assert.equal(config.url, "http://clickhouse:8123/");
+        assert.equal(config.secure, false);
+      },
+    );
+  }
+});
+
+test("endpoint policy selector rejects empty, whitespace, unknown, and case variants", () => {
+  for (const selector of ["", " ", "unknown", "Development-compose", "PRODUCTION-FIXED"]) {
+    withEnvironment(
+      {
+        SDAR_CLICKHOUSE_ENDPOINT_POLICY: selector,
+        NODE_ENV: "development",
+        TEST_CLICKHOUSE_URL: "https://192.168.1.7:8443",
+        TEST_CLICKHOUSE_USER: "reader",
+        TEST_CLICKHOUSE_PASSWORD: "password",
+        TEST_CLICKHOUSE_SECURE: "true",
+      },
+      () =>
+        assert.throws(
+          () => configFromEnv("TEST_CLICKHOUSE_"),
+          hasErrorCode("CLICKHOUSE_ENDPOINT_POLICY_INVALID"),
+        ),
+    );
+  }
+});
+
+test("development Compose policy requires exact NODE_ENV=development", () => {
+  for (const nodeEnv of [undefined, "", "production", "test", "Development"]) {
+    withEnvironment(
+      {
+        SDAR_CLICKHOUSE_ENDPOINT_POLICY: "development-compose",
+        NODE_ENV: nodeEnv,
+        TEST_CLICKHOUSE_URL: "http://clickhouse:8123",
+        TEST_CLICKHOUSE_USER: "reader",
+        TEST_CLICKHOUSE_PASSWORD: "password",
+        TEST_CLICKHOUSE_SECURE: "false",
+      },
+      () =>
+        assert.throws(
+          () => configFromEnv("TEST_CLICKHOUSE_"),
+          hasErrorCode("CLICKHOUSE_DEVELOPMENT_ENVIRONMENT_REQUIRED"),
+        ),
+    );
+  }
+});
+
+test("development Compose policy rejects every drift from the exact endpoint tuple", () => {
+  const rejected = [
+    {url: "http://clickhouse", secure: "false"},
+    {url: "http://clickhouse:8124", secure: "false"},
+    {url: "https://clickhouse:8123", secure: "true"},
+    {url: "http://192.168.1.7:8123", secure: "false"},
+    {url: "http://127.0.0.1:8123", secure: "false"},
+    {url: "http://localhost:8123", secure: "false"},
+    {url: "http://clickhouse.example:8123", secure: "false"},
+    {url: "http://clickhouse.:8123", secure: "false"},
+    {url: "http://arbitrary:8123", secure: "false"},
+    {url: "http://user:password@clickhouse:8123", secure: "false"},
+    {url: "http://clickhouse:8123/non-root", secure: "false"},
+    {url: "http://clickhouse:8123?readonly=2", secure: "false"},
+    {url: "http://clickhouse:8123#fragment", secure: "false"},
+    {url: "http://clickhouse:8123", secure: "true"},
+  ];
+  for (const {url, secure} of rejected) {
+    withEnvironment(
+      {
+        SDAR_CLICKHOUSE_ENDPOINT_POLICY: "development-compose",
+        NODE_ENV: "development",
+        TEST_CLICKHOUSE_URL: url,
+        TEST_CLICKHOUSE_USER: "reader",
+        TEST_CLICKHOUSE_PASSWORD: "password",
+        TEST_CLICKHOUSE_SECURE: secure,
+      },
+      () => assert.throws(() => configFromEnv("TEST_CLICKHOUSE_")),
+    );
+  }
+});
+
+test("direct construction cannot bypass endpoint policy validation", () => {
+  withEnvironment(
+    {NODE_ENV: "development"},
+    () =>
+      assert.doesNotThrow(
+        () =>
+          new ClickHouseClient({
+            ...baseConfig(),
+            endpointPolicy: "development-compose",
+            url: "http://clickhouse:8123",
+            secure: false,
+          }),
+      ),
+  );
+  assert.throws(
+    () =>
+      new ClickHouseClient({
+        ...baseConfig(),
+        url: "http://clickhouse:8123",
+        secure: false,
+      }),
+    hasErrorCode("CLICKHOUSE_HOST_FORBIDDEN"),
+  );
+  withEnvironment(
+    {NODE_ENV: undefined},
+    () =>
+      assert.throws(
+        () =>
+          new ClickHouseClient({
+            ...baseConfig(),
+            endpointPolicy: "development-compose",
+            url: "http://clickhouse:8123",
+            secure: false,
+          }),
+        hasErrorCode("CLICKHOUSE_DEVELOPMENT_ENVIRONMENT_REQUIRED"),
+      ),
+  );
+  assert.throws(
+    () =>
+      new ClickHouseClient({
+        ...baseConfig(),
+        endpointPolicy: "unknown",
+      } as unknown as ClickHouseConfig),
+    hasErrorCode("CLICKHOUSE_ENDPOINT_POLICY_INVALID"),
+  );
+});
+
 test("custom CA configuration fails closed until the HTTP transport can apply it", () => {
   withEnvironment(
     {
+      SDAR_CLICKHOUSE_ENDPOINT_POLICY: undefined,
+      NODE_ENV: undefined,
       TEST_CLICKHOUSE_URL: "https://192.168.1.7:8443",
       TEST_CLICKHOUSE_USER: "reader",
       TEST_CLICKHOUSE_PASSWORD: "password",
@@ -150,11 +336,23 @@ test("ClickHouse failures never expose credentials", async () => {
   );
 });
 
-function withEnvironment<T>(values: Record<string, string>, operation: () => T): T {
+function hasErrorCode(expected: string): (error: unknown) => boolean {
+  return (error: unknown) => {
+    assert.ok(error instanceof Error);
+    assert.equal((error as Error & {code?: unknown}).code, expected);
+    return true;
+  };
+}
+
+function withEnvironment<T>(
+  values: Record<string, string | undefined>,
+  operation: () => T,
+): T {
   const previous = new Map<string, string | undefined>();
   for (const [key, value] of Object.entries(values)) {
     previous.set(key, process.env[key]);
-    process.env[key] = value;
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
   }
   try {
     return operation();

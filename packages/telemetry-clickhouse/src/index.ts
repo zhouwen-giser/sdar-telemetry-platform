@@ -4,8 +4,11 @@ import {readFile} from "node:fs/promises";
 import {assertSafeSqlIdentifier} from "../../telemetry-validation/src/index.js";
 
 const REQUIRED_CLICKHOUSE_HOST = "192.168.1.7";
+const DEVELOPMENT_CLICKHOUSE_ENDPOINT = "http://clickhouse:8123/";
 
-export interface ClickHouseConfig {
+export type ClickHouseEndpointPolicy = "production-fixed" | "development-compose";
+
+interface ClickHouseBaseConfig {
   url: string;
   user: string;
   passwordFile?: string;
@@ -15,6 +18,9 @@ export interface ClickHouseConfig {
   connectTimeoutMs: number;
   requestTimeoutMs: number;
 }
+
+export type ClickHouseConfig = ClickHouseBaseConfig &
+  ({endpointPolicy?: "production-fixed"} | {endpointPolicy: "development-compose"});
 
 export interface ClickHouseQueryOptions {
   readonly?: 2;
@@ -152,6 +158,10 @@ export class ClickHouseClient {
 }
 
 export function configFromEnv(prefix = "CLICKHOUSE_"): ClickHouseConfig {
+  const endpointPolicy = parseEndpointPolicy(process.env["SDAR_CLICKHOUSE_ENDPOINT_POLICY"]);
+  if (endpointPolicy === "development-compose") {
+    requireDevelopmentNodeEnv(process.env["NODE_ENV"]);
+  }
   const password = process.env[prefix + "PASSWORD"];
   const passwordFile = process.env[prefix + "PASSWORD_FILE"];
   if (password !== undefined && passwordFile !== undefined) {
@@ -162,6 +172,7 @@ export function configFromEnv(prefix = "CLICKHOUSE_"): ClickHouseConfig {
   }
 
   return validateConfig({
+    endpointPolicy,
     url: process.env[prefix + "URL"] ?? "",
     user: process.env[prefix + "USER"] ?? "",
     ...(password === undefined ? {} : {password}),
@@ -193,6 +204,10 @@ export function deterministicInsertDeduplicationToken(
 }
 
 function validateConfig(config: ClickHouseConfig): ClickHouseConfig {
+  const endpointPolicy = parseEndpointPolicy(config.endpointPolicy);
+  if (endpointPolicy === "development-compose") {
+    requireDevelopmentNodeEnv(process.env["NODE_ENV"]);
+  }
   if (config.password !== undefined && config.passwordFile !== undefined) {
     throw configurationError(
       "CLICKHOUSE_CREDENTIAL_AMBIGUOUS",
@@ -227,10 +242,25 @@ function validateConfig(config: ClickHouseConfig): ClickHouseConfig {
       "ClickHouse URL must not contain credentials.",
     );
   }
-  if (endpoint.hostname !== REQUIRED_CLICKHOUSE_HOST) {
+  if (endpointPolicy === "production-fixed") {
+    if (endpoint.hostname !== REQUIRED_CLICKHOUSE_HOST) {
+      throw configurationError(
+        "CLICKHOUSE_HOST_FORBIDDEN",
+        `ClickHouse hostname must be ${REQUIRED_CLICKHOUSE_HOST}.`,
+      );
+    }
+  } else if (
+    endpoint.protocol !== "http:" ||
+    endpoint.hostname !== "clickhouse" ||
+    endpoint.port !== "8123" ||
+    endpoint.pathname !== "/" ||
+    endpoint.search !== "" ||
+    endpoint.hash !== "" ||
+    config.secure !== false
+  ) {
     throw configurationError(
-      "CLICKHOUSE_HOST_FORBIDDEN",
-      `ClickHouse hostname must be ${REQUIRED_CLICKHOUSE_HOST}.`,
+      "CLICKHOUSE_DEVELOPMENT_ENDPOINT_INVALID",
+      `Development ClickHouse endpoint must be exactly ${DEVELOPMENT_CLICKHOUSE_ENDPOINT} with secure=false.`,
     );
   }
   const expectedProtocol = config.secure ? "https:" : "http:";
@@ -259,12 +289,33 @@ function validateConfig(config: ClickHouseConfig): ClickHouseConfig {
     );
   }
 
-  return Object.freeze({
+  const normalized = {
     ...config,
     url: endpoint.toString(),
     user: config.user.trim(),
     ...(config.passwordFile === undefined ? {} : {passwordFile: config.passwordFile.trim()}),
-  });
+  };
+  if (endpointPolicy === "development-compose") {
+    return Object.freeze({...normalized, endpointPolicy});
+  }
+  return Object.freeze({...normalized, endpointPolicy});
+}
+
+function parseEndpointPolicy(value: string | undefined): ClickHouseEndpointPolicy {
+  if (value === undefined || value === "production-fixed") return "production-fixed";
+  if (value === "development-compose") return "development-compose";
+  throw configurationError(
+    "CLICKHOUSE_ENDPOINT_POLICY_INVALID",
+    "SDAR_CLICKHOUSE_ENDPOINT_POLICY must be production-fixed or development-compose.",
+  );
+}
+
+function requireDevelopmentNodeEnv(value: string | undefined): "development" {
+  if (value === "development") return value;
+  throw configurationError(
+    "CLICKHOUSE_DEVELOPMENT_ENVIRONMENT_REQUIRED",
+    "development-compose requires NODE_ENV=development.",
+  );
 }
 
 function validateQueryOptions(options: ExecuteOptions): void {
