@@ -1,12 +1,24 @@
 from pathlib import Path
+import json
 import os
 import re
 
 
+DOCKERFILE_FRONTEND = (
+    "# syntax=docker/dockerfile:1.19@sha256:"
+    "b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6"
+)
 NODE_22_ALPINE_BASE = (
     "node:22-alpine@sha256:"
     "c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
 )
+LOCKED_NPM_BUILD_LINES = [
+    "RUN --mount=type=cache,id=sdar-telemetry-npm-cache,target=/root/.npm,sharing=locked \\",
+    "    npm ci --include=dev --ignore-scripts --prefer-offline \\",
+    "    && npm run build \\",
+    "    && npm prune --omit=dev --ignore-scripts",
+]
+LOCKED_NPM_BUILD_INSTRUCTION = "\n".join(LOCKED_NPM_BUILD_LINES)
 
 
 def compose_service(document: str, service_name: str) -> str:
@@ -78,10 +90,58 @@ def assert_node_base_image_contract(document: str) -> None:
     )
 
 
+def assert_dependency_install_contract(
+    document: str,
+    manifest: dict[str, object],
+    package_lock: dict[str, object],
+) -> None:
+    build_stage, _ = dockerfile_build_and_runtime_stages(document)
+    build_lines = build_stage.splitlines()
+    lock_copy = "COPY package.json package-lock.json tsconfig.json ./"
+
+    assert document.splitlines()[0] == DOCKERFILE_FRONTEND, (
+        "Dockerfile must use the exact frozen frontend digest"
+    )
+    assert document.splitlines().count(DOCKERFILE_FRONTEND) == 1, (
+        "Dockerfile frontend digest must appear exactly once"
+    )
+    assert build_lines.count(lock_copy) == 1, (
+        "build stage must copy package-lock.json exactly once"
+    )
+    assert "pnpm-lock.yaml" not in build_stage, (
+        "build stage must not copy a lock ignored by npm"
+    )
+    assert build_stage.count(LOCKED_NPM_BUILD_INSTRUCTION) == 1, (
+        "build stage must use the exact cache-mounted locked npm instruction"
+    )
+    assert build_lines.index(lock_copy) < build_lines.index(LOCKED_NPM_BUILD_LINES[0]), (
+        "build stage must copy package-lock.json before npm ci"
+    )
+    assert "npm install" not in build_stage, "build stage must not execute npm install"
+    assert re.search(r"(?:^|\s)--offline(?:\s|\\|$)", build_stage) is None, (
+        "build stage must not require an unconditional offline install"
+    )
+
+    assert package_lock.get("lockfileVersion") == 3, "npm lockfileVersion must be 3"
+    packages = package_lock.get("packages")
+    assert isinstance(packages, dict), "npm lock must contain the complete packages graph"
+    root_package = packages.get("")
+    assert isinstance(root_package, dict), "npm lock must contain the root importer"
+    for dependency_class in ["dependencies", "devDependencies"]:
+        assert root_package.get(dependency_class, {}) == manifest.get(dependency_class, {}), (
+            f"npm lock root {dependency_class} must match package.json"
+        )
+    locked_packages = [value for path, value in packages.items() if path != ""]
+    assert locked_packages, "npm lock must contain transitive package entries"
+    assert all(
+        isinstance(value, dict) and "resolved" in value and "integrity" in value
+        for value in locked_packages
+    ), "every non-root npm lock entry must freeze resolution and integrity"
+
+
 def assert_integration_copy_contract(document: str) -> None:
     build_stage, runtime_stage = dockerfile_build_and_runtime_stages(document)
     build_copy = "COPY integrations integrations"
-    build_command = "RUN npm install --ignore-scripts && npm run build && npm prune --omit=dev"
     runtime_copy = "COPY integrations ./integrations"
     build_lines = build_stage.splitlines()
     runtime_lines = runtime_stage.splitlines()
@@ -89,10 +149,10 @@ def assert_integration_copy_contract(document: str) -> None:
     assert build_lines.count(build_copy) == 1, (
         "build stage must copy integrations exactly once"
     )
-    assert build_lines.count(build_command) == 1, (
-        "build stage must contain the exact install/build/prune command"
+    assert build_stage.count(LOCKED_NPM_BUILD_INSTRUCTION) == 1, (
+        "build stage must contain the exact locked install/build/prune instruction"
     )
-    assert build_lines.index(build_copy) < build_lines.index(build_command), (
+    assert build_lines.index(build_copy) < build_lines.index(LOCKED_NPM_BUILD_LINES[0]), (
         "build stage must copy integrations before npm build"
     )
     assert runtime_lines.count(runtime_copy) == 1, (
@@ -104,11 +164,16 @@ root = Path(__file__).resolve().parents[1]
 compose_path = root / "deploy/compose.external-clickhouse.yaml"
 dockerfile_path = root / "deploy/Dockerfile"
 env_example_path = root / ".env.example"
+manifest_path = root / "package.json"
+package_lock_path = root / "package-lock.json"
 
 compose = compose_path.read_text(encoding="utf-8")
 dockerfile = dockerfile_path.read_text(encoding="utf-8")
 _, runtime_stage = dockerfile_build_and_runtime_stages(dockerfile)
 assert_node_base_image_contract(dockerfile)
+manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+package_lock = json.loads(package_lock_path.read_text(encoding="utf-8"))
+assert_dependency_install_contract(dockerfile, manifest, package_lock)
 env_example = env_example_path.read_text(encoding="utf-8")
 readme = (root / "README.md").read_text(encoding="utf-8")
 relay = (root / "apps/sdar-outbox-relay/src/main.ts").read_text(encoding="utf-8")
@@ -175,6 +240,34 @@ except AssertionError as error:
     )
 else:
     raise AssertionError("floating runtime Node tag unexpectedly passed the base-image contract")
+
+floating_frontend_fixture = dockerfile.replace(
+    DOCKERFILE_FRONTEND,
+    "# syntax=docker/dockerfile:1.19",
+    1,
+)
+try:
+    assert_dependency_install_contract(floating_frontend_fixture, manifest, package_lock)
+except AssertionError as error:
+    assert "exact frozen frontend digest" in str(error), (
+        "floating frontend regression probe failed for an unexpected reason"
+    )
+else:
+    raise AssertionError("floating Dockerfile frontend unexpectedly passed the install contract")
+
+legacy_npm_install_fixture = dockerfile.replace(
+    LOCKED_NPM_BUILD_INSTRUCTION,
+    "RUN npm install --ignore-scripts && npm run build && npm prune --omit=dev",
+    1,
+)
+try:
+    assert_dependency_install_contract(legacy_npm_install_fixture, manifest, package_lock)
+except AssertionError as error:
+    assert "exact cache-mounted locked npm instruction" in str(error), (
+        "legacy npm install regression probe failed for an unexpected reason"
+    )
+else:
+    raise AssertionError("legacy npm install unexpectedly passed the install contract")
 for ignored_path in [".git", ".env", "deploy/secrets", "node_modules", "dist"]:
     assert ignored_path in dockerignore.splitlines(), f"docker context does not ignore {ignored_path}"
 
