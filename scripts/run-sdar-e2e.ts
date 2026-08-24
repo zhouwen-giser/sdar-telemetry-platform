@@ -457,7 +457,11 @@ export async function runSdarE2E(
   let queryApi: Server | undefined;
   try {
     const initialWal = new DurableSegmentWal<EvidenceV1WalPayload>(walRoot);
-    gateway = createIngestionGateway({ validator, wal: initialWal, bearerCredential: credential });
+    gateway = createIngestionGateway({
+      validator,
+      wal: initialWal,
+      authorization: { profile: "bearer", bearerCredential: credential },
+    });
     const firstGatewayUrl = await listenOnLoopback(gateway);
     const headStatus = await probeGateway(firstGatewayUrl, credential);
     const firstPost = await postBatch(firstGatewayUrl, credential, batch);
@@ -479,7 +483,11 @@ export async function runSdarE2E(
     }
 
     const restartedWal = new DurableSegmentWal<EvidenceV1WalPayload>(walRoot);
-    gateway = createIngestionGateway({ validator, wal: restartedWal, bearerCredential: credential });
+    gateway = createIngestionGateway({
+      validator,
+      wal: restartedWal,
+      authorization: { profile: "bearer", bearerCredential: credential },
+    });
     const restartedGatewayUrl = await listenOnLoopback(gateway);
     const restartPost = await postBatch(restartedGatewayUrl, credential, batch);
     await closeServer(gateway);
@@ -568,7 +576,7 @@ export async function runSdarE2E(
 
     queryApi = createQueryApi({
       clickHouse: reader,
-      bearerCredential: queryCredential,
+      authorization: { profile: "bearer", bearerCredential: queryCredential },
       maxResultRows: 1_000,
     });
     const queryApiUrl = await listenOnLoopback(queryApi);

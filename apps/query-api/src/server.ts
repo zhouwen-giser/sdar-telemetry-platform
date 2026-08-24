@@ -4,6 +4,9 @@ import { readFile } from "node:fs/promises";
 import http, { type IncomingMessage, type Server, type ServerResponse } from "node:http";
 
 import type { ClickHouseQueryOptions } from "../../../packages/telemetry-clickhouse/src/index.js";
+import type {
+  TelemetryHttpAuthorizationPolicy,
+} from "../../../packages/telemetry-config/src/index.js";
 import { envelope } from "../../../packages/telemetry-query-model/src/index.js";
 import {
   evaluateMcpProviderReadiness,
@@ -27,9 +30,13 @@ export interface QueryClickHouseClient {
 
 export interface QueryApiDependencies {
   readonly clickHouse: QueryClickHouseClient;
-  readonly bearerCredential: string;
+  readonly authorization: TelemetryHttpAuthorizationPolicy;
   readonly maxResultRows?: number;
 }
+
+type ResolvedAuthorizationPolicy =
+  | Readonly<{ profile: "bearer"; expectedCredentialDigest: Buffer }>
+  | Readonly<{ profile: "development-anonymous" }>;
 
 export class QueryApiError extends Error {
   constructor(
@@ -46,10 +53,7 @@ export function createQueryApi(dependencies: QueryApiDependencies): Server {
   if (!Number.isSafeInteger(maxResultRows) || maxResultRows < 1) {
     throw new QueryApiError("QUERY_RESULT_LIMIT_INVALID", 500);
   }
-  if (dependencies.bearerCredential.length < 16 || dependencies.bearerCredential.length > 4_096) {
-    throw new QueryApiError("QUERY_CREDENTIAL_CONFIGURATION_INVALID", 500);
-  }
-  const expectedCredentialDigest = credentialDigest(dependencies.bearerCredential);
+  const authorization = resolveAuthorizationPolicy(dependencies.authorization);
 
   return http.createServer((request: IncomingMessage, response: ServerResponse) => {
     void handleRequest(
@@ -57,7 +61,7 @@ export function createQueryApi(dependencies: QueryApiDependencies): Server {
       response,
       dependencies.clickHouse,
       maxResultRows,
-      expectedCredentialDigest,
+      authorization,
     ).catch((error: unknown) => sendError(response, error));
   });
 }
@@ -82,14 +86,14 @@ async function handleRequest(
   response: ServerResponse,
   clickHouse: QueryClickHouseClient,
   maxResultRows: number,
-  expectedCredentialDigest: Buffer,
+  authorization: ResolvedAuthorizationPolicy,
 ): Promise<void> {
   const url = parseRequestUrl(request.url);
   if (request.method === "GET" && url.pathname === "/health") {
     sendJson(response, 200, { status: "ok" });
     return;
   }
-  assertAuthorization(request, expectedCredentialDigest);
+  assertAuthorization(request, authorization);
   if (request.method !== "GET") {
     response.setHeader("allow", "GET");
     throw new QueryApiError("QUERY_METHOD_INVALID", 405);
@@ -375,17 +379,39 @@ ORDER BY ${order}
 FORMAT JSON`;
 }
 
-function assertAuthorization(request: IncomingMessage, expectedCredentialDigest: Buffer): void {
-  const authorization = request.headers.authorization;
-  const matched = typeof authorization === "string" ? /^Bearer ([^\s]+)$/u.exec(authorization) : null;
+function assertAuthorization(
+  request: IncomingMessage,
+  authorization: ResolvedAuthorizationPolicy,
+): void {
+  if (authorization.profile === "development-anonymous") return;
+  const header = request.headers.authorization;
+  const matched = typeof header === "string" ? /^Bearer ([^\s]+)$/u.exec(header) : null;
   const actualDigest = credentialDigest(matched?.[1] ?? "");
-  if (!timingSafeEqual(actualDigest, expectedCredentialDigest)) {
+  if (!timingSafeEqual(actualDigest, authorization.expectedCredentialDigest)) {
     throw new QueryApiError("QUERY_CREDENTIAL_INVALID", 401);
   }
 }
 
 function credentialDigest(value: string): Buffer {
   return createHash("sha256").update(value, "utf8").digest();
+}
+
+function resolveAuthorizationPolicy(
+  authorization: TelemetryHttpAuthorizationPolicy,
+): ResolvedAuthorizationPolicy {
+  if (authorization.profile === "development-anonymous") {
+    return Object.freeze({ profile: "development-anonymous" });
+  }
+  if (
+    authorization.bearerCredential.length < 16 ||
+    authorization.bearerCredential.length > 4_096
+  ) {
+    throw new QueryApiError("QUERY_CREDENTIAL_CONFIGURATION_INVALID", 500);
+  }
+  return Object.freeze({
+    profile: "bearer",
+    expectedCredentialDigest: credentialDigest(authorization.bearerCredential),
+  });
 }
 
 export function buildTaskTimelineQuery(taskId: string): string {

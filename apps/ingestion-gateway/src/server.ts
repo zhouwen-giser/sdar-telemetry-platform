@@ -25,6 +25,9 @@ import {
   type DomainSourceV1Validator,
   type DomainSourceWalPayload,
 } from "../../../packages/telemetry-contracts/src/index.js";
+import type {
+  TelemetryHttpAuthorizationPolicy,
+} from "../../../packages/telemetry-config/src/index.js";
 
 export const EVIDENCE_CONTRACT_HEADER = "x-sdar-evidence-contract";
 export const EVIDENCE_CONTRACT_VERSION = "sdar.evidence/v1";
@@ -37,15 +40,19 @@ export interface EvidenceV1BatchValidator {
 export interface EvidenceGatewayDependencies {
   readonly validator: EvidenceV1BatchValidator;
   readonly wal: DurableSegmentWal<EvidenceV1WalPayload>;
-  readonly bearerCredential: string;
+  readonly authorization: TelemetryHttpAuthorizationPolicy;
   readonly maximumRequestBytes?: number;
   readonly clock?: Readonly<{ now(): string }>;
   readonly domainSource?: Readonly<{
     validator: DomainSourceV1Validator;
     wal: DurableSegmentWal<DomainSourceWalPayload>;
-    bearerCredential: string;
+    authorization: TelemetryHttpAuthorizationPolicy;
   }>;
 }
+
+type ResolvedAuthorizationPolicy =
+  | Readonly<{ profile: "bearer"; expectedCredentialDigest: Buffer }>
+  | Readonly<{ profile: "development-anonymous" }>;
 
 export class EvidenceReceiverError extends Error {
   constructor(
@@ -253,11 +260,17 @@ export function createIngestionGateway(dependencies: EvidenceGatewayDependencies
   if (!Number.isSafeInteger(maximumRequestBytes) || maximumRequestBytes < 1) {
     throw new EvidenceReceiverError("EVIDENCE_REQUEST_LIMIT_INVALID", 500);
   }
-  const expectedCredentialDigest = credentialDigest(dependencies.bearerCredential);
-  const domainSourceCredentialDigest =
+  const authorization = resolveAuthorizationPolicy(
+    dependencies.authorization,
+    "EVIDENCE_CREDENTIAL_CONFIGURATION_INVALID",
+  );
+  const domainSourceAuthorization =
     dependencies.domainSource === undefined
       ? undefined
-      : credentialDigest(dependencies.domainSource.bearerCredential);
+      : resolveAuthorizationPolicy(
+          dependencies.domainSource.authorization,
+          "DOMAIN_SOURCE_CREDENTIAL_CONFIGURATION_INVALID",
+        );
 
   return http.createServer((request: IncomingMessage, response: ServerResponse) => {
     void handleRequest({
@@ -266,11 +279,11 @@ export function createIngestionGateway(dependencies: EvidenceGatewayDependencies
       receiver,
       validator: dependencies.validator,
       wal: dependencies.wal,
-      expectedCredentialDigest,
+      authorization,
       domainSourceReceiver,
       domainSourceValidator: dependencies.domainSource?.validator,
       domainSourceWal: dependencies.domainSource?.wal,
-      domainSourceCredentialDigest,
+      domainSourceAuthorization,
       maximumRequestBytes,
     }).catch((error: unknown) => sendError(response, error));
   });
@@ -322,12 +335,12 @@ interface RequestContext {
   receiver: EvidenceV1Receiver;
   validator: EvidenceV1BatchValidator;
   wal: DurableSegmentWal<EvidenceV1WalPayload>;
-  expectedCredentialDigest: Buffer;
+  authorization: ResolvedAuthorizationPolicy;
   maximumRequestBytes: number;
   domainSourceReceiver?: DomainSourceV1Receiver;
   domainSourceValidator?: DomainSourceV1Validator;
   domainSourceWal?: DurableSegmentWal<DomainSourceWalPayload>;
-  domainSourceCredentialDigest?: Buffer;
+  domainSourceAuthorization?: ResolvedAuthorizationPolicy;
 }
 
 async function handleRequest(context: RequestContext): Promise<void> {
@@ -353,7 +366,7 @@ async function handleRequest(context: RequestContext): Promise<void> {
   if (url.pathname !== "/v1/evidence/batches") {
     throw new EvidenceReceiverError("EVIDENCE_ROUTE_NOT_FOUND", 404);
   }
-  assertHeaders(request, context.expectedCredentialDigest);
+  assertHeaders(request, context.authorization);
   if (request.method === "HEAD") {
     response.writeHead(204);
     response.end();
@@ -385,13 +398,16 @@ async function handleDomainSourceRequest(context: RequestContext, pathname: stri
   if (
     context.domainSourceReceiver === undefined ||
     context.domainSourceValidator === undefined ||
-    context.domainSourceCredentialDigest === undefined
+    context.domainSourceWal === undefined
   ) {
     throw new EvidenceReceiverError("DOMAIN_SOURCE_ROUTE_NOT_CONFIGURED", 404);
   }
+  if (context.domainSourceAuthorization === undefined) {
+    throw new EvidenceReceiverError("DOMAIN_SOURCE_AUTHORIZATION_POLICY_INVALID", 500);
+  }
   assertContractHeaders(
     request,
-    context.domainSourceCredentialDigest,
+    context.domainSourceAuthorization,
     DOMAIN_SOURCE_V1_HEADER,
     DOMAIN_SOURCE_V1_CONTRACT,
     "DOMAIN_SOURCE",
@@ -424,24 +440,22 @@ async function handleDomainSourceRequest(context: RequestContext, pathname: stri
   sendJson(response, 202, await context.domainSourceReceiver.acceptSeal(seal));
 }
 
-function assertHeaders(request: IncomingMessage, expectedCredentialDigest: Buffer): void {
+function assertHeaders(
+  request: IncomingMessage,
+  authorization: ResolvedAuthorizationPolicy,
+): void {
   if (request.headers[LEGACY_CONTRACT_HEADER] !== undefined) {
     throw new EvidenceReceiverError("EVIDENCE_LEGACY_HEADER_FORBIDDEN", 400);
   }
   if (request.headers[EVIDENCE_CONTRACT_HEADER] !== EVIDENCE_CONTRACT_VERSION) {
     throw new EvidenceReceiverError("EVIDENCE_CONTRACT_HEADER_INVALID", 400);
   }
-  const authorization = request.headers.authorization;
-  const matched = typeof authorization === "string" ? /^Bearer ([^\s]+)$/u.exec(authorization) : null;
-  const actualDigest = credentialDigest(matched?.[1] ?? "");
-  if (!timingSafeEqual(actualDigest, expectedCredentialDigest)) {
-    throw new EvidenceReceiverError("EVIDENCE_CREDENTIAL_INVALID", 401);
-  }
+  assertBearerAuthorization(request, authorization, "EVIDENCE_CREDENTIAL_INVALID");
 }
 
 function assertContractHeaders(
   request: IncomingMessage,
-  expectedCredentialDigest: Buffer,
+  authorization: ResolvedAuthorizationPolicy,
   contractHeader: string,
   contractVersion: string,
   prefix: string,
@@ -456,10 +470,24 @@ function assertContractHeaders(
   if (request.headers[contractHeader] !== contractVersion) {
     throw new EvidenceReceiverError(`${prefix}_CONTRACT_HEADER_INVALID`, 400);
   }
-  const authorization = request.headers.authorization;
-  const matched = typeof authorization === "string" ? /^Bearer ([^\s]+)$/u.exec(authorization) : null;
-  if (!timingSafeEqual(credentialDigest(matched?.[1] ?? ""), expectedCredentialDigest)) {
-    throw new EvidenceReceiverError(`${prefix}_CREDENTIAL_INVALID`, 401);
+  assertBearerAuthorization(request, authorization, `${prefix}_CREDENTIAL_INVALID`);
+}
+
+function assertBearerAuthorization(
+  request: IncomingMessage,
+  authorization: ResolvedAuthorizationPolicy,
+  errorCode: string,
+): void {
+  if (authorization.profile === "development-anonymous") return;
+  const header = request.headers.authorization;
+  const matched = typeof header === "string" ? /^Bearer ([^\s]+)$/u.exec(header) : null;
+  if (
+    !timingSafeEqual(
+      credentialDigest(matched?.[1] ?? ""),
+      authorization.expectedCredentialDigest,
+    )
+  ) {
+    throw new EvidenceReceiverError(errorCode, 401);
   }
 }
 
@@ -606,6 +634,25 @@ function domainSourceRecoveredState(frames: readonly Readonly<{ payload: DomainS
 
 function credentialDigest(value: string): Buffer {
   return createHash("sha256").update(value, "utf8").digest();
+}
+
+function resolveAuthorizationPolicy(
+  authorization: TelemetryHttpAuthorizationPolicy,
+  errorCode: string,
+): ResolvedAuthorizationPolicy {
+  if (authorization.profile === "development-anonymous") {
+    return Object.freeze({ profile: "development-anonymous" });
+  }
+  if (
+    authorization.bearerCredential.length < 16 ||
+    authorization.bearerCredential.length > 4_096
+  ) {
+    throw new EvidenceReceiverError(errorCode, 500);
+  }
+  return Object.freeze({
+    profile: "bearer",
+    expectedCredentialDigest: credentialDigest(authorization.bearerCredential),
+  });
 }
 
 function sendJson(response: ServerResponse, statusCode: number, body: unknown): void {

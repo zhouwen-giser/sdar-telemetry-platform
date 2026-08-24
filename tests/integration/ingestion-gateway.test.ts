@@ -21,6 +21,9 @@ import type {
   EvidenceV1Record,
   EvidenceV1WalPayload,
 } from "../../packages/telemetry-types/src/index.js";
+import type {
+  TelemetryHttpAuthorizationPolicy,
+} from "../../packages/telemetry-config/src/index.js";
 import {
   DurableSegmentWal,
   evidenceWalPartition,
@@ -119,6 +122,46 @@ test("rejects missing or wrong auth/header and forbids the legacy header", async
     }
     assert.deepEqual(await wal.partitions(), []);
   });
+});
+
+test("development-anonymous skips only Evidence Bearer verification", async () => {
+  await withGateway(
+    async ({ baseUrl, wal }) => {
+      const invalidContract = await fetch(`${baseUrl}/v1/evidence/batches`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: "{}",
+      });
+      assert.equal(invalidContract.status, 400);
+      assert.deepEqual(await invalidContract.json(), {
+        errorCode: "EVIDENCE_CONTRACT_HEADER_INVALID",
+      });
+
+      const invalidSchema = await fetch(`${baseUrl}/v1/evidence/batches`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          [EVIDENCE_CONTRACT_HEADER]: EVIDENCE_CONTRACT_VERSION,
+        },
+        body: "{}",
+      });
+      assert.equal(invalidSchema.status, 400);
+      assert.deepEqual(await invalidSchema.json(), { errorCode: "EVIDENCE_SCHEMA_INVALID" });
+
+      const batch = await fixture();
+      const accepted = await fetch(`${baseUrl}/v1/evidence/batches`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          [EVIDENCE_CONTRACT_HEADER]: EVIDENCE_CONTRACT_VERSION,
+        },
+        body: JSON.stringify(batch),
+      });
+      assert.equal(accepted.status, 202);
+      assert.equal((await wal.recover(partition(batch))).length, 1);
+    },
+    { profile: "development-anonymous" },
+  );
 });
 
 test("POSTs the real runtime fixture and returns the strict one-field acknowledgement", async () => {
@@ -245,10 +288,16 @@ interface GatewayHarness {
   readonly wal: DurableSegmentWal<EvidenceV1WalPayload>;
 }
 
-async function withGateway(operation: (harness: GatewayHarness) => Promise<void>): Promise<void> {
+async function withGateway(
+  operation: (harness: GatewayHarness) => Promise<void>,
+  authorization: TelemetryHttpAuthorizationPolicy = {
+    profile: "bearer",
+    bearerCredential: credential,
+  },
+): Promise<void> {
   const directory = await mkdtemp(path.join(os.tmpdir(), "evidence-gateway-"));
   const wal = new DurableSegmentWal<EvidenceV1WalPayload>(directory);
-  const running = await startGateway(wal);
+  const running = await startGateway(wal, authorization);
   try {
     await operation({ ...running, wal });
   } finally {
@@ -259,11 +308,15 @@ async function withGateway(operation: (harness: GatewayHarness) => Promise<void>
 
 async function startGateway(
   wal: DurableSegmentWal<EvidenceV1WalPayload>,
+  authorization: TelemetryHttpAuthorizationPolicy = {
+    profile: "bearer",
+    bearerCredential: credential,
+  },
 ): Promise<{ baseUrl: string; server: Server }> {
   const server = createIngestionGateway({
     validator: await validatorPromise,
     wal,
-    bearerCredential: credential,
+    authorization,
     clock: { now: () => "2026-08-14T04:05:06.000Z" },
   });
   await new Promise<void>((resolve, reject) => {

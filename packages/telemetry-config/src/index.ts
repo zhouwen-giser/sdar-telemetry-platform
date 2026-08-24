@@ -1,6 +1,22 @@
 export type DomainProjectionMode = "disabled" | "shadow" | "dry_run" | "active";
 
+export type TelemetryAuthProfile = "bearer" | "development-anonymous";
+
+export type TelemetryHttpAuthorizationPolicy =
+  | Readonly<{ profile: "bearer"; bearerCredential: string }>
+  | Readonly<{ profile: "development-anonymous" }>;
+
+const HTTP_BEARER_ENVIRONMENT_FIELDS = [
+  "EVIDENCE_INGEST_BEARER_TOKEN",
+  "EVIDENCE_INGEST_BEARER_TOKEN_FILE",
+  "DOMAIN_SOURCE_INGEST_BEARER_TOKEN",
+  "DOMAIN_SOURCE_INGEST_BEARER_TOKEN_FILE",
+  "QUERY_API_BEARER_TOKEN",
+  "QUERY_API_BEARER_TOKEN_FILE",
+] as const;
+
 export interface PlatformConfig {
+  authProfile: TelemetryAuthProfile;
   walDir: string;
   walHighWaterBytes: number;
   gatewayPort: number;
@@ -23,6 +39,13 @@ export interface PlatformConfig {
 }
 
 export function loadConfig(environment: NodeJS.ProcessEnv = process.env): PlatformConfig {
+  const authProfile = enumeration(
+    environment["SDAR_TELEMETRY_AUTH_PROFILE"],
+    "bearer",
+    ["bearer", "development-anonymous"] as const,
+    "SDAR_TELEMETRY_AUTH_PROFILE_INVALID",
+  );
+  assertAuthProfileEnvironment(authProfile, environment);
   const leaseMs = integer(environment, "DOMAIN_PROJECTION_LEASE_MS", 30_000, 1_000, 300_000);
   const heartbeatMs = integer(
     environment,
@@ -33,6 +56,7 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): Platfo
   );
   if (heartbeatMs >= leaseMs) throw configError("DOMAIN_PROJECTION_HEARTBEAT_RANGE_INVALID");
   return Object.freeze({
+    authProfile,
     walDir: nonEmpty(environment["WAL_DIR"] ?? "./runtime/wal", "WAL_DIR_INVALID"),
     walHighWaterBytes: integer(
       environment,
@@ -89,6 +113,19 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): Platfo
       ),
     }),
   });
+}
+
+function assertAuthProfileEnvironment(
+  authProfile: TelemetryAuthProfile,
+  environment: NodeJS.ProcessEnv,
+): void {
+  if (authProfile !== "development-anonymous") return;
+  if (environment["NODE_ENV"] !== "development") {
+    throw configError("SDAR_TELEMETRY_DEVELOPMENT_ANONYMOUS_ENVIRONMENT_INVALID");
+  }
+  if (HTTP_BEARER_ENVIRONMENT_FIELDS.some((field) => environment[field] !== undefined)) {
+    throw configError("SDAR_TELEMETRY_DEVELOPMENT_ANONYMOUS_CREDENTIAL_CONFIGURED");
+  }
 }
 
 function integer(

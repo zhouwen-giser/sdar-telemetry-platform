@@ -19,6 +19,9 @@ import type {
   EvidenceV1BatchRequest,
   EvidenceV1WalPayload,
 } from "../../packages/telemetry-types/src/index.js";
+import type {
+  TelemetryHttpAuthorizationPolicy,
+} from "../../packages/telemetry-config/src/index.js";
 import {
   DurableSegmentWal,
   type WalDurabilityEvent,
@@ -68,6 +71,56 @@ test("Domain Source HEAD and POST require the independent exact contract header 
     }
     assert.equal(await domainWal.size(), 0);
   });
+});
+
+test("development-anonymous keeps the Domain Source route and all non-Bearer checks", async () => {
+  await withGateway(
+    async ({ baseUrl, domainWal }) => {
+      const head = await fetch(`${baseUrl}/v1/domain-source/batches`, {
+        method: "HEAD",
+        headers: { [DOMAIN_SOURCE_V1_HEADER]: DOMAIN_SOURCE_V1_CONTRACT },
+      });
+      assert.equal(head.status, 204);
+
+      const foreignHeader = await fetch(`${baseUrl}/v1/domain-source/batches`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          [DOMAIN_SOURCE_V1_HEADER]: DOMAIN_SOURCE_V1_CONTRACT,
+          "x-sdar-evidence-contract": "sdar.evidence/v1",
+        },
+        body: "{}",
+      });
+      assert.equal(foreignHeader.status, 400);
+      assert.deepEqual(await foreignHeader.json(), {
+        errorCode: "DOMAIN_SOURCE_FOREIGN_HEADER_FORBIDDEN",
+      });
+
+      const invalidMediaType = await fetch(`${baseUrl}/v1/domain-source/batches`, {
+        method: "POST",
+        headers: { [DOMAIN_SOURCE_V1_HEADER]: DOMAIN_SOURCE_V1_CONTRACT },
+        body: "{}",
+      });
+      assert.equal(invalidMediaType.status, 415);
+      assert.deepEqual(await invalidMediaType.json(), {
+        errorCode: "DOMAIN_SOURCE_CONTENT_TYPE_INVALID",
+      });
+
+      const batch = await commanderBatch();
+      const accepted = await fetch(`${baseUrl}/v1/domain-source/batches`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          [DOMAIN_SOURCE_V1_HEADER]: DOMAIN_SOURCE_V1_CONTRACT,
+        },
+        body: JSON.stringify(batch),
+      });
+      assert.equal(accepted.status, 202);
+      assert.equal((await domainWal.recover(partitionForBatch(batch))).length, 1);
+    },
+    [],
+    { profile: "development-anonymous" },
+  );
 });
 
 test("batch ACK is returned only after the immutable WAL segment and directory are fsynced", async () => {
@@ -211,12 +264,16 @@ interface Harness {
 async function withGateway(
   operation: (harness: Harness) => Promise<void>,
   durabilityEvents: WalDurabilityEvent[] = [],
+  domainSourceAuthorization: TelemetryHttpAuthorizationPolicy = {
+    profile: "bearer",
+    bearerCredential: credential,
+  },
 ): Promise<void> {
   const root = await mkdtemp(path.join(os.tmpdir(), "domain-source-gateway-"));
   const wal = new DurableSegmentWal<DomainSourceWalPayload>(path.join(root, "domain"), undefined, {
     onDurabilityEvent: (event) => durabilityEvents.push(event),
   });
-  const running = await startGateway(root, wal);
+  const running = await startGateway(root, wal, domainSourceAuthorization);
   try {
     await operation({ ...running, domainWal: wal });
   } finally {
@@ -228,6 +285,10 @@ async function withGateway(
 async function startGateway(
   root: string,
   domainWal: DurableSegmentWal<DomainSourceWalPayload>,
+  domainSourceAuthorization: TelemetryHttpAuthorizationPolicy = {
+    profile: "bearer",
+    bearerCredential: credential,
+  },
 ): Promise<{ baseUrl: string; server: Server }> {
   const evidenceWal = new DurableSegmentWal<EvidenceV1WalPayload>(path.join(root, "evidence"));
   const server = createIngestionGateway({
@@ -237,12 +298,15 @@ async function startGateway(
       },
     },
     wal: evidenceWal,
-    bearerCredential: "unused-evidence-token-12345",
+    authorization: {
+      profile: "bearer",
+      bearerCredential: "unused-evidence-token-12345",
+    },
     clock: { now: () => "2026-08-17T08:30:00.000Z" },
     domainSource: {
       validator: await validatorPromise,
       wal: domainWal,
-      bearerCredential: credential,
+      authorization: domainSourceAuthorization,
     },
   });
   await new Promise<void>((resolve, reject) => {

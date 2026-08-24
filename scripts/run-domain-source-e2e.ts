@@ -138,8 +138,15 @@ async function startGateway(
       },
     },
     wal: evidenceWal,
-    bearerCredential: randomBytes(32).toString("hex"),
-    domainSource: { validator, wal: domainWal, bearerCredential },
+    authorization: {
+      profile: "bearer",
+      bearerCredential: randomBytes(32).toString("hex"),
+    },
+    domainSource: {
+      validator,
+      wal: domainWal,
+      authorization: { profile: "bearer", bearerCredential },
+    },
   });
   await new Promise<void>((resolve, reject) => {
     gateway.once("error", reject);

@@ -18,6 +18,9 @@ import {
   type QueryClickHouseClient,
 } from "../../apps/query-api/src/server.js";
 import type { ClickHouseQueryOptions } from "../../packages/telemetry-clickhouse/src/index.js";
+import type {
+  TelemetryHttpAuthorizationPolicy,
+} from "../../packages/telemetry-config/src/index.js";
 
 const watermark = "2026-08-14T04:05:06.123Z";
 const watermarkMilliseconds = Date.parse(watermark);
@@ -53,7 +56,11 @@ test("Query API credential configuration accepts exactly one inline or file sour
     /QUERY_CREDENTIAL_CONFIGURATION_INVALID/u,
   );
   assert.throws(
-    () => createQueryApi({ clickHouse: new FakeClickHouse(), bearerCredential: "short" }),
+    () =>
+      createQueryApi({
+        clickHouse: new FakeClickHouse(),
+        authorization: { profile: "bearer", bearerCredential: "short" },
+      }),
     /QUERY_CREDENTIAL_CONFIGURATION_INVALID/u,
   );
   await rm(directory, { recursive: true });
@@ -217,6 +224,29 @@ test("all evidence queries require the independent Query API Bearer credential",
   assert.deepEqual(clickHouse.calls, []);
 });
 
+test("development-anonymous skips only Query API Bearer verification", async () => {
+  const clickHouse = new FakeClickHouse(clickHouseJson([]));
+  await withQueryApi(
+    clickHouse,
+    async (baseUrl) => {
+      const timeline = await fetch(`${baseUrl}/v1/tasks/task-1/timeline`);
+      assert.equal(timeline.status, 200);
+      assert.deepEqual(((await timeline.json()) as QueryEnvelope).data, []);
+
+      const method = await fetch(`${baseUrl}/v1/tasks/task-1/timeline`, { method: "POST" });
+      assert.equal(method.status, 405);
+      assert.equal(method.headers.get("allow"), "GET");
+      assert.deepEqual(await method.json(), { errorCode: "QUERY_METHOD_INVALID" });
+
+      const route = await fetch(`${baseUrl}/v1/unknown`);
+      assert.equal(route.status, 404);
+      assert.deepEqual(await route.json(), { errorCode: "QUERY_ROUTE_NOT_FOUND" });
+    },
+    { profile: "development-anonymous" },
+  );
+  assert.equal(clickHouse.calls.length, 1);
+});
+
 test("ClickHouse string expressions contain only a fixed function and UTF-8 hex", () => {
   const value = "'\\); SELECT secret FROM system.tables -- 零";
   const expectedHex = Buffer.from(value, "utf8").toString("hex");
@@ -361,10 +391,14 @@ function clickHouseJson(rows: readonly Record<string, unknown>[]): string {
 async function withQueryApi(
   clickHouse: QueryClickHouseClient,
   operation: (baseUrl: string) => Promise<void>,
+  authorization: TelemetryHttpAuthorizationPolicy = {
+    profile: "bearer",
+    bearerCredential: queryCredential,
+  },
 ): Promise<void> {
   const server = createQueryApi({
     clickHouse,
-    bearerCredential: queryCredential,
+    authorization,
     maxResultRows: 321,
   });
   await new Promise<void>((resolve, reject) => {
