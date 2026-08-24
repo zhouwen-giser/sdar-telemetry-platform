@@ -7,10 +7,14 @@ COPY packages packages
 COPY scripts scripts
 COPY types types
 COPY integrations integrations
-RUN --mount=type=cache,id=sdar-telemetry-npm-cache,target=/root/.npm,sharing=locked \
-    npm ci --include=dev --ignore-scripts --prefer-offline \
+COPY vendor/npm-cache /app/vendor/npm-cache
+RUN node scripts/vendor-npm-cache.mjs verify \
+      --lock package-lock.json --cache /app/vendor/npm-cache \
+    && npm ci --offline --cache=/app/vendor/npm-cache \
+      --include=dev --ignore-scripts --no-audit --no-fund --no-update-notifier \
     && npm run build \
-    && npm prune --omit=dev --ignore-scripts
+    && npm prune --offline --omit=dev --ignore-scripts \
+      --no-audit --no-fund --no-update-notifier
 
 FROM node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
 WORKDIR /app

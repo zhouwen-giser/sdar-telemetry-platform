@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "lockfile": "package-lock.json",
+    "lockfileSha256": "a036cf6577f2f38d8e6d469609287bfd0b083026cd91d8e4b39704e6449df14b",
+    "registryOrigin": "https://registry.npmjs.org"
+  },
+  "cacheFormat": {
+    "content": "content-v2",
+    "index": "index-v5",
+    "npmConsumerVersion": "10.9.8",
+    "indexMetadataPolicy": "deterministic URL and compression only; no copied host headers, credentials, or timestamps"
+  },
+  "licenseObservationScope": "Values are package-lock metadata observations, not legal review or clearance.",
+  "licenseObservations": {
+    "Apache-2.0": 1,
+    "BSD-3-Clause": 1,
+    "ISC": 2,
+    "MIT": 18
+  },
+  "totals": {
+    "packages": 22,
+    "contentObjects": 22,
+    "indexEntries": 22,
+    "contentBytes": 5097438,
+    "indexBytes": 8768,
+    "cacheBytes": 5106206
+  },
+  "aggregateContentSha256": "8609bec9c3179cb62fe7efbc049ad17665405ed6e90bd1c058854d97115968f0",
+  "packages": [
+    {
+      "name": "@types/node",
+      "version": "22.15.30",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-22.15.30.tgz",
+      "integrity": "sha512-6Q7lr06bEHdlfplU6YRbgG1SFBdlsfNC4/lX+SkhiTs0cpJkOElmWls8PxDFv4yY/xKb8Y6SO0OmSX4wgqTZbA==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/e9/0e/e5af4e9b1077657e9954e9845b806d52141765b1f342e3f957f92921893b347292643849665a5b3c3f10c5bf8c98ff129bf18e923b43a6497e3082a4d96c",
+      "sha512": "e90ee5af4e9b1077657e9954e9845b806d52141765b1f342e3f957f92921893b347292643849665a5b3c3f10c5bf8c98ff129bf18e923b43a6497e3082a4d96c",
+      "size": 434664,
+      "indexPath": "_cacache/index-v5/b8/88/3ef8d17a3cb4c1c235972164de0a7c7c0a3296768c2bffda0ab77de36590"
+    },
+    {
+      "name": "ajv",
+      "version": "8.17.1",
+      "resolved": "https://registry.npmjs.org/ajv/-/ajv-8.17.1.tgz",
+      "integrity": "sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/07/f8/01b8d8394a2313acf902f80dbe716d11b33c316269fa558c41fe29e5052b52e67c7ac4722dfde84a46120c86abac97b6bc2e34286678c2b39be1c31390d6",
+      "sha512": "07f801b8d8394a2313acf902f80dbe716d11b33c316269fa558c41fe29e5052b52e67c7ac4722dfde84a46120c86abac97b6bc2e34286678c2b39be1c31390d6",
+      "size": 217137,
+      "indexPath": "_cacache/index-v5/69/b1/2ef448308d0ef183c778909bf4487dd67a7f072ab5802921276737e60d97"
+    },
+    {
+      "name": "fast-deep-equal",
+      "version": "3.1.3",
+      "resolved": "https://registry.npmjs.org/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz",
+      "integrity": "sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/7f/7a/90f68432f63d808417bf1fd542f75c0b98a042094fe00ce9ca340606e61b303bb04b2a3d3d1dce4760dcfd70623efb19690c22200da8ad56cd3701347ce1",
+      "sha512": "7f7a90f68432f63d808417bf1fd542f75c0b98a042094fe00ce9ca340606e61b303bb04b2a3d3d1dce4760dcfd70623efb19690c22200da8ad56cd3701347ce1",
+      "size": 3656,
+      "indexPath": "_cacache/index-v5/8d/f8/aefda99ca03a1004596e312ea5d597c682502fb85fe4283d6c1079cacd8f"
+    },
+    {
+      "name": "fast-uri",
+      "version": "3.1.6",
+      "resolved": "https://registry.npmjs.org/fast-uri/-/fast-uri-3.1.6.tgz",
+      "integrity": "sha512-7Ical1vFEMr0onbVzEDIreM22I4khW+fzyQPwvAFWBp1iwdshSZRsL4jjRvPG9JP1uiqMHRto+YU6R2/CzDz5Q==",
+      "licenseObservation": "BSD-3-Clause",
+      "contentPath": "_cacache/content-v2/sha512/ec/87/1a975bc510caf4a276d5cc40c8ade336d88e24856f9fcf240fc2f005581a758b076c852651b0be238d1bcf1bd24fd6e8aa30746da3e614e91dbf0b30f3e5",
+      "sha512": "ec871a975bc510caf4a276d5cc40c8ade336d88e24856f9fcf240fc2f005581a758b076c852651b0be238d1bcf1bd24fd6e8aa30746da3e614e91dbf0b30f3e5",
+      "size": 42968,
+      "indexPath": "_cacache/index-v5/9f/fa/ec9ad00c1ae61b642f8cea65d4864ca64497121acc4f99c1a46202c2a8aa"
+    },
+    {
+      "name": "json-schema-traverse",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz",
+      "integrity": "sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/34/cf/3f3fd9f75e35e12199f594b86415a0024ce5114178d6855e0103f4673aff31be0aadaa9017f483b89914314b1d51968e2dab37aa6f4b0e96bb9a3b2dddba",
+      "sha512": "34cf3f3fd9f75e35e12199f594b86415a0024ce5114178d6855e0103f4673aff31be0aadaa9017f483b89914314b1d51968e2dab37aa6f4b0e96bb9a3b2dddba",
+      "size": 6074,
+      "indexPath": "_cacache/index-v5/2d/ea/18f75527ac37299e70f06aad31fb38c55d9ffb7d576a3961d46b9f85720a"
+    },
+    {
+      "name": "pg",
+      "version": "8.16.3",
+      "resolved": "https://registry.npmjs.org/pg/-/pg-8.16.3.tgz",
+      "integrity": "sha512-enxc1h0jA/aq5oSDMvqyW3q89ra6XIIDZgCX9vkMrnz5DFTw/Ny3Li2lFQ+pt3L6MCgm/5o2o8HW9hiJji+xvw==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/7a/7c/5cd61d2303f6aae6848332fab25b7abcf6b6ba5c8203660097f6f90cae7cf90c54f0fcdcb72e2da5150fa9b772fa302826ff9a36a3c1d6f618898e2fb1bf",
+      "sha512": "7a7c5cd61d2303f6aae6848332fab25b7abcf6b6ba5c8203660097f6f90cae7cf90c54f0fcdcb72e2da5150fa9b772fa302826ff9a36a3c1d6f618898e2fb1bf",
+      "size": 24885,
+      "indexPath": "_cacache/index-v5/11/7b/8a0e396390b58054608d86f1f5940dbe8297c24521f173fdc49bd26bcf6b"
+    },
+    {
+      "name": "pg-cloudflare",
+      "version": "1.4.0",
+      "resolved": "https://registry.npmjs.org/pg-cloudflare/-/pg-cloudflare-1.4.0.tgz",
+      "integrity": "sha512-Vo7z/6rrQYxpNRylp4Tlob2elzbh+N/MOQbxFVWCxS7oEx6jF53GTJFxK2WWpKuBRkmiin4Mt+xofFDjx09R0A==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/56/8e/f3ffaaeb418c69351ca5a784e5a1bd9e9736e1f8dfcc3906f1155582c52ee8131ea3179dc64c91712b6596a4ab814649a28a7e0cb7ec687c50e3c74f51d0",
+      "sha512": "568ef3ffaaeb418c69351ca5a784e5a1bd9e9736e1f8dfcc3906f1155582c52ee8131ea3179dc64c91712b6596a4ab814649a28a7e0cb7ec687c50e3c74f51d0",
+      "size": 6938,
+      "indexPath": "_cacache/index-v5/86/0c/8449635a499c1c1f44f2b6380cea2715c6e3ebe03e524b37d6fe263a4ebb"
+    },
+    {
+      "name": "pg-connection-string",
+      "version": "2.14.0",
+      "resolved": "https://registry.npmjs.org/pg-connection-string/-/pg-connection-string-2.14.0.tgz",
+      "integrity": "sha512-XwWDGcLRGCXAR8F/AM5bG7Q+A3Wm2s6QeEjlOKZLlH3UYcguiqCWKyWXVag5TLTIjR7oOJUY8kcADaZgWPyLeg==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/5f/05/8319c2d11825c047c17f00ce5b1bb43e0375a6dace907848e538a64b947dd461c82e8aa0962b259755a8394cb4c88d1ee8389518f247000da66058fc8b7a",
+      "sha512": "5f058319c2d11825c047c17f00ce5b1bb43e0375a6dace907848e538a64b947dd461c82e8aa0962b259755a8394cb4c88d1ee8389518f247000da66058fc8b7a",
+      "size": 5825,
+      "indexPath": "_cacache/index-v5/b0/67/37231a71c60a62030abda7158f45c20266623bd2420141def58a58121c2c"
+    },
+    {
+      "name": "pg-int8",
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/pg-int8/-/pg-int8-1.0.1.tgz",
+      "integrity": "sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==",
+      "licenseObservation": "ISC",
+      "contentPath": "_cacache/content-v2/sha512/58/2b/5a6d2eadddcf129290c15256f59233acee5ebac6c19d2a920f66c838c11f81dfebbd500ba6da8752b05f6d9efc60f348786712d6332e294633ac148a90a7",
+      "sha512": "582b5a6d2eadddcf129290c15256f59233acee5ebac6c19d2a920f66c838c11f81dfebbd500ba6da8752b05f6d9efc60f348786712d6332e294633ac148a90a7",
+      "size": 1508,
+      "indexPath": "_cacache/index-v5/f1/44/cf52860ef2ac0b2a06d907c20d37c3a2182e836b3062f58eb27077317544"
+    },
+    {
+      "name": "pg-pool",
+      "version": "3.14.0",
+      "resolved": "https://registry.npmjs.org/pg-pool/-/pg-pool-3.14.0.tgz",
+      "integrity": "sha512-gKtPkFdQPU3DksooVLi9LsjZxrsBUZIpa+7aVx+LV5pNh0KzP4Zleud2po+ConrxbuXGBJ6Hfer6hdgpIBpBaw==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/80/ab/4f9057503d4dc392ca2854b8bd2ec8d9c6bb015192296beeda571f8b579a4d8742b33f86657ae776a68f82a27af16ee5c6049e877deafa85d829201a416b",
+      "sha512": "80ab4f9057503d4dc392ca2854b8bd2ec8d9c6bb015192296beeda571f8b579a4d8742b33f86657ae776a68f82a27af16ee5c6049e877deafa85d829201a416b",
+      "size": 9579,
+      "indexPath": "_cacache/index-v5/c8/61/53f02412ff2fc3a3b5ec4806ccf1e7aab0888801d6f232a9311384b37a9b"
+    },
+    {
+      "name": "pg-protocol",
+      "version": "1.16.0",
+      "resolved": "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.16.0.tgz",
+      "integrity": "sha512-sILXutLVjCLjcDuOmvhX5e2Z4cS5qG/6Bu3VkpFwdf/633ElGLpEh9bgmuI5I4sqKqkifQiGyiCcx1HdtrK7tg==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/b0/82/d7bad2d58c22e3703b8e9af857e5ed99e1c4b9a86ffa06edd592917075fffadf712518ba4487d6e09ae239238b2a2aa9227d0886ca209cc751ddb6b2bbb6",
+      "sha512": "b082d7bad2d58c22e3703b8e9af857e5ed99e1c4b9a86ffa06edd592917075fffadf712518ba4487d6e09ae239238b2a2aa9227d0886ca209cc751ddb6b2bbb6",
+      "size": 39412,
+      "indexPath": "_cacache/index-v5/4d/7d/74be32029cceffff84e7c429799d51cf0f7435c9eec95ba3daac65b4562c"
+    },
+    {
+      "name": "pg-types",
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/pg-types/-/pg-types-2.2.0.tgz",
+      "integrity": "sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/a9/30/0096b12c97cb383a211063af700ef70c21d40deb0773e688d088ecba61132eca7c5e9ce3743b9a02a4923a96c85ceac720018f2abc9d8e9ffa7e09763418",
+      "sha512": "a9300096b12c97cb383a211063af700ef70c21d40deb0773e688d088ecba61132eca7c5e9ce3743b9a02a4923a96c85ceac720018f2abc9d8e9ffa7e09763418",
+      "size": 10344,
+      "indexPath": "_cacache/index-v5/2c/1e/91ad3155089bbff8af3021b9acd58bd8222b57c1108a8bafc4a5251e152c"
+    },
+    {
+      "name": "pgpass",
+      "version": "1.0.5",
+      "resolved": "https://registry.npmjs.org/pgpass/-/pgpass-1.0.5.tgz",
+      "integrity": "sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/15/d5/bdaff8d066149ea21b35677b08d72c4540d16f31c9e67ee8f85813144f13ab0322cc693704d5a00c0624e56cc35a5ef04242e562d11ee177cb9d0d23fbba",
+      "sha512": "15d5bdaff8d066149ea21b35677b08d72c4540d16f31c9e67ee8f85813144f13ab0322cc693704d5a00c0624e56cc35a5ef04242e562d11ee177cb9d0d23fbba",
+      "size": 4280,
+      "indexPath": "_cacache/index-v5/c5/31/7bec4fadfbd057e2b2e801050a0987f7c34b96e43ae5cd18fe029fee427e"
+    },
+    {
+      "name": "postgres-array",
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/postgres-array/-/postgres-array-2.0.0.tgz",
+      "integrity": "sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/56/96/6b52a53903af5e4325b6739080d63b4b79c0ac37653f6c3e958a5ac50d6ab9fb95081153bb9dacd2dd311c1dfd73b8f60efeca86bd4bd6eb683ce915d9b8",
+      "sha512": "56966b52a53903af5e4325b6739080d63b4b79c0ac37653f6c3e958a5ac50d6ab9fb95081153bb9dacd2dd311c1dfd73b8f60efeca86bd4bd6eb683ce915d9b8",
+      "size": 2213,
+      "indexPath": "_cacache/index-v5/d8/68/2ccc4f5419612d6589707007cc9e166f10f83934c1d58cf18fc54f4421fd"
+    },
+    {
+      "name": "postgres-bytea",
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/postgres-bytea/-/postgres-bytea-1.0.1.tgz",
+      "integrity": "sha512-5+5HqXnsZPE65IJZSMkZtURARZelel2oXUEO8rH83VS/hxH5vv1uHquPg5wZs8yMAfdv971IU+kcPUczi7NVBQ==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/e7/ee/47a979ec64f13ae4825948c919b544404597a57a5da85d410ef2b1fcdd54bf8711f9befd6e1eab8f839c19b3cc8c01f76ff7bd4853e91c3d47338bb35505",
+      "sha512": "e7ee47a979ec64f13ae4825948c919b544404597a57a5da85d410ef2b1fcdd54bf8711f9befd6e1eab8f839c19b3cc8c01f76ff7bd4853e91c3d47338bb35505",
+      "size": 1724,
+      "indexPath": "_cacache/index-v5/fc/63/3196c1979679042290850577369860b49f1391c279c79982941dcd31991b"
+    },
+    {
+      "name": "postgres-date",
+      "version": "1.0.7",
+      "resolved": "https://registry.npmjs.org/postgres-date/-/postgres-date-1.0.7.tgz",
+      "integrity": "sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/b2/e0/e68cb55083bf2730ad94678e788401be3805be1d03d9ea7fbe4cd0d45fe2f4fae5252f2c27a3124a0e8bb9d599becd30a3ac297436ae89f42e613fdbcafd",
+      "sha512": "b2e0e68cb55083bf2730ad94678e788401be3805be1d03d9ea7fbe4cd0d45fe2f4fae5252f2c27a3124a0e8bb9d599becd30a3ac297436ae89f42e613fdbcafd",
+      "size": 2836,
+      "indexPath": "_cacache/index-v5/4f/4e/20c89d4c9d8a8a6e0407099b875826862a3a5ffca2d67d2b75129ab3421d"
+    },
+    {
+      "name": "postgres-interval",
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/postgres-interval/-/postgres-interval-1.2.0.tgz",
+      "integrity": "sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/f5/98/5728cfebc37e74375a2fb961db1b19c687f48d278727c4788cd2bc44e15378d70b20f0ff335a7f61bff6ee2b4d113f85af94ecabfd10438a9b72c556e465",
+      "sha512": "f5985728cfebc37e74375a2fb961db1b19c687f48d278727c4788cd2bc44e15378d70b20f0ff335a7f61bff6ee2b4d113f85af94ecabfd10438a9b72c556e465",
+      "size": 2926,
+      "indexPath": "_cacache/index-v5/17/fa/e9d0409c4a453fa0e1ec562f099edf0c0ee408a36fa2c7800fc3ddcb7d69"
+    },
+    {
+      "name": "require-from-string",
+      "version": "2.0.2",
+      "resolved": "https://registry.npmjs.org/require-from-string/-/require-from-string-2.0.2.tgz",
+      "integrity": "sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/5d/fd/2759ee91b1ece214cbbe029f5b8a251b9a996ae92f7fa7eef0ed85cffc904786b5030d48706bebc0372b9bbaa7d9593bde53ffc36151ac0c6ed128bfef13",
+      "sha512": "5dfd2759ee91b1ece214cbbe029f5b8a251b9a996ae92f7fa7eef0ed85cffc904786b5030d48706bebc0372b9bbaa7d9593bde53ffc36151ac0c6ed128bfef13",
+      "size": 1816,
+      "indexPath": "_cacache/index-v5/c3/db/483e6b07a338fc56daa546a5c7d73c769d72f488be87ff50117370bdf004"
+    },
+    {
+      "name": "split2",
+      "version": "4.2.0",
+      "resolved": "https://registry.npmjs.org/split2/-/split2-4.2.0.tgz",
+      "integrity": "sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==",
+      "licenseObservation": "ISC",
+      "contentPath": "_cacache/content-v2/sha512/51/c8/dc24e5a49eb36417a3cb5fcdea70733a28781528d915eb663c6b9b980d5bfdc9d19057000730aa877498ded554d6a658c6d1662908386b09d00e607e135a",
+      "sha512": "51c8dc24e5a49eb36417a3cb5fcdea70733a28781528d915eb663c6b9b980d5bfdc9d19057000730aa877498ded554d6a658c6d1662908386b09d00e607e135a",
+      "size": 4668,
+      "indexPath": "_cacache/index-v5/6e/27/e0e109737591117c80b7bfe42acbf7883d2aeeb26d019d11537373ec6793"
+    },
+    {
+      "name": "typescript",
+      "version": "5.8.3",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.8.3.tgz",
+      "integrity": "sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==",
+      "licenseObservation": "Apache-2.0",
+      "contentPath": "_cacache/content-v2/sha512/a7/57/625ba4ea2fd2f4ee7371bd130cee130cc387395cea3fd626cbe1a0081a6480b7db254c4d57830e4a5aea1fdae4cebc283d058ed9462f86685fbbb1f80f79",
+      "sha512": "a757625ba4ea2fd2f4ee7371bd130cee130cc387395cea3fd626cbe1a0081a6480b7db254c4d57830e4a5aea1fdae4cebc283d058ed9462f86685fbbb1f80f79",
+      "size": 4250436,
+      "indexPath": "_cacache/index-v5/2c/8c/dee73f255025da3a3aa2f652826821070e2a526acbcda1c77a2baa30c1fe"
+    },
+    {
+      "name": "undici-types",
+      "version": "6.21.0",
+      "resolved": "https://registry.npmjs.org/undici-types/-/undici-types-6.21.0.tgz",
+      "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/8b/00/d9aa0d10006ae0f516afe47e27d0ceb87379a4479f5c27ac10a7eec2e2723482c984c5a79d6982cd3b8e1e4f802d041c236d38863cc96dd8c7744fd1fd25",
+      "sha512": "8b00d9aa0d10006ae0f516afe47e27d0ceb87379a4479f5c27ac10a7eec2e2723482c984c5a79d6982cd3b8e1e4f802d041c236d38863cc96dd8c7744fd1fd25",
+      "size": 21020,
+      "indexPath": "_cacache/index-v5/e8/ad/09d01e1a140286a104a3deaa2cda92fe426a5115039ba9b221f230288b0c"
+    },
+    {
+      "name": "xtend",
+      "version": "4.0.2",
+      "resolved": "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz",
+      "integrity": "sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==",
+      "licenseObservation": "MIT",
+      "contentPath": "_cacache/content-v2/sha512/2c/a6/14d620172575200179fd5118e2bbe3168725171ecbdfa7b99cb989bd75250a2b4fc28edad4c050310fcdbf98259bb4bb068c521a774c08b28778ceb4c011",
+      "sha512": "2ca614d620172575200179fd5118e2bbe3168725171ecbdfa7b99cb989bd75250a2b4fc28edad4c050310fcdbf98259bb4bb068c521a774c08b28778ceb4c011",
+      "size": 2529,
+      "indexPath": "_cacache/index-v5/be/b6/fa4dbd3ad4b02fca6f5793d20843c1561fcc2f01d54c0df79a799a4195a2"
+    }
+  ]
+}

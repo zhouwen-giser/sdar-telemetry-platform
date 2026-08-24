@@ -1,7 +1,10 @@
 from pathlib import Path
+import base64
+import hashlib
 import json
 import os
 import re
+from urllib.parse import urlparse
 
 
 DOCKERFILE_FRONTEND = (
@@ -12,13 +15,17 @@ NODE_22_ALPINE_BASE = (
     "node:22-alpine@sha256:"
     "c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
 )
-LOCKED_NPM_BUILD_LINES = [
-    "RUN --mount=type=cache,id=sdar-telemetry-npm-cache,target=/root/.npm,sharing=locked \\",
-    "    npm ci --include=dev --ignore-scripts --prefer-offline \\",
+OFFLINE_NPM_BUILD_LINES = [
+    "RUN node scripts/vendor-npm-cache.mjs verify \\",
+    "      --lock package-lock.json --cache /app/vendor/npm-cache \\",
+    "    && npm ci --offline --cache=/app/vendor/npm-cache \\",
+    "      --include=dev --ignore-scripts --no-audit --no-fund --no-update-notifier \\",
     "    && npm run build \\",
-    "    && npm prune --omit=dev --ignore-scripts",
+    "    && npm prune --offline --omit=dev --ignore-scripts \\",
+    "      --no-audit --no-fund --no-update-notifier",
 ]
-LOCKED_NPM_BUILD_INSTRUCTION = "\n".join(LOCKED_NPM_BUILD_LINES)
+OFFLINE_NPM_BUILD_INSTRUCTION = "\n".join(OFFLINE_NPM_BUILD_LINES)
+VENDOR_CACHE_COPY = "COPY vendor/npm-cache /app/vendor/npm-cache"
 
 
 def compose_service(document: str, service_name: str) -> str:
@@ -90,6 +97,209 @@ def assert_node_base_image_contract(document: str) -> None:
     )
 
 
+def vendor_cache_descriptors(package_lock: dict[str, object]) -> list[dict[str, object]]:
+    packages = package_lock.get("packages")
+    assert isinstance(packages, dict), "npm lock must contain the complete packages graph"
+    descriptors: list[dict[str, object]] = []
+    for lock_path, value in sorted(packages.items()):
+        if lock_path == "":
+            continue
+        assert isinstance(value, dict), f"invalid npm lock entry: {lock_path}"
+        name = lock_path.split("node_modules/")[-1]
+        version = value.get("version")
+        resolved = value.get("resolved")
+        integrity = value.get("integrity")
+        assert all(isinstance(field, str) for field in [name, version, resolved, integrity]), (
+            f"npm lock entry is incomplete: {lock_path}"
+        )
+        parsed_url = urlparse(resolved)
+        assert (
+            parsed_url.scheme == "https"
+            and parsed_url.netloc == "registry.npmjs.org"
+            and parsed_url.username is None
+            and parsed_url.password is None
+            and not parsed_url.query
+            and not parsed_url.fragment
+        ), f"npm lock URL is outside the exact HTTPS npm registry origin: {resolved}"
+        assert integrity.startswith("sha512-"), f"unsupported npm integrity: {integrity}"
+        expected_sha512 = base64.b64decode(integrity.removeprefix("sha512-"), validate=True)
+        assert len(expected_sha512) == 64, f"invalid npm SHA-512 integrity: {integrity}"
+        sha512_hex = expected_sha512.hex()
+        content_path = (
+            f"_cacache/content-v2/sha512/{sha512_hex[:2]}/"
+            f"{sha512_hex[2:4]}/{sha512_hex[4:]}"
+        )
+        index_key = f"make-fetch-happen:request-cache:{resolved}"
+        index_hash = hashlib.sha256(index_key.encode()).hexdigest()
+        descriptors.append(
+            {
+                "lockPath": lock_path,
+                "name": name,
+                "version": version,
+                "resolved": resolved,
+                "integrity": integrity,
+                "licenseObservation": value.get("license", "UNDECLARED"),
+                "contentPath": content_path,
+                "sha512": sha512_hex,
+                "indexPath": (
+                    f"_cacache/index-v5/{index_hash[:2]}/"
+                    f"{index_hash[2:4]}/{index_hash[4:]}"
+                ),
+                "indexKey": index_key,
+            }
+        )
+    assert descriptors, "npm lock must contain a package closure"
+    assert len({entry["contentPath"] for entry in descriptors}) == len(descriptors), (
+        "npm lock closure must have unique content objects"
+    )
+    assert len({entry["indexPath"] for entry in descriptors}) == len(descriptors), (
+        "npm lock closure must have unique exact URL index entries"
+    )
+    return descriptors
+
+
+def canonical_vendor_index(entry: dict[str, object], size: int) -> bytes:
+    record = {
+        "key": entry["indexKey"],
+        "integrity": entry["integrity"],
+        "time": 1,
+        "size": size,
+        "metadata": {
+            "time": 1,
+            "url": entry["resolved"],
+            "options": {"compress": True},
+        },
+    }
+    serialized = json.dumps(record, separators=(",", ":"))
+    record_hash = hashlib.sha1(serialized.encode()).hexdigest()
+    return f"\n{record_hash}\t{serialized}".encode()
+
+
+def assert_vendor_cache_contract(
+    root: Path,
+    package_lock_path: Path,
+    package_lock: dict[str, object],
+) -> dict[str, object]:
+    cache_root = root / "vendor/npm-cache"
+    manifest_path = cache_root / "manifest.json"
+    descriptors = vendor_cache_descriptors(package_lock)
+    content_by_path: dict[str, bytes] = {}
+    index_by_path: dict[str, bytes] = {}
+    rows: list[dict[str, object]] = []
+
+    for entry in descriptors:
+        content_path = cache_root / str(entry["contentPath"])
+        assert content_path.is_file() and not content_path.is_symlink(), (
+            f"vendor cache content is missing or unsafe: {entry['contentPath']}"
+        )
+        content = content_path.read_bytes()
+        actual_sha512 = hashlib.sha512(content).hexdigest()
+        assert actual_sha512 == entry["sha512"], (
+            f"vendor cache content SHA-512 mismatch: {entry['contentPath']}"
+        )
+        content_by_path[str(entry["contentPath"])] = content
+
+        index_path = cache_root / str(entry["indexPath"])
+        assert index_path.is_file() and not index_path.is_symlink(), (
+            f"vendor cache index is missing or unsafe: {entry['indexPath']}"
+        )
+        index_content = index_path.read_bytes()
+        assert index_content == canonical_vendor_index(entry, len(content)), (
+            f"vendor cache index is not canonical: {entry['indexPath']}"
+        )
+        index_by_path[str(entry["indexPath"])] = index_content
+        rows.append(
+            {
+                key: value
+                for key, value in entry.items()
+                if key not in {"lockPath", "indexKey"}
+            }
+            | {"size": len(content)}
+        )
+        rows[-1] = {
+            key: rows[-1][key]
+            for key in [
+                "name",
+                "version",
+                "resolved",
+                "integrity",
+                "licenseObservation",
+                "contentPath",
+                "sha512",
+                "size",
+                "indexPath",
+            ]
+        }
+
+    aggregate = hashlib.sha256()
+    for entry in descriptors:
+        content = content_by_path[str(entry["contentPath"])]
+        aggregate.update(f"{entry['integrity']}\0{len(content)}\0".encode())
+        aggregate.update(content)
+    licenses: dict[str, int] = {}
+    for entry in descriptors:
+        license_name = str(entry["licenseObservation"])
+        licenses[license_name] = licenses.get(license_name, 0) + 1
+    content_bytes = sum(len(content) for content in content_by_path.values())
+    index_bytes = sum(len(content) for content in index_by_path.values())
+    expected_manifest = {
+        "schemaVersion": 1,
+        "source": {
+            "lockfile": "package-lock.json",
+            "lockfileSha256": hashlib.sha256(package_lock_path.read_bytes()).hexdigest(),
+            "registryOrigin": "https://registry.npmjs.org",
+        },
+        "cacheFormat": {
+            "content": "content-v2",
+            "index": "index-v5",
+            "npmConsumerVersion": "10.9.8",
+            "indexMetadataPolicy": (
+                "deterministic URL and compression only; no copied host headers, "
+                "credentials, or timestamps"
+            ),
+        },
+        "licenseObservationScope": (
+            "Values are package-lock metadata observations, not legal review or clearance."
+        ),
+        "licenseObservations": dict(sorted(licenses.items())),
+        "totals": {
+            "packages": len(rows),
+            "contentObjects": len(content_by_path),
+            "indexEntries": len(index_by_path),
+            "contentBytes": content_bytes,
+            "indexBytes": index_bytes,
+            "cacheBytes": content_bytes + index_bytes,
+        },
+        "aggregateContentSha256": aggregate.hexdigest(),
+        "packages": rows,
+    }
+    actual_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert actual_manifest == expected_manifest, (
+        "vendor cache manifest must exactly match the lock-derived closure"
+    )
+
+    expected_files = {
+        "manifest.json",
+        *(
+            relative_path
+            for entry in descriptors
+            for relative_path in [str(entry["contentPath"]), str(entry["indexPath"])]
+        ),
+    }
+    actual_files = {
+        path.relative_to(cache_root).as_posix()
+        for path in cache_root.rglob("*")
+        if path.is_file()
+    }
+    assert actual_files == expected_files, (
+        "vendor cache must contain exactly the lock-addressed manifest, content, and index files"
+    )
+    assert not any(path.is_symlink() for path in cache_root.rglob("*")), (
+        "vendor cache must not contain symlinks"
+    )
+    return expected_manifest
+
+
 def assert_dependency_install_contract(
     document: str,
     manifest: dict[str, object],
@@ -111,15 +321,24 @@ def assert_dependency_install_contract(
     assert "pnpm-lock.yaml" not in build_stage, (
         "build stage must not copy a lock ignored by npm"
     )
-    assert build_stage.count(LOCKED_NPM_BUILD_INSTRUCTION) == 1, (
-        "build stage must use the exact cache-mounted locked npm instruction"
+    assert build_lines.count(VENDOR_CACHE_COPY) == 1, (
+        "build stage must copy the product-owned vendor npm cache exactly once"
     )
-    assert build_lines.index(lock_copy) < build_lines.index(LOCKED_NPM_BUILD_LINES[0]), (
+    assert build_stage.count(OFFLINE_NPM_BUILD_INSTRUCTION) == 1, (
+        "build stage must use the exact verified offline npm instruction"
+    )
+    assert build_lines.index(lock_copy) < build_lines.index(VENDOR_CACHE_COPY), (
         "build stage must copy package-lock.json before npm ci"
     )
+    assert build_lines.index(VENDOR_CACHE_COPY) < build_lines.index(OFFLINE_NPM_BUILD_LINES[0]), (
+        "build stage must copy the vendor cache before verifying and consuming it"
+    )
     assert "npm install" not in build_stage, "build stage must not execute npm install"
-    assert re.search(r"(?:^|\s)--offline(?:\s|\\|$)", build_stage) is None, (
-        "build stage must not require an unconditional offline install"
+    assert "--mount=type=cache" not in build_stage and "/root/.npm" not in build_stage, (
+        "build stage must not hide the committed closure with a mutable npm cache mount"
+    )
+    assert "--prefer-offline" not in build_stage, (
+        "build stage must require fully offline npm dependency consumption"
     )
 
     assert package_lock.get("lockfileVersion") == 3, "npm lockfileVersion must be 3"
@@ -149,10 +368,10 @@ def assert_integration_copy_contract(document: str) -> None:
     assert build_lines.count(build_copy) == 1, (
         "build stage must copy integrations exactly once"
     )
-    assert build_stage.count(LOCKED_NPM_BUILD_INSTRUCTION) == 1, (
-        "build stage must contain the exact locked install/build/prune instruction"
+    assert build_stage.count(OFFLINE_NPM_BUILD_INSTRUCTION) == 1, (
+        "build stage must contain the exact verified offline install/build/prune instruction"
     )
-    assert build_lines.index(build_copy) < build_lines.index(LOCKED_NPM_BUILD_LINES[0]), (
+    assert build_lines.index(build_copy) < build_lines.index(OFFLINE_NPM_BUILD_LINES[0]), (
         "build stage must copy integrations before npm build"
     )
     assert runtime_lines.count(runtime_copy) == 1, (
@@ -174,6 +393,15 @@ assert_node_base_image_contract(dockerfile)
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 package_lock = json.loads(package_lock_path.read_text(encoding="utf-8"))
 assert_dependency_install_contract(dockerfile, manifest, package_lock)
+vendor_cache_manifest = assert_vendor_cache_contract(root, package_lock_path, package_lock)
+assert vendor_cache_manifest["totals"] == {
+    "packages": 22,
+    "contentObjects": 22,
+    "indexEntries": 22,
+    "contentBytes": 5_097_438,
+    "indexBytes": 8_768,
+    "cacheBytes": 5_106_206,
+}, "vendor cache closure totals drifted"
 env_example = env_example_path.read_text(encoding="utf-8")
 readme = (root / "README.md").read_text(encoding="utf-8")
 relay = (root / "apps/sdar-outbox-relay/src/main.ts").read_text(encoding="utf-8")
@@ -256,18 +484,32 @@ else:
     raise AssertionError("floating Dockerfile frontend unexpectedly passed the install contract")
 
 legacy_npm_install_fixture = dockerfile.replace(
-    LOCKED_NPM_BUILD_INSTRUCTION,
+    OFFLINE_NPM_BUILD_INSTRUCTION,
     "RUN npm install --ignore-scripts && npm run build && npm prune --omit=dev",
     1,
 )
 try:
     assert_dependency_install_contract(legacy_npm_install_fixture, manifest, package_lock)
 except AssertionError as error:
-    assert "exact cache-mounted locked npm instruction" in str(error), (
+    assert "exact verified offline npm instruction" in str(error), (
         "legacy npm install regression probe failed for an unexpected reason"
     )
 else:
     raise AssertionError("legacy npm install unexpectedly passed the install contract")
+
+mutable_cache_fixture = dockerfile.replace(
+    OFFLINE_NPM_BUILD_INSTRUCTION,
+    "RUN --mount=type=cache,target=/root/.npm npm ci --prefer-offline",
+    1,
+)
+try:
+    assert_dependency_install_contract(mutable_cache_fixture, manifest, package_lock)
+except AssertionError as error:
+    assert "exact verified offline npm instruction" in str(error), (
+        "mutable npm cache regression probe failed for an unexpected reason"
+    )
+else:
+    raise AssertionError("mutable npm cache mount unexpectedly passed the install contract")
 for ignored_path in [".git", ".env", "deploy/secrets", "node_modules", "dist"]:
     assert ignored_path in dockerignore.splitlines(), f"docker context does not ignore {ignored_path}"
 
