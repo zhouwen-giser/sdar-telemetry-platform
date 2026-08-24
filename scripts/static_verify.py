@@ -3,6 +3,12 @@ import os
 import re
 
 
+NODE_22_ALPINE_BASE = (
+    "node:22-alpine@sha256:"
+    "c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32"
+)
+
+
 def compose_service(document: str, service_name: str) -> str:
     lines = document.splitlines()
     marker = f"  {service_name}:"
@@ -58,6 +64,20 @@ def dockerfile_build_and_runtime_stages(document: str) -> tuple[str, str]:
     return build_stage, runtime_stage
 
 
+def assert_node_base_image_contract(document: str) -> None:
+    stage_headers = [
+        match.group()
+        for match in re.finditer(r"^FROM [^\r\n]+$", document, re.MULTILINE)
+    ]
+    assert len(stage_headers) == 2, "Dockerfile must contain exactly two Node base stages"
+    assert stage_headers[0] == f"FROM {NODE_22_ALPINE_BASE} AS build", (
+        "build stage must use the exact frozen Node 22 Alpine digest"
+    )
+    assert stage_headers[1] == f"FROM {NODE_22_ALPINE_BASE}", (
+        "final runtime stage must use the exact frozen Node 22 Alpine digest"
+    )
+
+
 def assert_integration_copy_contract(document: str) -> None:
     build_stage, runtime_stage = dockerfile_build_and_runtime_stages(document)
     build_copy = "COPY integrations integrations"
@@ -88,6 +108,7 @@ env_example_path = root / ".env.example"
 compose = compose_path.read_text(encoding="utf-8")
 dockerfile = dockerfile_path.read_text(encoding="utf-8")
 _, runtime_stage = dockerfile_build_and_runtime_stages(dockerfile)
+assert_node_base_image_contract(dockerfile)
 env_example = env_example_path.read_text(encoding="utf-8")
 readme = (root / "README.md").read_text(encoding="utf-8")
 relay = (root / "apps/sdar-outbox-relay/src/main.ts").read_text(encoding="utf-8")
@@ -125,6 +146,35 @@ except AssertionError as error:
     )
 else:
     raise AssertionError("runtime-only integrations copy unexpectedly passed the build contract")
+
+# Both direct Node stages must independently reject the former floating tag.
+floating_build_base_fixture = dockerfile.replace(
+    f"FROM {NODE_22_ALPINE_BASE} AS build",
+    "FROM node:22-alpine AS build",
+    1,
+)
+try:
+    assert_node_base_image_contract(floating_build_base_fixture)
+except AssertionError as error:
+    assert "build stage must use the exact frozen Node 22 Alpine digest" in str(error), (
+        "floating build-base regression probe failed for an unexpected reason"
+    )
+else:
+    raise AssertionError("floating build-stage Node tag unexpectedly passed the base-image contract")
+
+floating_runtime_base_fixture = dockerfile.replace(
+    f"FROM {NODE_22_ALPINE_BASE}\n",
+    "FROM node:22-alpine\n",
+    1,
+)
+try:
+    assert_node_base_image_contract(floating_runtime_base_fixture)
+except AssertionError as error:
+    assert "final runtime stage must use the exact frozen Node 22 Alpine digest" in str(error), (
+        "floating runtime-base regression probe failed for an unexpected reason"
+    )
+else:
+    raise AssertionError("floating runtime Node tag unexpectedly passed the base-image contract")
 for ignored_path in [".git", ".env", "deploy/secrets", "node_modules", "dist"]:
     assert ignored_path in dockerignore.splitlines(), f"docker context does not ignore {ignored_path}"
 
