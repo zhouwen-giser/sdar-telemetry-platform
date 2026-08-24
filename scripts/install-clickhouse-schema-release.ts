@@ -93,10 +93,10 @@ export class ClickHouseReleaseInstallerRuntime implements ReleaseInstallerRuntim
   async observeState(): Promise<ReleaseStateObservation> {
     const inventory = await jsonRows(
       this.client,
-      `SELECT kind,name FROM (
-        SELECT 'database' AS kind,name FROM system.databases WHERE name LIKE 'sdar\\_%'
+      `SELECT kind,object_name AS name FROM (
+        SELECT 'database' AS kind,name AS object_name FROM system.databases WHERE name LIKE 'sdar\\_%'
         UNION ALL
-        SELECT 'ledger' AS kind,concat(database,'.',name) AS name FROM system.tables WHERE name='sdar_clickhouse_schema_release_ledger'
+        SELECT 'ledger' AS kind,concat(database,'.',name) AS object_name FROM system.tables WHERE name='sdar_clickhouse_schema_release_ledger'
       ) ORDER BY kind,name FORMAT JSON`,
       30,
     );

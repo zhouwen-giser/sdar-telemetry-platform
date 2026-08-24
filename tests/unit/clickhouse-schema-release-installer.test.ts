@@ -2,6 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  ClickHouseClient,
+  type ClickHouseQueryOptions,
+} from "../../packages/telemetry-clickhouse/src/index.js";
+import {
+  ClickHouseReleaseInstallerRuntime,
   classifyReleaseState,
   installerFailureDocument,
   installFreshRelease,
@@ -57,15 +62,104 @@ test("fresh installer executes exact order and appends one ledger row after ever
 
 test("exact complete replay verifies with zero mutation", async () => {
   const release = await loadReleasePackage();
-  const runtime = new FakeRuntime(completeState(release));
+  const client = new ObserveStateTranscriptClient(release);
+  const observedRuntime = new ClickHouseReleaseInstallerRuntime(
+    client as unknown as ClickHouseClient,
+  );
+  let createLedgerCalls = 0;
+  let statementCalls = 0;
+  let appendCalls = 0;
+  let verifyCalls = 0;
+  let observation: ReleaseStateObservation | undefined;
+  const runtime: ReleaseInstallerRuntime = {
+    observeState: async () => {
+      observation = await observedRuntime.observeState();
+      return observation;
+    },
+    createLedger: async () => {
+      createLedgerCalls += 1;
+    },
+    executeStatement: async () => {
+      statementCalls += 1;
+    },
+    appendLedger: async () => {
+      appendCalls += 1;
+    },
+    verify: async (loaded) => {
+      verifyCalls += 1;
+      return successfulVerification(loaded);
+    },
+  };
   const result = await installFreshRelease(release, runtime);
+
   assert.equal(result.status, "idempotent");
   assert.deepEqual(result.appliedOrdinals, []);
-  assert.equal(runtime.observeCalls, 1);
-  assert.equal(runtime.verifyCalls, 1);
-  assert.equal(runtime.createLedgerCalls, 0);
-  assert.equal(runtime.statementCalls, 0);
-  assert.equal(runtime.ledgerRows.length, 0);
+  assert.equal(verifyCalls, 1);
+  assert.equal(createLedgerCalls, 0);
+  assert.equal(statementCalls, 0);
+  assert.equal(appendCalls, 0);
+  assert.equal(client.insertCalls, 0);
+  assert.equal(client.calls.length, 2);
+  assert.equal(
+    client.rawRows.every(
+      (row) => typeof row["ordinal"] === "number" && typeof row["byte_size"] === "string",
+    ),
+    true,
+  );
+  assert.deepEqual(client.calls.map(({options}) => options), [
+    {readonly: 2,maxResultRows: 30},
+    {readonly: 2,maxResultRows: 30},
+  ]);
+
+  const inventorySql = client.calls[0]!.sql;
+  assert.match(inventorySql, /SELECT kind,object_name AS name FROM \(/u);
+  assert.match(
+    inventorySql,
+    /SELECT 'database' AS kind,name AS object_name FROM system\.databases WHERE name LIKE/u,
+  );
+  assert.match(
+    inventorySql,
+    /SELECT 'ledger' AS kind,concat\(database,'\.',name\) AS object_name FROM system\.tables WHERE name='sdar_clickhouse_schema_release_ledger'/u,
+  );
+  assert.doesNotMatch(
+    inventorySql,
+    /concat\(database,'\.',name\) AS name FROM system\.tables WHERE name=/u,
+  );
+  assert.doesNotMatch(inventorySql, /database\s*=\s*'default'/u);
+
+  assert.ok(observation);
+  assert.deepEqual(observation.databases, [...REQUIRED_DATABASES]);
+  assert.deepEqual(observation.ledgerLocations, [LEDGER_TABLE]);
+  assert.equal(observation.ledgerRows.length, 23);
+  assert.deepEqual(
+    observation.ledgerRows.map(({ordinal}) => ordinal),
+    Array.from({length: 23}, (_, ordinal) => ordinal),
+  );
+  assert.equal(
+    observation.ledgerRows.every(
+      (row, ordinal) =>
+        row.release_id === release.manifest.releaseId &&
+        row.release_manifest_content_address === release.manifest.contentAddress.digest &&
+        row.migration_set_content_address === release.manifest.migrationSetContentAddress &&
+        row.byte_size === release.migrations[ordinal]!.bytes,
+    ),
+    true,
+  );
+  assert.equal(classifyReleaseState(release, observation), "idempotent");
+});
+
+test("observeState rejects invalid and unsafe ClickHouse numeric strings", async () => {
+  const release = await loadReleasePackage();
+  for (const byteSize of ["not-a-number",String(Number.MAX_SAFE_INTEGER + 1)]) {
+    const rows = rawLedgerRows(release).map((row, index) =>
+      index === 0 ? {...row,byte_size: byteSize} : row,
+    );
+    const client = new ObserveStateTranscriptClient(release, rows);
+    const runtime = new ClickHouseReleaseInstallerRuntime(client as unknown as ClickHouseClient);
+    await assert.rejects(() => runtime.observeState(), /invalid byte_size/u);
+    assert.equal(client.calls.length, 2);
+    assert.equal(client.insertCalls, 0);
+  }
 });
 
 test("partial and conflict classifications fail closed before mutation", async () => {
@@ -223,7 +317,56 @@ test("classifyReleaseState rejects a gap and duplicate without resume", async ()
       }),
     hasInstallerCode("CLICKHOUSE_SCHEMA_RELEASE_PARTIAL"),
   );
+  assert.throws(
+    () =>
+      classifyReleaseState(release, {
+        databases: [...REQUIRED_DATABASES],
+        ledgerLocations: [LEDGER_TABLE,LEDGER_TABLE],
+        ledgerRows: exact,
+      }),
+    hasInstallerCode("CLICKHOUSE_SCHEMA_RELEASE_CONFLICT"),
+  );
+  assert.throws(
+    () =>
+      classifyReleaseState(release, {
+        databases: [...REQUIRED_DATABASES],
+        ledgerLocations: [LEDGER_TABLE],
+        ledgerRows: [...exact,{...exact[0]!,ordinal: release.migrations.length}],
+      }),
+    hasInstallerCode("CLICKHOUSE_SCHEMA_RELEASE_CONFLICT"),
+  );
 });
+
+class ObserveStateTranscriptClient {
+  readonly calls: Array<{readonly sql: string; readonly options: ClickHouseQueryOptions}> = [];
+  insertCalls = 0;
+
+  constructor(
+    release: LoadedReleasePackage,
+    readonly rawRows: readonly Record<string, unknown>[] = rawLedgerRows(release),
+  ) {}
+
+  async query(sql: string, options: ClickHouseQueryOptions = {}): Promise<string> {
+    this.calls.push({sql,options});
+    if (this.calls.length === 1) {
+      return JSON.stringify({
+        data: [
+          ...REQUIRED_DATABASES.map((name) => ({kind: "database",name})),
+          {kind: "ledger",name: LEDGER_TABLE},
+        ],
+      });
+    }
+    if (this.calls.length === 2 && sql.includes(`FROM ${LEDGER_TABLE} ORDER BY ordinal`)) {
+      return JSON.stringify({data: this.rawRows});
+    }
+    throw new Error("unexpected observeState query");
+  }
+
+  async insert(): Promise<void> {
+    this.insertCalls += 1;
+    throw new Error("observeState transcript must not insert");
+  }
+}
 
 class FakeRuntime implements ReleaseInstallerRuntime {
   readonly events: string[] = [];
@@ -312,6 +455,34 @@ function ledgerRows(release: LoadedReleasePackage): ReleaseLedgerRow[] {
     byte_size: migration.bytes,
     file_sha256: migration.sha256,
   }));
+}
+
+function rawLedgerRows(release: LoadedReleasePackage): readonly Record<string, unknown>[] {
+  return release.migrations.map((migration) => ({
+    release_id: release.manifest.releaseId,
+    release_manifest_content_address: release.manifest.contentAddress.digest,
+    migration_set_content_address: release.manifest.migrationSetContentAddress,
+    ordinal: migration.ordinal,
+    file_name: migration.file,
+    byte_size: String(migration.bytes),
+    file_sha256: migration.sha256,
+  }));
+}
+
+function successfulVerification(release: LoadedReleasePackage): ReleaseVerificationResult {
+  return {
+    schemaVersion: "sdar-telemetry.clickhouse-schema-release-verify/v1",
+    releaseId: release.manifest.releaseId,
+    releaseManifestContentAddress: release.manifest.contentAddress.digest,
+    migrationSetContentAddress: release.manifest.migrationSetContentAddress,
+    clickHouseVersion: "24.10.2.1",
+    databases: 6,
+    physicalTables: 311,
+    views: 120,
+    totalObjects: 431,
+    ledgerRows: 23,
+    verified: true,
+  };
 }
 
 function hasInstallerCode(code: string): (error: unknown) => boolean {
