@@ -46,6 +46,40 @@ def assert_no_nested_forbidden_paths(project_root: Path) -> None:
     assert not hits, ("nested forbidden paths", hits[:3])
 
 
+def dockerfile_build_and_runtime_stages(document: str) -> tuple[str, str]:
+    stage_headers = list(re.finditer(r"^FROM [^\r\n]+$", document, re.MULTILINE))
+    assert len(stage_headers) == 2, "Dockerfile must contain exactly build and runtime stages"
+    build_header, runtime_header = stage_headers
+    assert re.search(r"\sAS\s+build\s*$", build_header.group(), re.IGNORECASE), (
+        "first Dockerfile stage must be named build"
+    )
+    build_stage = document[build_header.start() : runtime_header.start()]
+    runtime_stage = document[runtime_header.start() :]
+    return build_stage, runtime_stage
+
+
+def assert_integration_copy_contract(document: str) -> None:
+    build_stage, runtime_stage = dockerfile_build_and_runtime_stages(document)
+    build_copy = "COPY integrations integrations"
+    build_command = "RUN npm install --ignore-scripts && npm run build && npm prune --omit=dev"
+    runtime_copy = "COPY integrations ./integrations"
+    build_lines = build_stage.splitlines()
+    runtime_lines = runtime_stage.splitlines()
+
+    assert build_lines.count(build_copy) == 1, (
+        "build stage must copy integrations exactly once"
+    )
+    assert build_lines.count(build_command) == 1, (
+        "build stage must contain the exact install/build/prune command"
+    )
+    assert build_lines.index(build_copy) < build_lines.index(build_command), (
+        "build stage must copy integrations before npm build"
+    )
+    assert runtime_lines.count(runtime_copy) == 1, (
+        "runtime stage must retain the raw integrations copy"
+    )
+
+
 root = Path(__file__).resolve().parents[1]
 compose_path = root / "deploy/compose.external-clickhouse.yaml"
 dockerfile_path = root / "deploy/Dockerfile"
@@ -53,6 +87,7 @@ env_example_path = root / ".env.example"
 
 compose = compose_path.read_text(encoding="utf-8")
 dockerfile = dockerfile_path.read_text(encoding="utf-8")
+_, runtime_stage = dockerfile_build_and_runtime_stages(dockerfile)
 env_example = env_example_path.read_text(encoding="utf-8")
 readme = (root / "README.md").read_text(encoding="utf-8")
 relay = (root / "apps/sdar-outbox-relay/src/main.ts").read_text(encoding="utf-8")
@@ -74,10 +109,22 @@ assert (
 for required_copy in [
     "COPY package.json ./package.json",
     "COPY --from=build /app/node_modules ./node_modules",
-    "COPY integrations ./integrations",
     "COPY migrations ./migrations",
 ]:
-    assert required_copy in dockerfile, f"runtime image is missing: {required_copy}"
+    assert required_copy in runtime_stage, f"runtime image is missing: {required_copy}"
+assert_integration_copy_contract(dockerfile)
+
+# Regression probe for the exact r2 failure: a Dockerfile with only the runtime raw-assets copy
+# must not satisfy the build-input contract.
+runtime_copy_only_fixture = dockerfile.replace("COPY integrations integrations\n", "", 1)
+try:
+    assert_integration_copy_contract(runtime_copy_only_fixture)
+except AssertionError as error:
+    assert "build stage must copy integrations exactly once" in str(error), (
+        "runtime-only integrations regression probe failed for an unexpected reason"
+    )
+else:
+    raise AssertionError("runtime-only integrations copy unexpectedly passed the build contract")
 for ignored_path in [".git", ".env", "deploy/secrets", "node_modules", "dist"]:
     assert ignored_path in dockerignore.splitlines(), f"docker context does not ignore {ignored_path}"
 

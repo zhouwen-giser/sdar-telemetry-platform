@@ -5,6 +5,7 @@ COPY apps apps
 COPY packages packages
 COPY scripts scripts
 COPY types types
+COPY integrations integrations
 RUN npm install --ignore-scripts && npm run build && npm prune --omit=dev
 
 FROM node:22-alpine
