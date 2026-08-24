@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   classifyReleaseState,
+  installerFailureDocument,
   installFreshRelease,
   ReleaseInstallerError,
   type ReleaseInstallerRuntime,
@@ -16,7 +17,10 @@ import {
   type LoadedMigration,
   type LoadedReleasePackage,
 } from "../../scripts/sync-clickhouse-schema-release.js";
-import type {ReleaseVerificationResult} from "../../scripts/verify-clickhouse-schema-release.js";
+import {
+  ReleaseVerificationError,
+  type ReleaseVerificationResult,
+} from "../../scripts/verify-clickhouse-schema-release.js";
 
 test("fresh installer executes exact order and appends one ledger row after every migration", async () => {
   const release = await loadReleasePackage();
@@ -130,6 +134,74 @@ test("ledger and verifier failures are typed non-retryable failures", async () =
   assert.equal(verifyFailure.verifyCalls, 1);
 });
 
+test("typed verifier cause survives post-install and replay installer serialization without SQL or secrets", async () => {
+  const release = await loadReleasePackage();
+  const cause = Object.assign(
+    new Error(
+      "ClickHouse request failed with HTTP 500: Code: 47. DB::Exception: SELECT 'installer-secret' password=hunter2 https://user:pw@clickhouse:8123/ (UNKNOWN_IDENTIFIER)",
+    ),
+    {code: "CLICKHOUSE_RESPONSE_ERROR"},
+  );
+  const verificationError = new ReleaseVerificationError(
+    {
+      assertionId: "critical-semantic-column",
+      queryId: "system-columns-release-and-ledger",
+      sqlClass: "readonly-system-columns-inventory",
+      relation: "sdar_mart.evaluation_result_v15",
+      column: "evaluation_origin",
+    },
+    "Critical semantic column is missing.",
+    {cause,canonicalSql: "SELECT secret_sql_body FROM system.columns"},
+  );
+
+  for (const [state,stage,code] of [
+    [freshState(), "post-install-verifier", "CLICKHOUSE_SCHEMA_RELEASE_VERIFY_FAILED"],
+    [completeState(release), "exact-replay-verifier", "CLICKHOUSE_SCHEMA_RELEASE_CONFLICT"],
+  ] as const) {
+    const runtime = new FakeRuntime(state);
+    runtime.verificationError = verificationError;
+    let installerError: ReleaseInstallerError;
+    try {
+      await installFreshRelease(release, runtime);
+      assert.fail("expected typed verifier failure");
+    } catch (error: unknown) {
+      assert.ok(error instanceof ReleaseInstallerError);
+      installerError = error;
+    }
+    assert.equal(installerError.code, code);
+    assert.equal(installerError.verificationError, verificationError);
+    assert.equal(installerError.verificationStage, stage);
+    assert.equal(installerError.cause, verificationError);
+    assert.equal(runtime.verifyCalls, 1);
+
+    const document = installerFailureDocument(installerError) as Record<string, unknown>;
+    assert.equal(document["stage"], stage);
+    assert.equal(document["assertionId"], "critical-semantic-column");
+    assert.equal(document["queryId"], "system-columns-release-and-ledger");
+    assert.equal(document["sqlClass"], "readonly-system-columns-inventory");
+    assert.equal(document["relation"], "sdar_mart.evaluation_result_v15");
+    assert.equal(document["column"], "evaluation_origin");
+    assert.equal(document["errorClass"], "ClickHouseClientError");
+    assert.equal(document["causeCode"], "CLICKHOUSE_RESPONSE_ERROR");
+    assert.equal(document["clickHouseCode"], 47);
+    const serialized = JSON.stringify(document);
+    assert.match(serialized, /response details were redacted/u);
+    for (const forbidden of [
+      "secret_sql_body",
+      "installer-secret",
+      "hunter2",
+      "clickhouse:8123",
+      "user:pw",
+      "password=",
+      "UNKNOWN_IDENTIFIER",
+      "canonicalSql",
+      "stack",
+    ]) {
+      assert.equal(serialized.includes(forbidden), false, forbidden);
+    }
+  }
+});
+
 test("classifyReleaseState rejects a gap and duplicate without resume", async () => {
   const release = await loadReleasePackage();
   const exact = ledgerRows(release);
@@ -165,6 +237,7 @@ class FakeRuntime implements ReleaseInstallerRuntime {
   failStatement?: {ordinal: number; index: number};
   failLedgerOrdinal?: number;
   failVerify = false;
+  verificationError?: ReleaseVerificationError;
 
   constructor(private readonly state: ReleaseStateObservation) {}
 
@@ -199,6 +272,7 @@ class FakeRuntime implements ReleaseInstallerRuntime {
 
   async verify(release: LoadedReleasePackage): Promise<ReleaseVerificationResult> {
     this.verifyCalls += 1;
+    if (this.verificationError !== undefined) throw this.verificationError;
     if (this.failVerify) throw new Error("injected verifier failure");
     return {
       schemaVersion: "sdar-telemetry.clickhouse-schema-release-verify/v1",

@@ -15,9 +15,11 @@ import {
   type LoadedReleasePackage,
 } from "./sync-clickhouse-schema-release.js";
 import {
+  publicVerificationDiagnostic,
   ReleaseVerificationError,
   verifyInstalledRelease,
   type ReleaseVerificationResult,
+  type VerificationStage,
 } from "./verify-clickhouse-schema-release.js";
 
 export type InstallerErrorCode =
@@ -65,11 +67,23 @@ export interface ReleaseInstallResult {
 
 export class ReleaseInstallerError extends Error {
   readonly code: InstallerErrorCode;
+  readonly verificationError?: ReleaseVerificationError;
+  readonly verificationStage?: VerificationStage;
 
-  constructor(code: InstallerErrorCode, message: string) {
-    super(message);
+  constructor(
+    code: InstallerErrorCode,
+    message: string,
+    options: {
+      readonly cause?: unknown;
+      readonly verificationError?: ReleaseVerificationError;
+      readonly verificationStage?: VerificationStage;
+    } = {},
+  ) {
+    super(message, options.cause === undefined ? undefined : {cause: options.cause});
     this.name = "ReleaseInstallerError";
     this.code = code;
+    if (options.verificationError !== undefined) this.verificationError = options.verificationError;
+    if (options.verificationStage !== undefined) this.verificationStage = options.verificationStage;
   }
 }
 
@@ -152,10 +166,18 @@ export async function installFreshRelease(
   if (classification === "idempotent") {
     try {
       await runtime.verify(release);
-    } catch {
+    } catch (cause: unknown) {
+      if (cause instanceof ReleaseVerificationError) {
+        throw verifierInstallerError(
+          "CLICKHOUSE_SCHEMA_RELEASE_CONFLICT",
+          cause,
+          "exact-replay-verifier",
+        );
+      }
       throw new ReleaseInstallerError(
         "CLICKHOUSE_SCHEMA_RELEASE_CONFLICT",
         "Exact ledger replay failed schema pre-verification and requires an empty-volume reset.",
+        {cause},
       );
     }
     return result(release, "idempotent", []);
@@ -193,10 +215,18 @@ export async function installFreshRelease(
   }
   try {
     await runtime.verify(release);
-  } catch {
+  } catch (cause: unknown) {
+    if (cause instanceof ReleaseVerificationError) {
+      throw verifierInstallerError(
+        "CLICKHOUSE_SCHEMA_RELEASE_VERIFY_FAILED",
+        cause,
+        "post-install-verifier",
+      );
+    }
     throw new ReleaseInstallerError(
       "CLICKHOUSE_SCHEMA_RELEASE_VERIFY_FAILED",
       "Installed release verification failed; the target requires an empty-volume reset.",
+      {cause},
     );
   }
   return result(release, "installed", appliedOrdinals);
@@ -372,10 +402,44 @@ function numberField(row: Record<string, unknown>, key: string): number {
   return number;
 }
 
-function errorCode(error: unknown): string {
-  if (error instanceof ReleaseInstallerError || error instanceof ReleasePackageError) return error.code;
-  if (error instanceof ReleaseVerificationError) return error.code;
-  return "CLICKHOUSE_SCHEMA_RELEASE_FAILED";
+function verifierInstallerError(
+  code: "CLICKHOUSE_SCHEMA_RELEASE_VERIFY_FAILED" | "CLICKHOUSE_SCHEMA_RELEASE_CONFLICT",
+  verificationError: ReleaseVerificationError,
+  stage: "post-install-verifier" | "exact-replay-verifier",
+): ReleaseInstallerError {
+  return new ReleaseInstallerError(
+    code,
+    `${verificationError.message} Empty-volume reset is required.`,
+    {cause: verificationError,verificationError,verificationStage: stage},
+  );
+}
+
+export function installerFailureDocument(error: unknown): object {
+  if (error instanceof ReleaseInstallerError) {
+    if (error.verificationError !== undefined && error.verificationStage !== undefined) {
+      const diagnostic = publicVerificationDiagnostic(
+        error.verificationError,
+        error.verificationStage,
+      );
+      const {code: _verificationCode,...details} = diagnostic;
+      return {code: error.code,...details,message: boundedInstallerMessage(error.message)};
+    }
+    return {code: error.code,message: boundedInstallerMessage(error.message)};
+  }
+  if (error instanceof ReleasePackageError) {
+    return {code: error.code,message: "ClickHouse schema release package validation failed."};
+  }
+  if (error instanceof ReleaseVerificationError) {
+    return publicVerificationDiagnostic(error, "post-install-verifier");
+  }
+  return {
+    code: "CLICKHOUSE_SCHEMA_RELEASE_FAILED",
+    message: "ClickHouse schema release installation failed; underlying details were redacted.",
+  };
+}
+
+function boundedInstallerMessage(message: string): string {
+  return message.replace(/[\r\n\t]+/gu, " ").replace(/\s{2,}/gu, " ").trim().slice(0, 400);
 }
 
 async function main(): Promise<void> {
@@ -405,9 +469,7 @@ async function main(): Promise<void> {
     );
     process.stdout.write(`${JSON.stringify(resultDocument)}\n`);
   } catch (error: unknown) {
-    process.stderr.write(
-      `${JSON.stringify({code: errorCode(error),message: "ClickHouse schema release installation failed; partial state requires an empty-volume reset."})}\n`,
-    );
+    process.stderr.write(`${JSON.stringify(installerFailureDocument(error))}\n`);
     process.exitCode = 1;
   }
 }
