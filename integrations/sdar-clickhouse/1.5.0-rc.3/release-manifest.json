@@ -1,0 +1,204 @@
+{
+  "schemaVersion": "sdar-telemetry.clickhouse-schema-release/v1",
+  "releaseId": "sdar-clickhouse-schema/1.5.0-rc.3-benchmark-aligned-development",
+  "releaseVersion": "1.5.0-rc.3",
+  "installMode": "fresh-only",
+  "source": {
+    "benchmarkCommit": "d58d4474b3ca393c47461956e6e45ff0aa3330fa",
+    "benchmarkManifestByteSha256": "sha256:c3a253a75a0d0998806815cba791d96b04b50c6188b3a0cd9189aca327726950",
+    "baseRestorationOrdinals": "00..17",
+    "tailDirectCommitOrdinals": "18..21"
+  },
+  "requiredDatabases": [
+    "sdar_meta",
+    "sdar_core",
+    "sdar_commander",
+    "sdar_npc",
+    "sdar_embodied",
+    "sdar_mart"
+  ],
+  "expectedObjects": {
+    "physicalTables": 310,
+    "views": 120,
+    "total": 430
+  },
+  "ledger": {
+    "table": "default.sdar_clickhouse_schema_release_ledger",
+    "columns": [
+      "release_id String",
+      "release_manifest_content_address String",
+      "migration_set_content_address String",
+      "ordinal UInt8",
+      "file_name String",
+      "byte_size UInt64",
+      "file_sha256 FixedString(64)",
+      "applied_at DateTime64(3, 'UTC')"
+    ],
+    "engine": "MergeTree",
+    "orderBy": [
+      "release_id",
+      "ordinal"
+    ]
+  },
+  "migrations": [
+    {
+      "ordinal": 0,
+      "file": "00_create_databases.sql",
+      "bytes": 642,
+      "sha256": "17c1cf772cdb0b61abf39153fa21b91a3fb205447524bc66423d4015ad29fd81",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 1,
+      "file": "01_sdar_meta.sql",
+      "bytes": 23140,
+      "sha256": "5a3db03dd8b477408ea0cb562bafa0db2253f4344455a4d67af06062bb31150a",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 2,
+      "file": "02_sdar_core.sql",
+      "bytes": 113198,
+      "sha256": "a6b4afd2bd380fcd194e6e37b71811d3cd9524c76362a4cc248d236a60b3310d",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 3,
+      "file": "03_sdar_commander.sql",
+      "bytes": 49422,
+      "sha256": "69b5f325b420731fd6c6dec27a240854fefeeebc3f5804c3468954006ff989da",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 4,
+      "file": "04_sdar_npc.sql",
+      "bytes": 53519,
+      "sha256": "59520e3ee3628476f2a96460a8cda8c61b69be78510026153bbb6dc24139fa0c",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 5,
+      "file": "05_sdar_embodied.sql",
+      "bytes": 87996,
+      "sha256": "3d4278a4a79100d4953ff325cada233b3a39c58f37af5aa8f6925146914d90bd",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 6,
+      "file": "06_sdar_mart.sql",
+      "bytes": 45676,
+      "sha256": "c92ff74eb7b85ef218d4e8fe755629457c9b6f0fcdbfc0f57a22a463a3cbdbab",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 7,
+      "file": "07_quality_views.sql",
+      "bytes": 54914,
+      "sha256": "a01c346fbe0b5a955cb64ffb43acaf27226ccdf93737d12ed7f98d1671fe366a",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 8,
+      "file": "08_seed_meta.sql",
+      "bytes": 48132,
+      "sha256": "732f05e948b8d20ee30f1dd34bec533a716d6cc6da89f465eb01a41af6108d2c",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 9,
+      "file": "09_smoke_test.sql",
+      "bytes": 13212,
+      "sha256": "44d64dcc05cad4f838f104c93b9028ada97745e5706e7497d4908b0ef9a2485e",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 10,
+      "file": "10_sdar_v1_3_skill_aware.sql",
+      "bytes": 50858,
+      "sha256": "560783ab1a26d70f3fd3fd997a2b72b46c20c86689b377fc5ee501deb7a79814",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 11,
+      "file": "11_sdar_v1_3_event_handling.sql",
+      "bytes": 3728,
+      "sha256": "4aa252a3245c83629ea5a0246a1b9033b91c43a5ba7044dab5e02142c34bcb94",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 12,
+      "file": "12_smpp_provider_ops_projection.sql",
+      "bytes": 20670,
+      "sha256": "ec13704b17230390cc1ceade0a53c4d4b19958f62444456ec575a03aadaa4db9",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 13,
+      "file": "13_sdar_v1_4_capability_chain.sql",
+      "bytes": 17745,
+      "sha256": "90f08b7e1cb7c46d5297ded17e7e543ed6cf5616f862a3f06b367dac3290b13c",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 14,
+      "file": "14_sdar_v1_4_1_canonical_evidence_foundation.sql",
+      "bytes": 78975,
+      "sha256": "e8f3eafc71f454c0407e9e2ce79c027a0274f43b31cd2cfbbb034cc4f282679a",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 15,
+      "file": "15_sdar_v1_4_1_node_control_facts.sql",
+      "bytes": 20173,
+      "sha256": "6ab72656aaa7c24516f08e642622fb38a0953caf7e85fb9639f1526239a30b7b",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 16,
+      "file": "16_sdar_v1_4_1_experience_replay_artifact.sql",
+      "bytes": 26148,
+      "sha256": "d74e037e5627443e085be33fd97c9197804f485be7484403825aab611db8d521",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 17,
+      "file": "17_sdar_v1_4_1_dataset_and_cross_chain.sql",
+      "bytes": 19021,
+      "sha256": "531b4bac24ff3a40a535c55baa11cad77e308123b38be5b34b4fd518f29f0aef",
+      "provenance": "committed-rc3-manifest-authenticated-restoration"
+    },
+    {
+      "ordinal": 18,
+      "file": "18_benchmark_contract_projection.sql",
+      "bytes": 30952,
+      "sha256": "8c6157df213c156f411502eb1a449ee62686a859744e3543c040eae24ae2d26d",
+      "provenance": "exact-bytes-from-benchmark-d58d4474b3ca393c47461956e6e45ff0aa3330fa"
+    },
+    {
+      "ordinal": 19,
+      "file": "19_evaluation_contract_v15.sql",
+      "bytes": 19060,
+      "sha256": "3f43dd80c423462f95779efc6c0a5786169b86a23e0c32333db538a916c3fc44",
+      "provenance": "exact-bytes-from-benchmark-d58d4474b3ca393c47461956e6e45ff0aa3330fa"
+    },
+    {
+      "ordinal": 20,
+      "file": "20_benchmark_runtime_projection.sql",
+      "bytes": 18444,
+      "sha256": "58579305fe1407b031ca4495b3c7e1d2d54273920ab23d22ac817aee264cb264",
+      "provenance": "exact-bytes-from-benchmark-d58d4474b3ca393c47461956e6e45ff0aa3330fa"
+    },
+    {
+      "ordinal": 21,
+      "file": "21_benchmark_comparison_and_marts.sql",
+      "bytes": 15412,
+      "sha256": "4c18d9bd36cc4bab2d0a93c3ce139f957bf7d35cc30aaa28393eda6668fa261b",
+      "provenance": "exact-bytes-from-benchmark-d58d4474b3ca393c47461956e6e45ff0aa3330fa"
+    }
+  ],
+  "migrationSetContentAddress": "sha256:36e9ccad01c075098b74307c4a9cf2b0aed8eb17ab1dc30c04722755af6016ee",
+  "contentAddress": {
+    "algorithm": "sha256",
+    "digest": "sha256:c5caf8ecd65536106bc178ca384fde05daae4e8ed69f012a4b842b94ea3f8e6b"
+  }
+}
