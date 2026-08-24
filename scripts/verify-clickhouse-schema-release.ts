@@ -26,10 +26,10 @@ export interface ReleaseVerificationResult {
   readonly migrationSetContentAddress: string;
   readonly clickHouseVersion: string;
   readonly databases: 6;
-  readonly physicalTables: 310;
+  readonly physicalTables: 311;
   readonly views: 120;
-  readonly totalObjects: 430;
-  readonly ledgerRows: 22;
+  readonly totalObjects: 431;
+  readonly ledgerRows: 23;
   readonly verified: true;
 }
 
@@ -294,9 +294,9 @@ export async function verifyInstalledRelease(
   const expectedTables = expectedObjects.filter(({kind}) => kind === "table");
   const expectedViews = expectedObjects.filter(({kind}) => kind === "view");
   requireCondition(
-    expectedTables.length === 310 && expectedViews.length === 120 && expectedObjects.length === 430,
+    expectedTables.length === 311 && expectedViews.length === 120 && expectedObjects.length === 431,
     derivationContext,
-    "Migration-derived object inventory is not exactly 310 physical tables and 120 views.",
+    "Migration-derived object inventory is not exactly 311 physical tables and 120 views.",
   );
 
   const versionContext = verificationContext(
@@ -373,9 +373,9 @@ export async function verifyInstalledRelease(
     );
   }
   requireCondition(
-    actualObjects.size === 430,
+    actualObjects.size === 431,
     objectQueryContext,
-    "Installed release object count is not exactly 430.",
+    "Installed release object count is not exactly 431.",
   );
   for (const expected of expectedObjects) {
     const key = `${expected.database}.${expected.name}`;
@@ -558,10 +558,10 @@ export async function verifyInstalledRelease(
     migrationSetContentAddress: release.manifest.migrationSetContentAddress,
     clickHouseVersion: version,
     databases: 6,
-    physicalTables: 310,
+    physicalTables: 311,
     views: 120,
-    totalObjects: 430,
-    ledgerRows: 22,
+    totalObjects: 431,
+    ledgerRows: 23,
     verified: true,
   };
 }
@@ -599,7 +599,7 @@ function assertExactLedger(
   rows: readonly Record<string, unknown>[],
   context: VerificationContext,
 ): void {
-  requireCondition(rows.length === 22, context, "Release ledger must contain exactly 22 rows.");
+  requireCondition(rows.length === 23, context, "Release ledger must contain exactly 23 rows.");
   for (const migration of release.manifest.migrations) {
     const row = rows[migration.ordinal];
     requireCondition(

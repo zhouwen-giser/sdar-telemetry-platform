@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  deriveDeclaredColumns,
   deriveExpectedObjects,
   LEDGER_TABLE,
   loadReleasePackage,
@@ -42,15 +43,15 @@ test("complete fake transcript verifies exact inventory, seeds, ledger identity,
   assert.equal(result.verified, true);
   assert.deepEqual(
     countBy(objects.map(({engine}) => engine)),
-    {MergeTree: 141,ReplacingMergeTree: 169,View: 120},
+    {MergeTree: 141,ReplacingMergeTree: 170,View: 120},
   );
   assert.equal(client.calls.filter(({kind}) => kind === "view-limit-zero").length, 120);
-  assert.equal(client.calls.filter(({kind}) => kind === "table-limit-zero").length, 310);
-  assert.equal(client.calls.length, 437);
+  assert.equal(client.calls.filter(({kind}) => kind === "table-limit-zero").length, 311);
+  assert.equal(client.calls.length, 438);
   assert.ok(client.calls.every(({options}) => options.readonly === 2));
   assert.deepEqual(
-    client.calls.slice(-430).map(({kind}) => kind),
-    [...Array<string>(120).fill("view-limit-zero"),...Array<string>(310).fill("table-limit-zero")],
+    client.calls.slice(-431).map(({kind}) => kind),
+    [...Array<string>(120).fill("view-limit-zero"),...Array<string>(311).fill("table-limit-zero")],
   );
   assert.equal(
     client.ledgerRows.every((row) => row["applied_at"] === undefined),
@@ -314,7 +315,7 @@ class TranscriptClient implements ReadonlyClickHouse {
         .filter(({kind}) => kind === "view")
         .map(({database,name}) => `${database}.${name}`),
     );
-    this.columns = buildColumnRows();
+    this.columns = buildColumnRows(release);
     this.ledgerRows = release.migrations.map((migration) => ({
       release_id: release.manifest.releaseId,
       release_manifest_content_address: release.manifest.contentAddress.digest,
@@ -383,16 +384,15 @@ function classifyQuery(sql: string, viewRelations: ReadonlySet<string>): Respons
   throw new Error("Unexpected fake query class.");
 }
 
-function buildColumnRows(): Rows {
-  const rows: Record<string, unknown>[] = [];
+function buildColumnRows(release: LoadedReleasePackage): Rows {
+  const targetRelations = new Set([
+    "sdar_core.sdar_evidence_v1_record",
+    ...CRITICAL_SEMANTIC_COLUMNS.map((identity) => identity.split(".").slice(0, 2).join(".")),
+  ]);
+  const rows: Record<string, unknown>[] = deriveDeclaredColumns(release, targetRelations).map(
+    ({database,table,name,type,position}) => ({database,table,name,type,position}),
+  );
   let position = 1;
-  for (const column of CANONICAL_EVIDENCE_COLUMNS) {
-    rows.push({database: "sdar_core",table: "sdar_evidence_v1_record",name: column,type: "String",position: position++});
-  }
-  for (const identity of CRITICAL_SEMANTIC_COLUMNS) {
-    const [database,table,name] = identity.split(".") as [string,string,string];
-    rows.push({database,table,name,type: "String",position: position++});
-  }
   for (const [name,type] of [
     ["release_id", "String"],
     ["release_manifest_content_address", "String"],

@@ -1,13 +1,17 @@
 {
-  "schemaVersion": "sdar-telemetry.clickhouse-schema-release/v1",
-  "releaseId": "sdar-clickhouse-schema/1.5.0-rc.3-benchmark-aligned-development",
-  "releaseVersion": "1.5.0-rc.3",
+  "schemaVersion": "sdar-telemetry.clickhouse-schema-release/v2",
+  "releaseId": "sdar-clickhouse-schema/1.5.0-rc.3-benchmark-aligned-development-canonical-evidence",
+  "releaseVersion": "1.5.0-rc.3+canonical-evidence.1",
   "installMode": "fresh-only",
   "source": {
     "benchmarkCommit": "d58d4474b3ca393c47461956e6e45ff0aa3330fa",
     "benchmarkManifestByteSha256": "sha256:c3a253a75a0d0998806815cba791d96b04b50c6188b3a0cd9189aca327726950",
     "baseRestorationOrdinals": "00..17",
-    "tailDirectCommitOrdinals": "18..21"
+    "tailDirectCommitOrdinals": "18..21",
+    "productAppendOrdinal": 22,
+    "productAppendSourceCommit": "a09f179e1a402c59a99f67e96167696c1d9590ae",
+    "productAppendSourcePath": "migrations/clickhouse/014_sdar_evidence_v1_canonical.sql",
+    "productAppendSourceByteSha256": "sha256:fb0b073f7c590ca56285da91a7253e7426db84dd19b587a2baa01635a4542ff9"
   },
   "requiredDatabases": [
     "sdar_meta",
@@ -18,9 +22,9 @@
     "sdar_mart"
   ],
   "expectedObjects": {
-    "physicalTables": 310,
+    "physicalTables": 311,
     "views": 120,
-    "total": 430
+    "total": 431
   },
   "ledger": {
     "table": "default.sdar_clickhouse_schema_release_ledger",
@@ -194,11 +198,18 @@
       "bytes": 15412,
       "sha256": "4c18d9bd36cc4bab2d0a93c3ce139f957bf7d35cc30aaa28393eda6668fa261b",
       "provenance": "exact-bytes-from-benchmark-d58d4474b3ca393c47461956e6e45ff0aa3330fa"
+    },
+    {
+      "ordinal": 22,
+      "file": "22_sdar_evidence_v1_canonical.sql",
+      "bytes": 2338,
+      "sha256": "fb0b073f7c590ca56285da91a7253e7426db84dd19b587a2baa01635a4542ff9",
+      "provenance": "exact-bytes-from-sdar-telemetry-a09f179e1a402c59a99f67e96167696c1d9590ae:migrations/clickhouse/014_sdar_evidence_v1_canonical.sql"
     }
   ],
-  "migrationSetContentAddress": "sha256:36e9ccad01c075098b74307c4a9cf2b0aed8eb17ab1dc30c04722755af6016ee",
+  "migrationSetContentAddress": "sha256:8d7c8e6f96a224bb4ec2728a76bd8ef7e03783e6e89ca730e1935b9520ff9c78",
   "contentAddress": {
     "algorithm": "sha256",
-    "digest": "sha256:c5caf8ecd65536106bc178ca384fde05daae4e8ed69f012a4b842b94ea3f8e6b"
+    "digest": "sha256:8a4d701292901b62ecd5ea5fce26a9d9b81f687230721399c708da4dfc37e760"
   }
 }

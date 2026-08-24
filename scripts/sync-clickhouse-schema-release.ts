@@ -5,10 +5,10 @@ import {dirname,resolve} from "node:path";
 import {fileURLToPath,pathToFileURL} from "node:url";
 
 export const RELEASE_ID =
-  "sdar-clickhouse-schema/1.5.0-rc.3-benchmark-aligned-development" as const;
-export const RELEASE_VERSION = "1.5.0-rc.3" as const;
+  "sdar-clickhouse-schema/1.5.0-rc.3-benchmark-aligned-development-canonical-evidence" as const;
+export const RELEASE_VERSION = "1.5.0-rc.3+canonical-evidence.1" as const;
 export const MIGRATION_SET_CONTENT_ADDRESS =
-  "sha256:36e9ccad01c075098b74307c4a9cf2b0aed8eb17ab1dc30c04722755af6016ee" as const;
+  "sha256:8d7c8e6f96a224bb4ec2728a76bd8ef7e03783e6e89ca730e1935b9520ff9c78" as const;
 export const LEDGER_TABLE = "default.sdar_clickhouse_schema_release_ledger" as const;
 export const REQUIRED_DATABASES = Object.freeze([
   "sdar_meta",
@@ -44,7 +44,7 @@ export interface FrozenMigration {
 export type ReleaseMigration = FrozenMigration;
 
 export interface ReleaseManifest {
-  readonly schemaVersion: "sdar-telemetry.clickhouse-schema-release/v1";
+  readonly schemaVersion: "sdar-telemetry.clickhouse-schema-release/v2";
   readonly releaseId: typeof RELEASE_ID;
   readonly releaseVersion: typeof RELEASE_VERSION;
   readonly installMode: "fresh-only";
@@ -53,12 +53,16 @@ export interface ReleaseManifest {
     readonly benchmarkManifestByteSha256: "sha256:c3a253a75a0d0998806815cba791d96b04b50c6188b3a0cd9189aca327726950";
     readonly baseRestorationOrdinals: "00..17";
     readonly tailDirectCommitOrdinals: "18..21";
+    readonly productAppendOrdinal: 22;
+    readonly productAppendSourceCommit: "a09f179e1a402c59a99f67e96167696c1d9590ae";
+    readonly productAppendSourcePath: "migrations/clickhouse/014_sdar_evidence_v1_canonical.sql";
+    readonly productAppendSourceByteSha256: "sha256:fb0b073f7c590ca56285da91a7253e7426db84dd19b587a2baa01635a4542ff9";
   };
   readonly requiredDatabases: readonly string[];
   readonly expectedObjects: {
-    readonly physicalTables: 310;
+    readonly physicalTables: 311;
     readonly views: 120;
-    readonly total: 430;
+    readonly total: 431;
   };
   readonly ledger: {
     readonly table: typeof LEDGER_TABLE;
@@ -91,6 +95,15 @@ export interface ExpectedObject {
   readonly name: string;
   readonly kind: "table" | "view";
   readonly engine: string;
+  readonly migration: string;
+}
+
+export interface DeclaredColumn {
+  readonly database: string;
+  readonly table: string;
+  readonly name: string;
+  readonly type: string;
+  readonly position: number;
   readonly migration: string;
 }
 
@@ -130,6 +143,7 @@ export const FROZEN_MIGRATIONS = Object.freeze([
   migration(19, "19_evaluation_contract_v15.sql", 19060, "3f43dd80c423462f95779efc6c0a5786169b86a23e0c32333db538a916c3fc44"),
   migration(20, "20_benchmark_runtime_projection.sql", 18444, "58579305fe1407b031ca4495b3c7e1d2d54273920ab23d22ac817aee264cb264"),
   migration(21, "21_benchmark_comparison_and_marts.sql", 15412, "4c18d9bd36cc4bab2d0a93c3ce139f957bf7d35cc30aaa28393eda6668fa261b"),
+  migration(22, "22_sdar_evidence_v1_canonical.sql", 2338, "fb0b073f7c590ca56285da91a7253e7426db84dd19b587a2baa01635a4542ff9"),
 ]);
 
 export function projectRootFromModule(moduleUrl = import.meta.url): string {
@@ -155,7 +169,7 @@ export async function buildReleaseManifest(releaseRoot: string): Promise<Release
   }
 
   const unsigned = {
-    schemaVersion: "sdar-telemetry.clickhouse-schema-release/v1",
+    schemaVersion: "sdar-telemetry.clickhouse-schema-release/v2",
     releaseId: RELEASE_ID,
     releaseVersion: RELEASE_VERSION,
     installMode: "fresh-only",
@@ -165,9 +179,14 @@ export async function buildReleaseManifest(releaseRoot: string): Promise<Release
         "sha256:c3a253a75a0d0998806815cba791d96b04b50c6188b3a0cd9189aca327726950",
       baseRestorationOrdinals: "00..17",
       tailDirectCommitOrdinals: "18..21",
+      productAppendOrdinal: 22,
+      productAppendSourceCommit: "a09f179e1a402c59a99f67e96167696c1d9590ae",
+      productAppendSourcePath: "migrations/clickhouse/014_sdar_evidence_v1_canonical.sql",
+      productAppendSourceByteSha256:
+        "sha256:fb0b073f7c590ca56285da91a7253e7426db84dd19b587a2baa01635a4542ff9",
     },
     requiredDatabases: [...REQUIRED_DATABASES],
-    expectedObjects: {physicalTables: 310,views: 120,total: 430},
+    expectedObjects: {physicalTables: 311,views: 120,total: 431},
     ledger: {
       table: LEDGER_TABLE,
       columns: [
@@ -303,6 +322,53 @@ export function deriveExpectedObjects(release: LoadedReleasePackage): readonly E
   );
 }
 
+export function deriveDeclaredColumns(
+  release: LoadedReleasePackage,
+  relations: ReadonlySet<string>,
+): readonly DeclaredColumn[] {
+  const columns: DeclaredColumn[] = [];
+  const objects = new Map(
+    deriveExpectedObjects(release).map((entry) => [`${entry.database}.${entry.name}`,entry]),
+  );
+  for (const relation of [...relations].sort()) {
+    const object = objects.get(relation);
+    if (object === undefined) {
+      throw new ReleasePackageError(
+        "CLICKHOUSE_SCHEMA_RELEASE_FILE_DRIFT",
+        `Required derived-schema relation ${relation} is not declared by the release migrations.`,
+      );
+    }
+    const migration = release.migrations.find(({file}) => file === object.migration);
+    const statement = migration?.statements.find((candidate) =>
+      new RegExp(
+        `\\bCREATE\\s+(?:OR\\s+REPLACE\\s+)?(?:TABLE|VIEW)\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?${escapeRegExp(relation)}\\b`,
+        "iu",
+      ).test(candidate),
+    );
+    if (migration === undefined || statement === undefined) {
+      throw new ReleasePackageError(
+        "CLICKHOUSE_SCHEMA_RELEASE_FILE_DRIFT",
+        `Required derived-schema relation ${relation} has no unique creating statement.`,
+      );
+    }
+    const [database,table] = relation.split(".") as [string,string];
+    const declarations =
+      object.kind === "table"
+        ? tableColumnDeclarations(statement, relation)
+        : viewColumnDeclarations(statement, relation);
+    if (declarations.length === 0) {
+      throw new ReleasePackageError(
+        "CLICKHOUSE_SCHEMA_RELEASE_FILE_DRIFT",
+        `Required derived-schema relation ${relation} has no statically declared columns.`,
+      );
+    }
+    declarations.forEach(({name,type}, index) => {
+      columns.push({database,table,name,type,position: index + 1,migration: migration.file});
+    });
+  }
+  return columns;
+}
+
 export function splitClickHouseStatements(sql: string): readonly string[] {
   const statements: string[] = [];
   let start = 0;
@@ -376,6 +442,153 @@ export function stableJson(value: unknown): string {
   throw new TypeError("Unsupported JSON value.");
 }
 
+function tableColumnDeclarations(
+  statement: string,
+  relation: string,
+): readonly {readonly name: string; readonly type: string}[] {
+  const relationMatch = new RegExp(`${escapeRegExp(relation)}\\b`, "iu").exec(statement);
+  const open = relationMatch === null ? -1 : statement.indexOf("(", relationMatch.index + relation.length);
+  const close = open < 0 ? -1 : matchingParenthesis(statement, open);
+  if (open < 0 || close < 0) return [];
+  const ignored = new Set(["CONSTRAINT", "INDEX", "PROJECTION", "PRIMARY", "UNIQUE", "FOREIGN", "CHECK"]);
+  return splitTopLevel(statement.slice(open + 1, close), ",").flatMap((part) => {
+    const declaration = part
+      .replace(/^\s*(?:(?:--[^\n]*(?:\n|$))|(?:\/\*[\s\S]*?\*\/\s*))*/u, "")
+      .trim();
+    const match = /^`?([A-Za-z_][A-Za-z0-9_]*)`?\s+([\s\S]+)$/u.exec(declaration);
+    if (match === null || ignored.has(match[1]!.toUpperCase())) return [];
+    const type = leadingType(match[2]!);
+    return type === "" ? [] : [{name: match[1]!,type}];
+  });
+}
+
+function viewColumnDeclarations(
+  statement: string,
+  relation: string,
+): readonly {readonly name: string; readonly type: string}[] {
+  const relationMatch = new RegExp(`${escapeRegExp(relation)}\\b`, "iu").exec(statement);
+  if (relationMatch === null) return [];
+  const tail = statement.slice(relationMatch.index + relation.length);
+  const selectMatch = /\bAS\s+SELECT\b/iu.exec(tail);
+  if (selectMatch === null) return [];
+  const selectList = tail.slice(selectMatch.index + selectMatch[0].length);
+  const from = topLevelKeywordIndex(selectList, "FROM");
+  if (from < 0) return [];
+  return splitTopLevel(selectList.slice(0, from), ",").flatMap((part) => {
+    const expression = part.trim();
+    const alias = /\bAS\s+`?([A-Za-z_][A-Za-z0-9_]*)`?\s*$/iu.exec(expression)?.[1];
+    const simple = /^(?:`?[A-Za-z_][A-Za-z0-9_]*`?\.)?`?([A-Za-z_][A-Za-z0-9_]*)`?$/u.exec(
+      expression,
+    )?.[1];
+    const name = alias ?? simple;
+    return name === undefined ? [] : [{name,type: "Derived"}];
+  });
+}
+
+function leadingType(value: string): string {
+  let depth = 0;
+  let quote: "'" | '"' | "`" | undefined;
+  for (let index = 0; index < value.length; index += 1) {
+    const current = value[index]!;
+    const next = value[index + 1];
+    if (quote !== undefined) {
+      if (current === "\\") index += 1;
+      else if (current === quote) {
+        if (next === quote) index += 1;
+        else quote = undefined;
+      }
+      continue;
+    }
+    if (current === "'" || current === '"' || current === "`") quote = current;
+    else if (current === "(") depth += 1;
+    else if (current === ")") depth -= 1;
+    else if (/\s/u.test(current) && depth === 0) return value.slice(0, index).trim();
+  }
+  return value.trim();
+}
+
+function matchingParenthesis(value: string, open: number): number {
+  let depth = 0;
+  let quote: "'" | '"' | "`" | undefined;
+  for (let index = open; index < value.length; index += 1) {
+    const current = value[index]!;
+    const next = value[index + 1];
+    if (quote !== undefined) {
+      if (current === "\\") index += 1;
+      else if (current === quote) {
+        if (next === quote) index += 1;
+        else quote = undefined;
+      }
+      continue;
+    }
+    if (current === "'" || current === '"' || current === "`") quote = current;
+    else if (current === "(") depth += 1;
+    else if (current === ")" && --depth === 0) return index;
+  }
+  return -1;
+}
+
+function splitTopLevel(value: string, separator: string): readonly string[] {
+  const parts: string[] = [];
+  let start = 0;
+  let depth = 0;
+  let quote: "'" | '"' | "`" | undefined;
+  for (let index = 0; index < value.length; index += 1) {
+    const current = value[index]!;
+    const next = value[index + 1];
+    if (quote !== undefined) {
+      if (current === "\\") index += 1;
+      else if (current === quote) {
+        if (next === quote) index += 1;
+        else quote = undefined;
+      }
+      continue;
+    }
+    if (current === "'" || current === '"' || current === "`") quote = current;
+    else if (current === "(") depth += 1;
+    else if (current === ")") depth -= 1;
+    else if (current === separator && depth === 0) {
+      parts.push(value.slice(start, index));
+      start = index + 1;
+    }
+  }
+  parts.push(value.slice(start));
+  return parts;
+}
+
+function topLevelKeywordIndex(value: string, keyword: string): number {
+  let depth = 0;
+  let quote: "'" | '"' | "`" | undefined;
+  for (let index = 0; index <= value.length - keyword.length; index += 1) {
+    const current = value[index]!;
+    const next = value[index + 1];
+    if (quote !== undefined) {
+      if (current === "\\") index += 1;
+      else if (current === quote) {
+        if (next === quote) index += 1;
+        else quote = undefined;
+      }
+      continue;
+    }
+    if (current === "'" || current === '"' || current === "`") quote = current;
+    else if (current === "(") depth += 1;
+    else if (current === ")") depth -= 1;
+    else if (
+      depth === 0 &&
+      value.slice(index, index + keyword.length).toUpperCase() === keyword &&
+      !/[A-Za-z0-9_]/u.test(value[index - 1] ?? "") &&
+      !/[A-Za-z0-9_]/u.test(value[index + keyword.length] ?? "")
+    ) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+}
+
 function migration(ordinal: number, file: string, bytes: number, hash: string): FrozenMigration {
   return Object.freeze({
     ordinal,
@@ -385,7 +598,9 @@ function migration(ordinal: number, file: string, bytes: number, hash: string): 
     provenance:
       ordinal <= 17
         ? "committed-rc3-manifest-authenticated-restoration"
-        : "exact-bytes-from-benchmark-d58d4474b3ca393c47461956e6e45ff0aa3330fa",
+        : ordinal <= 21
+          ? "exact-bytes-from-benchmark-d58d4474b3ca393c47461956e6e45ff0aa3330fa"
+          : "exact-bytes-from-sdar-telemetry-a09f179e1a402c59a99f67e96167696c1d9590ae:migrations/clickhouse/014_sdar_evidence_v1_canonical.sql",
   });
 }
 
@@ -433,7 +648,7 @@ async function assertMigrationDirectoryEntries(releaseRoot: string): Promise<voi
   ) {
     throw new ReleasePackageError(
       "CLICKHOUSE_SCHEMA_RELEASE_FILE_DRIFT",
-      "Release migrations directory must contain exactly the accepted 22 SQL files.",
+      "Release migrations directory must contain exactly the accepted 23 SQL files.",
     );
   }
 }

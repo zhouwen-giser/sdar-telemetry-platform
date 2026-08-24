@@ -28,11 +28,11 @@ test("fresh installer executes exact order and appends one ledger row after ever
   const result = await installFreshRelease(release, runtime);
 
   assert.equal(result.status, "installed");
-  assert.deepEqual(result.appliedOrdinals, Array.from({length: 22}, (_, ordinal) => ordinal));
+  assert.deepEqual(result.appliedOrdinals, Array.from({length: 23}, (_, ordinal) => ordinal));
   assert.equal(runtime.observeCalls, 1);
   assert.equal(runtime.createLedgerCalls, 1);
   assert.equal(runtime.verifyCalls, 1);
-  assert.equal(runtime.ledgerRows.length, 22);
+  assert.equal(runtime.ledgerRows.length, 23);
   assert.deepEqual(runtime.ledgerRows.map(({ordinal}) => ordinal), result.appliedOrdinals);
   assert.equal(
     runtime.statementCalls,
@@ -281,10 +281,10 @@ class FakeRuntime implements ReleaseInstallerRuntime {
       migrationSetContentAddress: release.manifest.migrationSetContentAddress,
       clickHouseVersion: "24.10.2.1",
       databases: 6,
-      physicalTables: 310,
+      physicalTables: 311,
       views: 120,
-      totalObjects: 430,
-      ledgerRows: 22,
+      totalObjects: 431,
+      ledgerRows: 23,
       verified: true,
     };
   }
