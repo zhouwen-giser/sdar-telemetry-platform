@@ -217,8 +217,9 @@ test("domain projection backend failure preserves a safe typed cause and route-c
       assert.equal(body.watermark, null);
       assert.deepEqual(body.sourceCoverage, {
         expected: [DOMAIN_PROJECTION_V1_CONTRACT],
-        observed: [],
+        actual: [DOMAIN_PROJECTION_V1_CONTRACT],
       });
+      assert.equal("observed" in body.sourceCoverage, false);
     },
     undefined,
     (diagnostic) => diagnostics.push(diagnostic),
@@ -253,6 +254,28 @@ test("domain projection backend failure preserves a safe typed cause and route-c
   ]) {
     assert.equal(serialized.includes(forbidden), false, forbidden);
   }
+});
+
+test("domain projection success uses the exact V3 expected and actual coverage fields", async () => {
+  const rows = Array.from({length: 10}, (_, index) => ({
+    projection_id: `application_to_embodied.dp-${index < 5 ? "c" : "n"}${String((index % 5) + 1).padStart(2, "0")}`,
+    projection_version: "1",
+    health_status: "defined_disabled",
+  }));
+  const clickHouse = new FakeClickHouse(clickHouseJson(rows));
+  await withQueryApi(clickHouse, async (baseUrl) => {
+    const response = await queryFetch(`${baseUrl}/v1/domain-projections`);
+    assert.equal(response.status, 200);
+    const body = (await response.json()) as QueryEnvelope;
+    assert.deepEqual(body.data, rows);
+    assert.deepEqual(body.sourceCoverage, {
+      expected: [DOMAIN_PROJECTION_V1_CONTRACT],
+      actual: [DOMAIN_PROJECTION_V1_CONTRACT],
+    });
+    assert.equal("observed" in body.sourceCoverage, false);
+  });
+  assert.equal(clickHouse.calls.length, 1);
+  assert.match(clickHouse.calls[0]!.sql, /FROM sdar_meta\.v_domain_projection_health/u);
 });
 
 test("unsupported methods and routes are rejected without querying", async () => {
@@ -419,7 +442,7 @@ interface QueryCall {
 interface QueryEnvelope {
   readonly data: unknown;
   readonly watermark: string | null;
-  readonly sourceCoverage: { expected: string[]; observed: string[] };
+  readonly sourceCoverage: { expected: string[]; observed?: string[]; actual?: string[] };
 }
 
 class FakeClickHouse implements QueryClickHouseClient {

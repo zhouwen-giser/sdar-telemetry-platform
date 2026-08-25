@@ -181,13 +181,30 @@ async function handleRequest(
   sendJson(
     response,
     200,
-    envelope(
+    routeEnvelope(
       data,
       watermark,
-      [contract],
-      rows.length === 0 ? [] : [contract],
+      contract,
+      rows.length > 0,
     ),
   );
+}
+
+function routeEnvelope<T>(
+  data: T,
+  watermark: string | null,
+  contract: string,
+  hasRows: boolean,
+): unknown {
+  const document = envelope(data, watermark, [contract], hasRows ? [contract] : []);
+  if (contract !== DOMAIN_PROJECTION_V1_CONTRACT) return document;
+  return {
+    ...document,
+    sourceCoverage: {
+      expected: [DOMAIN_PROJECTION_V1_CONTRACT],
+      actual: [DOMAIN_PROJECTION_V1_CONTRACT],
+    },
+  };
 }
 
 function domainProjectionQueryIdentity(pathname: string): Readonly<{
@@ -689,11 +706,11 @@ function sendError(response: ServerResponse, error: unknown): void {
     sendJson(
       response,
       queryError.statusCode,
-      envelope(
+      routeEnvelope(
         { errorCode: queryError.code },
         null,
-        [queryError.coverageContract ?? EVIDENCE_V1_CONTRACT],
-        [],
+        queryError.coverageContract ?? EVIDENCE_V1_CONTRACT,
+        false,
       ),
     );
     return;

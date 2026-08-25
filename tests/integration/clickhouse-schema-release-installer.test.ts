@@ -13,7 +13,7 @@ import {loadReleasePackage,type LoadedMigration} from "../../scripts/sync-clickh
 const scenario = process.env["SDAR_CLICKHOUSE_SCHEMA_RELEASE_INTEGRATION_SCENARIO"];
 
 test(
-  "authorized empty ClickHouse installs and exact replay performs zero mutations",
+  "authorized empty ClickHouse recovers after reset, installs, and exact replay performs zero mutations",
   {skip: scenario !== "install-replay" ? "requires Run Controller-authorized empty ClickHouse" : false},
   async () => {
     const release = await loadReleasePackage();
@@ -32,13 +32,13 @@ test(
   async () => {
     const release = await loadReleasePackage();
     const delegate = new ClickHouseReleaseInstallerRuntime(new ClickHouseClient(configFromEnv()));
-    let injected = false;
+    let injectionAttempts = 0;
     const runtime: ReleaseInstallerRuntime = {
       observeState: () => delegate.observeState(),
       createLedger: () => delegate.createLedger(),
       executeStatement: async (sql: string, migration: LoadedMigration, statementIndex: number) => {
-        if (!injected && migration.ordinal === 3 && statementIndex === 0) {
-          injected = true;
+        if (migration.ordinal === 23 && statementIndex === 0) {
+          injectionAttempts += 1;
           throw new Error("targeted integration fault");
         }
         await delegate.executeStatement(sql, migration, statementIndex);
@@ -50,11 +50,38 @@ test(
       () => installFreshRelease(release, runtime),
       hasCode("CLICKHOUSE_SCHEMA_RELEASE_MIGRATION_FAILED"),
     );
-    assert.equal(injected, true);
+    assert.equal(injectionAttempts, 1);
+    const durablePartial = await delegate.observeState();
+    assert.deepEqual(
+      durablePartial.ledgerRows.map(({ordinal}) => ordinal),
+      Array.from({length: 23}, (_, ordinal) => ordinal),
+    );
+    const secondInvocationMutations = {createLedger: 0,executeStatement: 0,appendLedger: 0};
+    const sameVolumeRuntime: ReleaseInstallerRuntime = {
+      observeState: () => delegate.observeState(),
+      createLedger: async () => {
+        secondInvocationMutations.createLedger += 1;
+        await delegate.createLedger();
+      },
+      executeStatement: async (sql, migration, statementIndex) => {
+        secondInvocationMutations.executeStatement += 1;
+        await delegate.executeStatement(sql, migration, statementIndex);
+      },
+      appendLedger: async (row) => {
+        secondInvocationMutations.appendLedger += 1;
+        await delegate.appendLedger(row);
+      },
+      verify: (loaded) => delegate.verify(loaded),
+    };
     await assert.rejects(
-      () => installFreshRelease(release, delegate),
+      () => installFreshRelease(release, sameVolumeRuntime),
       hasCode("CLICKHOUSE_SCHEMA_RELEASE_PARTIAL"),
     );
+    assert.deepEqual(secondInvocationMutations, {
+      createLedger: 0,
+      executeStatement: 0,
+      appendLedger: 0,
+    });
   },
 );
 
