@@ -33,11 +33,11 @@ test("fresh installer executes exact order and appends one ledger row after ever
   const result = await installFreshRelease(release, runtime);
 
   assert.equal(result.status, "installed");
-  assert.deepEqual(result.appliedOrdinals, Array.from({length: 23}, (_, ordinal) => ordinal));
+  assert.deepEqual(result.appliedOrdinals, Array.from({length: 24}, (_, ordinal) => ordinal));
   assert.equal(runtime.observeCalls, 1);
   assert.equal(runtime.createLedgerCalls, 1);
   assert.equal(runtime.verifyCalls, 1);
-  assert.equal(runtime.ledgerRows.length, 23);
+  assert.equal(runtime.ledgerRows.length, 24);
   assert.deepEqual(runtime.ledgerRows.map(({ordinal}) => ordinal), result.appliedOrdinals);
   assert.equal(
     runtime.statementCalls,
@@ -130,10 +130,10 @@ test("exact complete replay verifies with zero mutation", async () => {
   assert.ok(observation);
   assert.deepEqual(observation.databases, [...REQUIRED_DATABASES]);
   assert.deepEqual(observation.ledgerLocations, [LEDGER_TABLE]);
-  assert.equal(observation.ledgerRows.length, 23);
+  assert.equal(observation.ledgerRows.length, 24);
   assert.deepEqual(
     observation.ledgerRows.map(({ordinal}) => ordinal),
-    Array.from({length: 23}, (_, ordinal) => ordinal),
+    Array.from({length: 24}, (_, ordinal) => ordinal),
   );
   assert.equal(
     observation.ledgerRows.every(
@@ -424,10 +424,10 @@ class FakeRuntime implements ReleaseInstallerRuntime {
       migrationSetContentAddress: release.manifest.migrationSetContentAddress,
       clickHouseVersion: "24.10.2.1",
       databases: 6,
-      physicalTables: 311,
-      views: 120,
-      totalObjects: 431,
-      ledgerRows: 23,
+      physicalTables: 312,
+      views: 121,
+      totalObjects: 433,
+      ledgerRows: 24,
       verified: true,
     };
   }
@@ -477,10 +477,10 @@ function successfulVerification(release: LoadedReleasePackage): ReleaseVerificat
     migrationSetContentAddress: release.manifest.migrationSetContentAddress,
     clickHouseVersion: "24.10.2.1",
     databases: 6,
-    physicalTables: 311,
-    views: 120,
-    totalObjects: 431,
-    ledgerRows: 23,
+    physicalTables: 312,
+    views: 121,
+    totalObjects: 433,
+    ledgerRows: 24,
     verified: true,
   };
 }

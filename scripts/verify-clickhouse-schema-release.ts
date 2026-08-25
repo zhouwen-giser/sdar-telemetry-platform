@@ -26,10 +26,10 @@ export interface ReleaseVerificationResult {
   readonly migrationSetContentAddress: string;
   readonly clickHouseVersion: string;
   readonly databases: 6;
-  readonly physicalTables: 311;
-  readonly views: 120;
-  readonly totalObjects: 431;
-  readonly ledgerRows: 23;
+  readonly physicalTables: 312;
+  readonly views: 121;
+  readonly totalObjects: 433;
+  readonly ledgerRows: 24;
   readonly verified: true;
 }
 
@@ -50,6 +50,10 @@ export type VerificationAssertionId =
   | "release-column-inventory"
   | "canonical-evidence-column"
   | "critical-semantic-column"
+  | "domain-projection-health-descriptor"
+  | "domain-projection-health-columns"
+  | "domain-projection-health-seeds"
+  | "domain-projection-health-snapshot-queryability"
   | "ledger-columns"
   | "frozen-seed-catalog"
   | "ledger-table-descriptor"
@@ -64,6 +68,8 @@ export type VerificationQueryId =
   | "system-tables-release-inventory"
   | "system-columns-release-and-ledger"
   | "release-seed-aggregates"
+  | "domain-projection-health-seeds"
+  | "domain-projection-health-snapshot-final"
   | "system-tables-ledger-descriptor"
   | "release-ledger-tuples"
   | "release-view-limit-zero"
@@ -76,6 +82,8 @@ export type VerificationSqlClass =
   | "readonly-system-tables-inventory"
   | "readonly-system-columns-inventory"
   | "readonly-release-seed-aggregates"
+  | "readonly-domain-projection-health-seeds"
+  | "readonly-domain-projection-health-snapshot-final"
   | "readonly-ledger-descriptor"
   | "readonly-ledger-tuples"
   | "readonly-view-limit-zero"
@@ -280,6 +288,40 @@ export const CRITICAL_SEMANTIC_COLUMNS = Object.freeze([
   "sdar_mart.v_source_evidence_readiness_v15.manifest_payload_hash",
   "sdar_mart.v_source_evidence_readiness_v15.readiness_projected_at",
 ]);
+export const DOMAIN_PROJECTION_HEALTH_SNAPSHOT = "sdar_meta.domain_projection_health_snapshot" as const;
+export const DOMAIN_PROJECTION_HEALTH_VIEW = "sdar_meta.v_domain_projection_health" as const;
+export const DOMAIN_PROJECTION_HEALTH_COLUMNS = Object.freeze([
+  ["tenant_id", "String"],
+  ["project_id", "String"],
+  ["projection_id", "String"],
+  ["projection_version", "String"],
+  ["definition_status", "LowCardinality(String)"],
+  ["version_status", "LowCardinality(String)"],
+  ["last_run_status", "String"],
+  ["last_run_updated_at", "DateTime64(3, 'UTC')"],
+  ["schema_drift_status", "String"],
+  ["checkpoint_watermark", "Nullable(DateTime64(3, 'UTC'))"],
+  ["last_source_sequence", "UInt64"],
+  ["produced_count", "UInt64"],
+  ["skipped_count", "UInt64"],
+  ["failed_count", "UInt64"],
+  ["unresolved_blocking_dlq_count", "UInt64"],
+  ["lineage_issue_count", "UInt64"],
+  ["health_status", "String"],
+  ["reason_codes", "Array(String)"],
+] as const);
+export const DOMAIN_PROJECTION_HEALTH_SEED_IDS = Object.freeze([
+  "application_to_embodied.dp-c01",
+  "application_to_embodied.dp-c02",
+  "application_to_embodied.dp-c03",
+  "application_to_embodied.dp-c04",
+  "application_to_embodied.dp-c05",
+  "application_to_embodied.dp-n01",
+  "application_to_embodied.dp-n02",
+  "application_to_embodied.dp-n03",
+  "application_to_embodied.dp-n04",
+  "application_to_embodied.dp-n05",
+] as const);
 
 export async function verifyInstalledRelease(
   client: ReadonlyClickHouse,
@@ -294,9 +336,9 @@ export async function verifyInstalledRelease(
   const expectedTables = expectedObjects.filter(({kind}) => kind === "table");
   const expectedViews = expectedObjects.filter(({kind}) => kind === "view");
   requireCondition(
-    expectedTables.length === 311 && expectedViews.length === 120 && expectedObjects.length === 431,
+    expectedTables.length === 312 && expectedViews.length === 121 && expectedObjects.length === 433,
     derivationContext,
-    "Migration-derived object inventory is not exactly 311 physical tables and 120 views.",
+    "Migration-derived object inventory is not exactly 312 physical tables and 121 views.",
   );
 
   const versionContext = verificationContext(
@@ -338,7 +380,7 @@ export async function verifyInstalledRelease(
   );
   const objectRows = await jsonRows(
     client,
-    `SELECT database,name,engine FROM system.tables WHERE database IN (${sqlStrings(REQUIRED_DATABASES)}) ORDER BY database,name FORMAT JSON`,
+    `SELECT database,name,engine,engine_full,sorting_key FROM system.tables WHERE database IN (${sqlStrings(REQUIRED_DATABASES)}) ORDER BY database,name FORMAT JSON`,
     500,
     objectQueryContext,
   );
@@ -372,10 +414,33 @@ export async function verifyInstalledRelease(
       `Required projection view ${view} is missing or has the wrong engine kind.`,
     );
   }
+  const healthSnapshotRow = objectRows.find(
+    (row) => objectName(row, objectQueryContext) === DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+  );
+  const healthViewRow = objectRows.find(
+    (row) => objectName(row, objectQueryContext) === DOMAIN_PROJECTION_HEALTH_VIEW,
+  );
+  const healthDescriptorContext = {
+    ...objectQueryContext,
+    assertionId: "domain-projection-health-descriptor" as const,
+    relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+  };
   requireCondition(
-    actualObjects.size === 431,
+    healthSnapshotRow !== undefined &&
+      stringField(healthSnapshotRow, "engine", healthDescriptorContext) === "ReplacingMergeTree" &&
+      stringField(healthSnapshotRow, "engine_full", healthDescriptorContext).replaceAll(" ", "") ===
+        "ReplacingMergeTree(last_run_updated_at)" &&
+      stringField(healthSnapshotRow, "sorting_key", healthDescriptorContext).replaceAll(" ", "") ===
+        "tenant_id,project_id,projection_id,projection_version" &&
+      healthViewRow !== undefined &&
+      stringField(healthViewRow, "engine", healthDescriptorContext) === "View",
+    healthDescriptorContext,
+    "Domain projection health snapshot or view descriptor drifted.",
+  );
+  requireCondition(
+    actualObjects.size === 433,
     objectQueryContext,
-    "Installed release object count is not exactly 431.",
+    "Installed release object count is not exactly 433.",
   );
   for (const expected of expectedObjects) {
     const key = `${expected.database}.${expected.name}`;
@@ -454,6 +519,7 @@ export async function verifyInstalledRelease(
     assertionId: "ledger-columns",
     relation: LEDGER_TABLE,
   });
+  assertDomainProjectionHealthColumns(columnRows);
 
   const seedsContext = verificationContext(
     "frozen-seed-catalog",
@@ -480,6 +546,20 @@ export async function verifyInstalledRelease(
   requireCondition(numberField(seeds, "operators", seedsContext) === 16, seedsContext, "Benchmark operator catalog count is not 16.");
   requireCondition(numberField(seeds, "relations", seedsContext) === 8, seedsContext, "Benchmark relation catalog count is not 8.");
   requireCondition(numberField(seeds, "invariants", seedsContext) === 12, seedsContext, "Benchmark invariant catalog count is not 12.");
+
+  const domainHealthSeedsContext = verificationContext(
+    "domain-projection-health-seeds",
+    "domain-projection-health-seeds",
+    "readonly-domain-projection-health-seeds",
+    {relation: DOMAIN_PROJECTION_HEALTH_VIEW},
+  );
+  const domainHealthRows = await jsonRows(
+    client,
+    `SELECT tenant_id,project_id,projection_id,projection_version,definition_status,version_status,last_run_status,last_run_updated_at,schema_drift_status,checkpoint_watermark,last_source_sequence,produced_count,skipped_count,failed_count,unresolved_blocking_dlq_count,lineage_issue_count,health_status,reason_codes FROM ${DOMAIN_PROJECTION_HEALTH_VIEW} ORDER BY projection_id,projection_version FORMAT JSON`,
+    20,
+    domainHealthSeedsContext,
+  );
+  assertDomainProjectionHealthSeeds(domainHealthRows, domainHealthSeedsContext);
 
   const ledgerDescriptorContext = verificationContext(
     "ledger-table-descriptor",
@@ -520,6 +600,19 @@ export async function verifyInstalledRelease(
   );
   assertExactLedger(release, ledgerRows, ledgerTupleContext);
 
+  const domainHealthSnapshotContext = verificationContext(
+    "domain-projection-health-snapshot-queryability",
+    "domain-projection-health-snapshot-final",
+    "readonly-domain-projection-health-snapshot-final",
+    {relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT},
+  );
+  await checkedReadonlyQuery(
+    client,
+    `SELECT * FROM ${DOMAIN_PROJECTION_HEALTH_SNAPSHOT} FINAL LIMIT 0 FORMAT Null`,
+    domainHealthSnapshotContext,
+    "Domain projection health snapshot FINAL was not queryable.",
+  );
+
   for (const object of expectedViews) {
     const relation = `${object.database}.${object.name}`;
     const context = verificationContext(
@@ -558,10 +651,10 @@ export async function verifyInstalledRelease(
     migrationSetContentAddress: release.manifest.migrationSetContentAddress,
     clickHouseVersion: version,
     databases: 6,
-    physicalTables: 311,
-    views: 120,
-    totalObjects: 431,
-    ledgerRows: 23,
+    physicalTables: 312,
+    views: 121,
+    totalObjects: 433,
+    ledgerRows: 24,
     verified: true,
   };
 }
@@ -594,12 +687,73 @@ function assertLedgerColumns(
   );
 }
 
+function assertDomainProjectionHealthColumns(rows: readonly Record<string, unknown>[]): void {
+  for (const relation of [DOMAIN_PROJECTION_HEALTH_SNAPSHOT,DOMAIN_PROJECTION_HEALTH_VIEW]) {
+    const context = verificationContext(
+      "domain-projection-health-columns",
+      "system-columns-release-and-ledger",
+      "readonly-system-columns-inventory",
+      {relation},
+    );
+    const [database,table] = relation.split(".") as [string,string];
+    const actual = rows
+      .filter(
+        (row) =>
+          stringField(row, "database", context) === database &&
+          stringField(row, "table", context) === table,
+      )
+      .map((row) => [stringField(row, "name", context),stringField(row, "type", context)] as const);
+    requireCondition(
+      actual.length === DOMAIN_PROJECTION_HEALTH_COLUMNS.length &&
+        actual.every(
+          (entry, index) =>
+            entry[0] === DOMAIN_PROJECTION_HEALTH_COLUMNS[index]?.[0] &&
+            entry[1] === DOMAIN_PROJECTION_HEALTH_COLUMNS[index]?.[1],
+        ),
+      context,
+      `Domain projection health relation ${relation} columns or order drifted.`,
+    );
+  }
+}
+
+function assertDomainProjectionHealthSeeds(
+  rows: readonly Record<string, unknown>[],
+  context: VerificationContext,
+): void {
+  requireCondition(rows.length === DOMAIN_PROJECTION_HEALTH_SEED_IDS.length, context, "Domain projection health must contain exactly ten development seed rows.");
+  for (const [index,row] of rows.entries()) {
+    const reasons = row["reason_codes"];
+    requireCondition(
+      stringField(row, "tenant_id", context) === "global" &&
+        stringField(row, "project_id", context) === "global" &&
+        stringField(row, "projection_id", context) === DOMAIN_PROJECTION_HEALTH_SEED_IDS[index] &&
+        stringField(row, "projection_version", context) === "1" &&
+        stringField(row, "definition_status", context) === "disabled" &&
+        stringField(row, "version_status", context) === "disabled" &&
+        stringField(row, "last_run_status", context) === "not_run" &&
+        stringField(row, "last_run_updated_at", context) === "1970-01-01 00:00:00.000" &&
+        stringField(row, "schema_drift_status", context) === "not_checked" &&
+        row["checkpoint_watermark"] === null &&
+        ["last_source_sequence","produced_count","skipped_count","failed_count","unresolved_blocking_dlq_count","lineage_issue_count"].every(
+          (field) => numberField(row, field, context) === 0,
+        ) &&
+        stringField(row, "health_status", context) === "defined_disabled" &&
+        Array.isArray(reasons) &&
+        reasons.length === 2 &&
+        reasons[0] === "development_seed" &&
+        reasons[1] === "projection_disabled",
+      context,
+      `Domain projection health development seed row ${index} drifted.`,
+    );
+  }
+}
+
 function assertExactLedger(
   release: LoadedReleasePackage,
   rows: readonly Record<string, unknown>[],
   context: VerificationContext,
 ): void {
-  requireCondition(rows.length === 23, context, "Release ledger must contain exactly 23 rows.");
+  requireCondition(rows.length === 24, context, "Release ledger must contain exactly 24 rows.");
   for (const migration of release.manifest.migrations) {
     const row = rows[migration.ordinal];
     requireCondition(

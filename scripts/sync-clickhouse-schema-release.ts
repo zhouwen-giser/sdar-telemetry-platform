@@ -1,14 +1,14 @@
 import {createHash} from "node:crypto";
 import type {Dirent} from "node:fs";
-import {readdir,readFile,writeFile} from "node:fs/promises";
+import {copyFile,mkdir,readdir,readFile,writeFile} from "node:fs/promises";
 import {dirname,resolve} from "node:path";
 import {fileURLToPath,pathToFileURL} from "node:url";
 
 export const RELEASE_ID =
-  "sdar-clickhouse-schema/1.5.0-rc.3-benchmark-aligned-development-canonical-evidence" as const;
-export const RELEASE_VERSION = "1.5.0-rc.3+canonical-evidence.1" as const;
+  "sdar-clickhouse-schema/1.5.0-rc.3-development-domain-projection-v3" as const;
+export const RELEASE_VERSION = "1.5.0-rc.3+canonical-evidence.domain-projection.1" as const;
 export const MIGRATION_SET_CONTENT_ADDRESS =
-  "sha256:8d7c8e6f96a224bb4ec2728a76bd8ef7e03783e6e89ca730e1935b9520ff9c78" as const;
+  "sha256:a70e87e4457da8e75ce64bb8a3f1af4ec26d0ab6827b070a21614d897872f144" as const;
 export const LEDGER_TABLE = "default.sdar_clickhouse_schema_release_ledger" as const;
 export const REQUIRED_DATABASES = Object.freeze([
   "sdar_meta",
@@ -44,7 +44,7 @@ export interface FrozenMigration {
 export type ReleaseMigration = FrozenMigration;
 
 export interface ReleaseManifest {
-  readonly schemaVersion: "sdar-telemetry.clickhouse-schema-release/v2";
+  readonly schemaVersion: "sdar-telemetry.clickhouse-schema-release/v3";
   readonly releaseId: typeof RELEASE_ID;
   readonly releaseVersion: typeof RELEASE_VERSION;
   readonly installMode: "fresh-only";
@@ -57,12 +57,16 @@ export interface ReleaseManifest {
     readonly productAppendSourceCommit: "a09f179e1a402c59a99f67e96167696c1d9590ae";
     readonly productAppendSourcePath: "migrations/clickhouse/014_sdar_evidence_v1_canonical.sql";
     readonly productAppendSourceByteSha256: "sha256:fb0b073f7c590ca56285da91a7253e7426db84dd19b587a2baa01635a4542ff9";
+    readonly developmentClosureOrdinal: 23;
+    readonly developmentClosureAuthority: "DEC-G02-CLICKHOUSE-SCHEMA-RELEASE-BOOTSTRAP-V3";
+    readonly developmentClosureFile: "23_domain_projection_health_development.sql";
+    readonly developmentClosureByteSha256: "sha256:35e89646a45e1a2e96c14b259a67044ad01b1670e87c890bff382f2a3b650867";
   };
   readonly requiredDatabases: readonly string[];
   readonly expectedObjects: {
-    readonly physicalTables: 311;
-    readonly views: 120;
-    readonly total: 431;
+    readonly physicalTables: 312;
+    readonly views: 121;
+    readonly total: 433;
   };
   readonly ledger: {
     readonly table: typeof LEDGER_TABLE;
@@ -144,7 +148,14 @@ export const FROZEN_MIGRATIONS = Object.freeze([
   migration(20, "20_benchmark_runtime_projection.sql", 18444, "58579305fe1407b031ca4495b3c7e1d2d54273920ab23d22ac817aee264cb264"),
   migration(21, "21_benchmark_comparison_and_marts.sql", 15412, "4c18d9bd36cc4bab2d0a93c3ce139f957bf7d35cc30aaa28393eda6668fa261b"),
   migration(22, "22_sdar_evidence_v1_canonical.sql", 2338, "fb0b073f7c590ca56285da91a7253e7426db84dd19b587a2baa01635a4542ff9"),
+  migration(23, "23_domain_projection_health_development.sql", 4209, "35e89646a45e1a2e96c14b259a67044ad01b1670e87c890bff382f2a3b650867"),
 ]);
+
+export const ORDINAL_23_CANONICAL_STATEMENTS = Object.freeze([
+  "CREATE TABLE IF NOT EXISTS sdar_meta.domain_projection_health_snapshot\n(\n    tenant_id String,\n    project_id String,\n    projection_id String,\n    projection_version String,\n    definition_status LowCardinality(String),\n    version_status LowCardinality(String),\n    last_run_status String,\n    last_run_updated_at DateTime64(3, 'UTC'),\n    schema_drift_status String,\n    checkpoint_watermark Nullable(DateTime64(3, 'UTC')),\n    last_source_sequence UInt64,\n    produced_count UInt64,\n    skipped_count UInt64,\n    failed_count UInt64,\n    unresolved_blocking_dlq_count UInt64,\n    lineage_issue_count UInt64,\n    health_status String,\n    reason_codes Array(String)\n)\nENGINE = ReplacingMergeTree(last_run_updated_at)\nORDER BY (tenant_id, project_id, projection_id, projection_version);",
+  "INSERT INTO sdar_meta.domain_projection_health_snapshot\n(tenant_id, project_id, projection_id, projection_version, definition_status, version_status, last_run_status, last_run_updated_at, schema_drift_status, checkpoint_watermark, last_source_sequence, produced_count, skipped_count, failed_count, unresolved_blocking_dlq_count, lineage_issue_count, health_status, reason_codes) VALUES\n('global', 'global', 'application_to_embodied.dp-c01', '1', 'disabled', 'disabled', 'not_run', toDateTime64('1970-01-01 00:00:00.000', 3, 'UTC'), 'not_checked', NULL, 0, 0, 0, 0, 0, 0, 'defined_disabled', ['development_seed', 'projection_disabled']),\n('global', 'global', 'application_to_embodied.dp-c02', '1', 'disabled', 'disabled', 'not_run', toDateTime64('1970-01-01 00:00:00.000', 3, 'UTC'), 'not_checked', NULL, 0, 0, 0, 0, 0, 0, 'defined_disabled', ['development_seed', 'projection_disabled']),\n('global', 'global', 'application_to_embodied.dp-c03', '1', 'disabled', 'disabled', 'not_run', toDateTime64('1970-01-01 00:00:00.000', 3, 'UTC'), 'not_checked', NULL, 0, 0, 0, 0, 0, 0, 'defined_disabled', ['development_seed', 'projection_disabled']),\n('global', 'global', 'application_to_embodied.dp-c04', '1', 'disabled', 'disabled', 'not_run', toDateTime64('1970-01-01 00:00:00.000', 3, 'UTC'), 'not_checked', NULL, 0, 0, 0, 0, 0, 0, 'defined_disabled', ['development_seed', 'projection_disabled']),\n('global', 'global', 'application_to_embodied.dp-c05', '1', 'disabled', 'disabled', 'not_run', toDateTime64('1970-01-01 00:00:00.000', 3, 'UTC'), 'not_checked', NULL, 0, 0, 0, 0, 0, 0, 'defined_disabled', ['development_seed', 'projection_disabled']),\n('global', 'global', 'application_to_embodied.dp-n01', '1', 'disabled', 'disabled', 'not_run', toDateTime64('1970-01-01 00:00:00.000', 3, 'UTC'), 'not_checked', NULL, 0, 0, 0, 0, 0, 0, 'defined_disabled', ['development_seed', 'projection_disabled']),\n('global', 'global', 'application_to_embodied.dp-n02', '1', 'disabled', 'disabled', 'not_run', toDateTime64('1970-01-01 00:00:00.000', 3, 'UTC'), 'not_checked', NULL, 0, 0, 0, 0, 0, 0, 'defined_disabled', ['development_seed', 'projection_disabled']),\n('global', 'global', 'application_to_embodied.dp-n03', '1', 'disabled', 'disabled', 'not_run', toDateTime64('1970-01-01 00:00:00.000', 3, 'UTC'), 'not_checked', NULL, 0, 0, 0, 0, 0, 0, 'defined_disabled', ['development_seed', 'projection_disabled']),\n('global', 'global', 'application_to_embodied.dp-n04', '1', 'disabled', 'disabled', 'not_run', toDateTime64('1970-01-01 00:00:00.000', 3, 'UTC'), 'not_checked', NULL, 0, 0, 0, 0, 0, 0, 'defined_disabled', ['development_seed', 'projection_disabled']),\n('global', 'global', 'application_to_embodied.dp-n05', '1', 'disabled', 'disabled', 'not_run', toDateTime64('1970-01-01 00:00:00.000', 3, 'UTC'), 'not_checked', NULL, 0, 0, 0, 0, 0, 0, 'defined_disabled', ['development_seed', 'projection_disabled']);",
+  "CREATE VIEW IF NOT EXISTS sdar_meta.v_domain_projection_health AS\nSELECT\n    tenant_id,\n    project_id,\n    projection_id,\n    projection_version,\n    definition_status,\n    version_status,\n    last_run_status,\n    last_run_updated_at,\n    schema_drift_status,\n    checkpoint_watermark,\n    last_source_sequence,\n    produced_count,\n    skipped_count,\n    failed_count,\n    unresolved_blocking_dlq_count,\n    lineage_issue_count,\n    health_status,\n    reason_codes\nFROM sdar_meta.domain_projection_health_snapshot FINAL;"
+] as const);
 
 export function projectRootFromModule(moduleUrl = import.meta.url): string {
   const parent = dirname(dirname(fileURLToPath(moduleUrl)));
@@ -152,7 +163,7 @@ export function projectRootFromModule(moduleUrl = import.meta.url): string {
 }
 
 export function defaultReleaseRoot(moduleUrl = import.meta.url): string {
-  return resolve(projectRootFromModule(moduleUrl), "integrations/sdar-clickhouse/1.5.0-rc.3");
+  return resolve(projectRootFromModule(moduleUrl), "integrations/sdar-clickhouse/1.5.0-rc.3-development-v3");
 }
 
 export async function buildReleaseManifest(releaseRoot: string): Promise<ReleaseManifest> {
@@ -169,7 +180,7 @@ export async function buildReleaseManifest(releaseRoot: string): Promise<Release
   }
 
   const unsigned = {
-    schemaVersion: "sdar-telemetry.clickhouse-schema-release/v2",
+    schemaVersion: "sdar-telemetry.clickhouse-schema-release/v3",
     releaseId: RELEASE_ID,
     releaseVersion: RELEASE_VERSION,
     installMode: "fresh-only",
@@ -184,9 +195,14 @@ export async function buildReleaseManifest(releaseRoot: string): Promise<Release
       productAppendSourcePath: "migrations/clickhouse/014_sdar_evidence_v1_canonical.sql",
       productAppendSourceByteSha256:
         "sha256:fb0b073f7c590ca56285da91a7253e7426db84dd19b587a2baa01635a4542ff9",
+      developmentClosureOrdinal: 23,
+      developmentClosureAuthority: "DEC-G02-CLICKHOUSE-SCHEMA-RELEASE-BOOTSTRAP-V3",
+      developmentClosureFile: "23_domain_projection_health_development.sql",
+      developmentClosureByteSha256:
+        "sha256:35e89646a45e1a2e96c14b259a67044ad01b1670e87c890bff382f2a3b650867",
     },
     requiredDatabases: [...REQUIRED_DATABASES],
-    expectedObjects: {physicalTables: 311,views: 120,total: 431},
+    expectedObjects: {physicalTables: 312,views: 121,total: 433},
     ledger: {
       table: LEDGER_TABLE,
       columns: [
@@ -263,6 +279,7 @@ export async function writeOrCheckReleaseManifest(
   releaseRoot: string,
   check: boolean,
 ): Promise<ReleaseManifest> {
+  if (!check) await materializeReleaseMigrations(releaseRoot);
   const manifest = await buildReleaseManifest(releaseRoot);
   const bytes = `${JSON.stringify(manifest, null, 2)}\n`;
   const path = resolve(releaseRoot, "release-manifest.json");
@@ -289,6 +306,20 @@ export async function writeOrCheckReleaseManifest(
     await writeFile(path, bytes, {encoding: "utf8",flag: "w"});
   }
   return manifest;
+}
+
+async function materializeReleaseMigrations(releaseRoot: string): Promise<void> {
+  const migrationRoot = resolve(releaseRoot, "migrations");
+  const v2MigrationRoot = resolve(releaseRoot, "../1.5.0-rc.3/migrations");
+  await mkdir(migrationRoot, {recursive: true});
+  for (const migration of FROZEN_MIGRATIONS.slice(0, 23)) {
+    await copyFile(resolve(v2MigrationRoot, migration.file), resolve(migrationRoot, migration.file));
+  }
+  await writeFile(
+    resolve(migrationRoot, FROZEN_MIGRATIONS[23]!.file),
+    `${ORDINAL_23_CANONICAL_STATEMENTS.join("\n\n")}\n`,
+    {encoding: "utf8",flag: "w"},
+  );
 }
 
 export function deriveExpectedObjects(release: LoadedReleasePackage): readonly ExpectedObject[] {
@@ -600,7 +631,9 @@ function migration(ordinal: number, file: string, bytes: number, hash: string): 
         ? "committed-rc3-manifest-authenticated-restoration"
         : ordinal <= 21
           ? "exact-bytes-from-benchmark-d58d4474b3ca393c47461956e6e45ff0aa3330fa"
-          : "exact-bytes-from-sdar-telemetry-a09f179e1a402c59a99f67e96167696c1d9590ae:migrations/clickhouse/014_sdar_evidence_v1_canonical.sql",
+          : ordinal === 22
+            ? "exact-bytes-from-sdar-telemetry-a09f179e1a402c59a99f67e96167696c1d9590ae:migrations/clickhouse/014_sdar_evidence_v1_canonical.sql"
+            : "exact-rendering-of-DEC-G02-CLICKHOUSE-SCHEMA-RELEASE-BOOTSTRAP-V3.ordinal23.canonicalStatements",
   });
 }
 
@@ -648,7 +681,7 @@ async function assertMigrationDirectoryEntries(releaseRoot: string): Promise<voi
   ) {
     throw new ReleasePackageError(
       "CLICKHOUSE_SCHEMA_RELEASE_FILE_DRIFT",
-      "Release migrations directory must contain exactly the accepted 23 SQL files.",
+      "Release migrations directory must contain exactly the accepted 24 SQL files.",
     );
   }
 }

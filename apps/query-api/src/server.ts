@@ -32,6 +32,20 @@ export interface QueryApiDependencies {
   readonly clickHouse: QueryClickHouseClient;
   readonly authorization: TelemetryHttpAuthorizationPolicy;
   readonly maxResultRows?: number;
+  readonly onBackendError?: (diagnostic: QueryBackendDiagnostic) => void;
+}
+
+export interface QueryBackendDiagnostic {
+  readonly event: "query_api.backend_error";
+  readonly queryId: string;
+  readonly sqlClass: string;
+  readonly relation: string;
+  readonly contract: string;
+  readonly errorClass: "ClickHouseClientError" | "Error" | "TypeError";
+  readonly causeCode?: string;
+  readonly clickHouseCode?: number;
+  readonly httpStatus?: number;
+  readonly message: string;
 }
 
 type ResolvedAuthorizationPolicy =
@@ -42,6 +56,7 @@ export class QueryApiError extends Error {
   constructor(
     readonly code: string,
     readonly statusCode: number,
+    readonly coverageContract?: string,
   ) {
     super(code);
     this.name = "QueryApiError";
@@ -62,6 +77,7 @@ export function createQueryApi(dependencies: QueryApiDependencies): Server {
       dependencies.clickHouse,
       maxResultRows,
       authorization,
+      dependencies.onBackendError,
     ).catch((error: unknown) => sendError(response, error));
   });
 }
@@ -87,6 +103,7 @@ async function handleRequest(
   clickHouse: QueryClickHouseClient,
   maxResultRows: number,
   authorization: ResolvedAuthorizationPolicy,
+  onBackendError?: (diagnostic: QueryBackendDiagnostic) => void,
 ): Promise<void> {
   const url = parseRequestUrl(request.url);
   if (request.method === "GET" && url.pathname === "/health") {
@@ -102,6 +119,11 @@ async function handleRequest(
   const taskRoute = /^\/v1\/tasks\/([^/]+)\/(timeline|capability-chain)$/u.exec(url.pathname);
   let sql: string;
   let contract = EVIDENCE_V1_CONTRACT;
+  let queryIdentity: Readonly<{queryId: string; sqlClass: string; relation: string}> = {
+    queryId: "evidence-v1-query",
+    sqlClass: "readonly-evidence-v1",
+    relation: EVIDENCE_V1_CANONICAL_TABLE,
+  };
   let smppEpisodeMode: "telemetry" | "readiness" | undefined;
   if (taskRoute !== null) {
     const taskId = decodeQueryValue(taskRoute[1] as string);
@@ -117,9 +139,15 @@ async function handleRequest(
     }
     sql = buildDomainProjectionQuery(url.pathname);
     contract = DOMAIN_PROJECTION_V1_CONTRACT;
+    queryIdentity = domainProjectionQueryIdentity(url.pathname);
   } else if (isSmppRoute(url.pathname)) {
     sql = buildSmppProviderQuery(url.pathname, url.searchParams);
     contract = SMPP_PROVIDEROPS_V1_CONTRACT;
+    queryIdentity = {
+      queryId: "smpp-providerops-v1-query",
+      sqlClass: "readonly-smpp-providerops-v1",
+      relation: "sdar_core.providerops_projection",
+    };
     if (/\/mcp-provider-telemetry$/u.test(url.pathname)) smppEpisodeMode = "telemetry";
     if (/\/mcp-provider-readiness$/u.test(url.pathname)) smppEpisodeMode = "readiness";
   } else {
@@ -129,10 +157,25 @@ async function handleRequest(
   let raw: string;
   try {
     raw = await clickHouse.query(sql, { readonly: 2, maxResultRows });
-  } catch {
-    throw new QueryApiError("QUERY_BACKEND_UNAVAILABLE", 503);
+  } catch (cause: unknown) {
+    const diagnostic = backendDiagnostic(cause, contract, queryIdentity);
+    try {
+      onBackendError?.(diagnostic);
+    } catch {
+      // Observability is best-effort and must never alter the public query result.
+    }
+    throw new QueryApiError("QUERY_BACKEND_UNAVAILABLE", 503, contract);
   }
-  const { rows, watermark } = parseClickHouseResult(raw, contract === EVIDENCE_V1_CONTRACT);
+  let parsed: ReturnType<typeof parseClickHouseResult>;
+  try {
+    parsed = parseClickHouseResult(raw, contract === EVIDENCE_V1_CONTRACT);
+  } catch (error: unknown) {
+    if (error instanceof QueryApiError && error.statusCode === 503) {
+      throw new QueryApiError(error.code, error.statusCode, contract);
+    }
+    throw error;
+  }
+  const {rows,watermark} = parsed;
   const data =
     smppEpisodeMode === undefined ? rows : assembleSmppEpisodeResult(rows, smppEpisodeMode);
   sendJson(
@@ -145,6 +188,76 @@ async function handleRequest(
       rows.length === 0 ? [] : [contract],
     ),
   );
+}
+
+function domainProjectionQueryIdentity(pathname: string): Readonly<{
+  queryId: string;
+  sqlClass: string;
+  relation: string;
+}> {
+  if (/^\/v1\/domain-projections(?:\/[^/]+)?$/u.test(pathname)) {
+    return {
+      queryId: "domain-projection-health",
+      sqlClass: "readonly-domain-projection-health",
+      relation: "sdar_meta.v_domain_projection_health",
+    };
+  }
+  if (pathname.startsWith("/v1/domain-projection-sets")) {
+    return {
+      queryId: "domain-projection-set-readiness",
+      sqlClass: "readonly-domain-projection-set-readiness",
+      relation: "sdar_meta.v_domain_projection_set_readiness",
+    };
+  }
+  return {
+    queryId: "domain-projection-detail",
+    sqlClass: "readonly-domain-projection-detail",
+    relation: "sdar.domain-projection/allowlisted",
+  };
+}
+
+function backendDiagnostic(
+  cause: unknown,
+  contract: string,
+  identity: Readonly<{queryId: string; sqlClass: string; relation: string}>,
+): QueryBackendDiagnostic {
+  const causeCode = safeBackendCauseCode(cause);
+  const httpStatus = safeNumericMatch(cause, /\bHTTP\s+([1-5][0-9]{2})\b/u);
+  const clickHouseCode = safeNumericMatch(cause, /\bCode:\s*([0-9]{1,6})\b/u);
+  const errorClass = causeCode === undefined
+    ? cause instanceof TypeError
+      ? "TypeError"
+      : "Error"
+    : "ClickHouseClientError";
+  const message = httpStatus === undefined
+    ? "ClickHouse backend query failed; details redacted."
+    : clickHouseCode === undefined
+      ? `ClickHouse backend query failed with HTTP status ${httpStatus}; response details redacted.`
+      : `ClickHouse backend query failed with HTTP status ${httpStatus} and ClickHouse code ${clickHouseCode}; response details redacted.`;
+  return {
+    event: "query_api.backend_error",
+    ...identity,
+    contract,
+    errorClass,
+    ...(causeCode === undefined ? {} : {causeCode}),
+    ...(clickHouseCode === undefined ? {} : {clickHouseCode}),
+    ...(httpStatus === undefined ? {} : {httpStatus}),
+    message,
+  };
+}
+
+function safeBackendCauseCode(cause: unknown): string | undefined {
+  if (cause === null || typeof cause !== "object") return undefined;
+  const value = (cause as {code?: unknown}).code;
+  return typeof value === "string" && /^CLICKHOUSE_[A-Z_]{1,48}$/u.test(value) ? value : undefined;
+}
+
+function safeNumericMatch(cause: unknown, pattern: RegExp): number | undefined {
+  if (!(cause instanceof Error)) return undefined;
+  const matched = pattern.exec(cause.message)?.[1];
+  if (matched === undefined) return undefined;
+  const value = Number(matched);
+  return Number.isSafeInteger(value) ? value : undefined;
 }
 
 function isSmppRoute(pathname: string): boolean {
@@ -579,7 +692,7 @@ function sendError(response: ServerResponse, error: unknown): void {
       envelope(
         { errorCode: queryError.code },
         null,
-        [EVIDENCE_V1_CONTRACT],
+        [queryError.coverageContract ?? EVIDENCE_V1_CONTRACT],
         [],
       ),
     );

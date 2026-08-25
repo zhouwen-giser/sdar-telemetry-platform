@@ -12,6 +12,10 @@ import {
 import {
   CANONICAL_EVIDENCE_COLUMNS,
   CRITICAL_SEMANTIC_COLUMNS,
+  DOMAIN_PROJECTION_HEALTH_COLUMNS,
+  DOMAIN_PROJECTION_HEALTH_SEED_IDS,
+  DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+  DOMAIN_PROJECTION_HEALTH_VIEW,
   publicVerificationDiagnostic,
   REQUIRED_PROJECTION_VIEWS,
   ReleaseVerificationError,
@@ -29,6 +33,8 @@ type ResponseKind =
   | "objects"
   | "columns"
   | "seeds"
+  | "domain-health-seeds"
+  | "domain-health-snapshot-final"
   | "ledger-descriptor"
   | "ledger-tuples"
   | "view-limit-zero"
@@ -43,15 +49,16 @@ test("complete fake transcript verifies exact inventory, seeds, ledger identity,
   assert.equal(result.verified, true);
   assert.deepEqual(
     countBy(objects.map(({engine}) => engine)),
-    {MergeTree: 141,ReplacingMergeTree: 170,View: 120},
+    {MergeTree: 141,ReplacingMergeTree: 171,View: 121},
   );
-  assert.equal(client.calls.filter(({kind}) => kind === "view-limit-zero").length, 120);
-  assert.equal(client.calls.filter(({kind}) => kind === "table-limit-zero").length, 311);
-  assert.equal(client.calls.length, 438);
+  assert.equal(client.calls.filter(({kind}) => kind === "view-limit-zero").length, 121);
+  assert.equal(client.calls.filter(({kind}) => kind === "table-limit-zero").length, 312);
+  assert.equal(client.calls.filter(({kind}) => kind === "domain-health-snapshot-final").length, 1);
+  assert.equal(client.calls.length, 442);
   assert.ok(client.calls.every(({options}) => options.readonly === 2));
   assert.deepEqual(
-    client.calls.slice(-431).map(({kind}) => kind),
-    [...Array<string>(120).fill("view-limit-zero"),...Array<string>(311).fill("table-limit-zero")],
+    client.calls.slice(-433).map(({kind}) => kind),
+    [...Array<string>(121).fill("view-limit-zero"),...Array<string>(312).fill("table-limit-zero")],
   );
   assert.equal(
     client.ledgerRows.every((row) => row["applied_at"] === undefined),
@@ -143,6 +150,19 @@ test("each verifier assertion family emits its stable typed identity", async () 
       name: "seed catalog",
       assertionId: "frozen-seed-catalog",
       mutate: (kind, rows) => (kind === "seeds" ? [{...rows[0],operators: 15}] : rows),
+    },
+    {
+      name: "domain health columns",
+      assertionId: "domain-projection-health-columns",
+      relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+      mutate: removeColumn(DOMAIN_PROJECTION_HEALTH_SNAPSHOT, DOMAIN_PROJECTION_HEALTH_COLUMNS[0]![0]),
+    },
+    {
+      name: "domain health seeds",
+      assertionId: "domain-projection-health-seeds",
+      relation: DOMAIN_PROJECTION_HEALTH_VIEW,
+      mutate: (kind, rows) =>
+        kind === "domain-health-seeds" ? rows.map((row, index) => index === 0 ? {...row,health_status: "drifted"} : row) : rows,
     },
     {
       name: "ledger descriptor",
@@ -245,11 +265,14 @@ test("view and table query failures retain exact allowlisted relation and are at
   for (const [kind,assertionId,queryId,sqlClass] of [
     ["view","view-compilation","release-view-limit-zero","readonly-view-limit-zero"],
     ["table","table-queryability","release-table-limit-zero","readonly-table-limit-zero"],
+    ["snapshot","domain-projection-health-snapshot-queryability","domain-projection-health-snapshot-final","readonly-domain-projection-health-snapshot-final"],
   ] as const) {
-    const object = objects.find((candidate) => candidate.kind === kind)!;
+    const object = kind === "snapshot"
+      ? objects.find(({database,name}) => `${database}.${name}` === DOMAIN_PROJECTION_HEALTH_SNAPSHOT)!
+      : objects.find((candidate) => candidate.kind === kind)!;
     const relation = `${object.database}.${object.name}`;
     const client = new TranscriptClient(release, {
-      fail: {kind: kind === "view" ? "view-limit-zero" : "table-limit-zero",relation,cause: queryFailure()},
+      fail: {kind: kind === "view" ? "view-limit-zero" : kind === "snapshot" ? "domain-health-snapshot-final" : "table-limit-zero",relation,cause: queryFailure()},
     });
     const error = await captureVerificationError(client, release);
     assert.equal(error.assertionId, assertionId);
@@ -268,6 +291,7 @@ test("every bounded inventory query failure retains its exact query identity wit
     ["objects", "release-object-inventory", "system-tables-release-inventory", "readonly-system-tables-inventory"],
     ["columns", "release-column-inventory", "system-columns-release-and-ledger", "readonly-system-columns-inventory"],
     ["seeds", "frozen-seed-catalog", "release-seed-aggregates", "readonly-release-seed-aggregates"],
+    ["domain-health-seeds", "domain-projection-health-seeds", "domain-projection-health-seeds", "readonly-domain-projection-health-seeds"],
     ["ledger-descriptor", "ledger-table-descriptor", "system-tables-ledger-descriptor", "readonly-ledger-descriptor"],
     ["ledger-tuples", "ledger-tuples", "release-ledger-tuples", "readonly-ledger-tuples"],
   ] as const) {
@@ -349,17 +373,51 @@ class TranscriptClient implements ReadonlyClickHouse {
       case "databases":
         return [...REQUIRED_DATABASES].sort().map((name) => ({name}));
       case "objects":
-        return this.objects.map(({database,name,engine}) => ({database,name,engine}));
+        return this.objects.map(({database,name,engine}) => ({
+          database,
+          name,
+          engine,
+          engine_full:
+            `${database}.${name}` === DOMAIN_PROJECTION_HEALTH_SNAPSHOT
+              ? "ReplacingMergeTree(last_run_updated_at)"
+              : engine,
+          sorting_key:
+            `${database}.${name}` === DOMAIN_PROJECTION_HEALTH_SNAPSHOT
+              ? "tenant_id, project_id, projection_id, projection_version"
+              : "",
+        }));
       case "columns":
         return this.columns;
       case "seeds":
         return [{releases: 1,record_types: 100,source_mappings: 100,operators: 16,relations: 8,invariants: 12}];
+      case "domain-health-seeds":
+        return DOMAIN_PROJECTION_HEALTH_SEED_IDS.map((projectionId) => ({
+          tenant_id: "global",
+          project_id: "global",
+          projection_id: projectionId,
+          projection_version: "1",
+          definition_status: "disabled",
+          version_status: "disabled",
+          last_run_status: "not_run",
+          last_run_updated_at: "1970-01-01 00:00:00.000",
+          schema_drift_status: "not_checked",
+          checkpoint_watermark: null,
+          last_source_sequence: "0",
+          produced_count: "0",
+          skipped_count: "0",
+          failed_count: "0",
+          unresolved_blocking_dlq_count: "0",
+          lineage_issue_count: "0",
+          health_status: "defined_disabled",
+          reason_codes: ["development_seed","projection_disabled"],
+        }));
       case "ledger-descriptor":
         return [{database: "default",name: "sdar_clickhouse_schema_release_ledger",engine: "MergeTree",sorting_key: "release_id, ordinal"}];
       case "ledger-tuples":
         return this.ledgerRows;
       case "view-limit-zero":
       case "table-limit-zero":
+      case "domain-health-snapshot-final":
         return [];
     }
   }
@@ -368,13 +426,19 @@ class TranscriptClient implements ReadonlyClickHouse {
 function classifyQuery(sql: string, viewRelations: ReadonlySet<string>): ResponseKind {
   if (sql.startsWith("SELECT version()")) return "version";
   if (sql.includes("FROM system.databases WHERE name LIKE")) return "databases";
-  if (sql.includes("database,name,engine FROM system.tables WHERE database IN")) return "objects";
+  if (sql.includes("database,name,engine,engine_full,sorting_key FROM system.tables WHERE database IN")) return "objects";
   if (sql.includes("FROM system.columns")) return "columns";
   if (sql.includes("AS releases")) return "seeds";
+  if (sql.includes(`FROM ${DOMAIN_PROJECTION_HEALTH_VIEW} ORDER BY projection_id,projection_version`)) {
+    return "domain-health-seeds";
+  }
   if (sql.includes("FROM system.tables WHERE name='sdar_clickhouse_schema_release_ledger'")) {
     return "ledger-descriptor";
   }
   if (sql.includes(`FROM ${LEDGER_TABLE} ORDER BY ordinal`)) return "ledger-tuples";
+  if (sql.includes(`FROM ${DOMAIN_PROJECTION_HEALTH_SNAPSHOT} FINAL LIMIT 0`)) {
+    return "domain-health-snapshot-final";
+  }
   if (sql.includes(" LIMIT 0 FORMAT Null")) {
     const relation = /FROM\s+([A-Za-z0-9_.]+)\s+LIMIT/u.exec(sql)?.[1] ?? "";
     return viewRelations.has(relation)
@@ -387,10 +451,27 @@ function classifyQuery(sql: string, viewRelations: ReadonlySet<string>): Respons
 function buildColumnRows(release: LoadedReleasePackage): Rows {
   const targetRelations = new Set([
     "sdar_core.sdar_evidence_v1_record",
+    DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+    DOMAIN_PROJECTION_HEALTH_VIEW,
     ...CRITICAL_SEMANTIC_COLUMNS.map((identity) => identity.split(".").slice(0, 2).join(".")),
   ]);
-  const rows: Record<string, unknown>[] = deriveDeclaredColumns(release, targetRelations).map(
-    ({database,table,name,type,position}) => ({database,table,name,type,position}),
+  const declared = deriveDeclaredColumns(release, targetRelations);
+  const snapshotTypes = new Map(
+    declared
+      .filter(({database,table}) => `${database}.${table}` === DOMAIN_PROJECTION_HEALTH_SNAPSHOT)
+      .map(({name,type}) => [name,type]),
+  );
+  const rows: Record<string, unknown>[] = declared.map(
+    ({database,table,name,type,position}) => ({
+      database,
+      table,
+      name,
+      type:
+        `${database}.${table}` === DOMAIN_PROJECTION_HEALTH_VIEW && type === "Derived"
+          ? snapshotTypes.get(name)
+          : type,
+      position,
+    }),
   );
   let position = 1;
   for (const [name,type] of [

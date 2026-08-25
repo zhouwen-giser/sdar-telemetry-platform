@@ -21,6 +21,9 @@ const server = createQueryApi({
   clickHouse,
   authorization,
   maxResultRows: Number(process.env["QUERY_MAX_RESULT_ROWS"] ?? 10_000),
+  onBackendError: (diagnostic) => {
+    process.stderr.write(`${JSON.stringify(diagnostic)}\n`);
+  },
 });
 
 const bindHost = process.env["QUERY_BIND_HOST"] ?? "127.0.0.1";

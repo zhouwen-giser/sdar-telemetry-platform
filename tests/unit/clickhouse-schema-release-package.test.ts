@@ -20,12 +20,12 @@ import {
   CRITICAL_SEMANTIC_COLUMNS,
 } from "../../scripts/verify-clickhouse-schema-release.js";
 
-test("release package is the exact deterministic 23-file Decision V2 release", async () => {
+test("release package is the exact deterministic 24-file Decision V3 release", async () => {
   const release = await loadReleasePackage();
-  assert.equal(release.migrations.length, 23);
+  assert.equal(release.migrations.length, 24);
   assert.deepEqual(
     release.manifest.migrations.map(({ordinal}) => ordinal),
-    Array.from({length: 23}, (_, ordinal) => ordinal),
+    Array.from({length: 24}, (_, ordinal) => ordinal),
   );
   assert.deepEqual(Object.keys(release.manifest), [
     "schemaVersion",
@@ -49,18 +49,22 @@ test("release package is the exact deterministic 23-file Decision V2 release", a
     "productAppendSourceCommit",
     "productAppendSourcePath",
     "productAppendSourceByteSha256",
+    "developmentClosureOrdinal",
+    "developmentClosureAuthority",
+    "developmentClosureFile",
+    "developmentClosureByteSha256",
   ]);
   for (const migration of release.manifest.migrations) {
     assert.deepEqual(Object.keys(migration), ["ordinal", "file", "bytes", "sha256", "provenance"]);
   }
   assert.equal(release.manifest.migrationSetContentAddress, MIGRATION_SET_CONTENT_ADDRESS);
-  assert.equal(release.manifest.schemaVersion, "sdar-telemetry.clickhouse-schema-release/v2");
+  assert.equal(release.manifest.schemaVersion, "sdar-telemetry.clickhouse-schema-release/v3");
   assert.equal(
     release.manifest.releaseId,
-    "sdar-clickhouse-schema/1.5.0-rc.3-benchmark-aligned-development-canonical-evidence",
+    "sdar-clickhouse-schema/1.5.0-rc.3-development-domain-projection-v3",
   );
-  assert.equal(release.manifest.releaseVersion, "1.5.0-rc.3+canonical-evidence.1");
-  assert.deepEqual(release.manifest.expectedObjects, {physicalTables: 311,views: 120,total: 431});
+  assert.equal(release.manifest.releaseVersion, "1.5.0-rc.3+canonical-evidence.domain-projection.1");
+  assert.deepEqual(release.manifest.expectedObjects, {physicalTables: 312,views: 121,total: 433});
   assert.deepEqual(release.manifest.migrations[22], {
     ordinal: 22,
     file: "22_sdar_evidence_v1_canonical.sql",
@@ -68,6 +72,14 @@ test("release package is the exact deterministic 23-file Decision V2 release", a
     sha256: "fb0b073f7c590ca56285da91a7253e7426db84dd19b587a2baa01635a4542ff9",
     provenance:
       "exact-bytes-from-sdar-telemetry-a09f179e1a402c59a99f67e96167696c1d9590ae:migrations/clickhouse/014_sdar_evidence_v1_canonical.sql",
+  });
+  assert.deepEqual(release.manifest.migrations[23], {
+    ordinal: 23,
+    file: "23_domain_projection_health_development.sql",
+    bytes: 4209,
+    sha256: "35e89646a45e1a2e96c14b259a67044ad01b1670e87c890bff382f2a3b650867",
+    provenance:
+      "exact-rendering-of-DEC-G02-CLICKHOUSE-SCHEMA-RELEASE-BOOTSTRAP-V3.ordinal23.canonicalStatements",
   });
   assert.equal(JSON.stringify(release.manifest).includes("/home/"), false);
   assert.equal(JSON.stringify(release.manifest).includes("all.sql"), false);
@@ -80,17 +92,29 @@ test("release package is the exact deterministic 23-file Decision V2 release", a
   assert.equal(release.manifest.contentAddress.digest, digest);
   assert.equal(
     digest,
-    "sha256:8a4d701292901b62ecd5ea5fce26a9d9b81f687230721399c708da4dfc37e760",
+    "sha256:4f2d19ad546576e07e6e0d37165286b21172f7fc15357fa89225ec83946fb9a5",
   );
   const manifestBytes = await readFile(resolve(defaultReleaseRoot(), "release-manifest.json"));
   assert.equal(
     createHash("sha256").update(manifestBytes).digest("hex"),
-    "0baa5cfd5d4208ee12971d3e7f23c41c2bd7c99512fdcb73c60720f3314c8a36",
+    "386b8aa189c5279226a7ceaa8a9af90774d5bd904df16e587df3a9f5d891e735",
   );
   assert.deepEqual(
     await readFile(resolve(defaultReleaseRoot(), "migrations/22_sdar_evidence_v1_canonical.sql")),
     await readFile(resolve(defaultReleaseRoot(), "../../../migrations/clickhouse/014_sdar_evidence_v1_canonical.sql")),
   );
+  const v2Root = resolve(defaultReleaseRoot(), "../1.5.0-rc.3");
+  for (const migration of release.migrations.slice(0, 23)) {
+    assert.deepEqual(
+      await readFile(resolve(defaultReleaseRoot(), "migrations", migration.file)),
+      await readFile(resolve(v2Root, "migrations", migration.file)),
+      migration.file,
+    );
+  }
+  const developmentClosure = release.migrations[23]!;
+  assert.equal(developmentClosure.statements.length, 3);
+  assert.equal(Buffer.byteLength(developmentClosure.sql), 4209);
+  assert.equal(createHash("sha256").update(developmentClosure.sql).digest("hex"), developmentClosure.sha256);
 
   const objects = deriveExpectedObjects(release);
   assert.deepEqual(
@@ -129,6 +153,10 @@ test("release package check rejects missing base, altered bytes, extra files, so
   });
   await withFixture(async (root) => {
     await unlink(resolve(root, "migrations/22_sdar_evidence_v1_canonical.sql"));
+    await assertPackageError(root, "CLICKHOUSE_SCHEMA_RELEASE_FILE_DRIFT");
+  });
+  await withFixture(async (root) => {
+    await unlink(resolve(root, "migrations/23_domain_projection_health_development.sql"));
     await assertPackageError(root, "CLICKHOUSE_SCHEMA_RELEASE_FILE_DRIFT");
   });
   await withFixture(async (root) => {

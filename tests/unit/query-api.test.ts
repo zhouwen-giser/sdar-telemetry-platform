@@ -9,6 +9,7 @@ import test from "node:test";
 import {
   EVIDENCE_V1_CANONICAL_TABLE,
   EVIDENCE_V1_CONTRACT,
+  DOMAIN_PROJECTION_V1_CONTRACT,
   SMPP_PROVIDEROPS_V1_CONTRACT,
   buildDomainProjectionQuery,
   buildSmppProviderQuery,
@@ -16,6 +17,7 @@ import {
   createQueryApi,
   loadQueryBearerCredential,
   type QueryClickHouseClient,
+  type QueryBackendDiagnostic,
 } from "../../apps/query-api/src/server.js";
 import type { ClickHouseQueryOptions } from "../../packages/telemetry-clickhouse/src/index.js";
 import type {
@@ -194,6 +196,63 @@ test("backend failures and malformed results return a v1 degraded envelope", asy
       });
     }
   });
+});
+
+test("domain projection backend failure preserves a safe typed cause and route-correct coverage", async () => {
+  const cause = Object.assign(
+    new Error(
+      "ClickHouse request failed with HTTP 500: Code: 60. SELECT secret_body FROM hidden password=hunter2 https://user:token@clickhouse:8123/?authorization=Bearer-secret (UNKNOWN_TABLE)",
+    ),
+    {code: "CLICKHOUSE_RESPONSE_ERROR",stack: "secret stack SELECT secret_body"},
+  );
+  const clickHouse = new FakeClickHouse(cause);
+  const diagnostics: QueryBackendDiagnostic[] = [];
+  await withQueryApi(
+    clickHouse,
+    async (baseUrl) => {
+      const response = await queryFetch(`${baseUrl}/v1/domain-projections`);
+      assert.equal(response.status, 503);
+      const body = (await response.json()) as QueryEnvelope & {data: {errorCode: string}};
+      assert.deepEqual(body.data, {errorCode: "QUERY_BACKEND_UNAVAILABLE"});
+      assert.equal(body.watermark, null);
+      assert.deepEqual(body.sourceCoverage, {
+        expected: [DOMAIN_PROJECTION_V1_CONTRACT],
+        observed: [],
+      });
+    },
+    undefined,
+    (diagnostic) => diagnostics.push(diagnostic),
+  );
+
+  assert.equal(clickHouse.calls.length, 1);
+  assert.match(clickHouse.calls[0]!.sql, /FROM sdar_meta\.v_domain_projection_health/u);
+  assert.deepEqual(clickHouse.calls[0]!.options, {readonly: 2,maxResultRows: 321});
+  assert.deepEqual(diagnostics, [{
+    event: "query_api.backend_error",
+    queryId: "domain-projection-health",
+    sqlClass: "readonly-domain-projection-health",
+    relation: "sdar_meta.v_domain_projection_health",
+    contract: DOMAIN_PROJECTION_V1_CONTRACT,
+    errorClass: "ClickHouseClientError",
+    causeCode: "CLICKHOUSE_RESPONSE_ERROR",
+    clickHouseCode: 60,
+    httpStatus: 500,
+    message: "ClickHouse backend query failed with HTTP status 500 and ClickHouse code 60; response details redacted.",
+  }]);
+  const serialized = JSON.stringify(diagnostics);
+  for (const forbidden of [
+    "SELECT",
+    "secret_body",
+    "hunter2",
+    "clickhouse:8123",
+    "user:token",
+    "authorization",
+    "Bearer-secret",
+    "UNKNOWN_TABLE",
+    "stack",
+  ]) {
+    assert.equal(serialized.includes(forbidden), false, forbidden);
+  }
 });
 
 test("unsupported methods and routes are rejected without querying", async () => {
@@ -391,15 +450,17 @@ function clickHouseJson(rows: readonly Record<string, unknown>[]): string {
 async function withQueryApi(
   clickHouse: QueryClickHouseClient,
   operation: (baseUrl: string) => Promise<void>,
-  authorization: TelemetryHttpAuthorizationPolicy = {
-    profile: "bearer",
-    bearerCredential: queryCredential,
-  },
+  authorization: TelemetryHttpAuthorizationPolicy | undefined = undefined,
+  onBackendError?: (diagnostic: QueryBackendDiagnostic) => void,
 ): Promise<void> {
   const server = createQueryApi({
     clickHouse,
-    authorization,
+    authorization: authorization ?? {
+      profile: "bearer",
+      bearerCredential: queryCredential,
+    },
     maxResultRows: 321,
+    onBackendError,
   });
   await new Promise<void>((resolve, reject) => {
     server.once("error", reject);
