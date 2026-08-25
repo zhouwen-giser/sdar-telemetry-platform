@@ -127,6 +127,66 @@ test("each verifier assertion family emits its stable typed identity", async () 
           : rows,
     },
     {
+      name: "domain health engine family",
+      assertionId: "domain-projection-health-descriptor",
+      relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+      mutate: mutateObject(DOMAIN_PROJECTION_HEALTH_SNAPSHOT, {engine: "MergeTree"}),
+    },
+    {
+      name: "domain health engine version argument",
+      assertionId: "domain-projection-health-descriptor",
+      relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+      mutate: mutateObject(DOMAIN_PROJECTION_HEALTH_SNAPSHOT, {
+        engine_full: "ReplacingMergeTree(project_id) ORDER BY (tenant_id, project_id, projection_id, projection_version)",
+      }),
+    },
+    {
+      name: "domain health missing engine version argument",
+      assertionId: "domain-projection-health-descriptor",
+      relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+      mutate: mutateObject(DOMAIN_PROJECTION_HEALTH_SNAPSHOT, {
+        engine_full: "ReplacingMergeTree() ORDER BY (tenant_id, project_id, projection_id, projection_version)",
+      }),
+    },
+    {
+      name: "domain health illegal engine suffix",
+      assertionId: "domain-projection-health-descriptor",
+      relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+      mutate: mutateObject(DOMAIN_PROJECTION_HEALTH_SNAPSHOT, {
+        engine_full: "ReplacingMergeTree(last_run_updated_at) arbitrary_parameter = secret",
+      }),
+    },
+    {
+      name: "domain health sorting key",
+      assertionId: "domain-projection-health-descriptor",
+      relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+      mutate: mutateObject(DOMAIN_PROJECTION_HEALTH_SNAPSHOT, {sorting_key: "projection_id"}),
+    },
+    {
+      name: "domain health primary key",
+      assertionId: "domain-projection-health-descriptor",
+      relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+      mutate: mutateObject(DOMAIN_PROJECTION_HEALTH_SNAPSHOT, {primary_key: "projection_id"}),
+    },
+    {
+      name: "domain health partition key",
+      assertionId: "domain-projection-health-descriptor",
+      relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+      mutate: mutateObject(DOMAIN_PROJECTION_HEALTH_SNAPSHOT, {partition_key: "tenant_id"}),
+    },
+    {
+      name: "domain health sampling key",
+      assertionId: "domain-projection-health-descriptor",
+      relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+      mutate: mutateObject(DOMAIN_PROJECTION_HEALTH_SNAPSHOT, {sampling_key: "projection_id"}),
+    },
+    {
+      name: "domain health view engine",
+      assertionId: "domain-projection-health-descriptor",
+      relation: DOMAIN_PROJECTION_HEALTH_SNAPSHOT,
+      mutate: mutateObject(DOMAIN_PROJECTION_HEALTH_VIEW, {engine: "MergeTree"}),
+    },
+    {
       name: "canonical column",
       assertionId: "canonical-evidence-column",
       relation: "sdar_core.sdar_evidence_v1_record",
@@ -379,12 +439,18 @@ class TranscriptClient implements ReadonlyClickHouse {
           engine,
           engine_full:
             `${database}.${name}` === DOMAIN_PROJECTION_HEALTH_SNAPSHOT
-              ? "ReplacingMergeTree(last_run_updated_at)"
+              ? "ReplacingMergeTree(last_run_updated_at) ORDER BY (tenant_id, project_id, projection_id, projection_version) SETTINGS index_granularity = 8192"
               : engine,
+          partition_key: "",
           sorting_key:
             `${database}.${name}` === DOMAIN_PROJECTION_HEALTH_SNAPSHOT
               ? "tenant_id, project_id, projection_id, projection_version"
               : "",
+          primary_key:
+            `${database}.${name}` === DOMAIN_PROJECTION_HEALTH_SNAPSHOT
+              ? "tenant_id, project_id, projection_id, projection_version"
+              : "",
+          sampling_key: "",
         }));
       case "columns":
         return this.columns;
@@ -426,7 +492,7 @@ class TranscriptClient implements ReadonlyClickHouse {
 function classifyQuery(sql: string, viewRelations: ReadonlySet<string>): ResponseKind {
   if (sql.startsWith("SELECT version()")) return "version";
   if (sql.includes("FROM system.databases WHERE name LIKE")) return "databases";
-  if (sql.includes("database,name,engine,engine_full,sorting_key FROM system.tables WHERE database IN")) return "objects";
+  if (sql.includes("database,name,engine,engine_full,partition_key,sorting_key,primary_key,sampling_key FROM system.tables WHERE database IN")) return "objects";
   if (sql.includes("FROM system.columns")) return "columns";
   if (sql.includes("AS releases")) return "seeds";
   if (sql.includes(`FROM ${DOMAIN_PROJECTION_HEALTH_VIEW} ORDER BY projection_id,projection_version`)) {
@@ -493,6 +559,17 @@ function removeObject(expectedKind: ResponseKind, relation: string): Mutator {
   return (kind, rows) =>
     kind === expectedKind
       ? rows.filter((row) => `${String(row["database"])}.${String(row["name"])}` !== relation)
+      : rows;
+}
+
+function mutateObject(relation: string, values: Readonly<Record<string, unknown>>): Mutator {
+  return (kind, rows) =>
+    kind === "objects"
+      ? rows.map((row) =>
+          `${String(row["database"])}.${String(row["name"])}` === relation
+            ? {...row,...values}
+            : row,
+        )
       : rows;
 }
 

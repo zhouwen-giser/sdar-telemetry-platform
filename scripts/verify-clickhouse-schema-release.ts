@@ -380,7 +380,7 @@ export async function verifyInstalledRelease(
   );
   const objectRows = await jsonRows(
     client,
-    `SELECT database,name,engine,engine_full,sorting_key FROM system.tables WHERE database IN (${sqlStrings(REQUIRED_DATABASES)}) ORDER BY database,name FORMAT JSON`,
+    `SELECT database,name,engine,engine_full,partition_key,sorting_key,primary_key,sampling_key FROM system.tables WHERE database IN (${sqlStrings(REQUIRED_DATABASES)}) ORDER BY database,name FORMAT JSON`,
     500,
     objectQueryContext,
   );
@@ -428,10 +428,15 @@ export async function verifyInstalledRelease(
   requireCondition(
     healthSnapshotRow !== undefined &&
       stringField(healthSnapshotRow, "engine", healthDescriptorContext) === "ReplacingMergeTree" &&
-      stringField(healthSnapshotRow, "engine_full", healthDescriptorContext).replaceAll(" ", "") ===
-        "ReplacingMergeTree(last_run_updated_at)" &&
-      stringField(healthSnapshotRow, "sorting_key", healthDescriptorContext).replaceAll(" ", "") ===
-        "tenant_id,project_id,projection_id,projection_version" &&
+      isExactDomainProjectionHealthEngineFull(
+        stringField(healthSnapshotRow, "engine_full", healthDescriptorContext),
+      ) &&
+      normalizeKeyExpression(stringField(healthSnapshotRow, "sorting_key", healthDescriptorContext)) ===
+        DOMAIN_PROJECTION_HEALTH_KEY &&
+      normalizeKeyExpression(stringField(healthSnapshotRow, "primary_key", healthDescriptorContext)) ===
+        DOMAIN_PROJECTION_HEALTH_KEY &&
+      stringField(healthSnapshotRow, "partition_key", healthDescriptorContext) === "" &&
+      stringField(healthSnapshotRow, "sampling_key", healthDescriptorContext) === "" &&
       healthViewRow !== undefined &&
       stringField(healthViewRow, "engine", healthDescriptorContext) === "View",
     healthDescriptorContext,
@@ -657,6 +662,24 @@ export async function verifyInstalledRelease(
     ledgerRows: 24,
     verified: true,
   };
+}
+
+const DOMAIN_PROJECTION_HEALTH_KEY =
+  "tenant_id,project_id,projection_id,projection_version" as const;
+
+function normalizeKeyExpression(value: string): string {
+  return value.replace(/\s+/gu, "");
+}
+
+function isExactDomainProjectionHealthEngineFull(value: string): boolean {
+  const key = String.raw`tenant_id\s*,\s*project_id\s*,\s*projection_id\s*,\s*projection_version`;
+  const settingValue = String.raw`(?:-?[0-9]+(?:\.[0-9]+)?|'(?:''|[^'])*'|[A-Za-z_][A-Za-z0-9_]*)`;
+  const setting = String.raw`[A-Za-z_][A-Za-z0-9_]*\s*=\s*${settingValue}`;
+  const suffix = String.raw`(?:\s+ORDER\s+BY\s+\(\s*${key}\s*\))?(?:\s+SETTINGS\s+${setting}(?:\s*,\s*${setting})*)?`;
+  return new RegExp(
+    String.raw`^ReplacingMergeTree\(\s*last_run_updated_at\s*\)${suffix}\s*$`,
+    "u",
+  ).test(value);
 }
 
 function assertLedgerColumns(
