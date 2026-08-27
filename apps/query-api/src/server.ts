@@ -1,10 +1,19 @@
 import { Buffer } from "node:buffer";
 import { createHash, timingSafeEqual } from "node:crypto";
 import { readFile } from "node:fs/promises";
-import http, { type IncomingMessage, type Server, type ServerResponse } from "node:http";
+import http, {
+  type IncomingMessage,
+  type Server,
+  type ServerResponse,
+} from "node:http";
 
 import type { ClickHouseQueryOptions } from "../../../packages/telemetry-clickhouse/src/index.js";
 import { envelope } from "../../../packages/telemetry-query-model/src/index.js";
+import {
+  DiagnosticFederation,
+  DiagnosticFederationError,
+  diagnosticPath,
+} from "./diagnostic-federation.js";
 import {
   evaluateMcpProviderReadiness,
   type SmppEntityRelation,
@@ -29,6 +38,8 @@ export interface QueryApiDependencies {
   readonly clickHouse: QueryClickHouseClient;
   readonly bearerCredential: string;
   readonly maxResultRows?: number;
+  readonly trustedDevelopment?: boolean;
+  readonly diagnostics?: DiagnosticFederation;
 }
 
 export class QueryApiError extends Error {
@@ -42,24 +53,33 @@ export class QueryApiError extends Error {
 }
 
 export function createQueryApi(dependencies: QueryApiDependencies): Server {
-  const maxResultRows = dependencies.maxResultRows ?? DEFAULT_QUERY_MAX_RESULT_ROWS;
+  const maxResultRows =
+    dependencies.maxResultRows ?? DEFAULT_QUERY_MAX_RESULT_ROWS;
   if (!Number.isSafeInteger(maxResultRows) || maxResultRows < 1) {
     throw new QueryApiError("QUERY_RESULT_LIMIT_INVALID", 500);
   }
-  if (dependencies.bearerCredential.length < 16 || dependencies.bearerCredential.length > 4_096) {
+  if (
+    dependencies.bearerCredential.length < 16 ||
+    dependencies.bearerCredential.length > 4_096
+  ) {
     throw new QueryApiError("QUERY_CREDENTIAL_CONFIGURATION_INVALID", 500);
   }
-  const expectedCredentialDigest = credentialDigest(dependencies.bearerCredential);
+  const expectedCredentialDigest = credentialDigest(
+    dependencies.bearerCredential,
+  );
 
-  return http.createServer((request: IncomingMessage, response: ServerResponse) => {
-    void handleRequest(
-      request,
-      response,
-      dependencies.clickHouse,
-      maxResultRows,
-      expectedCredentialDigest,
-    ).catch((error: unknown) => sendError(response, error));
-  });
+  return http.createServer(
+    (request: IncomingMessage, response: ServerResponse) => {
+      void handleRequest(
+        request,
+        response,
+        dependencies.clickHouse,
+        maxResultRows,
+        expectedCredentialDigest,
+        dependencies,
+      ).catch((error: unknown) => sendError(response, error));
+    },
+  );
 }
 
 export async function loadQueryBearerCredential(
@@ -83,19 +103,29 @@ async function handleRequest(
   clickHouse: QueryClickHouseClient,
   maxResultRows: number,
   expectedCredentialDigest: Buffer,
+  dependencies: QueryApiDependencies,
 ): Promise<void> {
   const url = parseRequestUrl(request.url);
   if (request.method === "GET" && url.pathname === "/health") {
     sendJson(response, 200, { status: "ok" });
     return;
   }
-  assertAuthorization(request, expectedCredentialDigest);
+  if (dependencies.trustedDevelopment !== true)
+    assertAuthorization(request, expectedCredentialDigest);
   if (request.method !== "GET") {
     response.setHeader("allow", "GET");
     throw new QueryApiError("QUERY_METHOD_INVALID", 405);
   }
 
-  const taskRoute = /^\/v1\/tasks\/([^/]+)\/(timeline|capability-chain)$/u.exec(url.pathname);
+  if (diagnosticPath(url) !== undefined) {
+    if (dependencies.diagnostics === undefined)
+      throw new QueryApiError("DIAGNOSTIC_UPSTREAM_NOT_CONFIGURED", 503);
+    sendJson(response, 200, await dependencies.diagnostics.query(url));
+    return;
+  }
+  const taskRoute = /^\/v1\/tasks\/([^/]+)\/(timeline|capability-chain)$/u.exec(
+    url.pathname,
+  );
   let sql: string;
   let contract = EVIDENCE_V1_CONTRACT;
   let smppEpisodeMode: "telemetry" | "readiness" | undefined;
@@ -116,8 +146,10 @@ async function handleRequest(
   } else if (isSmppRoute(url.pathname)) {
     sql = buildSmppProviderQuery(url.pathname, url.searchParams);
     contract = SMPP_PROVIDEROPS_V1_CONTRACT;
-    if (/\/mcp-provider-telemetry$/u.test(url.pathname)) smppEpisodeMode = "telemetry";
-    if (/\/mcp-provider-readiness$/u.test(url.pathname)) smppEpisodeMode = "readiness";
+    if (/\/mcp-provider-telemetry$/u.test(url.pathname))
+      smppEpisodeMode = "telemetry";
+    if (/\/mcp-provider-readiness$/u.test(url.pathname))
+      smppEpisodeMode = "readiness";
   } else {
     throw new QueryApiError("QUERY_ROUTE_NOT_FOUND", 404);
   }
@@ -128,59 +160,120 @@ async function handleRequest(
   } catch {
     throw new QueryApiError("QUERY_BACKEND_UNAVAILABLE", 503);
   }
-  const { rows, watermark } = parseClickHouseResult(raw, contract === EVIDENCE_V1_CONTRACT);
+  const { rows, watermark } = parseClickHouseResult(
+    raw,
+    contract === EVIDENCE_V1_CONTRACT,
+  );
   const data =
-    smppEpisodeMode === undefined ? rows : assembleSmppEpisodeResult(rows, smppEpisodeMode);
+    smppEpisodeMode === undefined
+      ? rows
+      : assembleSmppEpisodeResult(rows, smppEpisodeMode);
   sendJson(
     response,
     200,
-    envelope(
-      data,
-      watermark,
-      [contract],
-      rows.length === 0 ? [] : [contract],
-    ),
+    envelope(data, watermark, [contract], rows.length === 0 ? [] : [contract]),
   );
 }
 
 function isSmppRoute(pathname: string): boolean {
-  return pathname.startsWith("/v1/smpp/") ||
-    /^\/v1\/episodes\/[^/]+\/mcp-provider-(telemetry|readiness)$/u.test(pathname);
+  return (
+    pathname.startsWith("/v1/smpp/") ||
+    /^\/v1\/episodes\/[^/]+\/mcp-provider-(telemetry|readiness)$/u.test(
+      pathname,
+    )
+  );
 }
 
-export function buildSmppProviderQuery(pathname: string, parameters = new URLSearchParams()): string {
+export function buildSmppProviderQuery(
+  pathname: string,
+  parameters = new URLSearchParams(),
+): string {
   let match: RegExpExecArray | null;
   if (pathname === "/v1/smpp/provider-facts") {
     const filters = smppFilters(parameters, {
-      smppSourceId: "smpp_source_id", providerId: "provider_id", externalTaskId: "external_task_id",
-      resourceId: "resource_id", externalExecutionId: "external_execution_id",
+      smppSourceId: "smpp_source_id",
+      providerId: "provider_id",
+      externalTaskId: "external_task_id",
+      resourceId: "resource_id",
+      externalExecutionId: "external_execution_id",
     });
-    return smppQuery("sdar_core.external_provider_fact FINAL", filters, "occurred_at, fact_id", "projected_at");
+    return smppQuery(
+      "sdar_core.external_provider_fact FINAL",
+      filters,
+      "occurred_at, fact_id",
+      "projected_at",
+    );
   }
   match = /^\/v1\/smpp\/provider-facts\/([^/]+)$/u.exec(pathname);
   if (match !== null) {
     assertNoParameters(parameters);
-    return smppQuery("sdar_core.external_provider_fact FINAL", `fact_id = toUUID(${clickHouseStringExpression(decodeQueryValue(match[1]!))})`, "occurred_at, fact_id", "projected_at");
+    return smppQuery(
+      "sdar_core.external_provider_fact FINAL",
+      `fact_id = toUUID(${clickHouseStringExpression(decodeQueryValue(match[1]!))})`,
+      "occurred_at, fact_id",
+      "projected_at",
+    );
   }
   if (pathname === "/v1/smpp/relations") {
     const filters = smppFilters(parameters, {
-      smppSourceId: "smpp_source_id", relationType: "relation_type",
-      sourceEntityType: "source_entity_type", sourceEntityId: "source_entity_id",
-      targetEntityType: "target_entity_type", targetEntityId: "target_entity_id",
+      smppSourceId: "smpp_source_id",
+      relationType: "relation_type",
+      sourceEntityType: "source_entity_type",
+      sourceEntityId: "source_entity_id",
+      targetEntityType: "target_entity_type",
+      targetEntityId: "target_entity_id",
     });
-    return smppQuery("sdar_core.external_entity_relation_fact FINAL", filters, "valid_from, relation_id", "projected_at");
+    return smppQuery(
+      "sdar_core.external_entity_relation_fact FINAL",
+      filters,
+      "valid_from, relation_id",
+      "projected_at",
+    );
   }
   match = /^\/v1\/smpp\/tasks\/([^/]+)\/timeline$/u.exec(pathname);
-  if (match !== null) return fixedSmppView(parameters, "sdar_core.v_smpp_provider_task_timeline", "external_task_id", match[1]!, "occurred_at, projected_at", "projected_at");
+  if (match !== null)
+    return fixedSmppView(
+      parameters,
+      "sdar_core.v_smpp_provider_task_timeline",
+      "external_task_id",
+      match[1]!,
+      "occurred_at, projected_at",
+      "projected_at",
+    );
   match = /^\/v1\/smpp\/resources\/([^/]+)\/(state|health)$/u.exec(pathname);
-  if (match !== null) return fixedSmppView(parameters, match[2] === "state" ? "sdar_core.v_smpp_resource_current_state" : "sdar_core.v_smpp_resource_current_health", "resource_id", match[1]!, "smpp_source_id, provider_id, resource_id", match[2] === "state" ? "last_projected_at" : "last_projected_at");
+  if (match !== null)
+    return fixedSmppView(
+      parameters,
+      match[2] === "state"
+        ? "sdar_core.v_smpp_resource_current_state"
+        : "sdar_core.v_smpp_resource_current_health",
+      "resource_id",
+      match[1]!,
+      "smpp_source_id, provider_id, resource_id",
+      match[2] === "state" ? "last_projected_at" : "last_projected_at",
+    );
   match = /^\/v1\/smpp\/executions\/([^/]+)\/progress$/u.exec(pathname);
-  if (match !== null) return fixedSmppView(parameters, "sdar_core.v_smpp_execution_latest_progress", "external_execution_id", match[1]!, "smpp_source_id, provider_id, external_execution_id", "last_projected_at");
+  if (match !== null)
+    return fixedSmppView(
+      parameters,
+      "sdar_core.v_smpp_execution_latest_progress",
+      "external_execution_id",
+      match[1]!,
+      "smpp_source_id, provider_id, external_execution_id",
+      "last_projected_at",
+    );
   if (pathname === "/v1/smpp/reconciliation") {
     assertNoParameters(parameters);
-    return smppQuery("sdar_core.v_sdar_smpp_task_reconciliation", "", "tenant_id, project_id, binding_id", "last_provider_fact_time");
+    return smppQuery(
+      "sdar_core.v_sdar_smpp_task_reconciliation",
+      "",
+      "tenant_id, project_id, binding_id",
+      "last_provider_fact_time",
+    );
   }
-  match = /^\/v1\/episodes\/([^/]+)\/mcp-provider-(telemetry|readiness)$/u.exec(pathname);
+  match = /^\/v1\/episodes\/([^/]+)\/mcp-provider-(telemetry|readiness)$/u.exec(
+    pathname,
+  );
   if (match !== null) {
     assertNoParameters(parameters);
     return smppEpisodeQuery(decodeQueryValue(match[1]!));
@@ -203,26 +296,50 @@ FORMAT JSON`;
   throw new QueryApiError("QUERY_ROUTE_NOT_FOUND", 404);
 }
 
-function fixedSmppView(parameters: URLSearchParams, table: string, column: string, rawValue: string, order: string, watermark: string): string {
+function fixedSmppView(
+  parameters: URLSearchParams,
+  table: string,
+  column: string,
+  rawValue: string,
+  order: string,
+  watermark: string,
+): string {
   assertNoParameters(parameters);
-  return smppQuery(table, `${column} = ${clickHouseStringExpression(decodeQueryValue(rawValue))}`, order, watermark);
+  return smppQuery(
+    table,
+    `${column} = ${clickHouseStringExpression(decodeQueryValue(rawValue))}`,
+    order,
+    watermark,
+  );
 }
 
-function smppFilters(parameters: URLSearchParams, fields: Readonly<Record<string, string>>): string {
+function smppFilters(
+  parameters: URLSearchParams,
+  fields: Readonly<Record<string, string>>,
+): string {
   const filters: string[] = [];
   for (const key of parameters.keys()) {
     const column = fields[key];
-    if (column === undefined || parameters.getAll(key).length !== 1) throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
-    filters.push(`${column} = ${clickHouseStringExpression(assertQueryValue(parameters.get(key)!))}`);
+    if (column === undefined || parameters.getAll(key).length !== 1)
+      throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
+    filters.push(
+      `${column} = ${clickHouseStringExpression(assertQueryValue(parameters.get(key)!))}`,
+    );
   }
   return filters.join("\n  AND ");
 }
 
 function assertNoParameters(parameters: URLSearchParams): void {
-  if ([...parameters.keys()].length !== 0) throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
+  if ([...parameters.keys()].length !== 0)
+    throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
 }
 
-function smppQuery(table: string, predicate: string, order: string, watermarkColumn: string): string {
+function smppQuery(
+  table: string,
+  predicate: string,
+  order: string,
+  watermarkColumn: string,
+): string {
   return `SELECT
   *,
   toUnixTimestamp64Milli(max(${watermarkColumn}) OVER ()) AS ${WATERMARK_COLUMN}
@@ -268,7 +385,10 @@ ORDER BY p.occurred_at, p.fact_id, r.relation_id
 FORMAT JSON`;
 }
 
-function assembleSmppEpisodeResult(rows: Record<string, unknown>[], mode: "telemetry" | "readiness"): unknown {
+function assembleSmppEpisodeResult(
+  rows: Record<string, unknown>[],
+  mode: "telemetry" | "readiness",
+): unknown {
   const facts = new Map<string, SmppProviderFact>();
   const relations = new Map<string, SmppEntityRelation>();
   for (const row of rows) {
@@ -283,7 +403,9 @@ function assembleSmppEpisodeResult(rows: Record<string, unknown>[], mode: "telem
         source_entity_id: String(row["__source_entity_id"] ?? ""),
         target_entity_type: String(row["__target_entity_type"] ?? ""),
         target_entity_id: String(row["__target_entity_id"] ?? ""),
-        evidence_fact_ids: Array.isArray(row["__evidence_fact_ids"]) ? row["__evidence_fact_ids"].map(String) : [],
+        evidence_fact_ids: Array.isArray(row["__evidence_fact_ids"])
+          ? row["__evidence_fact_ids"].map(String)
+          : [],
         source_record_hash: String(row["__relation_source_hash"] ?? ""),
         projection_id: String(row["__relation_projection_id"] ?? ""),
         projection_version: Number(row["__relation_projection_version"] ?? 0),
@@ -292,13 +414,24 @@ function assembleSmppEpisodeResult(rows: Record<string, unknown>[], mode: "telem
   }
   const providerFacts = [...facts.values()];
   const entityRelations = [...relations.values()];
-  const readiness = evaluateMcpProviderReadiness({required: true, facts: providerFacts, relations: entityRelations});
-  return mode === "readiness" ? readiness : {providerFacts, relations: entityRelations, readiness};
+  const readiness = evaluateMcpProviderReadiness({
+    required: true,
+    facts: providerFacts,
+    relations: entityRelations,
+  });
+  return mode === "readiness"
+    ? readiness
+    : { providerFacts, relations: entityRelations, readiness };
 }
 
 export function buildDomainProjectionQuery(pathname: string): string {
   if (pathname === "/v1/domain-projections") {
-    return domainQuery("sdar_meta.v_domain_projection_health", "", "projection_id, projection_version", "last_run_updated_at");
+    return domainQuery(
+      "sdar_meta.v_domain_projection_health",
+      "",
+      "projection_id, projection_version",
+      "last_run_updated_at",
+    );
   }
   let match = /^\/v1\/domain-projections\/([^/]+)$/u.exec(pathname);
   if (match !== null) {
@@ -343,17 +476,43 @@ export function buildDomainProjectionQuery(pathname: string): string {
           "ingested_at",
         );
   }
-  match = /^\/v1\/domain-projections\/([^/]+)\/(runs|checkpoints|lineage|dead-letters)$/u.exec(pathname);
+  match =
+    /^\/v1\/domain-projections\/([^/]+)\/(runs|checkpoints|lineage|dead-letters)$/u.exec(
+      pathname,
+    );
   if (match !== null) {
-    const projectionId = clickHouseStringExpression(decodeQueryValue(match[1]!));
+    const projectionId = clickHouseStringExpression(
+      decodeQueryValue(match[1]!),
+    );
     const resources = {
-      runs: ["sdar_meta.projection_run", "updated_at", "updated_at, projection_run_id"],
-      checkpoints: ["sdar_meta.projection_checkpoint", "updated_at", "updated_at, source_partition"],
-      lineage: ["sdar_meta.projection_lineage", "projected_at", "projected_at, lineage_id"],
-      "dead-letters": ["sdar_meta.projection_dead_letter", "updated_at", "updated_at, dead_letter_id"],
+      runs: [
+        "sdar_meta.projection_run",
+        "updated_at",
+        "updated_at, projection_run_id",
+      ],
+      checkpoints: [
+        "sdar_meta.projection_checkpoint",
+        "updated_at",
+        "updated_at, source_partition",
+      ],
+      lineage: [
+        "sdar_meta.projection_lineage",
+        "projected_at",
+        "projected_at, lineage_id",
+      ],
+      "dead-letters": [
+        "sdar_meta.projection_dead_letter",
+        "updated_at",
+        "updated_at, dead_letter_id",
+      ],
     } as const;
     const resource = resources[match[2] as keyof typeof resources];
-    return domainQuery(resource[0], `projection_id = ${projectionId}`, resource[2], resource[1]);
+    return domainQuery(
+      resource[0],
+      `projection_id = ${projectionId}`,
+      resource[2],
+      resource[1],
+    );
   }
   throw new QueryApiError("QUERY_ROUTE_NOT_FOUND", 404);
 }
@@ -364,9 +523,10 @@ function domainQuery(
   order: string,
   watermarkColumn: string | null,
 ): string {
-  const watermark = watermarkColumn === null
-    ? `CAST(NULL, 'Nullable(Int64)')`
-    : `toUnixTimestamp64Milli(max(${watermarkColumn}) OVER ())`;
+  const watermark =
+    watermarkColumn === null
+      ? `CAST(NULL, 'Nullable(Int64)')`
+      : `toUnixTimestamp64Milli(max(${watermarkColumn}) OVER ())`;
   return `SELECT
   *,
   ${watermark} AS ${WATERMARK_COLUMN}
@@ -375,9 +535,15 @@ ORDER BY ${order}
 FORMAT JSON`;
 }
 
-function assertAuthorization(request: IncomingMessage, expectedCredentialDigest: Buffer): void {
+function assertAuthorization(
+  request: IncomingMessage,
+  expectedCredentialDigest: Buffer,
+): void {
   const authorization = request.headers.authorization;
-  const matched = typeof authorization === "string" ? /^Bearer ([^\s]+)$/u.exec(authorization) : null;
+  const matched =
+    typeof authorization === "string"
+      ? /^Bearer ([^\s]+)$/u.exec(authorization)
+      : null;
   const actualDigest = credentialDigest(matched?.[1] ?? "");
   if (!timingSafeEqual(actualDigest, expectedCredentialDigest)) {
     throw new QueryApiError("QUERY_CREDENTIAL_INVALID", 401);
@@ -402,9 +568,16 @@ export function buildTaskCapabilityChainQuery(taskId: string): string {
 }
 
 export function buildEvidenceTraceQuery(parameters: URLSearchParams): string {
-  const supported = new Set(["episodeId", "exportId", "sourceId", "nodeId", "recordId"]);
+  const supported = new Set([
+    "episodeId",
+    "exportId",
+    "sourceId",
+    "nodeId",
+    "recordId",
+  ]);
   for (const key of parameters.keys()) {
-    if (!supported.has(key)) throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
+    if (!supported.has(key))
+      throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
     if (parameters.getAll(key).length !== 1) {
       throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
     }
@@ -420,7 +593,8 @@ export function buildEvidenceTraceQuery(parameters: URLSearchParams): string {
     const encoded = clickHouseStringExpression(assertQueryValue(nodeId));
     filters.push(`(node_id = ${encoded} OR batch_node_id = ${encoded})`);
   }
-  if (filters.length === 0) throw new QueryApiError("QUERY_ARGUMENT_REQUIRED", 400);
+  if (filters.length === 0)
+    throw new QueryApiError("QUERY_ARGUMENT_REQUIRED", 400);
   return canonicalQuery(filters.join("\n  AND "));
 }
 
@@ -450,11 +624,15 @@ function addTraceFilter(
   column: string,
 ): void {
   const value = parameters.get(parameter);
-  if (value !== null) filters.push(`${column} = ${clickHouseStringExpression(value)}`);
+  if (value !== null)
+    filters.push(`${column} = ${clickHouseStringExpression(value)}`);
 }
 
 function assertQueryValue(value: string): string {
-  if (value.length === 0 || Buffer.byteLength(value, "utf8") > MAXIMUM_QUERY_VALUE_BYTES) {
+  if (
+    value.length === 0 ||
+    Buffer.byteLength(value, "utf8") > MAXIMUM_QUERY_VALUE_BYTES
+  ) {
     throw new QueryApiError("QUERY_ARGUMENT_INVALID", 400);
   }
   return value;
@@ -477,7 +655,10 @@ function parseRequestUrl(value: string | undefined): URL {
   }
 }
 
-function parseClickHouseResult(raw: string, requireWatermark = true): {
+function parseClickHouseResult(
+  raw: string,
+  requireWatermark = true,
+): {
   rows: Record<string, unknown>[];
   watermark: string | null;
 } {
@@ -493,7 +674,8 @@ function parseClickHouseResult(raw: string, requireWatermark = true): {
 
   let watermark: string | null = null;
   const rows = value["data"].map((candidate: unknown) => {
-    if (!isObject(candidate)) throw new QueryApiError("QUERY_BACKEND_RESPONSE_INVALID", 503);
+    if (!isObject(candidate))
+      throw new QueryApiError("QUERY_BACKEND_RESPONSE_INVALID", 503);
     const copy = { ...candidate };
     const rawWatermark = copy[WATERMARK_COLUMN];
     delete copy[WATERMARK_COLUMN];
@@ -534,18 +716,25 @@ function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function sendJson(response: ServerResponse, statusCode: number, body: unknown): void {
+function sendJson(
+  response: ServerResponse,
+  statusCode: number,
+  body: unknown,
+): void {
   if (response.headersSent) return;
-  response.writeHead(statusCode, { "content-type": "application/json; charset=utf-8" });
+  response.writeHead(statusCode, {
+    "content-type": "application/json; charset=utf-8",
+  });
   response.end(JSON.stringify(body));
 }
 
 function sendError(response: ServerResponse, error: unknown): void {
   const queryError =
-    error instanceof QueryApiError
+    error instanceof QueryApiError || error instanceof DiagnosticFederationError
       ? error
       : new QueryApiError("QUERY_REQUEST_FAILED", 500);
-  if (queryError.statusCode === 401) response.setHeader("www-authenticate", "Bearer");
+  if (queryError.statusCode === 401)
+    response.setHeader("www-authenticate", "Bearer");
   if (queryError.statusCode === 503) {
     sendJson(
       response,

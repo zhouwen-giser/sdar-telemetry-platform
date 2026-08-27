@@ -15,6 +15,7 @@ WHERE tenant_id = {tenantId:String}
   AND project_id = {projectId:String}
   AND environment = {environment:String}
   AND episode_id = {episodeId:String}
+  AND closure_snapshot_id = {closureSnapshotId:String}
   AND projected_at <= {asOfProjectedAt:DateTime64(3)}
   AND (updated_at, binding_id) > ({cursorUpdatedAt:DateTime64(3)}, {cursorBindingId:String})
 ORDER BY updated_at, binding_id
@@ -27,9 +28,23 @@ WHERE tenant_id = {tenantId:String}
   AND project_id = {projectId:String}
   AND environment = {environment:String}
   AND episode_id = {episodeId:String}
+  AND closure_snapshot_id = {closureSnapshotId:String}
   AND projected_at <= {asOfProjectedAt:DateTime64(3)}
   AND (occurred_at, fact_id) > ({cursorOccurredAt:DateTime64(3)}, {cursorFactId:String})
 ORDER BY occurred_at, fact_id
+LIMIT {limit:UInt32};
+
+-- Binding-derived relations are diagnostic closure material pinned to the same manifest.
+SELECT *
+FROM sdar_mart.v_episode_smpp_binding_relation_closure
+WHERE tenant_id = {tenantId:String}
+  AND project_id = {projectId:String}
+  AND environment = {environment:String}
+  AND episode_id = {episodeId:String}
+  AND closure_snapshot_id = {closureSnapshotId:String}
+  AND projected_at <= {asOfProjectedAt:DateTime64(3)}
+  AND (projected_at, relation_id) > ({cursorProjectedAt:DateTime64(3)}, {cursorRelationId:String})
+ORDER BY projected_at, relation_id
 LIMIT {limit:UInt32};
 
 -- Reconciliation material is scoped to already-selected facts and never selects facts.
@@ -39,6 +54,7 @@ WHERE tenant_id = {tenantId:String}
   AND project_id = {projectId:String}
   AND environment = {environment:String}
   AND episode_id = {episodeId:String}
+  AND closure_snapshot_id = {closureSnapshotId:String}
   AND projected_at <= {asOfProjectedAt:DateTime64(3)}
   AND (claim_type, claim_id) > ({cursorClaimType:String}, {cursorClaimId:String})
 ORDER BY claim_type, claim_id

@@ -1,5 +1,10 @@
 # sdar-telemetry-platform
 
+四项目联调入口与默认 active 配置见 [UGV 联调说明](docs/UGV_DEBUG.md)。
+仅联调显式免登录；生产默认不变。SDAR → Commander/NPC 本轮暂留空。
+ProviderOps v2 使用 Control PostgreSQL 005 的增量 origin/lease/checkpoint，向外部
+ClickHouse migration 015 的五个冻结闭包表发布，并在明细完成后最后提交 Manifest。
+
 独立 TypeScript 遥测事实平台。当前主链路接收 Runtime 固化的 `sdar.evidence/v1`（SDAR v1.4.1），入口在持久 WAL `fsync` 后 ACK，Worker 再经中央 Projection Registry 写入外部 ClickHouse。平台不参与任何在线控制，SDAR PostgreSQL 始终保持运行权威。
 
 Runtime contract 的可重复快照位于 `integrations/skill-driven-agent-runtime/v1.4.1`。其中 `source-lock.json` 分别记录 canonical contract/registry hash 和每个源文件的 byte SHA-256；旧的 v1.3 integration 文件仅为 **compatibility-only**。

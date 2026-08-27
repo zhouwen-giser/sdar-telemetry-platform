@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 import { loadConfig } from "../../../packages/telemetry-config/src/index.js";
+import { trustedDevelopment } from "../../../packages/telemetry-config/src/development.js";
 import {
   ControlPostgres,
   type DomainProjectionManagementActionType,
@@ -16,15 +17,16 @@ const database = new ControlPostgres(databaseUrl);
 const repository = database.domainProjections;
 
 const port: DomainAdminPort = {
-  registerProducer: async (command) => repository.registerProducer({
-    producerId: stringField(command, "producerId"),
-    application: enumField(command, "application", ["commander", "npc"]),
-    tenantId: stringField(command, "tenantId"),
-    projectId: stringField(command, "projectId"),
-    contractVersion: "sdar.domain-source/v1",
-    credentialRef: stringField(command, "credentialRef"),
-    metadata: objectField(command, "metadata"),
-  }),
+  registerProducer: async (command) =>
+    repository.registerProducer({
+      producerId: stringField(command, "producerId"),
+      application: enumField(command, "application", ["commander", "npc"]),
+      tenantId: stringField(command, "tenantId"),
+      projectId: stringField(command, "projectId"),
+      contractVersion: "sdar.domain-source/v1",
+      credentialRef: stringField(command, "credentialRef"),
+      metadata: objectField(command, "metadata"),
+    }),
   heartbeatProducer: async (producerId) => {
     const result = await repository.heartbeatProducer(producerId);
     if (result === null) {
@@ -72,31 +74,45 @@ const port: DomainAdminPort = {
   applyDeadLetterAction: async (deadLetterId, command) => {
     const payload = objectField(command, "payload");
     return repository.registerManagementAction({
-      ...actionInput(stringField(payload, "projectionId"), command, "resolve_dead_letter"),
+      ...actionInput(
+        stringField(payload, "projectionId"),
+        command,
+        "resolve_dead_letter",
+      ),
       payload: { ...payload, deadLetterId },
     });
   },
 };
 
-const server = createDomainAdminApi({ port, bearerCredential: await loadAdminBearerCredential() });
+const server = createDomainAdminApi({
+  port,
+  bearerCredential: await loadAdminBearerCredential(),
+  trustedDevelopment: trustedDevelopment(),
+});
 const configuration = loadConfig();
 const bindHost = process.env["ADMIN_BIND_HOST"] ?? "127.0.0.1";
 server.listen(configuration.adminPort, bindHost, () => {
-  process.stdout.write(`${JSON.stringify({ event: "admin_api.ready", host: bindHost, port: configuration.adminPort })}\n`);
+  process.stdout.write(
+    `${JSON.stringify({ event: "admin_api.ready", host: bindHost, port: configuration.adminPort })}\n`,
+  );
 });
 
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.once(signal, () => {
-    server.close(() => { void database.close().finally(() => process.exit(0)); });
+    server.close(() => {
+      void database.close().finally(() => process.exit(0));
+    });
   });
 }
 
 async function controlPostgresUrl(): Promise<string> {
   const inline = process.env["CONTROL_POSTGRES_URL"];
   const file = process.env["CONTROL_POSTGRES_URL_FILE"];
-  if ((inline === undefined) === (file === undefined)) throw new Error("CONTROL_POSTGRES_CONFIGURATION_INVALID");
+  if ((inline === undefined) === (file === undefined))
+    throw new Error("CONTROL_POSTGRES_CONFIGURATION_INVALID");
   const value = inline ?? (await readFile(file!, "utf8")).trim();
-  if (value.trim() === "" || /[\r\n]/u.test(value)) throw new Error("CONTROL_POSTGRES_CONFIGURATION_INVALID");
+  if (value.trim() === "" || /[\r\n]/u.test(value))
+    throw new Error("CONTROL_POSTGRES_CONFIGURATION_INVALID");
   return value;
 }
 
@@ -105,9 +121,15 @@ function actionInput(
   command: Record<string, unknown>,
   forcedType?: DomainProjectionManagementActionType,
 ) {
-  const actionType = forcedType ?? enumField(command, "actionType", [
-    "approve_definition", "set_mode", "suspend", "resume", "resolve_dead_letter",
-  ]);
+  const actionType =
+    forcedType ??
+    enumField(command, "actionType", [
+      "approve_definition",
+      "set_mode",
+      "suspend",
+      "resume",
+      "resolve_dead_letter",
+    ]);
   return {
     actionId: stringField(command, "actionId"),
     projectionId,
@@ -116,30 +138,58 @@ function actionInput(
     expectedRevision: integerField(command, "expectedRevision", 0),
     requestedBy: stringField(command, "requestedBy"),
     requestHash: stringField(command, "requestHash"),
-    payload: objectField(command, "payload"),
+    payload: {
+      ...objectField(command, "payload"),
+      expectedDefinitionHash: stringField(command, "expectedDefinitionHash"),
+      expectedMappingHash: stringField(command, "expectedMappingHash"),
+    },
   };
 }
 
 function stringField(value: Record<string, unknown>, field: string): string {
   const candidate = value[field];
-  if (typeof candidate !== "string" || candidate.trim() === "") throw new Error("ADMIN_COMMAND_INVALID");
+  if (typeof candidate !== "string" || candidate.trim() === "")
+    throw new Error("ADMIN_COMMAND_INVALID");
   return candidate;
 }
-function nullableStringField(value: Record<string, unknown>, field: string): string | null {
-  return value[field] === null || value[field] === undefined ? null : stringField(value, field);
+function nullableStringField(
+  value: Record<string, unknown>,
+  field: string,
+): string | null {
+  return value[field] === null || value[field] === undefined
+    ? null
+    : stringField(value, field);
 }
-function integerField(value: Record<string, unknown>, field: string, minimum: number): number {
+function integerField(
+  value: Record<string, unknown>,
+  field: string,
+  minimum: number,
+): number {
   const candidate = value[field];
-  if (!Number.isSafeInteger(candidate) || (candidate as number) < minimum) throw new Error("ADMIN_COMMAND_INVALID");
+  if (!Number.isSafeInteger(candidate) || (candidate as number) < minimum)
+    throw new Error("ADMIN_COMMAND_INVALID");
   return candidate as number;
 }
-function objectField(value: Record<string, unknown>, field: string): Record<string, unknown> {
+function objectField(
+  value: Record<string, unknown>,
+  field: string,
+): Record<string, unknown> {
   const candidate = value[field];
-  if (typeof candidate !== "object" || candidate === null || Array.isArray(candidate)) throw new Error("ADMIN_COMMAND_INVALID");
+  if (
+    typeof candidate !== "object" ||
+    candidate === null ||
+    Array.isArray(candidate)
+  )
+    throw new Error("ADMIN_COMMAND_INVALID");
   return candidate as Record<string, unknown>;
 }
-function enumField<const T extends string>(value: Record<string, unknown>, field: string, allowed: readonly T[]): T {
+function enumField<const T extends string>(
+  value: Record<string, unknown>,
+  field: string,
+  allowed: readonly T[],
+): T {
   const candidate = stringField(value, field);
-  if (!allowed.includes(candidate as T)) throw new Error("ADMIN_COMMAND_INVALID");
+  if (!allowed.includes(candidate as T))
+    throw new Error("ADMIN_COMMAND_INVALID");
   return candidate as T;
 }

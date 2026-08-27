@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { Pool } from "pg";
+import { DomainRuntimeRepository } from "./domain-runtime.js";
 
 const SHA256_PATTERN = /^sha256:[0-9a-f]{64}$/u;
 const MAX_LEASE_DURATION_MS = 5 * 60_000;
@@ -135,7 +136,9 @@ export class DomainProjectionControlError extends Error {
 export class DomainProjectionControlRepository {
   constructor(private readonly database: Queryable) {}
 
-  async claimLease(input: ClaimDomainProjectionLease): Promise<DomainProjectionLease | null> {
+  async claimLease(
+    input: ClaimDomainProjectionLease,
+  ): Promise<DomainProjectionLease | null> {
     assertLeaseKey(input);
     assertNonEmpty("leaseOwner", input.leaseOwner);
     assertLeaseDuration(input.durationMs);
@@ -164,7 +167,10 @@ export class DomainProjectionControlRepository {
     return result.rows[0] === undefined ? null : leaseFromRow(result.rows[0]);
   }
 
-  async renewLease(lease: DomainProjectionLease, durationMs: number): Promise<DomainProjectionLease | null> {
+  async renewLease(
+    lease: DomainProjectionLease,
+    durationMs: number,
+  ): Promise<DomainProjectionLease | null> {
     assertLeaseKey(lease);
     assertNonEmpty("leaseOwner", lease.leaseOwner);
     assertNonEmpty("leaseToken", lease.leaseToken);
@@ -178,7 +184,12 @@ export class DomainProjectionControlRepository {
          AND source_stream=$5 AND partition_id=$6 AND lease_owner=$7 AND lease_token=$8
          AND fencing_token=$9 AND released_at IS NULL AND lease_until > statement_timestamp()
        RETURNING *`,
-      leaseParameters(lease, [lease.leaseOwner, lease.leaseToken, lease.fencingToken, durationMs]),
+      leaseParameters(lease, [
+        lease.leaseOwner,
+        lease.leaseToken,
+        lease.fencingToken,
+        durationMs,
+      ]),
     );
     return result.rows[0] === undefined ? null : leaseFromRow(result.rows[0]);
   }
@@ -196,12 +207,18 @@ export class DomainProjectionControlRepository {
        WHERE target_id=$1 AND projection_id=$2 AND projection_version=$3 AND mapping_hash=$4
          AND source_stream=$5 AND partition_id=$6 AND lease_owner=$7 AND lease_token=$8
          AND fencing_token=$9 AND released_at IS NULL AND lease_until > statement_timestamp()`,
-      leaseParameters(lease, [lease.leaseOwner, lease.leaseToken, lease.fencingToken]),
+      leaseParameters(lease, [
+        lease.leaseOwner,
+        lease.leaseToken,
+        lease.fencingToken,
+      ]),
     );
     return result.rowCount === 1;
   }
 
-  async readActiveLease(key: DomainProjectionLeaseKey): Promise<DomainProjectionLease | null> {
+  async readActiveLease(
+    key: DomainProjectionLeaseKey,
+  ): Promise<DomainProjectionLease | null> {
     assertLeaseKey(key);
     const result = await this.database.query<LeaseRow>(
       `SELECT * FROM telemetry_control.domain_projection_lease
@@ -214,7 +231,10 @@ export class DomainProjectionControlRepository {
   }
 
   async registerManagementAction(
-    action: Omit<DomainProjectionManagementAction, "status" | "createdAt" | "decidedAt">,
+    action: Omit<
+      DomainProjectionManagementAction,
+      "status" | "createdAt" | "decidedAt"
+    >,
   ): Promise<DomainProjectionManagementAction> {
     assertNonEmpty("actionId", action.actionId);
     assertProjectionIdentity(action);
@@ -240,7 +260,8 @@ export class DomainProjectionControlRepository {
         JSON.stringify(action.payload),
       ],
     );
-    if (result.rows[0] !== undefined) return managementActionFromRow(result.rows[0]);
+    if (result.rows[0] !== undefined)
+      return managementActionFromRow(result.rows[0]);
     const existing = await this.database.query<ManagementActionRow>(
       `SELECT * FROM telemetry_control.domain_projection_management_action WHERE action_id=$1`,
       [action.actionId],
@@ -266,7 +287,8 @@ export class DomainProjectionControlRepository {
     assertHash("mappingHash", request.mappingHash);
     assertNonEmpty("tenantId", request.tenantId);
     assertNonEmpty("projectId", request.projectId);
-    if (request.episodeId !== null) assertNonEmpty("episodeId", request.episodeId);
+    if (request.episodeId !== null)
+      assertNonEmpty("episodeId", request.episodeId);
     assertPlainObject("fromCursor", request.fromCursor);
     assertPlainObject("toCursor", request.toCursor);
     assertNonEmpty("requestedBy", request.requestedBy);
@@ -293,7 +315,8 @@ export class DomainProjectionControlRepository {
         request.requestHash,
       ],
     );
-    if (result.rows[0] !== undefined) return replayRequestFromRow(result.rows[0]);
+    if (result.rows[0] !== undefined)
+      return replayRequestFromRow(result.rows[0]);
     const existing = await this.database.query<ReplayRequestRow>(
       `SELECT * FROM telemetry_control.domain_projection_replay_request WHERE replay_request_id=$1`,
       [request.replayRequestId],
@@ -319,7 +342,8 @@ export class DomainProjectionControlRepository {
     assertHash("mappingHash", request.mappingHash);
     assertNonEmpty("tenantId", request.tenantId);
     assertNonEmpty("projectId", request.projectId);
-    if (request.episodeId !== null) assertNonEmpty("episodeId", request.episodeId);
+    if (request.episodeId !== null)
+      assertNonEmpty("episodeId", request.episodeId);
     assertPlainObject("fromCursor", request.fromCursor);
     assertPlainObject("toCursor", request.toCursor);
     assertNonEmpty("requestedBy", request.requestedBy);
@@ -346,7 +370,8 @@ export class DomainProjectionControlRepository {
         request.requestHash,
       ],
     );
-    if (result.rows[0] !== undefined) return reconciliationRequestFromRow(result.rows[0]);
+    if (result.rows[0] !== undefined)
+      return reconciliationRequestFromRow(result.rows[0]);
     const existing = await this.database.query<ReconciliationRequestRow>(
       `SELECT * FROM telemetry_control.domain_projection_reconciliation_request
        WHERE reconciliation_request_id=$1`,
@@ -363,10 +388,16 @@ export class DomainProjectionControlRepository {
   }
 
   async registerProducer(
-    producer: Omit<DomainSourceProducerRegistration, "status" | "registeredAt" | "lastHeartbeatAt">,
+    producer: Omit<
+      DomainSourceProducerRegistration,
+      "status" | "registeredAt" | "lastHeartbeatAt"
+    >,
   ): Promise<DomainSourceProducerRegistration> {
     assertNonEmpty("producerId", producer.producerId);
-    if (producer.application !== "commander" && producer.application !== "npc") {
+    if (
+      producer.application !== "commander" &&
+      producer.application !== "npc"
+    ) {
       invalid("application", "must be commander or npc");
     }
     assertNonEmpty("tenantId", producer.tenantId);
@@ -408,7 +439,9 @@ export class DomainProjectionControlRepository {
     return producerFromRow(result.rows[0]);
   }
 
-  async heartbeatProducer(producerId: string): Promise<DomainSourceProducerRegistration | null> {
+  async heartbeatProducer(
+    producerId: string,
+  ): Promise<DomainSourceProducerRegistration | null> {
     assertNonEmpty("producerId", producerId);
     const result = await this.database.query<ProducerRow>(
       `UPDATE telemetry_control.domain_source_producer_registration
@@ -417,7 +450,9 @@ export class DomainProjectionControlRepository {
        RETURNING *`,
       [producerId],
     );
-    return result.rows[0] === undefined ? null : producerFromRow(result.rows[0]);
+    return result.rows[0] === undefined
+      ? null
+      : producerFromRow(result.rows[0]);
   }
 }
 
@@ -425,11 +460,13 @@ export class ControlPostgres {
   private readonly pool: Pool;
 
   readonly domainProjections: DomainProjectionControlRepository;
+  readonly domainRuntime: DomainRuntimeRepository;
 
   constructor(url: string, config: Readonly<Record<string, unknown>> = {}) {
     assertNonEmpty("url", url);
     this.pool = new Pool({ ...config, connectionString: url });
     this.domainProjections = new DomainProjectionControlRepository(this.pool);
+    this.domainRuntime = new DomainRuntimeRepository(this.pool);
   }
 
   async migrate(sql: string): Promise<void> {
@@ -452,7 +489,9 @@ export class ControlPostgres {
   }
 
   async health(): Promise<boolean> {
-    const result = await this.pool.query<{healthy: number}>("SELECT 1 AS healthy");
+    const result = await this.pool.query<{ healthy: number }>(
+      "SELECT 1 AS healthy",
+    );
     return result.rows[0]?.healthy === 1;
   }
 
@@ -524,7 +563,10 @@ type ProducerRow = {
   metadata_json: Record<string, unknown>;
 };
 
-function leaseParameters(key: DomainProjectionLeaseKey, tail: readonly unknown[] = []): unknown[] {
+function leaseParameters(
+  key: DomainProjectionLeaseKey,
+  tail: readonly unknown[] = [],
+): unknown[] {
   return [
     key.targetId,
     key.projectionId,
@@ -540,7 +582,10 @@ function leaseFromRow(row: LeaseRow): DomainProjectionLease {
   return Object.freeze({
     targetId: row.target_id,
     projectionId: row.projection_id,
-    projectionVersion: safeDatabaseInteger("projectionVersion", row.projection_version),
+    projectionVersion: safeDatabaseInteger(
+      "projectionVersion",
+      row.projection_version,
+    ),
     mappingHash: row.mapping_hash,
     sourceStream: row.source_stream,
     partitionId: row.partition_id,
@@ -553,13 +598,21 @@ function leaseFromRow(row: LeaseRow): DomainProjectionLease {
   });
 }
 
-function managementActionFromRow(row: ManagementActionRow): DomainProjectionManagementAction {
+function managementActionFromRow(
+  row: ManagementActionRow,
+): DomainProjectionManagementAction {
   return Object.freeze({
     actionId: row.action_id,
     projectionId: row.projection_id,
-    projectionVersion: safeDatabaseInteger("projectionVersion", row.projection_version),
+    projectionVersion: safeDatabaseInteger(
+      "projectionVersion",
+      row.projection_version,
+    ),
     actionType: row.action_type,
-    expectedRevision: safeDatabaseInteger("expectedRevision", row.expected_revision),
+    expectedRevision: safeDatabaseInteger(
+      "expectedRevision",
+      row.expected_revision,
+    ),
     requestedBy: row.requested_by,
     requestHash: row.request_hash,
     payload: freezeRecord(row.payload_json),
@@ -569,11 +622,16 @@ function managementActionFromRow(row: ManagementActionRow): DomainProjectionMana
   });
 }
 
-function replayRequestFromRow(row: ReplayRequestRow): DomainProjectionReplayRequest {
+function replayRequestFromRow(
+  row: ReplayRequestRow,
+): DomainProjectionReplayRequest {
   return Object.freeze({
     replayRequestId: row.replay_request_id,
     projectionId: row.projection_id,
-    projectionVersion: safeDatabaseInteger("projectionVersion", row.projection_version),
+    projectionVersion: safeDatabaseInteger(
+      "projectionVersion",
+      row.projection_version,
+    ),
     mappingHash: row.mapping_hash,
     tenantId: row.tenant_id,
     projectId: row.project_id,
@@ -595,7 +653,10 @@ function reconciliationRequestFromRow(
   return Object.freeze({
     reconciliationRequestId: row.reconciliation_request_id,
     projectionId: row.projection_id,
-    projectionVersion: safeDatabaseInteger("projectionVersion", row.projection_version),
+    projectionVersion: safeDatabaseInteger(
+      "projectionVersion",
+      row.projection_version,
+    ),
     mappingHash: row.mapping_hash,
     tenantId: row.tenant_id,
     projectId: row.project_id,
@@ -634,34 +695,51 @@ function assertLeaseKey(key: DomainProjectionLeaseKey): void {
   assertNonEmpty("partitionId", key.partitionId);
 }
 
-function assertProjectionIdentity(value: { projectionId: string; projectionVersion: number }): void {
+function assertProjectionIdentity(value: {
+  projectionId: string;
+  projectionVersion: number;
+}): void {
   assertNonEmpty("projectionId", value.projectionId);
   assertPositiveInteger("projectionVersion", value.projectionVersion);
 }
 
 function assertLeaseDuration(value: number): void {
-  if (!Number.isSafeInteger(value) || value < 1_000 || value > MAX_LEASE_DURATION_MS) {
-    invalid("durationMs", `must be an integer from 1000 through ${MAX_LEASE_DURATION_MS}`);
+  if (
+    !Number.isSafeInteger(value) ||
+    value < 1_000 ||
+    value > MAX_LEASE_DURATION_MS
+  ) {
+    invalid(
+      "durationMs",
+      `must be an integer from 1000 through ${MAX_LEASE_DURATION_MS}`,
+    );
   }
 }
 
 function assertPositiveInteger(field: string, value: number): void {
-  if (!Number.isSafeInteger(value) || value < 1) invalid(field, "must be a positive integer");
+  if (!Number.isSafeInteger(value) || value < 1)
+    invalid(field, "must be a positive integer");
 }
 
 function assertNonNegativeInteger(field: string, value: number): void {
-  if (!Number.isSafeInteger(value) || value < 0) invalid(field, "must be a non-negative integer");
+  if (!Number.isSafeInteger(value) || value < 0)
+    invalid(field, "must be a non-negative integer");
 }
 
 function assertNonEmpty(field: string, value: string): void {
-  if (typeof value !== "string" || value.trim() === "") invalid(field, "must not be empty");
+  if (typeof value !== "string" || value.trim() === "")
+    invalid(field, "must not be empty");
 }
 
 function assertHash(field: string, value: string): void {
-  if (!SHA256_PATTERN.test(value)) invalid(field, "must be a canonical sha256 hash");
+  if (!SHA256_PATTERN.test(value))
+    invalid(field, "must be a canonical sha256 hash");
 }
 
-function assertPlainObject(field: string, value: Readonly<Record<string, unknown>>): void {
+function assertPlainObject(
+  field: string,
+  value: Readonly<Record<string, unknown>>,
+): void {
   if (value === null || typeof value !== "object" || Array.isArray(value)) {
     invalid(field, "must be a JSON object");
   }
@@ -679,7 +757,9 @@ function safeDatabaseInteger(field: string, value: string): number {
   return parsed;
 }
 
-function freezeRecord(value: Record<string, unknown>): Readonly<Record<string, unknown>> {
+function freezeRecord(
+  value: Record<string, unknown>,
+): Readonly<Record<string, unknown>> {
   return Object.freeze(structuredClone(value));
 }
 

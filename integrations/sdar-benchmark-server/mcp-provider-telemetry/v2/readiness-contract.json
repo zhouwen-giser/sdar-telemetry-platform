@@ -1,6 +1,7 @@
 {
   "contractId": "sdar.telemetry-smpp-providerops-handoff/v2",
   "formalReadyWhen": [
+    "closureSnapshotId is canonical sha256",
     "bindingCount > 0",
     "selectedFactCount == expectedFactCount",
     "foreignFactCount == 0",

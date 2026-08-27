@@ -20,6 +20,7 @@ import {
 import { DurableSegmentWal } from "../../../packages/telemetry-wal/src/index.js";
 import { TelemetryWorker } from "./worker.js";
 import { DomainSourceLandingWorker } from "./domain-source-worker.js";
+import { runProviderClosureLoop } from "./provider-closure-loop.js";
 
 const config = loadConfig();
 const walRoot = path.join(config.walDir, "sdar-evidence-v1");
@@ -69,4 +70,4 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
   });
 }
 
-await run();
+await Promise.all([run(), runProviderClosureLoop(clickhouse,()=>stopping)]);

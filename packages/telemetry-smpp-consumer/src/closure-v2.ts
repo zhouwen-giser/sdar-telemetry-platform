@@ -5,6 +5,8 @@ export const PROVIDER_EPISODE_CLOSURE_CONTRACT =
 export const PROVIDER_ORIGIN_CLAIM_POLICY =
   "sdar.provider-origin-claim-reconciliation/v1.1" as const;
 
+export type ProviderBindingAuthorityRef = "sdar_core.remote_task_binding" | "sdar_core.sdar_evidence_v1_record:mcp_task.remote_binding";
+
 export type ProviderClosureReadinessStatus =
   | "not_required"
   | "not_ready"
@@ -100,7 +102,7 @@ export interface ProviderBindingDerivedRelation {
   readonly bindingId: string;
   readonly episodeId: string;
   readonly remoteTaskId: string;
-  readonly authoritySource: "sdar_core.remote_task_binding";
+  readonly authoritySource: ProviderBindingAuthorityRef;
   readonly contentHash: `sha256:${string}`;
 }
 
@@ -137,6 +139,7 @@ export interface ProviderClosureCapture {
 }
 
 export interface ProviderEpisodeClosureDataSource {
+  readonly bindingAuthorityRef?: ProviderBindingAuthorityRef;
   capture(
     scope: ProviderClosureScope,
     asOfProjectedAt?: string,
@@ -220,7 +223,7 @@ export interface ProviderEpisodeClosure {
     readonly physicalSuccessProven: false;
   };
   readonly provenance: {
-    readonly bindingAuthorityRef: "sdar_core.remote_task_binding";
+    readonly bindingAuthorityRef: ProviderBindingAuthorityRef;
     readonly bindingAuthorityHash: `sha256:${string}`;
     readonly originClaimPolicyRef: typeof PROVIDER_ORIGIN_CLAIM_POLICY;
     readonly originClaimPolicyHash: `sha256:${string}`;
@@ -255,7 +258,7 @@ export async function assembleProviderEpisodeClosure(
     const observed = await source.capture(request, captured.asOfProjectedAt);
     validateCapture(observed);
     if (sameCapture(captured, observed)) {
-      return buildClosure(request, captured, loaded);
+      return buildClosure(request, captured, loaded, source.bindingAuthorityRef);
     }
   }
   return blockedDriftClosure(request);
@@ -396,6 +399,7 @@ function buildClosure(
   request: ProviderEpisodeClosureRequest,
   capture: ProviderClosureCapture,
   loaded: LoadedClosurePages,
+  authoritySource: ProviderBindingAuthorityRef = "sdar_core.remote_task_binding",
 ): ProviderEpisodeClosure {
   const bindings = uniqueBy(loaded.bindings, (binding) => binding.bindingId).sort(byBinding);
   const bindingAuthorityHash = hash(bindings);
@@ -425,7 +429,7 @@ function buildClosure(
     .filter((hint) => hint.evidenceFactIds.some((factId) => selectedFactIds.has(factId)))
     .map(normalizeHint)
     .sort((left, right) => left.relationId.localeCompare(right.relationId));
-  const bindingDerivedRelations = bindings.map(bindingRelation);
+  const bindingDerivedRelations = bindings.map(binding => bindingRelation(binding, authoritySource));
   const results = reconcileClaims(selectedFacts, bindings, hints);
   const counts = countStatuses(results);
   const unresolvedBindingCount = bindings.filter(
@@ -526,7 +530,7 @@ function buildClosure(
       physicalSuccessProven: false,
     }),
     provenance: Object.freeze({
-      bindingAuthorityRef: "sdar_core.remote_task_binding",
+      bindingAuthorityRef: authoritySource,
       bindingAuthorityHash,
       originClaimPolicyRef: PROVIDER_ORIGIN_CLAIM_POLICY,
       originClaimPolicyHash: POLICY_HASH,
@@ -656,13 +660,13 @@ function matchingBindings(
   );
 }
 
-function bindingRelation(binding: ProviderRemoteTaskBinding): ProviderBindingDerivedRelation {
+function bindingRelation(binding: ProviderRemoteTaskBinding, authoritySource: ProviderBindingAuthorityRef): ProviderBindingDerivedRelation {
   const identity = {
     relationType: "binds_provider_remote_task" as const,
     bindingId: binding.bindingId,
     episodeId: binding.episodeId,
     remoteTaskId: binding.remoteTaskId,
-    authoritySource: "sdar_core.remote_task_binding" as const,
+    authoritySource,
   };
   const contentHash = hash(identity);
   return Object.freeze({ ...identity, relationId: contentHash, contentHash });

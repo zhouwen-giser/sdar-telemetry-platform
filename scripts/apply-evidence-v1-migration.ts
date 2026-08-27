@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import path from "node:path";
 
 import {
@@ -8,20 +9,41 @@ import {
 
 const approval = process.env["ALLOW_CLICKHOUSE_ADDITIVE_MIGRATION"];
 if (approval !== "sdar.evidence/v1") {
-  throw new Error("ALLOW_CLICKHOUSE_ADDITIVE_MIGRATION=sdar.evidence/v1 is required.");
+  throw new Error(
+    "ALLOW_CLICKHOUSE_ADDITIVE_MIGRATION=sdar.evidence/v1 is required.",
+  );
 }
 
-const migrationPath = path.resolve("migrations/clickhouse/014_sdar_evidence_v1_canonical.sql");
-const reviewPath = path.resolve("reports/sdar-integration/03_CLICKHOUSE_SCHEMA_DIFF.md");
+const migrationPath = path.resolve(
+  "migrations/clickhouse/014_sdar_evidence_v1_canonical.sql",
+);
+const reviewPath = path.resolve(
+  "reports/sdar-integration/03_CLICKHOUSE_SCHEMA_DIFF.md",
+);
 const [source, review] = await Promise.all([
   readFile(migrationPath, "utf8"),
   readFile(reviewPath, "utf8"),
 ]);
 if (!review.includes("Migration decision: APPROVED_ADDITIVE")) {
-  throw new Error("The reviewed schema diff does not approve the additive migration.");
+  throw new Error(
+    "The reviewed schema diff does not approve the additive migration.",
+  );
 }
-if (/\b(?:DROP|TRUNCATE|DELETE|UPDATE|ALTER|RENAME|REPLACE|OPTIMIZE|INSERT)\b/iu.test(source)) {
-  throw new Error("Evidence v1 migration contains a forbidden mutating statement.");
+// Byte identity from the reviewed schema diff; a new DDL requires a new review.
+if (
+  createHash("sha256").update(source).digest("hex") !==
+  "fb0b073f7c590ca56285da91a7253e7426db84dd19b587a2baa01635a4542ff9"
+) {
+  throw new Error("EVIDENCE_ADDITIVE_MIGRATION_REVIEW_HASH_MISMATCH");
+}
+if (
+  /\b(?:DROP|TRUNCATE|DELETE|UPDATE|ALTER|RENAME|REPLACE|OPTIMIZE|INSERT)\b/iu.test(
+    source,
+  )
+) {
+  throw new Error(
+    "Evidence v1 migration contains a forbidden mutating statement.",
+  );
 }
 
 const statements = source
@@ -35,7 +57,9 @@ if (
     statements[1] ?? "",
   )
 ) {
-  throw new Error("Evidence v1 migration is not the reviewed two-statement additive shape.");
+  throw new Error(
+    "Evidence v1 migration is not the reviewed two-statement additive shape.",
+  );
 }
 
 const client = new ClickHouseClient(configFromEnv());
@@ -49,7 +73,9 @@ GROUP BY engine
 FORMAT JSON`,
   { readonly: 2, maxResultRows: 2 },
 );
-const parsed = JSON.parse(verification) as { data?: Array<{ engine?: unknown; object_count?: unknown }> };
+const parsed = JSON.parse(verification) as {
+  data?: Array<{ engine?: unknown; object_count?: unknown }>;
+};
 const row = parsed.data?.[0];
 if (row?.engine !== "ReplacingMergeTree" || Number(row.object_count) !== 1) {
   throw new Error("Evidence v1 canonical table verification failed.");
