@@ -4,6 +4,8 @@ import {
 } from "../../../packages/telemetry-clickhouse/src/index.js";
 import { loadConfig } from "../../../packages/telemetry-config/src/index.js";
 import { createQueryApi, loadQueryBearerCredential } from "./server.js";
+import { trustedDevelopment } from "../../../packages/telemetry-config/src/development.js";
+import { DiagnosticFederation } from "./diagnostic-federation.js";
 
 const configuration = loadConfig();
 const clickHouse = new ClickHouseClient(configFromEnv("CLICKHOUSE_QUERY_"));
@@ -11,6 +13,14 @@ const bearerCredential = await loadQueryBearerCredential();
 const server = createQueryApi({
   clickHouse,
   bearerCredential,
+  trustedDevelopment: trustedDevelopment(),
+  ...(process.env["SMPP_TELEMETRY_QUERY_URL"] === undefined
+    ? {}
+    : {
+        diagnostics: new DiagnosticFederation(
+          process.env["SMPP_TELEMETRY_QUERY_URL"],
+        ),
+      }),
   maxResultRows: Number(process.env["QUERY_MAX_RESULT_ROWS"] ?? 10_000),
 });
 

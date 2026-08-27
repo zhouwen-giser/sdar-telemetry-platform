@@ -1,0 +1,209 @@
+# Dedicated development composition. Production compose and its shadow/auth defaults are unchanged.
+x-app: &app
+  image: sdar-telemetry:ugv-debug
+  build:
+    {
+      context: .,
+      dockerfile: deploy/Dockerfile,
+      args: { APP: telemetry-worker },
+    }
+  restart: unless-stopped
+x-warehouse: &warehouse
+  CLICKHOUSE_URL: ${CLICKHOUSE_URL:?}
+  CLICKHOUSE_USER: ${CLICKHOUSE_USER:?}
+  CLICKHOUSE_PASSWORD_FILE: /run/secrets/warehouse_password
+  CLICKHOUSE_SECURE: "false"
+x-control: &control
+  CONTROL_POSTGRES_URL_FILE: /run/secrets/control_postgres_url
+services:
+  control-postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sdar_telemetry
+      POSTGRES_DB: sdar_telemetry_control
+      POSTGRES_PASSWORD_FILE: /run/secrets/control_postgres_password
+    secrets: [control_postgres_password]
+    volumes: [control-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD, pg_isready, -U, sdar_telemetry, -d, sdar_telemetry_control]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+  control-migrate:
+    <<: *app
+    restart: "no"
+    command: [node, dist/scripts/migrate-control.js]
+    environment: *control
+    secrets: [control_postgres_url]
+  warehouse-preflight:
+    <<: *app
+    restart: "no"
+    command: [node, dist/scripts/preflight-ugv-debug.js]
+    environment: *warehouse
+    secrets: [warehouse_password]
+  warehouse-migrate:
+    <<: *app
+    restart: "no"
+    command: [node, dist/scripts/apply-evidence-v1-migration.js]
+    environment:
+      <<: *warehouse
+      ALLOW_CLICKHOUSE_ADDITIVE_MIGRATION: sdar.evidence/v1
+    secrets: [warehouse_password]
+    volumes:
+      [
+        "./reports/sdar-integration/03_CLICKHOUSE_SCHEMA_DIFF.md:/app/reports/sdar-integration/03_CLICKHOUSE_SCHEMA_DIFF.md:ro",
+      ]
+  provider-migrate:
+    <<: *app
+    restart: "no"
+    command: [node, dist/scripts/apply-provider-closure-v2-migration.js]
+    environment:
+      <<: *warehouse
+      ALLOW_CLICKHOUSE_ADDITIVE_MIGRATION: sdar.provider-closure/v2
+      PROVIDER_CLOSURE_MIGRATION_SHA256: ${PROVIDER_CLOSURE_MIGRATION_SHA256:?}
+    secrets: [warehouse_password]
+  provider-bootstrap:
+    <<: *app
+    restart: "no"
+    command: [node, dist/scripts/provider-closure-debug.js, bootstrap]
+    environment:
+      <<: [*control, *warehouse]
+      PROVIDER_CLOSURE_CONFIG_FILE: /run/config/provider-closure.json
+    secrets: [control_postgres_url, warehouse_password]
+    volumes: ["${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/provider-closure.json:/run/config/provider-closure.json:ro"]
+  provider-status:
+    <<: *app
+    restart: "no"
+    command: [node, dist/scripts/provider-closure-debug.js, status]
+    environment:
+      <<: [*control, *warehouse]
+      PROVIDER_CLOSURE_CONFIG_FILE: /run/config/provider-closure.json
+    secrets: [control_postgres_url, warehouse_password]
+    volumes: ["${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/provider-closure.json:/run/config/provider-closure.json:ro"]
+  ingestion-gateway:
+    <<: *app
+    command: [node, dist/apps/ingestion-gateway/src/main.js]
+    environment:
+      WAL_DIR: /var/lib/sdar-telemetry/wal
+      GATEWAY_PORT: "8080"
+      GATEWAY_BIND_HOST: 0.0.0.0
+      EVIDENCE_INGEST_BEARER_TOKEN_FILE: /run/secrets/evidence_token
+      DOMAIN_SOURCE_INGEST_BEARER_TOKEN_FILE: /run/secrets/domain_token
+    secrets: [evidence_token, domain_token]
+    volumes: [evidence-wal:/var/lib/sdar-telemetry/wal]
+    ports: ["0.0.0.0:8080:8080"]
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:8080/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+  telemetry-worker:
+    <<: *app
+    command: [node, dist/apps/telemetry-worker/src/main.js]
+    environment:
+      <<: *warehouse
+      WAL_DIR: /var/lib/sdar-telemetry/wal
+      CONTROL_POSTGRES_URL_FILE: /run/secrets/control_postgres_url
+      PROVIDER_CLOSURE_CONFIG_FILE: /run/config/provider-closure.json
+    secrets: [warehouse_password, control_postgres_url]
+    volumes:
+      - evidence-wal:/var/lib/sdar-telemetry/wal
+      - "${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/provider-closure.json:/run/config/provider-closure.json:ro"
+  query-api:
+    <<: *app
+    command: [node, dist/apps/query-api/src/main.js]
+    environment:
+      QUERY_PORT: "8081"
+      QUERY_BIND_HOST: 0.0.0.0
+      TELEMETRY_TRUSTED_DEVELOPMENT: "true"
+      QUERY_API_BEARER_TOKEN_FILE: /run/secrets/query_token
+      CLICKHOUSE_QUERY_URL: ${CLICKHOUSE_QUERY_URL:?}
+      CLICKHOUSE_QUERY_USER: ${CLICKHOUSE_QUERY_USER:?}
+      CLICKHOUSE_QUERY_PASSWORD_FILE: /run/secrets/warehouse_query_password
+      CLICKHOUSE_QUERY_SECURE: "false"
+      SMPP_TELEMETRY_QUERY_URL: http://smpp-telemetry-query:8088
+    secrets: [query_token, warehouse_query_password]
+    ports: ["0.0.0.0:8081:8081"]
+    networks:
+      default: {}
+      observability:
+        aliases: [sdar-telemetry-query]
+  admin-api:
+    <<: *app
+    command: [node, dist/apps/admin-api/src/main.js]
+    environment:
+      <<: *control
+      TELEMETRY_TRUSTED_DEVELOPMENT: "true"
+      ADMIN_PORT: "8082"
+      ADMIN_BIND_HOST: 0.0.0.0
+      ADMIN_API_BEARER_TOKEN_FILE: /run/secrets/admin_token
+    secrets: [control_postgres_url, admin_token]
+    ports: ["0.0.0.0:8082:8082"]
+  domain-projection-worker:
+    <<: *app
+    command: [node, dist/apps/domain-projection-worker/src/main.js]
+    environment:
+      <<: [*control, *warehouse]
+      DOMAIN_PROJECTION_ENABLED: "true"
+      DOMAIN_PROJECTION_MAX_MODE: active
+      DOMAIN_PROJECTION_BIND_HOST: 0.0.0.0
+      DOMAIN_PROJECTION_HEALTH_PORT: "8083"
+      DOMAIN_PROJECTION_WORKER_ID: ugv-debug-domain-worker
+      DOMAIN_TENANT_ID: ${DOMAIN_TENANT_ID:?}
+      DOMAIN_PROJECT_ID: ${DOMAIN_PROJECT_ID:?}
+    secrets: [control_postgres_url, warehouse_password]
+    ports: ["0.0.0.0:8083:8083"]
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:8083/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+  debug-bootstrap:
+    <<: *app
+    restart: "no"
+    command: [node, dist/scripts/bootstrap-ugv-debug.js]
+    environment:
+      <<: *warehouse
+      DOMAIN_PRODUCERS_FILE: /run/config/producers.json
+    secrets: [warehouse_password]
+    volumes:
+      [
+        "${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/producers.json:/run/config/producers.json:ro",
+      ]
+secrets:
+  control_postgres_password:
+    { file: "${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/postgres-password" }
+  control_postgres_url:
+    { file: "${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/postgres-url" }
+  evidence_token:
+    { file: "${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/evidence-token" }
+  domain_token:
+    { file: "${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/domain-token" }
+  admin_token: { file: "${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/admin-token" }
+  query_token: { file: "${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/query-token" }
+  warehouse_password:
+    { file: "${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/warehouse-password" }
+  warehouse_query_password:
+    {
+      file: "${UGV_DEBUG_STATE_ROOT:?}/sdar-telemetry/warehouse-query-password",
+    }
+volumes:
+  control-data:
+  evidence-wal:
+networks:
+  observability:
+    external: true
+    name: sdar-ugv-debug-observability

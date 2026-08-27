@@ -20,6 +20,7 @@ export interface ProviderEvidencePage<T> {
 
 export interface ProviderClosureManifest {
   readonly contractId: typeof PROVIDER_HANDOFF_V2;
+  readonly closureSnapshotId: `sha256:${string}`;
   readonly asOfProjectedAt: string;
   readonly effectiveWatermark: string;
   readonly bindingCount: number;
@@ -57,7 +58,8 @@ export interface ProviderClosureManifest {
 }
 
 export function mayFormallyConsumeProviderClosure(manifest: ProviderClosureManifest): boolean {
-  return manifest.status === "ready" &&
+  return /^sha256:[0-9a-f]{64}$/u.test(manifest.closureSnapshotId) &&
+    manifest.status === "ready" &&
     manifest.expectedFactCount === manifest.selectedFactCount &&
     manifest.foreignFactCount === 0 &&
     manifest.unresolvedBindingCount === 0 &&

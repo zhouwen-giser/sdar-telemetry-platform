@@ -6,18 +6,20 @@
   "migrationRange": "00..26",
   "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
   "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
-  "bindingAuthority": "sdar_core.remote_task_binding",
+  "bindingAuthority": "sdar_core.sdar_evidence_v1_record:mcp_task.remote_binding",
+  "additiveMigration": "015_provider_closure_v2.sql",
+  "additiveMigrationSha256": "sha256:dba7693c2ee3fe52bc4ea61182cce87244c6f83dbf2f5a94048da9fb9ed9740a",
   "originClaimPolicy": "sdar.provider-origin-claim-reconciliation/v1.1",
   "formalV1Fallback": false,
   "hintsUsedForAuthority": false,
   "assets": [
-    {"path":"README.md","bytes":888,"byteSha256":"sha256:3d2ba4eb5a9def972cae211d0588d1c5a0acf4f47c000ff914cc9e9eb87074b0"},
-    {"path":"consumer-contract.ts","bytes":2235,"byteSha256":"sha256:d36f71eb2a12bdf6c99a2b3d764d7656dcb72ca0d51cda79e111a15e893a6f06"},
-    {"path":"fixtures/readiness.json","bytes":637,"byteSha256":"sha256:02d2474f6a94474bd50db8c97af9b541228a4f7a41f12c94377957988ef0a449"},
-    {"path":"queries.sql","bytes":1825,"byteSha256":"sha256:afdc1c7bd24e2c46499c352a723229c35befc5e2755b61220145e3a83b19b510"},
-    {"path":"readiness-contract.json","bytes":431,"byteSha256":"sha256:8d537af5be9129e028cb737838adba106a0ae73e8382f9085e3598c36bf42300"},
+    {"path":"README.md","bytes":1110,"byteSha256":"sha256:d238ea3677676b777a9d2daf59cbbcb49ddab5313a514704d04b275f8181f445"},
+    {"path":"consumer-contract.ts","bytes":2350,"byteSha256":"sha256:298cb583a996f2841106d2df4edb97a6c261c4b393dde8db244b4c2129e9e175"},
+    {"path":"fixtures/readiness.json","bytes":731,"byteSha256":"sha256:26876e7c92f77863293cffc7ad89a842dc632242a470b6053b158c17dc9f1b61"},
+    {"path":"queries.sql","bytes":2563,"byteSha256":"sha256:499249052ec483bbf2e4907ec641ec77f890fcbe2d42770efe30af00891a934c"},
+    {"path":"readiness-contract.json","bytes":476,"byteSha256":"sha256:28cb1405874974bb7e146cb07f1021a705a5509c10d65246e770c7ee320ab9b6"},
     {"path":"reason-codes.json","bytes":1135,"byteSha256":"sha256:e62fb6b63bdd2124342f9fbac93ca2c7d435aea19b21ede0b5f9ff4a28c80dba"},
     {"path":"verify.mjs","bytes":1031,"byteSha256":"sha256:992c880bcb7d907e5e0263f938a200d228adfa9828f3ea40622624b5947803bd"},
-    {"path":"view-contracts.json","bytes":1684,"byteSha256":"sha256:68831744bba12b5c63fe64bdb602d3328e982fd38cdecf082b1ad8fd8fafc229"}
+    {"path":"view-contracts.json","bytes":1827,"byteSha256":"sha256:04dababee8f980c7a661ddc411603512e5b61aa7bf177689d225d22cabc1f0ef"}
   ]
 }
