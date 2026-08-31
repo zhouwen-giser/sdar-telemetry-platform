@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "sdar.telemetry-provider-closure-source-lock/v1",
+  "goalId": "sdar-telemetry-mcp-tasks-provider-closure-sync-v0.1",
+  "observedAt": "2026-08-31T12:02:32Z",
+  "target": {
+    "repository": "zhouwen-giser/sdar-telemetry-platform",
+    "branch": "codex/smpp-mcp-tasks-provider-closure-sync-v0.1",
+    "baseHead": "3e43350dd0d0e37fe65ec318d0d9881820a88f5a",
+    "baseTree": "1d490722731ad03a66060bf1c53d02e5db07b19d",
+    "implementationCommit": "717374c5ba6d0a5326a6710d3c0e23cc9c33fe98",
+    "status": "exact"
+  },
+  "smppTelemetry": {
+    "repository": "zhouwen-giser/smpp-telemetry-platform",
+    "branch": "codex/smpp-mcp-tasks-telemetry-sync-v0.1",
+    "head": "930ea86294a8d5ccaebffe1237437c5e44fac80d",
+    "packageObservedHead": "f00efef6caa130cd71c4843bced7dc479dad7963",
+    "relationship": "compatible_descendant"
+  },
+  "smppProvider": {
+    "repository": "zhouwen-giser/sdar-mcp-provider-platform",
+    "branch": "codex/smpp-mcp-tasks-ugv-diagnostic-support-v0.1",
+    "contractCommit": "1e67e6e421d70a3cbce2d41bf5007e99463712fe",
+    "producerCommit": "0c1b525d99718d058b1011cf96306d960fd2d326",
+    "contractFilesChangedSinceLock": false,
+    "status": "compatible_descendant"
+  },
+  "runtime": {
+    "repository": "zhouwen-giser/skill-driven-agent-runtime",
+    "branch": "codex/smpp-mcp-tasks-consumer-sync-v0.1",
+    "mainHead": "b0caf69e9f83bc6702e1c0a85e7ca158c3781d4b",
+    "implementationCommit": "b9a75e3990163e959d91c76d402fe94c8366f5e8",
+    "handoffCommit": "2c3b0c4628ee09afe5e61559e8a7b9d14481b633",
+    "evidenceCatalogCount": 105,
+    "requiredCount": 100,
+    "diagnosticCount": 5,
+    "importedFileCount": 126,
+    "canonicalContractSha256": "sha256:795352dc13cc98f153fb9c413e6830870570af75c92831e28102cabc76a6eefd",
+    "canonicalRegistrySha256": "sha256:7d00320ed21eb89e98abce8ebbdaa7e4aa887e97ee97888ae8e4b62c69adf197",
+    "authoritativeNewRecordTypes": [
+      "mcp_task.logical_invocation",
+      "mcp_task.admission",
+      "mcp_task.dispatch_uncertain",
+      "mcp_task.dispatch_reconciliation",
+      "mcp_task.provider_execution_link"
+    ],
+    "status": "exact_committed_dependency"
+  },
+  "benchmark": {
+    "repository": "zhouwen-giser/sdar-benchmark-server",
+    "branch": "codex/ugv-four-case-diagnostic-vertical-v0.1",
+    "head": "30a3aa2cfaafb48a1aa8da72d19f65bef3034d72",
+    "providerHandoffContract": "sdar.telemetry-smpp-providerops-handoff/v2",
+    "status": "qualified"
+  },
+  "contracts": {
+    "providerOpsSchema": "sdar.provider.ops.event/1.1.0",
+    "providerOpsPayloadCatalog": "smpp.providerops-payload-catalog/v1.1",
+    "providerOpsRecordTypeCount": 16,
+    "clickHouseRelease": "1.5.1-rc.2",
+    "clickHouseVendorMigrationRange": "00..26",
+    "providerHandoff": "sdar.telemetry-smpp-providerops-handoff/v2"
+  },
+  "decision": "T0_PASS_EXACT_COMMITTED_SDAR_HANDOFF"
+}

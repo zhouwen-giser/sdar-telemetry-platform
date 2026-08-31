@@ -1,0 +1,10 @@
+semantic,authority,required,result,heuristic_allowed
+remote_task_binding,Runtime Canonical Evidence,yes,selected remote task/provider tuple,no
+provider_execution_identity,SMPP frozen provider-internal payload/relation after binding selection,yes for executed remote task,exact/unresolved/conflict,no
+dispatch_uncertainty,Runtime canonical dispatch evidence,when present,certain/uncertain,no
+reconciliation,Runtime+Provider frozen reconciliation evidence,if uncertain,found_exact/not_found/deferred/unavailable/conflict,no
+provider_execution_terminal,selected Provider facts,when execution terminal expected,provider execution axis,no
+provider_business_outcome,selected Provider business terminal fact,when terminal,business outcome axis,no
+device_mission_identity,frozen Provider/Mission relation,optional phase 1,not_required/exact/unresolved/conflict,no
+origin_claims,none; reconciliation only,supporting,matched/missing/unverifiable/ambiguous/conflict,no
+physical_success,Benchmark independent physical truth,outside telemetry,never computed here,no

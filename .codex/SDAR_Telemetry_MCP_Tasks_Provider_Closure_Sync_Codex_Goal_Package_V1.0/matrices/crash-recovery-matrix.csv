@@ -1,0 +1,7 @@
+point,recovery,must_not
+after closure capture before detail writes,recompute same closure under same input/asOf or newer snapshot,publish partial manifest
+after some detail rows before all detail rows,idempotent detail retry by deterministic dedup token,expose formal snapshot
+after all details before manifest,revalidate lease/fence then publish manifest,duplicate semantic identities
+after manifest before control PG checkpoint,detect existing manifest/snapshot hash and commit checkpoint idempotently,produce different snapshot content
+during source drift,bounded recapture; blocked_drift if unstable,mix pages from moving source
+late evidence after published snapshot,build new snapshot,rewrite old snapshot

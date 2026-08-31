@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "sdar.telemetry-mcp-provider-closure-sync-source-lock/v1",
+  "generatedFor": "SDAR Telemetry MCP Tasks Provider Closure Sync v0.1",
+  "target": {
+    "repository": "zhouwen-giser/sdar-telemetry-platform",
+    "baseBranch": "main",
+    "observedCommit": "3e43350dd0d0e37fe65ec318d0d9881820a88f5a",
+    "observedTree": "1d490722731ad03a66060bf1c53d02e5db07b19d",
+    "commitMessage": "merge: telemetry debug and provider closure v2",
+    "workBranch": "codex/smpp-mcp-tasks-provider-closure-sync-v0.1",
+    "status": "resolved_at_package_generation"
+  },
+  "upstreams": {
+    "smppTelemetry": {
+      "repository": "zhouwen-giser/smpp-telemetry-platform",
+      "branch": "codex/smpp-mcp-tasks-telemetry-sync-v0.1",
+      "observedCommit": "f00efef6caa130cd71c4843bced7dc479dad7963",
+      "role": "providerops shared warehouse producer",
+      "status": "resolved_at_package_generation",
+      "mustReverifyAtExecution": true
+    },
+    "smppProviderProducer": {
+      "repository": "zhouwen-giser/sdar-mcp-provider-platform",
+      "branch": "codex/smpp-mcp-tasks-ugv-diagnostic-support-v0.1",
+      "observedCommit": "1e67e6e421d70a3cbce2d41bf5007e99463712fe",
+      "role": "upstream source of additive MCP Tasks ProviderOps semantics",
+      "status": "observed_via_smpp_telemetry_source_lock",
+      "mustReverifyAtExecution": true
+    },
+    "runtime": {
+      "repository": "zhouwen-giser/skill-driven-agent-runtime",
+      "branch": "codex/ugv-benchmark-debug",
+      "observedCommit": "c74bcf02d6819d4ea05e0a983d0c10cd96cd583b",
+      "role": "canonical Runtime evidence compatibility reference",
+      "status": "candidate_reference_not_declared_authority",
+      "mustResolveExactEvidenceProducerRefAtT0": true
+    },
+    "benchmarkServer": {
+      "repository": "zhouwen-giser/sdar-benchmark-server",
+      "branch": "codex/ugv-four-case-diagnostic-vertical-v0.1",
+      "observedCommit": "fd042c669b55da236617027b455630eafd52e5f2",
+      "role": "downstream diagnostic consumer compatibility target",
+      "status": "resolved_at_package_generation",
+      "mustReverifyAtExecution": true
+    }
+  },
+  "providerOps": {
+    "schemaName": "sdar.provider.ops.event",
+    "schemaVersion": "1.1.0",
+    "payloadCatalog": "smpp.providerops-payload-catalog/v1.1",
+    "recordTypeCount": 16,
+    "compatibilityDecision": "additive payload semantics; no new record type"
+  },
+  "providerHandoff": {
+    "contract": "sdar.telemetry-smpp-providerops-handoff/v2",
+    "v1FallbackAllowed": false,
+    "existingFormal": true
+  },
+  "clickHouse": {
+    "releaseVersion": "1.5.1-rc.2",
+    "migrationRange": "00..26",
+    "schemaContractHash": "sha256:78da6e9e511b7714b15a4f6ef5f2ba54578880493e2aa264f433ff1595a1d7b8",
+    "releaseDescriptorHash": "sha256:1610cf2a4cc9450193dd70abf7a516f0ea4792099ed0f34dcf2fad44d094b335",
+    "contractManifestBlob": "786ed7cc5aa837fddd64be334f3a1d1b793f46ff"
+  },
+  "runtimeEvidence": {
+    "contract": "sdar.evidence/v1",
+    "contractHash": "sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f",
+    "registryHash": "sha256:eac67fcc0cd02c55da750156af42f3ea2130ee470f0670aba980c08ddec41c71",
+    "recordTypes": 100,
+    "required": 95,
+    "diagnostic": 5,
+    "mustReverifyExactProducerRegistryAtT0": true
+  },
+  "executionInstructions": [
+    "Re-read all listed refs before editing.",
+    "Do not treat repository root SOURCE_LOCK.json as current task source lock; it records an older domain-projection workstream.",
+    "Compare changed refs before updating any task-local lock.",
+    "Stop on semantic drift instead of guessing.",
+    "Cross-repository dependencies are read-only for this goal."
+  ]
+}

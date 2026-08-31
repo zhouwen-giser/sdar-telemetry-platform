@@ -1,0 +1,14 @@
+de684a7d18b2e3c520ddedda95bfc513ce2d7c9d24aced1df8e4b460cc21bdd2  reports/provider-closure-mcp-sync-v0.1/00-source-lock.json
+a0a616ba1e8b97000699ecbc395d6e425d3d27bffc5fdbab02a61e34b5dbee18  reports/provider-closure-mcp-sync-v0.1/00-source-lock.md
+79cefbdd68352dea4e802d6c0617e3603b1f5a2daeabab5743f24f7017a6bc0a  reports/provider-closure-mcp-sync-v0.1/01-gap-audit.md
+13bf171164bbba8a6d5cf22ccf4dbfe953b687c45fb6ce41d766970c9dd36895  reports/provider-closure-mcp-sync-v0.1/02-providerops-semantic-mapping.csv
+acdcd015a7faafbf2592e640ff4482c15ca5d1206d62a084ed5dc329b8b8a2b4  reports/provider-closure-mcp-sync-v0.1/03-runtime-evidence-mapping.csv
+a2804cb4835263aa16a9b3350996c49d59c4e05043357f22599bfe235b69ff8c  reports/provider-closure-mcp-sync-v0.1/04-task-execution-closure.md
+c921b5c9f1de190cea6e51e34a0f1da0ddefc82ed2b058781ba49a750c737bc6  reports/provider-closure-mcp-sync-v0.1/05-uncertainty-reconciliation.md
+bfe2636bfe2658be0d2c82eea2872135670902b2df9e07507e2d036472d602da  reports/provider-closure-mcp-sync-v0.1/06-terminal-readiness.md
+ef23b03b52264b5225bd2e1348fd2ecb471a348987dffebaf9263d7915f12ec3  reports/provider-closure-mcp-sync-v0.1/07-snapshot-replay.md
+76a55ffb4c091374b0f89ca520e7b8b272affb6fc96c6af1f0edeacda0eeb3c5  reports/provider-closure-mcp-sync-v0.1/08-contract-tests.md
+73e3bf8ba10822773b913bc5ad999f1cca5e3d73a709f7ae964b58b67bfda132  reports/provider-closure-mcp-sync-v0.1/09-live-e2e.md
+1b4c39122edd7fcd4e466a8795b4d6358b22cda1f3d1615f7131bc6369f7be31  reports/provider-closure-mcp-sync-v0.1/10-benchmark-consumer.md
+9483b5b6e593ef62a30e2bb73803fe68a9f391d448760655bc912c5315691509  reports/provider-closure-mcp-sync-v0.1/11-final-acceptance.md
+b3a68d7f96630fdffd156a02f6a54bd3c7761cbc07927c7a74704a76adb084f3  reports/provider-closure-mcp-sync-v0.1/acceptance-gates.csv

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "codex.goal-task/v1",
+  "goalId": "sdar-telemetry-mcp-tasks-provider-closure-sync-v0.1",
+  "title": "SDAR Telemetry MCP Tasks Provider Closure Sync",
+  "repository": "zhouwen-giser/sdar-telemetry-platform",
+  "base": "main@3e43350dd0d0e37fe65ec318d0d9881820a88f5a",
+  "branch": "codex/smpp-mcp-tasks-provider-closure-sync-v0.1",
+  "priority": "high",
+  "scope": {
+    "modify": [
+      "sdar-telemetry-platform"
+    ],
+    "readOnlyDependencies": [
+      "smpp-telemetry-platform",
+      "sdar-mcp-provider-platform",
+      "skill-driven-agent-runtime",
+      "sdar-benchmark-server"
+    ],
+    "excluded": [
+      "Benchmark M1-M15/HG/Fatal implementation",
+      "UGV simulator control",
+      "vehicle navigation",
+      "physical success inference",
+      "new UGV-specific ClickHouse schema",
+      "Provider private database collection"
+    ]
+  },
+  "completionToken": "SDAR_TELEMETRY_MCP_TASKS_PROVIDER_CLOSURE_SYNC_V0_1_COMPLETE",
+  "completionPolicy": "emit only after every acceptance gate is PASS; otherwise report PARTIAL/BLOCKED/FAILED"
+}

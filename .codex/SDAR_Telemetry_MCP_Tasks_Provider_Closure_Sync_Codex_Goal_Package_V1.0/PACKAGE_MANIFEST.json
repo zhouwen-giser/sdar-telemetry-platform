@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "codex.goal-package-manifest/v1",
+  "package": "SDAR_Telemetry_MCP_Tasks_Provider_Closure_Sync_Codex_Goal_Package_V1.0",
+  "goalId": "sdar-telemetry-mcp-tasks-provider-closure-sync-v0.1",
+  "targetRepository": "zhouwen-giser/sdar-telemetry-platform",
+  "targetBase": "main@3e43350dd0d0e37fe65ec318d0d9881820a88f5a",
+  "fileCountWithoutManifestAndSums": 29,
+  "files": [
+    {
+      "path": "CODEX_GOAL.md",
+      "bytes": 21331,
+      "sha256": "2b1c70fb9f18c070fdd848f7fb2290a215e3811aa384772623691ea080208205"
+    },
+    {
+      "path": "DECISIONS.json",
+      "bytes": 4464,
+      "sha256": "ebad31efd8cf3ecb6dcedca591cb0e3335b973d79803262a9eda73e62716b9bc"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2163,
+      "sha256": "5b0e9a948a7b1e0cf10c50ef0334a2b8384e9107a179f61662c755a3294e196c"
+    },
+    {
+      "path": "SOURCE_LOCK.json",
+      "bytes": 3680,
+      "sha256": "042debe29e5a24a8b2d8f4b113167e82a9a31fac2cb15fa0b48161d2603cf098"
+    },
+    {
+      "path": "TASK.json",
+      "bytes": 1073,
+      "sha256": "b4be79d85680d897546460dc9510f78ae079550e615cabe7c85e338542f9ed41"
+    },
+    {
+      "path": "docs/01_BASELINE_AND_GAP.md",
+      "bytes": 1673,
+      "sha256": "5ff6e4f1cee12cdbda9a63840e23d1891a7801654ad7c87483eb90d3af66f506"
+    },
+    {
+      "path": "docs/02_SCOPE_AND_AUTHORITY.md",
+      "bytes": 1524,
+      "sha256": "0a3d337554d85a3108d4fb6d8b8a5d070a87b0449b764ba7d4420481ee925398"
+    },
+    {
+      "path": "docs/03_RUNTIME_CANONICAL_EVIDENCE_MAPPING.md",
+      "bytes": 1408,
+      "sha256": "4dd871f728e779c1779cd71748119e3d01d07d24034ce691fae1c845d46d6117"
+    },
+    {
+      "path": "docs/04_SMPP_PROVIDEROPS_CONSUMER_SYNC.md",
+      "bytes": 1128,
+      "sha256": "ebd5e9525535b569a2de61ec49dffa7c455f42420e5fb618cf7407339bb8b06c"
+    },
+    {
+      "path": "docs/05_EXACT_TASK_EXECUTION_CLOSURE.md",
+      "bytes": 1402,
+      "sha256": "c200e88481624296d283f3b475f428060db505bb17812fab40ba45d44d353f2c"
+    },
+    {
+      "path": "docs/06_DISPATCH_UNCERTAINTY_RECONCILIATION.md",
+      "bytes": 1257,
+      "sha256": "849f28db1f508b93280500c44e3106151e47a38b745eff6db8dfeba830628188"
+    },
+    {
+      "path": "docs/07_FOUR_AXIS_TERMINAL_READINESS.md",
+      "bytes": 1151,
+      "sha256": "5230347e93b5e08ed35ca46424b118663cf927705e4da93dcb5fe16416fd7e79"
+    },
+    {
+      "path": "docs/08_TIME_SNAPSHOT_LATE_DATA.md",
+      "bytes": 1010,
+      "sha256": "a8327765d0da15042067d44cbd9444a37b5ced38ca702d6657ab29542f579565"
+    },
+    {
+      "path": "docs/09_CLICKHOUSE_AND_HANDOFF_V2.md",
+      "bytes": 1048,
+      "sha256": "97162a4500383417fbba0cfb8cf6125f54ce1de5371d723ee16145dff6a79501"
+    },
+    {
+      "path": "docs/10_TEST_AND_E2E_PLAN.md",
+      "bytes": 1405,
+      "sha256": "ae7129d61189caa2a5b737166925554aa9f6127760cce8f08c2fab71f213116a"
+    },
+    {
+      "path": "docs/11_PHASE_EXECUTION_PLAN.md",
+      "bytes": 1198,
+      "sha256": "33411701991ff0eea07acc37749d968a761970c571af4ae4a84b7bdad294d047"
+    },
+    {
+      "path": "docs/12_ACCEPTANCE_AND_STOP_CONDITIONS.md",
+      "bytes": 1213,
+      "sha256": "26ee13663297d07b0915b7c300a51389b66c4d2a938dccc56812620a6f9e3b73"
+    },
+    {
+      "path": "matrices/acceptance-gates.csv",
+      "bytes": 3775,
+      "sha256": "01a5b2cf663a958251a59d308199d1c295a23b0bdc3a843eb2e716a76cb6988d"
+    },
+    {
+      "path": "matrices/closure-readiness-matrix.csv",
+      "bytes": 938,
+      "sha256": "54808725b25a8aac8a3739ba68e319a07309fbe1a3bded15a3b06aa920612b78"
+    },
+    {
+      "path": "matrices/crash-recovery-matrix.csv",
+      "bytes": 719,
+      "sha256": "782efea9928e80dc305ccf5f764467e2a0026581ac519c0278b1055707fce880"
+    },
+    {
+      "path": "matrices/four-case-coverage.csv",
+      "bytes": 666,
+      "sha256": "3dd4ca465e37827a84f25e4fa944642a9b03bbab6f565dace6e469622f1e28ca"
+    },
+    {
+      "path": "matrices/phase-plan.csv",
+      "bytes": 1022,
+      "sha256": "6b80d5beb64d9fbcfb95ea6bdf53b6b6c43d9359d418244747a74c0d80f8b1c2"
+    },
+    {
+      "path": "matrices/reason-codes.csv",
+      "bytes": 1009,
+      "sha256": "914f11b1c9877d69d936eeb64d14871c402f1e26b1703a4fd1a65b2e9be94a37"
+    },
+    {
+      "path": "matrices/repository-change-matrix.csv",
+      "bytes": 485,
+      "sha256": "1f156b907a3170dc0ef723aafdd30ea645c971924f2f434257e3fa8ac3154f9b"
+    },
+    {
+      "path": "matrices/semantic-mapping.csv",
+      "bytes": 1063,
+      "sha256": "26297a1ac9fe69dda5f5367facccc360e981cebb8c29008a19cadc6df00c4710"
+    },
+    {
+      "path": "templates/blocker-report.template.md",
+      "bytes": 199,
+      "sha256": "3d51a32225abd58601a77072ccae7f283007459c48396f1bae471a4f1c37f9d9"
+    },
+    {
+      "path": "templates/final-qualification.template.md",
+      "bytes": 647,
+      "sha256": "e85251a86ddec60a85874b1f98317587497a75e76fcf991f3098b9aea65c2414"
+    },
+    {
+      "path": "templates/phase-report.template.md",
+      "bytes": 469,
+      "sha256": "606cda89855d4e5c78f938f83903b1f2ce3be50d41c38603987b1b18ee4de542"
+    },
+    {
+      "path": "templates/source-lock-audit.template.md",
+      "bytes": 388,
+      "sha256": "595bff3a70419ebfa4ae91d740c582b1c29ba2e907a6919bbc6588c0ebb840eb"
+    }
+  ]
+}

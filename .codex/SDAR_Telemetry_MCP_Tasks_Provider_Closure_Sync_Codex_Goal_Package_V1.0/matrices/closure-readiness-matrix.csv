@@ -1,0 +1,12 @@
+condition,status,blocking,reason
+provider evidence not required,not_required,no,case has no remote provider work
+required binding missing,not_ready,yes,SMPP_BINDING_MISSING
+binding exists but no selected provider fact,not_ready,yes,SMPP_PROVIDER_FACT_MISSING
+required task->execution match count 0,not_ready,yes,SMPP_PROVIDER_EXECUTION_MISSING
+required task->execution match count >1,conflict,yes,SMPP_PROVIDER_EXECUTION_CONFLICT
+uncertain dispatch + found_exact,eligible for ready after other gates,no,SMPP_DISPATCH_RECOVERED
+uncertain dispatch + not_found/deferred/unavailable,not_ready,yes,SMPP_RECONCILIATION_UNRESOLVED
+conflicting provider terminal,conflict,yes,SMPP_PROVIDER_TERMINAL_CONFLICT
+origin claim unverifiable only,degraded,no,SMPP_ORIGIN_CLAIM_UNVERIFIABLE
+foreign fact or truncation,conflict,yes,existing v2 reason codes
+source moves during bounded capture,blocked_drift,yes,SMPP_SOURCE_MOVED_DURING_SNAPSHOT
