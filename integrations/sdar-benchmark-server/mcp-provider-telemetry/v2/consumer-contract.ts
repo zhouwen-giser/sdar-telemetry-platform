@@ -37,6 +37,11 @@ export interface ProviderClosureManifest {
   readonly ambiguousClaimCount: number;
   readonly conflictingClaimCount: number;
   readonly unresolvedBindingCount: number;
+  readonly unresolvedExecutionCount: number;
+  readonly conflictingExecutionCount: number;
+  readonly unresolvedReconciliationCount: number;
+  readonly terminalConflictCount: number;
+  readonly identityHashConflictCount: number;
   readonly foreignFactCount: number;
   readonly pageCount: number;
   readonly truncated: boolean;
@@ -63,6 +68,11 @@ export function mayFormallyConsumeProviderClosure(manifest: ProviderClosureManif
     manifest.expectedFactCount === manifest.selectedFactCount &&
     manifest.foreignFactCount === 0 &&
     manifest.unresolvedBindingCount === 0 &&
+    manifest.unresolvedExecutionCount === 0 &&
+    manifest.conflictingExecutionCount === 0 &&
+    manifest.unresolvedReconciliationCount === 0 &&
+    manifest.terminalConflictCount === 0 &&
+    manifest.identityHashConflictCount === 0 &&
     manifest.truncated === false &&
     manifest.hintsUsedForAuthority === false;
 }

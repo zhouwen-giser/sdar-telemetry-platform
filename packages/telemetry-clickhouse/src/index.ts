@@ -4,6 +4,7 @@ import {readFile} from "node:fs/promises";
 import {assertSafeSqlIdentifier} from "../../telemetry-validation/src/index.js";
 
 const REQUIRED_CLICKHOUSE_HOST = "192.168.1.7";
+const QUALIFICATION_CLICKHOUSE_HOSTS = new Set([REQUIRED_CLICKHOUSE_HOST,"127.0.0.1","localhost","[::1]"]);
 
 export interface ClickHouseConfig {
   url: string;
@@ -14,6 +15,7 @@ export interface ClickHouseConfig {
   secure: boolean;
   connectTimeoutMs: number;
   requestTimeoutMs: number;
+  expectedHost?: string;
 }
 
 export interface ClickHouseQueryOptions {
@@ -180,6 +182,7 @@ export function configFromEnv(prefix = "CLICKHOUSE_"): ClickHouseConfig {
       30_000,
       "REQUEST_TIMEOUT_MS",
     ),
+    ...(process.env[prefix + "EXPECTED_HOST"]===undefined?{}:{expectedHost:process.env[prefix + "EXPECTED_HOST"]}),
   });
 }
 
@@ -227,10 +230,14 @@ function validateConfig(config: ClickHouseConfig): ClickHouseConfig {
       "ClickHouse URL must not contain credentials.",
     );
   }
-  if (endpoint.hostname !== REQUIRED_CLICKHOUSE_HOST) {
+  const expectedHost=config.expectedHost??REQUIRED_CLICKHOUSE_HOST;
+  if(!QUALIFICATION_CLICKHOUSE_HOSTS.has(expectedHost)){
+    throw configurationError("CLICKHOUSE_EXPECTED_HOST_FORBIDDEN","ClickHouse EXPECTED_HOST is not an approved production or loopback qualification host.");
+  }
+  if (endpoint.hostname !== expectedHost) {
     throw configurationError(
       "CLICKHOUSE_HOST_FORBIDDEN",
-      `ClickHouse hostname must be ${REQUIRED_CLICKHOUSE_HOST}.`,
+      `ClickHouse hostname must be ${expectedHost}.`,
     );
   }
   const expectedProtocol = config.secure ? "https:" : "http:";
@@ -264,6 +271,7 @@ function validateConfig(config: ClickHouseConfig): ClickHouseConfig {
     url: endpoint.toString(),
     user: config.user.trim(),
     ...(config.passwordFile === undefined ? {} : {passwordFile: config.passwordFile.trim()}),
+    expectedHost,
   });
 }
 

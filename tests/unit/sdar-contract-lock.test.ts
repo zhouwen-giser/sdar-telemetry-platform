@@ -9,12 +9,12 @@ type JsonObject = Record<string, unknown>;
 const snapshotRoot = path.resolve(
   "integrations/skill-driven-agent-runtime/v1.4.1",
 );
-const expectedExecutionSha = "0da6075f2581279909efb69fc8e48cb01d95552c";
-const expectedMainSha = "2275bc52759914bc80113358a9083e6f00d59e6d";
+const expectedExecutionSha = "2c3b0c4628ee09afe5e61559e8a7b9d14481b633";
+const expectedMainSha = "b0caf69e9f83bc6702e1c0a85e7ca158c3781d4b";
 const expectedContractSha =
-  "sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f";
+  "sha256:795352dc13cc98f153fb9c413e6830870570af75c92831e28102cabc76a6eefd";
 const expectedRegistrySha =
-  "sha256:eac67fcc0cd02c55da750156af42f3ea2130ee470f0670aba980c08ddec41c71";
+  "sha256:7d00320ed21eb89e98abce8ebbdaa7e4aa887e97ee97888ae8e4b62c69adf197";
 
 test("SDAR Evidence source lock pins Git and canonical hashes", async () => {
   const lock = await readJson(path.join(snapshotRoot, "source-lock.json"));
@@ -37,16 +37,16 @@ test("SDAR Evidence source lock pins Git and canonical hashes", async () => {
   assert.equal(canonicalSha256(registryCore), expectedRegistrySha);
 });
 
-test("SDAR Evidence contract map contains all 100 records and the 95/5 split", async () => {
+test("SDAR Evidence contract map contains all 105 records and the 100/5 split", async () => {
   const contractMap = await readJson(path.join(snapshotRoot, "contract-map.json"));
   const counts = requiredObject(contractMap, "counts");
   const records = requiredObjectArray(contractMap, "records");
   const legacy = requiredObject(contractMap, "legacy");
 
-  assert.deepEqual(counts, { records: 100, required: 95, diagnostic: 5 });
-  assert.equal(records.length, 100);
-  assert.equal(new Set(records.map((record) => record["recordType"])).size, 100);
-  assert.equal(records.filter((record) => record["evaluationRole"] === "required").length, 95);
+  assert.deepEqual(counts, { records: 105, required: 100, diagnostic: 5 });
+  assert.equal(records.length, 105);
+  assert.equal(new Set(records.map((record) => record["recordType"])).size, 105);
+  assert.equal(records.filter((record) => record["evaluationRole"] === "required").length, 100);
   assert.equal(records.filter((record) => record["evaluationRole"] === "diagnostic").length, 5);
   assert.equal(legacy["status"], "compatibility-only");
 });
@@ -55,8 +55,8 @@ test("SDAR Evidence byte lock covers every imported source file", async () => {
   const lock = await readJson(path.join(snapshotRoot, "source-lock.json"));
   const files = requiredObjectArray(lock, "files");
 
-  assert.equal(lock["importedFileCount"], 121);
-  assert.equal(files.length, 121);
+  assert.equal(lock["importedFileCount"], 126);
+  assert.equal(files.length, 126);
   for (const entry of files) {
     const relativePath = requiredString(entry, "path");
     const bytes = await readFile(path.join(snapshotRoot, relativePath));

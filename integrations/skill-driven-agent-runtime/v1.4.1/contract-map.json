@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "snapshotVersion": "v1.4.1",
   "contractVersion": "sdar.evidence/v1",
-  "canonicalContractSha256": "sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f",
-  "canonicalRegistrySha256": "sha256:eac67fcc0cd02c55da750156af42f3ea2130ee470f0670aba980c08ddec41c71",
+  "canonicalContractSha256": "sha256:795352dc13cc98f153fb9c413e6830870570af75c92831e28102cabc76a6eefd",
+  "canonicalRegistrySha256": "sha256:7d00320ed21eb89e98abce8ebbdaa7e4aa887e97ee97888ae8e4b62c69adf197",
   "counts": {
-    "records": 100,
-    "required": 95,
+    "records": 105,
+    "required": 100,
     "diagnostic": 5
   },
   "legacy": {
@@ -387,6 +387,56 @@
       "schemaVersion": 1,
       "schemaPath": "schemas/evidence/v1/records/mcp_task.remote_binding.schema.json",
       "canonicalSchemaSha256": "sha256:cc302a8902d3cdfb60a7b9af4edf93ee9b56b29fa3670dd8eccc9f473bd43c0c"
+    },
+    {
+      "recordType": "mcp_task.logical_invocation",
+      "recordFamily": "mcp_task",
+      "evaluationRole": "required",
+      "requirementLevel": "conditional",
+      "schemaName": "sdar.evidence.mcp_task.logical_invocation",
+      "schemaVersion": 1,
+      "schemaPath": "schemas/evidence/v1/records/mcp_task.logical_invocation.schema.json",
+      "canonicalSchemaSha256": "sha256:291f249f3db684976983c66bb1a2c0ed5eaaa790418edc1970d8db09806bd622"
+    },
+    {
+      "recordType": "mcp_task.admission",
+      "recordFamily": "mcp_task",
+      "evaluationRole": "required",
+      "requirementLevel": "conditional",
+      "schemaName": "sdar.evidence.mcp_task.admission",
+      "schemaVersion": 1,
+      "schemaPath": "schemas/evidence/v1/records/mcp_task.admission.schema.json",
+      "canonicalSchemaSha256": "sha256:93145487a171f461e86288152c87b7b6466def2b2fd3916f30dfaa5cf7ea4a17"
+    },
+    {
+      "recordType": "mcp_task.dispatch_uncertain",
+      "recordFamily": "mcp_task",
+      "evaluationRole": "required",
+      "requirementLevel": "conditional",
+      "schemaName": "sdar.evidence.mcp_task.dispatch_uncertain",
+      "schemaVersion": 1,
+      "schemaPath": "schemas/evidence/v1/records/mcp_task.dispatch_uncertain.schema.json",
+      "canonicalSchemaSha256": "sha256:d7e8bbf7af758e90f05b95e9a5e3026dffbdc54306503edb41c04104d47c003b"
+    },
+    {
+      "recordType": "mcp_task.dispatch_reconciliation",
+      "recordFamily": "mcp_task",
+      "evaluationRole": "required",
+      "requirementLevel": "conditional",
+      "schemaName": "sdar.evidence.mcp_task.dispatch_reconciliation",
+      "schemaVersion": 1,
+      "schemaPath": "schemas/evidence/v1/records/mcp_task.dispatch_reconciliation.schema.json",
+      "canonicalSchemaSha256": "sha256:ebd1f779264c9a38b3f4991016c1cffa73b23dab9317de35f273d1b00116acf7"
+    },
+    {
+      "recordType": "mcp_task.provider_execution_link",
+      "recordFamily": "mcp_task",
+      "evaluationRole": "required",
+      "requirementLevel": "conditional",
+      "schemaName": "sdar.evidence.mcp_task.provider_execution_link",
+      "schemaVersion": 1,
+      "schemaPath": "schemas/evidence/v1/records/mcp_task.provider_execution_link.schema.json",
+      "canonicalSchemaSha256": "sha256:afbbbfd75e0214d5fc18fb75499f3c8499dca6e950d611e246f8039f5de0c97b"
     },
     {
       "recordType": "mcp_task.observation",

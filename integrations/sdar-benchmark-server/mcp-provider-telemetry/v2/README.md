@@ -15,6 +15,13 @@ manifest. Detail rows are written first; the manifest is the only publication
 marker, so a partially written snapshot is never a formal input.
 
 Formal consumption requires equal expected/selected counts, zero foreign facts,
-zero unresolved bindings, `truncated=false`, `hasMore=false`, and
+zero unresolved bindings/executions/reconciliations, zero execution/terminal/identity
+conflicts, `truncated=false`, `hasMore=false`, and
 `hintsUsedForAuthority=false`. Missing executable Benchmark rules or live input
 remains a downstream blocker.
+
+The additive MCP Tasks detail view preserves exact Task→Execution candidates,
+dispatch uncertainty/reconciliation, the independent Runtime control / transport /
+Provider execution / Provider business axes, `observedAt`, and optional Mission
+identity. A complete Provider failure may be ready; neither Goal nor physical
+success is inferred.

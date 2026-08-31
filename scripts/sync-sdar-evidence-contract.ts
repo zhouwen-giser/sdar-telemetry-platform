@@ -198,10 +198,10 @@ async function buildSnapshot(telemetryRoot: string, sourceRoot: string): Promise
   const records = parseRegistryRecords(registry["records"]);
   const requiredRecords = records.filter((record) => record.evaluationRole === "required");
   const diagnosticRecords = records.filter((record) => record.evaluationRole === "diagnostic");
-  assertEqual(records.length, 100, "RECORD_COUNT_INVALID");
-  assertEqual(requiredRecords.length, 95, "REQUIRED_RECORD_COUNT_INVALID");
+  assertEqual(records.length, 105, "RECORD_COUNT_INVALID");
+  assertEqual(requiredRecords.length, 100, "REQUIRED_RECORD_COUNT_INVALID");
   assertEqual(diagnosticRecords.length, 5, "DIAGNOSTIC_RECORD_COUNT_INVALID");
-  assertEqual(new Set(records.map((record) => record.recordType)).size, 100, "RECORD_TYPES_NOT_UNIQUE");
+  assertEqual(new Set(records.map((record) => record.recordType)).size, 105, "RECORD_TYPES_NOT_UNIQUE");
   await verifySchemaHashes(importedByPath, registry, records);
 
   const sourcePath = toPosixPath(path.relative(telemetryRoot, sourceRoot));

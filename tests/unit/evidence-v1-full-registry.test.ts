@@ -25,11 +25,11 @@ test("E2E-18 validates one real canonical record for every frozen Evidence v1 ty
     return counts;
   }, {});
 
-  assert.equal(validated.records.length, 100);
+  assert.equal(validated.records.length, 105);
   assert.deepEqual(actualTypes, expectedTypes);
-  assert.equal(new Set(actualTypes).size, 100);
-  assert.deepEqual(roleCounts, { required: 95, diagnostic: 5 });
-  assert.equal(validated.records.filter((record) => record.evaluationRole === "required").length, 95);
+  assert.equal(new Set(actualTypes).size, 105);
+  assert.deepEqual(roleCounts, { required: 100, diagnostic: 5 });
+  assert.equal(validated.records.filter((record) => record.evaluationRole === "required").length, 100);
   assert.equal(validated.records.filter((record) => record.evaluationRole === "diagnostic").length, 5);
   for (const record of validated.records) {
     assert.equal(record.payloadHash, hashCanonicalEvidenceJson(record.payload));

@@ -185,7 +185,7 @@ async function benchmarkConsumerSource(repository: string, requestedSha: string)
 async function runLiveHandoffVerifiers(): Promise<void> {
   for (const verifier of [
     "integrations/sdar-benchmark-server/domain-projection/v1/verify.mjs",
-    "integrations/sdar-benchmark-server/mcp-provider-telemetry/v1/verify.mjs",
+    "integrations/sdar-benchmark-server/mcp-provider-telemetry/v2/verify.mjs",
   ]) {
     const result = await execute(process.execPath, [verifier, "--live"], {
       cwd: process.cwd(),

@@ -113,10 +113,10 @@ export async function loadEvidenceV1Validator(root?: string): Promise<EvidenceV1
       ),
   );
   const registry = await readJson<EvidenceRegistry>(path.join(schemaRoot, "registry.json"));
-  if (registry.contractVersion !== EVIDENCE_V1_CONTRACT || registry.records.length !== 100) {
+  if (registry.contractVersion !== EVIDENCE_V1_CONTRACT || registry.records.length !== 105) {
     throw new ContractError(
       EVIDENCE_V1_ERROR_CODES.contractAssetsInvalid,
-      "Evidence v1 registry must declare sdar.evidence/v1 and exactly 100 record types.",
+      "Evidence v1 registry must declare sdar.evidence/v1 and exactly 105 record types.",
     );
   }
 

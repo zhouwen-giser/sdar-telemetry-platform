@@ -27,15 +27,15 @@ const fixturePath = path.join(
   "valid-batch.json",
 );
 
-test("loads and compiles the complete 100-record sdar.evidence/v1 registry", async () => {
+test("loads and compiles the complete 105-record sdar.evidence/v1 registry", async () => {
   const validator = await loadEvidenceV1Validator(schemaRoot);
   const registry = JSON.parse(await readFile(path.join(schemaRoot, "registry.json"), "utf8")) as {
     records: { recordType: string }[];
   };
 
-  assert.equal(validator.recordSchemaCount, 100);
-  assert.equal(validator.recordTypes.length, 100);
-  assert.equal(new Set(validator.recordTypes).size, 100);
+  assert.equal(validator.recordSchemaCount, 105);
+  assert.equal(validator.recordTypes.length, 105);
+  assert.equal(new Set(validator.recordTypes).size, 105);
   for (const record of registry.records) assert.equal(validator.recognizesRecordType(record.recordType), true);
   assert.equal(validator.recognizesRecordType("legacy.task_started"), false);
 });

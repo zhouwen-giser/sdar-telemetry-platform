@@ -1,6 +1,10 @@
-import { hashCanonicalDomainProjectionJson as hash } from "../../telemetry-contracts/src/index.js";
+import {
+  hashCanonicalDomainProjectionJson as hash,
+  hashCanonicalEvidenceJson as evidenceHash,
+} from "../../telemetry-contracts/src/index.js";
 import type { ProviderClosureCapture, ProviderClosureScope, ProviderClosureFact, ProviderEpisodeClosureDataSource,
-  ProviderEvidencePage, ProviderReconciliationHint, ProviderRemoteTaskBinding } from "./closure-v2.js";
+  ProviderOpsNormalizedSemantics,
+  ProviderEvidencePage, ProviderReconciliationHint, ProviderRemoteTaskBinding, ProviderRuntimeEvidence } from "./closure-v2.js";
 
 export interface ClosureWarehouse {
   query(sql: string): Promise<string>;
@@ -11,7 +15,7 @@ export interface CanonicalClosureOrigin {
   readonly exportId: string; readonly sourceId: string; readonly nodeId: string; readonly notBefore: string;
 }
 type Row = Record<string, unknown>;
-type Material = {bindings: ProviderRemoteTaskBinding[]; facts: ProviderClosureFact[]; hints: ProviderReconciliationHint[]};
+type Material = {bindings: ProviderRemoteTaskBinding[]; facts: ProviderClosureFact[]; hints: ProviderReconciliationHint[]; runtimeEvidence: ProviderRuntimeEvidence[]};
 const MAX_ROWS = 100_000;
 
 /** Reads real Canonical Evidence and ProviderOps; no legacy Run/Segment fabrication. */
@@ -26,10 +30,11 @@ export class CanonicalProviderClosureSource implements ProviderEpisodeClosureDat
 
   async discover(after: {projectedAt: string; rowId: string}, limit = 500): Promise<Row[]> {
     if (!Number.isInteger(limit) || limit < 1 || limit > 1000) throw failure("PROVIDER_SCAN_LIMIT_INVALID");
-    return this.rows(`SELECT row_id, episode_id, toString(projected_at) AS projected_at FROM sdar_core.sdar_evidence_v1_record FINAL
+    return this.rows(`SELECT row_id, episode_id, toString(evidence.projected_at) AS projected_at
+      FROM sdar_core.sdar_evidence_v1_record AS evidence FINAL
       WHERE ${this.canonicalPredicate()} AND record_type='mcp_task.remote_binding' AND episode_id IS NOT NULL
-      AND (projected_at,row_id) > (parseDateTime64BestEffort(${sqlString(timestamp(after.projectedAt))},3,'UTC'),${sqlString(after.rowId)})
-      ORDER BY projected_at,row_id LIMIT ${limit}`);
+      AND (evidence.projected_at,evidence.row_id) > (parseDateTime64BestEffort(${sqlString(timestamp(after.projectedAt))},3,'UTC'),${sqlString(after.rowId)})
+      ORDER BY evidence.projected_at,evidence.row_id LIMIT ${limit}`);
   }
 
   async capture(scope: ProviderClosureScope, asOfProjectedAt = new Date().toISOString()): Promise<ProviderClosureCapture> {
@@ -47,7 +52,11 @@ export class CanonicalProviderClosureSource implements ProviderEpisodeClosureDat
     }
     const bindings = [...versions.values()].sort((a,b)=>a.bindingId.localeCompare(b.bindingId));
     // A fact needs the complete authoritative tuple; origin/trace hints never choose it.
-    const tuples = bindings.map(binding => `(external_task_id=${sqlString(binding.remoteTaskId)} AND smpp_source_id=${sqlString(binding.providerOriginSourceId)} AND provider_id=${sqlString(binding.externalProviderId)})`);
+    const tuples = bindings.map(binding => `(external_task_id=${sqlString(binding.remoteTaskId)} AND smpp_source_id=${sqlString(binding.providerOriginSourceId)} AND provider_id=${sqlString(binding.externalProviderId)}${
+      binding.externalProviderInstanceId === undefined
+        ? ""
+        : ` AND provider_instance_id=${sqlString(binding.externalProviderInstanceId)}`
+    })`);
     const factRows = tuples.length === 0 ? [] : await this.all(`SELECT toString(fact_id) AS identity, * FROM sdar_core.external_provider_fact FINAL
       WHERE ${this.scopePredicate()} AND (${tuples.join(" OR ")})
       AND projected_at>=parseDateTime64BestEffort(${sqlString(this.origin.notBefore)},3,'UTC')
@@ -61,10 +70,18 @@ export class CanonicalProviderClosureSource implements ProviderEpisodeClosureDat
     const hints = hintRows.map(row=>({relationId: text(row,"identity"),relationType:text(row,"relation_type"),
       producerSystem:text(row,"source_system"),projectionId:text(row,"projection_id"),confidenceClass:text(row,"confidence_class"),
       bindingSource:text(row,"binding_source"),evidenceFactIds:strings(row["evidence_fact_ids"]),sourceRecordHash:digest(text(row,"source_record_hash")),
-      projectedAt:timestamp(text(row,"projected_at")),authority:false,maySelectFacts:false,mayOverrideBinding:false} as const));
-    this.material = {bindings, facts, hints};
+      projectedAt:timestamp(text(row,"projected_at")),sourceEntityType:text(row,"source_entity_type"),sourceEntityId:text(row,"source_entity_id"),
+      targetEntityType:text(row,"target_entity_type"),targetEntityId:text(row,"target_entity_id"),
+      authority:text(row,"confidence_class")==="authoritative",maySelectFacts:false,mayOverrideBinding:false} as const));
+    const runtimeRows=await this.all(`SELECT row_id AS identity,record_json,toString(evidence.projected_at) AS projected_at
+      FROM sdar_core.sdar_evidence_v1_record AS evidence FINAL
+      WHERE ${this.canonicalPredicate()} AND episode_id=${sqlString(scope.episodeId)}
+      AND record_type IN ('mcp_task.admission','mcp_task.dispatch_uncertain','mcp_task.dispatch_reconciliation','mcp_task.provider_execution_link','mcp_task.control_event')
+      AND evidence.projected_at<=parseDateTime64BestEffort(${sqlString(asOf)},3,'UTC')`,"identity");
+    const runtimeEvidence=runtimeRows.map(row=>canonicalRuntimeEvidence(row,scope));
+    this.material = {bindings, facts, hints, runtimeEvidence};
     this.selectedScope = hash({scope:{tenantId:scope.tenantId,projectId:scope.projectId,environment:scope.environment,episodeId:scope.episodeId},asOf});
-    return {asOfProjectedAt:asOf,effectiveWatermark:[this.origin.notBefore,...bindings.map(x=>x.updatedAt),...facts.map(x=>x.projectedAt)].sort().at(-1)!,
+    return {asOfProjectedAt:asOf,effectiveWatermark:[this.origin.notBefore,...bindings.map(x=>x.updatedAt),...facts.map(x=>x.projectedAt),...runtimeEvidence.map(x=>x.projectedAt)].sort().at(-1)!,
       bindingCount:bindings.length,expectedFactCount:facts.length,identityHash:hash(this.material)};
   }
 
@@ -76,6 +93,9 @@ export class CanonicalProviderClosureSource implements ProviderEpisodeClosureDat
   }
   async listRelationHints(input: Parameters<ProviderEpisodeClosureDataSource["listRelationHints"]>[0]): Promise<ProviderEvidencePage<ProviderReconciliationHint>> {
     return this.page(this.current(input).hints,input.cursor,input.limit);
+  }
+  async listRuntimeEvidence(input: Parameters<NonNullable<ProviderEpisodeClosureDataSource["listRuntimeEvidence"]>>[0]): Promise<ProviderEvidencePage<ProviderRuntimeEvidence>> {
+    return this.page(this.current(input).runtimeEvidence,input.cursor,input.limit);
   }
   private current(input: {scope: ProviderClosureScope;asOfProjectedAt: string}): Material {
     if (!this.material || this.selectedScope !== hash({scope:{tenantId:input.scope.tenantId,projectId:input.scope.projectId,environment:input.scope.environment,episodeId:input.scope.episodeId},asOf:timestamp(input.asOfProjectedAt)})) throw failure("PROVIDER_CAPTURE_REQUIRED");
@@ -113,29 +133,75 @@ export class CanonicalProviderClosureSource implements ProviderEpisodeClosureDat
   }
 }
 
+function canonicalRuntimeEvidence(row: Row, scope: ProviderClosureScope): ProviderRuntimeEvidence {
+  const record=object(JSON.parse(text(row,"record_json")));const payload=object(record["payload"]);
+  const recordType=text(record,"recordType");
+  if(!["mcp_task.admission","mcp_task.dispatch_uncertain","mcp_task.dispatch_reconciliation","mcp_task.provider_execution_link","mcp_task.control_event"].includes(recordType)||
+    record["episodeId"]!==scope.episodeId||record["tenantId"]!==scope.tenantId||record["projectId"]!==scope.projectId||record["environment"]!==scope.environment||record["payloadHash"]!==evidenceHash(payload))throw failure("PROVIDER_RUNTIME_EVIDENCE_INVALID");
+  return {rowId:text(row,"identity"),sourceRecordId:text(record,"sourceRecordId"),recordType:recordType as ProviderRuntimeEvidence["recordType"],payload,payloadHash:digest(text(record,"payloadHash")),recordedAt:timestamp(text(record,"recordedAt")),projectedAt:timestamp(text(row,"projected_at"))};
+}
+
 export function canonicalBinding(row: Row, scope: ProviderClosureScope): ProviderRemoteTaskBinding {
   const record=object(JSON.parse(text(row,"record_json"))); const payload=object(record["payload"]);
   const provider=object(payload["providerAuthority"]);
   if(record["recordType"]!=="mcp_task.remote_binding" || record["episodeId"]!==scope.episodeId || record["tenantId"]!==scope.tenantId || record["projectId"]!==scope.projectId || record["environment"]!==scope.environment ||
     provider["schemaVersion"]!=="runtime.remote-task-provider-authority/v1" || provider["authoritySource"]!=="remote_task_binding.authority_snapshot_json" ||
-    payload["providerAuthorityHash"]!==hash(provider) || record["payloadHash"]!==hash(payload))throw failure("PROVIDER_CANONICAL_BINDING_INVALID");
+    payload["providerAuthorityHash"]!==evidenceHash(provider) || record["payloadHash"]!==evidenceHash(payload))throw failure("PROVIDER_CANONICAL_BINDING_INVALID");
   const revision=String(payload["version"]);if(!/^[1-9][0-9]*$/u.test(revision))throw failure("PROVIDER_BINDING_REVISION_INVALID");
   return {...scope,bindingId:text(payload,"bindingId"),a2aTaskId:text(record,"taskId"),remoteTaskId:text(payload,"remoteTaskId"),
-    providerOriginSourceId:text(provider,"providerSourceId"),externalProviderId:text(provider,"providerId"),revision,
-    status:text(payload,"localState"),updatedAt:timestamp(text(record,"recordedAt"))};
+    providerOriginSourceId:text(provider,"providerSourceId"),externalProviderId:text(provider,"providerId"),
+    ...(provider["externalServerId"]===undefined?{}:{externalProviderInstanceId:text(provider,"externalServerId")}),revision,
+    status:text(payload,"localState"),updatedAt:timestamp(text(record,"recordedAt")),
+    authoritativeOriginRuntimeIds:[text(provider,"runtimeServerId")],
+    authoritativeOriginTaskIds:[text(record,"taskId")]};
 }
 function providerFact(row: Row, scope: ProviderClosureScope): ProviderClosureFact {
+  const payload=object(JSON.parse(text(row,"payload_json")));
+  const semantics=providerOpsSemantics(payload);
   return {...scope,factId:text(row,"identity"),factHash:digest(text(row,"fact_hash")),factType:text(row,"fact_type"),
     smppSourceId:text(row,"smpp_source_id"),providerId:text(row,"provider_id"),
     ...(row["provider_instance_id"] ? {providerInstanceId:text(row,"provider_instance_id")} : {}),
-    externalTaskId:text(row,"external_task_id"),occurredAt:timestamp(text(row,"occurred_at")),projectedAt:timestamp(text(row,"projected_at")),
+    externalTaskId:text(row,"external_task_id"),...(row["external_execution_id"]?{externalExecutionId:text(row,"external_execution_id")}:{}),
+    occurredAt:timestamp(text(row,"occurred_at")),...(row["observed_at"]?{observedAt:timestamp(text(row,"observed_at"))}:{}),projectedAt:timestamp(text(row,"projected_at")),
     sourceRecordId:text(row,"source_record_id"),sourceRecordHash:digest(text(row,"source_record_hash")),
-    originRuntimeInstanceIds:strings(row["origin_sdar_runtime_ids"]),originTaskIds:strings(row["origin_sdar_task_ids"]),originInvocationIds:strings(row["origin_sdar_invocation_ids"])};
+    originRuntimeInstanceIds:strings(row["origin_sdar_runtime_ids"]),originTaskIds:strings(row["origin_sdar_task_ids"]),originInvocationIds:strings(row["origin_sdar_invocation_ids"]),
+    ...(semantics===undefined?{}:{providerOpsSemantics:semantics})};
+}
+
+function providerOpsSemantics(payload: Row): ProviderOpsNormalizedSemantics | undefined {
+  const raw=payload["runtimeSemantic"];
+  if(raw===null||raw===undefined)return undefined;
+  const semantic=object(raw);const capabilityIds=strings(semantic["capabilityIds"]);
+  const result: {
+    contractId: "smpp.runtime-providerops-semantics/v1";
+    capabilityIds: string[];
+    uncertainty?: ProviderOpsNormalizedSemantics["uncertainty"];
+    reconciliation?: ProviderOpsNormalizedSemantics["reconciliation"];
+    businessTerminal?: ProviderOpsNormalizedSemantics["businessTerminal"];
+    missionRelation?: ProviderOpsNormalizedSemantics["missionRelation"];
+  }={contractId:"smpp.runtime-providerops-semantics/v1",capabilityIds:[...capabilityIds].sort()};
+  if(semantic["uncertainty"]!==null&&semantic["uncertainty"]!==undefined){const value=object(semantic["uncertainty"]);
+    if(value["redispatchAllowed"]!==false)throw failure("PROVIDER_UNCERTAINTY_INVALID");
+    result.uncertainty={taskId:text(value,"taskId"),uncertaintyClass:text(value,"uncertaintyClass"),redispatchAllowed:false,occurredAt:timestamp(text(value,"occurredAt"))};}
+  if(semantic["reconciliation"]!==null&&semantic["reconciliation"]!==undefined){const value=object(semantic["reconciliation"]);const status=text(value,"status");
+    if(!["found","not_found","conflict","transient_unavailable","deferred"].includes(status)||!Number.isSafeInteger(value["attempt"])||Number(value["attempt"])<1||typeof value["identityValidated"]!=="boolean")throw failure("PROVIDER_RECONCILIATION_INVALID");
+    const externalExecutionId=value["externalExecutionId"]===null||value["externalExecutionId"]===undefined?undefined:text(value,"externalExecutionId");
+    if(status==="found"&&(value["identityValidated"]!==true||externalExecutionId===undefined))throw failure("PROVIDER_RECONCILIATION_INVALID");
+    result.reconciliation={taskId:text(value,"taskId"),attempt:Number(value["attempt"]),status:status as NonNullable<ProviderOpsNormalizedSemantics["reconciliation"]>["status"],...(externalExecutionId===undefined?{}:{externalExecutionId}),identityValidated:value["identityValidated"] as boolean,occurredAt:timestamp(text(value,"occurredAt"))};}
+  if(semantic["businessTerminal"]!==null&&semantic["businessTerminal"]!==undefined){const value=object(semantic["businessTerminal"]);
+    if(typeof value["isError"]!=="boolean")throw failure("PROVIDER_TERMINAL_INVALID");
+    result.businessTerminal={taskId:text(value,"taskId"),mcpTaskStatus:text(value,"mcpTaskStatus"),transportStatus:text(value,"transportStatus"),providerExecutionStatus:text(value,"providerExecutionStatus"),businessStatus:text(value,"businessStatus"),isError:value["isError"]};}
+  if(semantic["missionRelation"]!==null&&semantic["missionRelation"]!==undefined){const value=object(semantic["missionRelation"]);const status=text(value,"relationStatus");
+    if(!["exact","unresolved","conflict"].includes(status))throw failure("PROVIDER_MISSION_RELATION_INVALID");
+    const mission=value["deviceMissionId"]===null||value["deviceMissionId"]===undefined?undefined:text(value,"deviceMissionId");
+    if((status==="exact")!==(mission!==undefined))throw failure("PROVIDER_MISSION_RELATION_INVALID");
+    result.missionRelation={taskId:text(value,"taskId"),externalExecutionId:text(value,"externalExecutionId"),relationStatus:status as NonNullable<ProviderOpsNormalizedSemantics["missionRelation"]>["relationStatus"],...(mission===undefined?{}:{deviceMissionId:mission}),sourceRecordRefs:strings(value["sourceRecordRefs"]),observedAt:timestamp(text(value,"observedAt"))};}
+  return Object.freeze(result);
 }
 export function object(value: unknown): Row {if(!value||typeof value!=="object"||Array.isArray(value))throw failure("PROVIDER_ROW_INVALID");return value as Row;}
 export function text(row: Row,key: string): string {const value=row[key];if(typeof value!=="string"||!value)throw failure("PROVIDER_FIELD_INVALID");return value;}
 export function timestamp(value: string): string {const date=new Date(value.endsWith("Z")||/[+-]\d\d:\d\d$/u.test(value)?value:value.replace(" ","T")+"Z");if(!Number.isFinite(date.getTime()))throw failure("PROVIDER_TIMESTAMP_INVALID");return date.toISOString();}
 function strings(value: unknown): string[]{if(!Array.isArray(value)||!value.every(x=>typeof x==="string"))throw failure("PROVIDER_ARRAY_INVALID");return value;}
-function digest(value: string): string {const normalized=value.startsWith("sha256:")?value:`sha256:${value}`;if(!/^sha256:[0-9a-f]{64}$/u.test(normalized))throw failure("PROVIDER_HASH_INVALID");return normalized;}
+function digest(value: string): `sha256:${string}` {const normalized=value.startsWith("sha256:")?value:`sha256:${value}`;if(!/^sha256:[0-9a-f]{64}$/u.test(normalized))throw failure("PROVIDER_HASH_INVALID");return normalized as `sha256:${string}`;}
 export function sqlString(value: string): string {return `'${value.replaceAll("\\","\\\\").replaceAll("'","\\'")}'`;}
 export function failure(code: string): Error & {code: string} {return Object.assign(new Error(code),{code});}

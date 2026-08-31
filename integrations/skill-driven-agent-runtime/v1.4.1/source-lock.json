@@ -2,48 +2,48 @@
   "schemaVersion": 1,
   "snapshotVersion": "v1.4.1",
   "sourcePath": "../skill-driven-agent-runtime",
-  "executionSha": "0da6075f2581279909efb69fc8e48cb01d95552c",
-  "mainSha": "2275bc52759914bc80113358a9083e6f00d59e6d",
+  "executionSha": "2c3b0c4628ee09afe5e61559e8a7b9d14481b633",
+  "mainSha": "b0caf69e9f83bc6702e1c0a85e7ca158c3781d4b",
   "mainRef": "origin/main",
   "contractVersion": "sdar.evidence/v1",
-  "canonicalContractSha256": "sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f",
-  "canonicalRegistrySha256": "sha256:eac67fcc0cd02c55da750156af42f3ea2130ee470f0670aba980c08ddec41c71",
+  "canonicalContractSha256": "sha256:795352dc13cc98f153fb9c413e6830870570af75c92831e28102cabc76a6eefd",
+  "canonicalRegistrySha256": "sha256:7d00320ed21eb89e98abce8ebbdaa7e4aa887e97ee97888ae8e4b62c69adf197",
   "importedRoots": [
     "protocol/evidence/v1",
     "schemas/evidence/v1",
     "reports/v1.4.1-evidence/clickhouse-handoff"
   ],
-  "importedFileCount": 121,
+  "importedFileCount": 126,
   "files": [
     {
       "path": "protocol/evidence/v1/README.md",
-      "bytes": 1169,
-      "byteSha256": "sha256:f813344257d5554a4cd93110dca2b759369b57df93ec8985a1e6e8237b9fa2ca"
+      "bytes": 1255,
+      "byteSha256": "sha256:8b456e2fa9fc83cdc126453807f7156c496929f22fb1534545314ea82c5a349e"
     },
     {
       "path": "protocol/evidence/v1/evidence-contract.json",
       "bytes": 805,
-      "byteSha256": "sha256:23ac6191b4f8334d5eb404ba545ed3ee7ebd2c877ccc3c7236bd3f1f80390c9b"
+      "byteSha256": "sha256:fa9cdb146682a2f525af0fc11a5d561a7a1bf0abc35d6a9d9927c75182b7218e"
     },
     {
       "path": "reports/v1.4.1-evidence/clickhouse-handoff/contract-manifest.json",
-      "bytes": 873,
-      "byteSha256": "sha256:320cdd4d81159a34f7c0d8fb20776abd769de33ddb2ea871968b11898275d706"
+      "bytes": 874,
+      "byteSha256": "sha256:de05da98226ce61ed4bd713414f8d4346ea2a9d98e36957df63b1818edde7b75"
     },
     {
       "path": "reports/v1.4.1-evidence/clickhouse-handoff/known-limitations.md",
-      "bytes": 782,
-      "byteSha256": "sha256:8f7fafe6ca7a9331fd293a418bd0b2eefdc2ff7179dee244d873ebed5545147d"
+      "bytes": 783,
+      "byteSha256": "sha256:2d9e3fbd7e3fed09453f9c8d25e81ceb35878b9d011ad87ce54b6c0f86ca9e7d"
     },
     {
       "path": "reports/v1.4.1-evidence/clickhouse-handoff/readiness-policy.json",
-      "bytes": 552,
-      "byteSha256": "sha256:debb141b07facefa6495a41c2af72ba5eb53757b88e48ee1861e45bebdb1a5a1"
+      "bytes": 554,
+      "byteSha256": "sha256:d111382a5c7b45439f810ad4e181a9d49010abc2614a7605b2b7fe22f14d7c97"
     },
     {
       "path": "reports/v1.4.1-evidence/clickhouse-handoff/record-catalog.json",
-      "bytes": 101052,
-      "byteSha256": "sha256:32a7676b0cf4b65ada6e3ab34951aea36660ad22be8ec055a8083de3f05579c0"
+      "bytes": 106309,
+      "byteSha256": "sha256:755e70260f088893c3d17d25da0353728f7390566d72a6212d971152f04f132a"
     },
     {
       "path": "reports/v1.4.1-evidence/clickhouse-handoff/sample-batches/accepted-ack.json",
@@ -72,13 +72,13 @@
     },
     {
       "path": "reports/v1.4.1-evidence/clickhouse-handoff/schema-hashes.json",
-      "bytes": 32448,
-      "byteSha256": "sha256:d8f2122f867fde9c4e894a56cfcaf149fccac3132ee6e14528406d90f10ad7b3"
+      "bytes": 34051,
+      "byteSha256": "sha256:f44a6890bda470fdf5a40e0f5b6336e76436adda24c1557255de8347ec01d72a"
     },
     {
       "path": "reports/v1.4.1-evidence/clickhouse-handoff/source-mapping.json",
-      "bytes": 133572,
-      "byteSha256": "sha256:03528b9d82cef996a95c1d8d01365730a48c0b10147007c5640ca56772984c0b"
+      "bytes": 140466,
+      "byteSha256": "sha256:ebe3cec0f0905e71852067a5c618bffd0f238b1db822a3da2ff2fe95fb5f3fb7"
     },
     {
       "path": "schemas/evidence/v1/artifact-ref.schema.json",
@@ -92,13 +92,13 @@
     },
     {
       "path": "schemas/evidence/v1/batch-request.schema.json",
-      "bytes": 8057,
-      "byteSha256": "sha256:8f50caeb55495d1207a28ce7914ce11a228a8d740696c74d619ddfc34850ce0d"
+      "bytes": 8423,
+      "byteSha256": "sha256:82762d1fa981c677616dedc6bbb3b1f86e7b6aa34699b9eaa872cf9b3072947d"
     },
     {
       "path": "schemas/evidence/v1/canonical-evidence-envelope.schema.json",
-      "bytes": 6546,
-      "byteSha256": "sha256:ee3eecbf5daf2e573608df6b01e94e3d2ed435c6ee8bd4c0386be4792852b437"
+      "bytes": 6882,
+      "byteSha256": "sha256:94913a2b0de132a670be524bd8cf61a370e75328dbd76cd0a5a43c3bf5243163"
     },
     {
       "path": "schemas/evidence/v1/episode-evidence-manifest.schema.json",
@@ -256,6 +256,11 @@
       "byteSha256": "sha256:130d4cb95ce84e6861ba05cf0b235ee756767b66e8819f528deb64710b8a4f83"
     },
     {
+      "path": "schemas/evidence/v1/records/mcp_task.admission.schema.json",
+      "bytes": 5379,
+      "byteSha256": "sha256:3de4afae2b59603d68594fe8b9a3fc3750d6790b8c4d8dddfd5866e6d48f9f2a"
+    },
+    {
       "path": "schemas/evidence/v1/records/mcp_task.availability.schema.json",
       "bytes": 5388,
       "byteSha256": "sha256:ab8df874751376dfcb24da27a04ed55c9484807c7685484afa9e57dc53d57cf7"
@@ -281,9 +286,24 @@
       "byteSha256": "sha256:4c801fd54d2e0017ba73cdacb574a0ccc0e56546448137f1f8f2b51aef77520c"
     },
     {
+      "path": "schemas/evidence/v1/records/mcp_task.dispatch_reconciliation.schema.json",
+      "bytes": 5477,
+      "byteSha256": "sha256:0b4ffd308ee78f482a138139e1848c6c5cb7eb7063ae26f006d46f1e41bb9940"
+    },
+    {
+      "path": "schemas/evidence/v1/records/mcp_task.dispatch_uncertain.schema.json",
+      "bytes": 5490,
+      "byteSha256": "sha256:638baadbd0137b1785da363eeb0126672a98ae64aec2fded0375d44b5a9ad071"
+    },
+    {
       "path": "schemas/evidence/v1/records/mcp_task.input_link.schema.json",
       "bytes": 5378,
       "byteSha256": "sha256:4a7f798d399fd735aa3f7a7b93d47edddb1fa7e58d072493ab3814a6eec85c53"
+    },
+    {
+      "path": "schemas/evidence/v1/records/mcp_task.logical_invocation.schema.json",
+      "bytes": 5482,
+      "byteSha256": "sha256:2ccefd4eafbf5232230b9b11e1d12a55beee1bef5c692af938b348ada7d723e1"
     },
     {
       "path": "schemas/evidence/v1/records/mcp_task.observation.schema.json",
@@ -294,6 +314,11 @@
       "path": "schemas/evidence/v1/records/mcp_task.poll_attempt.schema.json",
       "bytes": 5390,
       "byteSha256": "sha256:03e89f43e095c12cfb361e6967e0e4485a523122e5a93f7431083ae77f79fbd8"
+    },
+    {
+      "path": "schemas/evidence/v1/records/mcp_task.provider_execution_link.schema.json",
+      "bytes": 5933,
+      "byteSha256": "sha256:5f3f9560c1fcdffbd41f59d0bf482a44b1748bf078bcbb6a51efa4c45b78d279"
     },
     {
       "path": "schemas/evidence/v1/records/mcp_task.reconciliation.schema.json",
@@ -617,8 +642,8 @@
     },
     {
       "path": "schemas/evidence/v1/registry.json",
-      "bytes": 101018,
-      "byteSha256": "sha256:4e394b936af3d0b1ea5ef8e0dcc083db6c6b7406d92ed61ae11260b026030a94"
+      "bytes": 106187,
+      "byteSha256": "sha256:fdfdd2b9fd00ad889e0b9074ae028c4318887cddc7e67a594b6c462350b6a78a"
     }
   ]
 }

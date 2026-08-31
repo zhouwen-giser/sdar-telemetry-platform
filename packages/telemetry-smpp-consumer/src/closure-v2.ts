@@ -1,9 +1,13 @@
 import { createHash } from "node:crypto";
 
+import { buildProviderTaskSemantics } from "./mcp-task-provider-closure.js";
+
 export const PROVIDER_EPISODE_CLOSURE_CONTRACT =
   "sdar.telemetry-smpp-providerops-handoff/v2" as const;
 export const PROVIDER_ORIGIN_CLAIM_POLICY =
   "sdar.provider-origin-claim-reconciliation/v1.1" as const;
+export const PROVIDER_TASK_SEMANTIC_MAPPING_CONTRACT =
+  "sdar.telemetry-provider-task-semantic-mapping/v1" as const;
 
 export type ProviderBindingAuthorityRef = "sdar_core.remote_task_binding" | "sdar_core.sdar_evidence_v1_record:mcp_task.remote_binding";
 
@@ -70,7 +74,9 @@ export interface ProviderClosureFact {
   readonly providerId: string;
   readonly providerInstanceId?: string;
   readonly externalTaskId: string;
+  readonly externalExecutionId?: string;
   readonly occurredAt: string;
+  readonly observedAt?: string;
   readonly projectedAt: string;
   readonly sourceRecordId: string;
   readonly sourceRecordHash: string;
@@ -79,6 +85,43 @@ export interface ProviderClosureFact {
   readonly originRuntimeInstanceIds?: readonly string[];
   readonly originTaskIds?: readonly string[];
   readonly originInvocationIds?: readonly string[];
+  readonly providerOpsSemantics?: ProviderOpsNormalizedSemantics;
+}
+
+export interface ProviderOpsNormalizedSemantics {
+  readonly contractId: "smpp.runtime-providerops-semantics/v1";
+  readonly capabilityIds: readonly string[];
+  readonly uncertainty?: {
+    readonly taskId: string;
+    readonly uncertaintyClass: string;
+    readonly redispatchAllowed: false;
+    readonly occurredAt: string;
+  };
+  readonly reconciliation?: {
+    readonly taskId: string;
+    readonly attempt: number;
+    readonly status: "found" | "not_found" | "conflict" | "transient_unavailable" | "deferred";
+    readonly externalExecutionId?: string;
+    readonly identityValidated: boolean;
+    readonly occurredAt: string;
+  };
+  readonly businessTerminal?: {
+    readonly taskId: string;
+    readonly mcpTaskStatus: string;
+    readonly transportStatus: string;
+    readonly providerExecutionStatus: string;
+    readonly businessStatus: string;
+    readonly isError: boolean;
+  };
+  readonly missionRelation?: {
+    readonly taskId: string;
+    readonly externalExecutionId: string;
+    readonly relationStatus: "exact" | "unresolved" | "conflict";
+    readonly deviceMissionId?: string;
+    readonly sourceRecordRefs: readonly string[];
+    readonly observedAt: string;
+  };
+  readonly producerContractHash?: `sha256:${string}`;
 }
 
 export interface ProviderReconciliationHint {
@@ -91,9 +134,74 @@ export interface ProviderReconciliationHint {
   readonly evidenceFactIds: readonly string[];
   readonly sourceRecordHash: string;
   readonly projectedAt: string;
+  readonly sourceEntityType?: string;
+  readonly sourceEntityId?: string;
+  readonly targetEntityType?: string;
+  readonly targetEntityId?: string;
   readonly authority: boolean;
   readonly maySelectFacts: false;
   readonly mayOverrideBinding: false;
+}
+
+export interface ProviderRuntimeEvidence {
+  readonly rowId: string;
+  readonly sourceRecordId: string;
+  readonly recordType:
+    | "mcp_task.admission"
+    | "mcp_task.dispatch_uncertain"
+    | "mcp_task.dispatch_reconciliation"
+    | "mcp_task.provider_execution_link"
+    | "mcp_task.control_event";
+  readonly payload: Readonly<Record<string, unknown>>;
+  readonly payloadHash: `sha256:${string}`;
+  readonly recordedAt: string;
+  readonly projectedAt: string;
+}
+
+export type ProviderTaskExecutionStatus = "unresolved" | "exact" | "conflict";
+export type ProviderDispatchStatus = "certain" | "uncertain" | "recovered" | "unresolved" | "conflict";
+export type ProviderReconciliationStatus = "not_required" | "attempted" | "found_exact" | "not_found" | "deferred" | "unavailable" | "conflict";
+
+export interface ProviderTaskExecutionClosure {
+  readonly bindingId: string;
+  readonly remoteTaskId: string;
+  readonly providerSourceId: string;
+  readonly providerId: string;
+  readonly providerInstanceId?: string;
+  readonly candidateExecutionIds: readonly string[];
+  readonly selectedExecutionId?: string;
+  readonly sourceFactIds: readonly string[];
+  readonly sourceRelationIds: readonly string[];
+  readonly status: ProviderTaskExecutionStatus;
+  readonly identityConflict: boolean;
+  readonly contentHash: `sha256:${string}`;
+}
+
+export interface ProviderTaskSemanticClosure {
+  readonly bindingId: string;
+  readonly taskExecution: ProviderTaskExecutionClosure;
+  readonly dispatch: {
+    readonly status: ProviderDispatchStatus;
+    readonly reconciliationStatus: ProviderReconciliationStatus;
+    readonly uncertaintyFactIds: readonly string[];
+    readonly reconciliationFactIds: readonly string[];
+  };
+  readonly terminal: {
+    readonly mcpTaskControlState: string;
+    readonly dispatchTransportState: ProviderDispatchStatus;
+    readonly providerExecutionState: string;
+    readonly providerBusinessOutcome: string;
+    readonly terminalFactIds: readonly string[];
+    readonly conflict: boolean;
+  };
+  readonly mission: {
+    readonly status: "not_required" | "exact" | "unresolved" | "conflict";
+    readonly deviceMissionIds: readonly string[];
+    readonly sourceFactIds: readonly string[];
+    readonly sourceRelationIds: readonly string[];
+  };
+  readonly reasonCodes: readonly string[];
+  readonly contentHash: `sha256:${string}`;
 }
 
 export interface ProviderBindingDerivedRelation {
@@ -164,12 +272,20 @@ export interface ProviderEpisodeClosureDataSource {
     readonly cursor: string | null;
     readonly limit: number;
   }): Promise<ProviderEvidencePage<ProviderReconciliationHint>>;
+  listRuntimeEvidence?(input: {
+    readonly scope: ProviderClosureScope;
+    readonly asOfProjectedAt: string;
+    readonly bindings: readonly ProviderRemoteTaskBinding[];
+    readonly cursor: string | null;
+    readonly limit: number;
+  }): Promise<ProviderEvidencePage<ProviderRuntimeEvidence>>;
 }
 
 export interface ProviderClosurePaginationProof {
   readonly bindingPageCount: number;
   readonly factPageCount: number;
   readonly relationHintPageCount: number;
+  readonly runtimeEvidencePageCount: number;
   readonly pageCount: number;
   readonly pageHashes: readonly `sha256:${string}`[];
   readonly firstCursor: string | null;
@@ -189,6 +305,7 @@ export interface ProviderEpisodeClosure {
     readonly authoritativeBindings: readonly ProviderRemoteTaskBinding[];
     readonly providerFacts: readonly ProviderClosureFact[];
     readonly bindingDerivedRelations: readonly ProviderBindingDerivedRelation[];
+    readonly taskSemantics: readonly ProviderTaskSemanticClosure[];
     readonly bindingCount: number;
     readonly remoteTaskCount: number;
     readonly providerSourceCount: number;
@@ -197,6 +314,12 @@ export interface ProviderEpisodeClosure {
     readonly bindingDerivedRelationCount: number;
     readonly foreignFactCount: number;
     readonly unresolvedBindingCount: number;
+    readonly unresolvedExecutionCount: number;
+    readonly conflictingExecutionCount: number;
+    readonly uncertainDispatchCount: number;
+    readonly unresolvedReconciliationCount: number;
+    readonly terminalConflictCount: number;
+    readonly identityHashConflictCount: number;
     readonly truncated: boolean;
     readonly closureContentHash: `sha256:${string}`;
   };
@@ -227,6 +350,8 @@ export interface ProviderEpisodeClosure {
     readonly bindingAuthorityHash: `sha256:${string}`;
     readonly originClaimPolicyRef: typeof PROVIDER_ORIGIN_CLAIM_POLICY;
     readonly originClaimPolicyHash: `sha256:${string}`;
+    readonly taskSemanticMappingRef: typeof PROVIDER_TASK_SEMANTIC_MAPPING_CONTRACT;
+    readonly taskSemanticMappingHash: `sha256:${string}`;
   };
 }
 
@@ -237,6 +362,16 @@ const POLICY_HASH = hash({
   ambiguous: "blocking",
   conflict: "blocking",
   hintsUsedForAuthority: false,
+});
+const TASK_SEMANTIC_MAPPING_HASH = hash({
+  id: PROVIDER_TASK_SEMANTIC_MAPPING_CONTRACT,
+  runtimeContract: "sdar.evidence/v1",
+  providerOpsEnvelope: "sdar.provider.ops.event/1.1.0",
+  providerOpsPayloadCatalog: "smpp.providerops-payload-catalog/v1.1",
+  taskExecutionCardinality: "0=unresolved;1=exact;>1=conflict",
+  hintsUsedForAuthority: false,
+  goalSuccessProven: false,
+  physicalSuccessProven: false,
 });
 
 const DEFAULT_PAGE_SIZE = 500;
@@ -268,10 +403,12 @@ interface LoadedClosurePages {
   readonly bindings: readonly ProviderRemoteTaskBinding[];
   readonly facts: readonly ProviderClosureFact[];
   readonly hints: readonly ProviderReconciliationHint[];
+  readonly runtimeEvidence: readonly ProviderRuntimeEvidence[];
   readonly pageHashes: readonly `sha256:${string}`[];
   readonly bindingPageCount: number;
   readonly factPageCount: number;
   readonly relationHintPageCount: number;
+  readonly runtimeEvidencePageCount: number;
   readonly firstCursor: string | null;
   readonly lastCursor: string | null;
   readonly volumeExceeded: boolean;
@@ -314,29 +451,53 @@ async function loadClosurePages(
     maxPages,
     maxItems,
   );
-  const cursors = [bindingPages.firstCursor, factPages.firstCursor, hintPages.firstCursor].filter(
+  const runtimePages = source.listRuntimeEvidence === undefined
+    ? emptyPages<ProviderRuntimeEvidence>()
+    : await readPages(
+      (cursor) => source.listRuntimeEvidence!({
+        scope: request,
+        asOfProjectedAt,
+        bindings: bindingPages.items,
+        cursor,
+        limit,
+      }),
+      maxPages,
+      maxItems,
+    );
+  const cursors = [bindingPages.firstCursor, factPages.firstCursor, hintPages.firstCursor, runtimePages.firstCursor].filter(
     (value): value is string => value !== null,
   );
-  const lastCursors = [bindingPages.lastCursor, factPages.lastCursor, hintPages.lastCursor].filter(
+  const lastCursors = [bindingPages.lastCursor, factPages.lastCursor, hintPages.lastCursor, runtimePages.lastCursor].filter(
     (value): value is string => value !== null,
   );
   return {
     bindings: bindingPages.items,
     facts: factPages.items,
     hints: hintPages.items,
+    runtimeEvidence: runtimePages.items,
     pageHashes: Object.freeze([
       ...bindingPages.pageHashes,
       ...factPages.pageHashes,
       ...hintPages.pageHashes,
+      ...runtimePages.pageHashes,
     ]),
     bindingPageCount: bindingPages.pageCount,
     factPageCount: factPages.pageCount,
     relationHintPageCount: hintPages.pageCount,
+    runtimeEvidencePageCount: runtimePages.pageCount,
     firstCursor: cursors[0] ?? null,
     lastCursor: lastCursors.at(-1) ?? null,
     volumeExceeded:
-      bindingPages.volumeExceeded || factPages.volumeExceeded || hintPages.volumeExceeded,
+      bindingPages.volumeExceeded || factPages.volumeExceeded || hintPages.volumeExceeded || runtimePages.volumeExceeded,
   };
+}
+
+function emptyPages<T>(): {
+  readonly items: readonly T[]; readonly pageHashes: readonly `sha256:${string}`[];
+  readonly pageCount: number; readonly firstCursor: null; readonly lastCursor: null;
+  readonly volumeExceeded: false;
+} {
+  return {items:[],pageHashes:[],pageCount:0,firstCursor:null,lastCursor:null,volumeExceeded:false};
 }
 
 async function readPages<T>(
@@ -401,6 +562,12 @@ function buildClosure(
   loaded: LoadedClosurePages,
   authoritySource: ProviderBindingAuthorityRef = "sdar_core.remote_task_binding",
 ): ProviderEpisodeClosure {
+  const identityHashConflictCount = countIdentityConflicts([
+    ...loaded.bindings.map((item) => ({ id: `binding:${item.bindingId}`, content: item })),
+    ...loaded.facts.map((item) => ({ id: `fact:${item.factId}`, content: item })),
+    ...loaded.hints.map((item) => ({ id: `relation:${item.relationId}`, content: item })),
+    ...loaded.runtimeEvidence.map((item) => ({ id: `runtime:${item.recordType}:${item.sourceRecordId}`, content: item })),
+  ]);
   const bindings = uniqueBy(loaded.bindings, (binding) => binding.bindingId).sort(byBinding);
   const bindingAuthorityHash = hash(bindings);
   const selectionPredicateHash = hash({
@@ -430,11 +597,30 @@ function buildClosure(
     .map(normalizeHint)
     .sort((left, right) => left.relationId.localeCompare(right.relationId));
   const bindingDerivedRelations = bindings.map(binding => bindingRelation(binding, authoritySource));
+  const taskSemantics = buildProviderTaskSemantics({
+    bindings,
+    facts: selectedFacts,
+    relations: hints,
+    runtimeEvidence: loaded.runtimeEvidence,
+  });
   const results = reconcileClaims(selectedFacts, bindings, hints);
   const counts = countStatuses(results);
   const unresolvedBindingCount = bindings.filter(
     (binding) => !selectedFacts.some((fact) => matchingBindings(fact, [binding], request).length === 1),
   ).length;
+  const unresolvedExecutionCount = taskSemantics.filter(
+    (item) => item.taskExecution.status === "unresolved",
+  ).length;
+  const conflictingExecutionCount = taskSemantics.filter(
+    (item) => item.taskExecution.status === "conflict",
+  ).length;
+  const uncertainDispatchCount = taskSemantics.filter(
+    (item) => item.dispatch.status !== "certain",
+  ).length;
+  const unresolvedReconciliationCount = taskSemantics.filter(
+    (item) => item.dispatch.status === "uncertain" || item.dispatch.status === "unresolved",
+  ).length;
+  const terminalConflictCount = taskSemantics.filter((item) => item.terminal.conflict).length;
   const countMismatch =
     capture.bindingCount !== bindings.length || capture.expectedFactCount !== selectedFacts.length;
   const truncated = loaded.volumeExceeded || countMismatch;
@@ -442,6 +628,7 @@ function buildClosure(
     bindings,
     selectedFacts,
     bindingDerivedRelations,
+    taskSemantics,
     asOfProjectedAt: capture.asOfProjectedAt,
     selectionPredicateHash,
   });
@@ -454,6 +641,10 @@ function buildClosure(
   const reasonCodes = new Set<string>();
   if (bindings.length === 0) reasonCodes.add("SMPP_BINDING_MISSING");
   if (unresolvedBindingCount > 0) reasonCodes.add("SMPP_PROVIDER_FACT_MISSING");
+  if (identityHashConflictCount > 0) reasonCodes.add("SMPP_PROVIDER_IDENTITY_HASH_CONFLICT");
+  for (const item of taskSemantics) {
+    for (const reasonCode of item.reasonCodes) reasonCodes.add(reasonCode);
+  }
   if (foreignFactCount > 0) reasonCodes.add("SMPP_PROVIDER_FACT_FOREIGN");
   if (truncated) reasonCodes.add(
     loaded.volumeExceeded ? "SMPP_PROVIDER_VOLUME_LIMIT_EXCEEDED" : "SMPP_PROVIDER_FACT_TRUNCATED",
@@ -465,16 +656,19 @@ function buildClosure(
   if (hints.some((hint) => hint.confidenceClass === "invalid_authoritative_reconciliation_hint")) {
     reasonCodes.add("SMPP_RECONCILIATION_HINT_INVALID");
   }
-  const blocking = foreignFactCount > 0 || truncated || counts.conflict > 0 || counts.ambiguous > 0;
+  const blocking = foreignFactCount > 0 || truncated || identityHashConflictCount > 0 || counts.conflict > 0 ||
+    counts.ambiguous > 0 || conflictingExecutionCount > 0 || terminalConflictCount > 0 ||
+    taskSemantics.some((item) => item.dispatch.status === "conflict" || item.mission.status === "conflict");
   const status: ProviderClosureReadinessStatus = blocking
     ? "conflict"
-    : bindings.length === 0 || unresolvedBindingCount > 0
+    : bindings.length === 0 || unresolvedBindingCount > 0 || unresolvedExecutionCount > 0 ||
+        unresolvedReconciliationCount > 0 || taskSemantics.some((item) => item.dispatch.status === "uncertain")
       ? "not_ready"
       : counts.unverifiable > 0
         ? "degraded"
         : "ready";
   const pageCount =
-    loaded.bindingPageCount + loaded.factPageCount + loaded.relationHintPageCount;
+    loaded.bindingPageCount + loaded.factPageCount + loaded.relationHintPageCount + loaded.runtimeEvidencePageCount;
   return Object.freeze({
     contractId: PROVIDER_EPISODE_CLOSURE_CONTRACT,
     scope: Object.freeze(scopeOf(request)),
@@ -487,6 +681,7 @@ function buildClosure(
       authoritativeBindings: Object.freeze(bindings),
       providerFacts: Object.freeze(selectedFacts),
       bindingDerivedRelations: Object.freeze(bindingDerivedRelations),
+      taskSemantics,
       bindingCount: bindings.length,
       remoteTaskCount: new Set(bindings.map((binding) => binding.remoteTaskId)).size,
       providerSourceCount: new Set(bindings.map((binding) => binding.providerOriginSourceId)).size,
@@ -495,6 +690,12 @@ function buildClosure(
       bindingDerivedRelationCount: bindingDerivedRelations.length,
       foreignFactCount,
       unresolvedBindingCount,
+      unresolvedExecutionCount,
+      conflictingExecutionCount,
+      uncertainDispatchCount,
+      unresolvedReconciliationCount,
+      terminalConflictCount,
+      identityHashConflictCount,
       truncated,
       closureContentHash,
     }),
@@ -517,6 +718,7 @@ function buildClosure(
       bindingPageCount: loaded.bindingPageCount,
       factPageCount: loaded.factPageCount,
       relationHintPageCount: loaded.relationHintPageCount,
+      runtimeEvidencePageCount: loaded.runtimeEvidencePageCount,
       pageCount,
       pageHashes: loaded.pageHashes,
       firstCursor: loaded.firstCursor,
@@ -534,6 +736,8 @@ function buildClosure(
       bindingAuthorityHash,
       originClaimPolicyRef: PROVIDER_ORIGIN_CLAIM_POLICY,
       originClaimPolicyHash: POLICY_HASH,
+      taskSemanticMappingRef: PROVIDER_TASK_SEMANTIC_MAPPING_CONTRACT,
+      taskSemanticMappingHash: TASK_SEMANTIC_MAPPING_HASH,
     }),
   });
 }
@@ -558,6 +762,7 @@ function reconcileClaims(
     );
   }
   for (const hint of hints) {
+    if (isProviderInternalAuthority(hint)) continue;
     const invalidAuthority =
       hint.confidenceClass === "invalid_authoritative_reconciliation_hint";
     results.push({
@@ -624,19 +829,32 @@ function claimResult(
 }
 
 function normalizeHint(hint: ProviderReconciliationHint): ProviderReconciliationHint {
+  const providerInternalAuthority = isProviderInternalAuthority(hint);
   const smppProduced =
     hint.producerSystem.toLowerCase() === "smpp" || hint.projectionId.toLowerCase().includes("smpp");
-  const legacy = smppProduced && hint.confidenceClass.toLowerCase() === "authoritative";
+  const legacy = smppProduced && hint.confidenceClass.toLowerCase() === "authoritative" &&
+    !providerInternalAuthority;
   return Object.freeze({
     ...hint,
     confidenceClass: legacy
       ? "invalid_authoritative_reconciliation_hint"
       : hint.confidenceClass,
-    authority: false,
+    authority: providerInternalAuthority,
     maySelectFacts: false,
     mayOverrideBinding: false,
     evidenceFactIds: Object.freeze(normalizedStrings(hint.evidenceFactIds)),
   });
+}
+
+function isProviderInternalAuthority(hint: ProviderReconciliationHint): boolean {
+  if (hint.confidenceClass !== "authoritative") return false;
+  return (hint.relationType === "task_execution_binding" &&
+      hint.sourceEntityType === "task" && hint.targetEntityType === "execution" &&
+      (hint.bindingSource === "smpp_runtime_committed_binding" ||
+        hint.bindingSource === "smpp_runtime_reconciliation_found")) ||
+    (hint.relationType === "execution_mission_binding" &&
+      hint.sourceEntityType === "execution" && hint.targetEntityType === "device_mission" &&
+      hint.bindingSource === "provider_authoritative_mission_identity");
 }
 
 function matchingBindings(
@@ -732,10 +950,12 @@ function emptyClosure(request: ProviderEpisodeClosureRequest): ProviderEpisodeCl
     bindings: [],
     facts: [],
     hints: [],
+    runtimeEvidence: [],
     pageHashes: [],
     bindingPageCount: 0,
     factPageCount: 0,
     relationHintPageCount: 0,
+    runtimeEvidencePageCount: 0,
     firstCursor: null,
     lastCursor: null,
     volumeExceeded: false,
@@ -806,12 +1026,21 @@ function uniqueBy<T>(values: readonly T[], identity: (value: T) => string): T[] 
   for (const value of values) {
     const key = identity(value);
     const existing = result.get(key);
-    if (existing !== undefined && hash(existing) !== hash(value)) {
-      throw closureError("SMPP_CLOSURE_CONTENT_CONFLICT", key);
-    }
-    result.set(key, value);
+    if (existing === undefined || hash(value).localeCompare(hash(existing)) < 0) result.set(key, value);
   }
   return [...result.values()];
+}
+
+function countIdentityConflicts(values: readonly { readonly id: string; readonly content: unknown }[]): number {
+  const seen = new Map<string, string>();
+  const conflicts = new Set<string>();
+  for (const value of values) {
+    const contentHash = hash(value.content);
+    const prior = seen.get(value.id);
+    if (prior !== undefined && prior !== contentHash) conflicts.add(value.id);
+    seen.set(value.id, contentHash);
+  }
+  return conflicts.size;
 }
 
 function byBinding(left: ProviderRemoteTaskBinding, right: ProviderRemoteTaskBinding): number {
