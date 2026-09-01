@@ -13,4 +13,6 @@ ef23b03b52264b5225bd2e1348fd2ecb471a348987dffebaf9263d7915f12ec3  reports/provid
 9483b5b6e593ef62a30e2bb73803fe68a9f391d448760655bc912c5315691509  reports/provider-closure-mcp-sync-v0.1/11-final-acceptance.md
 f7aceb2a71b55d427f867ce5a12136039472cdb215cec8453d42a2da62cb0499  reports/provider-closure-mcp-sync-v0.1/12-latest-runtime-handoff.json
 68edfac60b76fb8ba0b1d214636a26f64cf02d8d176368740cc7451d7ff9be7e  reports/provider-closure-mcp-sync-v0.1/12-latest-runtime-handoff.md
+477e65883a11452405a6c134c0f00f817b97464845f6af0e066700922256fa5c  reports/provider-closure-mcp-sync-v0.1/13-current-authority-runtime-handoff.json
+c8400b7b85b7b447535b510578a0c7e2ba4f20ed7a523b8e5f6a0ab3ba3d5829  reports/provider-closure-mcp-sync-v0.1/13-current-authority-runtime-handoff.md
 b3a68d7f96630fdffd156a02f6a54bd3c7761cbc07927c7a74704a76adb084f3  reports/provider-closure-mcp-sync-v0.1/acceptance-gates.csv
