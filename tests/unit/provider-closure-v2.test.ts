@@ -467,6 +467,65 @@ test("optional Mission unresolved does not block phase-one readiness and observe
   assert.equal(closure.closure.providerFacts[0]?.observedAt, "2026-08-21T00:00:01.000Z");
 });
 
+test("latest Provider Mission authority hides historical exact audit relations", async () => {
+  const historicalExact = semanticFact(1, bindingA, {
+    externalExecutionId: "execution-a",
+    mission: "exact",
+  });
+  const latestUnresolved = semanticFact(2, bindingA, {
+    externalExecutionId: "execution-a",
+    mission: "unresolved",
+  });
+  const historicalRelation = missionHint(historicalExact, "mission-a");
+  const closure = await assembleProviderEpisodeClosure(
+    new MemoryClosureSource([bindingA], [latestUnresolved, historicalExact], [historicalRelation]),
+    { ...scopeA, required: true },
+  );
+
+  assert.equal(closure.closure.taskSemantics[0]?.mission.status, "unresolved");
+  assert.deepEqual(closure.closure.taskSemantics[0]?.mission.deviceMissionIds, []);
+  assert.deepEqual(closure.closure.taskSemantics[0]?.mission.sourceFactIds, [latestUnresolved.factId]);
+  assert.deepEqual(closure.closure.taskSemantics[0]?.mission.sourceRelationIds, []);
+  assert.equal(closure.readiness.status, "ready");
+});
+
+test("Provider Mission current authority is ordered by observedAt then stable sourceRecordId", async () => {
+  const newerExact = semanticFact(9, bindingA, {
+    externalExecutionId: "execution-a",
+    mission: "exact",
+  });
+  const olderConflict = semanticFact(8, bindingA, {
+    externalExecutionId: "execution-a",
+    mission: "conflict",
+  });
+  const exactClosure = await assembleProviderEpisodeClosure(
+    new MemoryClosureSource([bindingA], [newerExact, olderConflict], [missionHint(newerExact, "mission-a")]),
+    { ...scopeA, required: true },
+  );
+  assert.equal(exactClosure.closure.taskSemantics[0]?.mission.status, "exact");
+  assert.deepEqual(exactClosure.closure.taskSemantics[0]?.mission.deviceMissionIds, ["mission-a"]);
+
+  const tieBreakConflict = {
+    ...semanticFact(10, bindingA, { externalExecutionId: "execution-a", mission: "conflict" }),
+    observedAt: newerExact.observedAt,
+    sourceRecordId: "zzzz-current-authority",
+    providerOpsSemantics: {
+      ...semanticFact(10, bindingA, { externalExecutionId: "execution-a", mission: "conflict" }).providerOpsSemantics!,
+      missionRelation: {
+        ...semanticFact(10, bindingA, { externalExecutionId: "execution-a", mission: "conflict" }).providerOpsSemantics!.missionRelation!,
+        observedAt: newerExact.providerOpsSemantics!.missionRelation!.observedAt,
+      },
+    },
+  };
+  const conflictClosure = await assembleProviderEpisodeClosure(
+    new MemoryClosureSource([bindingA], [newerExact, tieBreakConflict], [missionHint(newerExact, "mission-a")]),
+    { ...scopeA, required: true },
+  );
+  assert.equal(conflictClosure.closure.taskSemantics[0]?.mission.status, "conflict");
+  assert.deepEqual(conflictClosure.closure.taskSemantics[0]?.mission.deviceMissionIds, []);
+  assert.deepEqual(conflictClosure.closure.taskSemantics[0]?.mission.sourceRelationIds, []);
+});
+
 test("same inputs are deterministic while late projected evidence creates a new immutable snapshot", async () => {
   const firstFact = semanticFact(1, bindingA, { externalExecutionId: "execution-a" });
   const firstSource = new MemoryClosureSource([bindingA], [firstFact], []);
@@ -760,6 +819,27 @@ function semanticFact(index: number, binding: ProviderRemoteTaskBinding, input: 
       ...(input.terminal===undefined?{}:{businessTerminal:{taskId:binding.remoteTaskId,...input.terminal,isError:input.terminal.businessStatus==="failed"}}),
       ...(input.mission===undefined?{}:{missionRelation:{taskId:binding.remoteTaskId,externalExecutionId:input.externalExecutionId??"execution-a",
         relationStatus:input.mission,...(input.mission==="exact"?{deviceMissionId:"mission-a"}:{}),sourceRecordRefs:[],observedAt:occurredAt}})}};
+}
+
+function missionHint(fact: ProviderClosureFact, missionId: string): ProviderReconciliationHint {
+  return {
+    relationId: `relation-${fact.factId}`,
+    relationType: "execution_mission_binding",
+    producerSystem: "smpp",
+    projectionId: "projection-a",
+    confidenceClass: "authoritative",
+    bindingSource: "provider_authoritative_mission_identity",
+    evidenceFactIds: [fact.factId],
+    sourceRecordHash: fact.sourceRecordHash,
+    projectedAt: fact.projectedAt,
+    sourceEntityType: "execution",
+    sourceEntityId: fact.externalExecutionId,
+    targetEntityType: "device_mission",
+    targetEntityId: missionId,
+    authority: true,
+    maySelectFacts: false,
+    mayOverrideBinding: false,
+  };
 }
 
 function runtimeEvidence(rowId:string,recordType:ProviderRuntimeEvidence["recordType"],payload:Record<string,unknown>):ProviderRuntimeEvidence{

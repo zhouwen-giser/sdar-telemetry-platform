@@ -181,7 +181,12 @@ function buildOne(
     (selectedExecutionId === undefined ||
       fact.providerOpsSemantics.missionRelation.externalExecutionId === selectedExecutionId),
   );
+  const latestMissionFact = selectLatestMissionFact(missionFacts);
+  const latestMission = latestMissionFact?.providerOpsSemantics?.missionRelation;
   const exactMissionRelations = relations.filter((relation) =>
+    latestMissionFact !== undefined &&
+    latestMission?.relationStatus === "exact" &&
+    relation.evidenceFactIds.includes(latestMissionFact.factId) &&
     relation.relationType === "execution_mission_binding" &&
     relation.sourceEntityType === "execution" &&
     relation.sourceEntityId === selectedExecutionId &&
@@ -192,33 +197,31 @@ function buildOne(
   const runtimeMissionLinks = runtimeLinks.filter((item) =>
     selectedExecutionId !== undefined && item.payload["externalExecutionId"] === selectedExecutionId,
   );
-  const missionIds = normalized([
-    ...missionFacts.flatMap((fact) => {
-      const mission = fact.providerOpsSemantics?.missionRelation;
-      return mission?.relationStatus === "exact" && mission.deviceMissionId !== undefined
-        ? [mission.deviceMissionId]
-        : [];
-    }),
-    ...exactMissionRelations.flatMap((relation) => relation.targetEntityId === undefined ? [] : [relation.targetEntityId]),
-    ...runtimeMissionLinks.flatMap((item) => item.payload["missionStatus"] === "exact"
-      ? textValue(item.payload["deviceMissionId"])
-      : []),
-  ]);
-  const explicitMissionConflict = missionFacts.some((fact) =>
-    fact.providerOpsSemantics?.missionRelation?.relationStatus === "conflict",
-  );
-  const explicitMissionUnresolved = missionFacts.some((fact) =>
-    fact.providerOpsSemantics?.missionRelation?.relationStatus === "unresolved",
-  );
+  const providerMissionIds = latestMission?.relationStatus === "exact"
+    ? normalized([
+        ...(latestMission.deviceMissionId === undefined ? [] : [latestMission.deviceMissionId]),
+        ...exactMissionRelations.flatMap((relation) =>
+          relation.targetEntityId === undefined ? [] : [relation.targetEntityId]),
+      ])
+    : Object.freeze([]) as readonly string[];
+  const runtimeMissionIds = normalized(runtimeMissionLinks.flatMap((item) =>
+    item.payload["missionStatus"] === "exact" ? textValue(item.payload["deviceMissionId"]) : []));
+  const missionIds = latestMission === undefined ? runtimeMissionIds : providerMissionIds;
   const runtimeMissionConflict = runtimeMissionLinks.some((item) => item.payload["missionStatus"] === "conflict");
   const runtimeMissionUnresolved = runtimeMissionLinks.some((item) => item.payload["missionStatus"] === "unresolved");
-  const missionStatus = explicitMissionConflict || runtimeMissionConflict || missionIds.length > 1
-    ? "conflict" as const
-    : missionIds.length === 1
-      ? "exact" as const
-      : explicitMissionUnresolved || runtimeMissionUnresolved
-        ? "unresolved" as const
-        : "not_required" as const;
+  const missionStatus = latestMission !== undefined
+    ? latestMission.relationStatus === "conflict" || providerMissionIds.length > 1
+      ? "conflict" as const
+      : latestMission.relationStatus === "exact" && providerMissionIds.length === 1
+        ? "exact" as const
+        : "unresolved" as const
+    : runtimeMissionConflict || missionIds.length > 1
+      ? "conflict" as const
+      : missionIds.length === 1
+        ? "exact" as const
+        : runtimeMissionUnresolved
+          ? "unresolved" as const
+          : "not_required" as const;
 
   const reasonCodes = new Set<string>();
   if (executionStatus === "unresolved") reasonCodes.add("SMPP_PROVIDER_EXECUTION_MISSING");
@@ -263,12 +266,26 @@ function buildOne(
     mission: Object.freeze({
       status: missionStatus,
       deviceMissionIds: Object.freeze(missionIds),
-      sourceFactIds: Object.freeze(missionFacts.map((fact) => fact.factId).sort()),
+      sourceFactIds: Object.freeze(latestMissionFact === undefined ? [] : [latestMissionFact.factId]),
       sourceRelationIds: Object.freeze(exactMissionRelations.map((relation) => relation.relationId).sort()),
     }),
     reasonCodes: Object.freeze([...reasonCodes].sort()),
   };
   return Object.freeze({ ...value, contentHash: hash(value) });
+}
+
+function selectLatestMissionFact(
+  facts: readonly ProviderClosureFact[],
+): ProviderClosureFact | undefined {
+  return facts.reduce<ProviderClosureFact | undefined>((latest, candidate) => {
+    if (latest === undefined) return candidate;
+    const latestObservedAt = latest.providerOpsSemantics?.missionRelation?.observedAt ?? latest.observedAt ?? "";
+    const candidateObservedAt = candidate.providerOpsSemantics?.missionRelation?.observedAt ?? candidate.observedAt ?? "";
+    if (candidateObservedAt !== latestObservedAt) {
+      return candidateObservedAt > latestObservedAt ? candidate : latest;
+    }
+    return candidate.sourceRecordId > latest.sourceRecordId ? candidate : latest;
+  }, undefined);
 }
 
 function reconcileState(
