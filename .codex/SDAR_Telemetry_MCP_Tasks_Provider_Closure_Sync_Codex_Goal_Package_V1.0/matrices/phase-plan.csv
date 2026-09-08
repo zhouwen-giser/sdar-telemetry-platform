@@ -1,0 +1,14 @@
+phase,name,prerequisite,exit
+T0,Source lock and gap audit,none,all refs/contract fields classified observed|required|unresolved
+T1,ProviderOps semantic intake,T0,typed mapping + fixtures
+T2,Runtime canonical semantic intake,T0,authoritative Runtime semantic reader tests
+T3,Exact task-execution closure,"T1,T2",0/1/>1 tests pass
+T4,Uncertainty reconciliation,T3,certainty/recovery matrix passes
+T5,Four-axis terminal,"T3,T4",independent terminal axes tests pass
+T6,Readiness hardening,T5,ready/not_ready/degraded/conflict gates deterministic
+T7,Persistence/publication,T6,detail-first manifest-last + additive schema if needed
+T8,Handoff v2 compatibility,T7,"v2 verify passes, no v1 fallback"
+T9,Tests/replay/crash,T8,unit/contract/replay/crash matrix pass
+T10,Normal-path E2E,T9,producer path to closure verified or external blocker recorded
+T11,Benchmark consumer qualification,T10,downstream consumes exact snapshot or blocker recorded
+T12,Final acceptance,T0-T11,gate matrix finalized and hashes emitted

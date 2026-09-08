@@ -69,6 +69,17 @@ test("writer and reader configurations reject every non-approved host", () => {
   );
 });
 
+test("an explicit exact loopback qualification host is allowed without opening arbitrary hosts", () => {
+  withEnvironment({
+    TEST_CLICKHOUSE_URL:"http://127.0.0.1:18124",TEST_CLICKHOUSE_USER:"reader",TEST_CLICKHOUSE_PASSWORD:"password",
+    TEST_CLICKHOUSE_SECURE:"false",TEST_CLICKHOUSE_EXPECTED_HOST:"127.0.0.1",
+  },()=>assert.equal(configFromEnv("TEST_CLICKHOUSE_").expectedHost,"127.0.0.1"));
+  withEnvironment({
+    TEST_CLICKHOUSE_URL:"https://clickhouse.example:8443",TEST_CLICKHOUSE_USER:"reader",TEST_CLICKHOUSE_PASSWORD:"password",
+    TEST_CLICKHOUSE_SECURE:"true",TEST_CLICKHOUSE_EXPECTED_HOST:"clickhouse.example",
+  },()=>assert.throws(()=>configFromEnv("TEST_CLICKHOUSE_"),/EXPECTED_HOST is not an approved/u));
+});
+
 test("custom CA configuration fails closed until the HTTP transport can apply it", () => {
   withEnvironment(
     {

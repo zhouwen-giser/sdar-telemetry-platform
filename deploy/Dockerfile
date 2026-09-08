@@ -4,6 +4,7 @@ COPY package.json pnpm-lock.yaml tsconfig.json ./
 COPY apps apps
 COPY packages packages
 COPY scripts scripts
+COPY integrations integrations
 COPY types types
 RUN npm install --ignore-scripts && npm run build && npm prune --omit=dev
 

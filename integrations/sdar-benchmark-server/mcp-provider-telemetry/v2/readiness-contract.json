@@ -6,6 +6,11 @@
     "selectedFactCount == expectedFactCount",
     "foreignFactCount == 0",
     "unresolvedBindingCount == 0",
+    "unresolvedExecutionCount == 0",
+    "conflictingExecutionCount == 0",
+    "unresolvedReconciliationCount == 0",
+    "terminalConflictCount == 0",
+    "identityHashConflictCount == 0",
     "truncated == false",
     "hintsUsedForAuthority == false",
     "status == ready"

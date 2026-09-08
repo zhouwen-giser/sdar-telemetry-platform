@@ -4,12 +4,12 @@ This directory is the byte-locked Telemetry import of the Runtime-owned Evidence
 
 ## Locked source
 
-- Execution SHA: `0da6075f2581279909efb69fc8e48cb01d95552c`
-- Main SHA: `2275bc52759914bc80113358a9083e6f00d59e6d`
+- Execution SHA: `2c3b0c4628ee09afe5e61559e8a7b9d14481b633`
+- Main SHA: `b0caf69e9f83bc6702e1c0a85e7ca158c3781d4b`
 - Contract version: `sdar.evidence/v1`
-- Canonical contract SHA-256: `sha256:a99f293d7c4a7aa204a3ada1b26ec4e82654d987d28336af3b0df6928a40495f`
-- Canonical registry SHA-256: `sha256:eac67fcc0cd02c55da750156af42f3ea2130ee470f0670aba980c08ddec41c71`
-- Imported source files: 121
+- Canonical contract SHA-256: `sha256:795352dc13cc98f153fb9c413e6830870570af75c92831e28102cabc76a6eefd`
+- Canonical registry SHA-256: `sha256:7d00320ed21eb89e98abce8ebbdaa7e4aa887e97ee97888ae8e4b62c69adf197`
+- Imported source files: 126
 
 Canonical hashes are computed from Runtime's canonical Evidence JSON. Every imported file has a separately named `byteSha256` in `source-lock.json`; a file-byte hash must not be substituted for a canonical contract hash.
 

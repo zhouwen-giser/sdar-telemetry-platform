@@ -305,6 +305,13 @@ test("debug composition is active, internal-PG, no Grafana and only the reviewed
     "dba7693c2ee3fe52bc4ea61182cce87244c6f83dbf2f5a94048da9fb9ed9740a",
   );
 });
+test("release image copies integration contracts before compiling their consumers", async () => {
+  const dockerfile = await readFile("deploy/Dockerfile", "utf8");
+  const integrationCopy = dockerfile.indexOf("COPY integrations integrations");
+  const build = dockerfile.indexOf("RUN npm install --ignore-scripts && npm run build");
+  assert.ok(integrationCopy >= 0);
+  assert.ok(build > integrationCopy);
+});
 test("unknown lag, seal and DLQ measurements are omitted rather than fabricated zeroes", () => {
   const value = renderDomainProjectionMetrics({
     clickHouseReady: true,

@@ -1,0 +1,15 @@
+semantic,current_record_type,current_payload_fields,required_authority,use_in_closure,status
+remote_task_binding,mcp_task.remote_binding,"bindingId,remoteTaskId,version,localState,providerAuthority,providerAuthorityHash",immutable remote_task_binding authority snapshot,sole Provider task tuple selector,OBSERVED
+provider_source_identity,mcp_task.remote_binding,"providerAuthority.providerSourceId,providerAuthority.providerId",immutable remote_task_binding authority snapshot,"providerSourceId/providerId exact match",OBSERVED
+provider_instance_identity,mcp_task.remote_binding,providerAuthority.externalServerId,immutable remote_task_binding authority snapshot,exact provider instance match in fact query and Runtime link,OBSERVED
+authoritative_origin_ids,mcp_task.remote_binding,"providerAuthority.runtimeServerId; envelope taskId",immutable Runtime payload,"Runtime link identity and origin claim verification only; no invocation fabrication",OBSERVED
+logical_invocation,mcp_task.logical_invocation,"logicalInvocationId,identityHash,invocationId,argumentsHash,identityContract",durable Runtime admission intent,provenance and uncertainty identity,OBSERVED
+admission,mcp_task.admission,"intentId,invocationId,bindingId,status,dispatchHash,dispatchedAt,reasonCode,redispatchAllowed",durable admission intent,joins uncertainty/reconciliation to exact binding,OBSERVED
+dispatch_uncertainty,mcp_task.dispatch_uncertain,"intentId,logicalInvocationId,reasonCode,redispatchAllowed=false",durable reconciliation attempt boundary,no-side-effect must not be inferred,OBSERVED
+exact_reconciliation,mcp_task.dispatch_reconciliation,"attemptId,intentId,logicalInvocationId,status,identityValidated,remoteTaskId,externalExecutionId,safeErrorCode,sourceContract,requestHash,resultHash,redispatchAllowed=false",durable reconciliation attempt journal,"found_exact/not_found/conflict/unavailable/deferred",OBSERVED
+provider_execution_link,mcp_task.provider_execution_link,"linkId,bindingId,logicalInvocationId,remoteTaskId,providerId,runtimeServerId,providerBindingId,providerOriginType,smppSourceId,externalServerId,operationName,executionStatus,externalExecutionId,missionStatus,deviceMissionId,provenance,sourceContract,sourceRevision,contentHash",durable RemoteTaskProviderExecutionLink,"0/1/>1 execution and optional Mission closure; complete tuple must repeat binding",OBSERVED
+mcp_task_control,mcp_task.control_event,"eventId,bindingId,eventType,status,nested payload",durable remote_task_control_event,independent control axis,OBSERVED
+continuation,mcp_task.continuation_attempt,"attemptId,snapshotId,status and existing continuation payload",durable continuation journal,diagnostic closure continuity,OBSERVED
+runtime_receipt,runtime.receipt,"invocationId,status,resultHash",durable MCP invocation,authority boundary only,OBSERVED
+runtime_verification,runtime.verification,"completedEffectId,status,effectFingerprint",durable verification,never inferred from Provider success,OBSERVED
+runtime_outcome,runtime.outcome,"outcomeDecisionId,level,status",durable Runtime outcome,never replaced by Provider business state,OBSERVED

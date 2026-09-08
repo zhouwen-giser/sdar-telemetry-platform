@@ -21,6 +21,19 @@ WHERE tenant_id = {tenantId:String}
 ORDER BY updated_at, binding_id
 LIMIT {limit:UInt32};
 
+-- Exact MCP Task semantics are generic Provider closure material, not UGV-specific tables.
+SELECT *
+FROM sdar_mart.v_episode_smpp_provider_task_semantic_closure
+WHERE tenant_id = {tenantId:String}
+  AND project_id = {projectId:String}
+  AND environment = {environment:String}
+  AND episode_id = {episodeId:String}
+  AND closure_snapshot_id = {closureSnapshotId:String}
+  AND projected_at <= {asOfProjectedAt:DateTime64(3)}
+  AND binding_id > {cursorBindingId:String}
+ORDER BY binding_id
+LIMIT {limit:UInt32};
+
 -- Fact keyset page selected by the authoritative binding closure view.
 SELECT *
 FROM sdar_mart.v_episode_smpp_provider_fact_closure

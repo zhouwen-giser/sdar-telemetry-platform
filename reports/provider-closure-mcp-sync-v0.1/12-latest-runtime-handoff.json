@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "sdar.telemetry-latest-runtime-handoff/v1",
+  "generatedAt": "2026-08-31T14:00:00Z",
+  "deployment": {
+    "sourceCommit": "2a1e492fd38d9a8524a6d967171ddb79b80e305b",
+    "image": "sdar-telemetry:2a1e492fd38d9a8524a6d967171ddb79b80e305b",
+    "imageDigest": "sha256:248e696acaacb50f96a0361f63ed85f5baa37aa056bf1f3509a212b4f6e2c1b8",
+    "project": "sdar-telemetry-latest",
+    "credentials": "secret_file_only",
+    "services": [
+      {"name":"ingestion-gateway","startedAt":"2026-08-31T13:54:00.393249192Z","endpoint":"http://127.0.0.1:18080","health":"healthy","restartCount":0},
+      {"name":"telemetry-worker","startedAt":"2026-08-31T13:54:04.961247598Z","health":"running","restartCount":0},
+      {"name":"query-api","startedAt":"2026-08-31T13:54:00.382921532Z","endpoint":"http://127.0.0.1:18081","health":"healthy","restartCount":0},
+      {"name":"admin-api","startedAt":"2026-08-31T13:54:04.959509056Z","endpoint":"http://127.0.0.1:18082","health":"healthy","restartCount":0}
+    ]
+  },
+  "upstream": {
+    "sourceCommit": "fb38ffdf7fbd0590128fb722ba008c5bb928f21b",
+    "image": "smpp-telemetry-processor:fb38ffdf7fbd0590128fb722ba008c5bb928f21b",
+    "imageDigest": "sha256:449445fc7eb5934de6a492d6a526b853b28ba98427890649ff8e9aae11cbf34c",
+    "startedAt": "2026-08-31T13:53:11.751382472Z",
+    "collectorHealth": "ready",
+    "processorHealth": "ready",
+    "walEntries": 36380,
+    "checkpointOffsetEnd": 12840033,
+    "standalonePending": 0,
+    "sharedPending": 0,
+    "lastError": null
+  },
+  "verification": {
+    "staticVerify": {"total":205,"passed":201,"skipped":4,"failed":0},
+    "ingestion": {"runId":"codex_it_latest_1788184538170","initialStatus":202,"duplicateStatus":202,"walBytes":3016,"duplicateWalGrowth":0},
+    "projection": {"recordId":"evidence_2369ec092cc9ea1b3a3a95514d8c30222faac7a4108f452b34b718e3c44a5fdf","recordType":"runtime.episode","projectedAt":"2026-08-31T13:55:38.628Z"},
+    "query": {"authenticatedStatus":200,"anonymousProtectedStatus":401},
+    "providerTask": {"taskId":"ffcca9cc-7f1b-42d0-97c4-8309d19fec03","factCount":1227,"observedAtCount":1227,"terminalRecordId":"30918822-fd06-503e-9da6-c278bff24872","terminalState":"TERMINAL_COMPLETED","missionId":"64212","missionRelationId":"d3575d99-38e5-531e-aacc-52f3f4822bcf"},
+    "formalSnapshot": {"snapshotId":"sha256:19ed3d76d93fddc0d49a550cf43038e64cd69c3404509f5580d92dd5a2f79ce1","status":"ready","goalSuccessProven":false,"physicalSuccessProven":false},
+    "smppBenchmarkHandoffV2": "PASS",
+    "smppClickHousePreflight": "PASS"
+  },
+  "safety": {
+    "deviceControl": false,
+    "navigation": false,
+    "simulatorMutation": false,
+    "directSharedInsertOrDelete": false,
+    "credentialsEmitted": false
+  },
+  "remainingBlockers": [],
+  "boundedLimitations": [
+    "The completed UGV task was created at the Provider boundary and has no authoritative SDAR A2A origin, so it is not SDAR Goal-success evidence.",
+    "Historical pre-fix Mission 64209 relation rows remain immutable and must not qualify task 15588c56-7ede-4b7d-abf0-87031271c28c until serving semantics explicitly supersede them with the latest unresolved Mission fact."
+  ]
+}

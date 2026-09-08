@@ -62,6 +62,7 @@ services:
       <<: *warehouse
       ALLOW_CLICKHOUSE_ADDITIVE_MIGRATION: sdar.provider-closure/v2
       PROVIDER_CLOSURE_MIGRATION_SHA256: ${PROVIDER_CLOSURE_MIGRATION_SHA256:?}
+      PROVIDER_CLOSURE_SEMANTIC_MIGRATION_SHA256: ${PROVIDER_CLOSURE_SEMANTIC_MIGRATION_SHA256:?}
     secrets: [warehouse_password]
   provider-bootstrap:
     <<: *app

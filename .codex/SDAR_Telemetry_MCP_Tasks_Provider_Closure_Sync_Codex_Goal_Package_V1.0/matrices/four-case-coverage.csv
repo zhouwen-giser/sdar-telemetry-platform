@@ -1,0 +1,5 @@
+case_id,telemetry_requirement,provider_closure_expectation,critical_semantics
+UGV-NODE-001,preserve observedAt freshness; no provider side effect,not_required or no binding,observedAt != projectedAt
+UGV-CORE-001,"exact binding->execution, terminal, business outcome",ready when complete,provider success != physical success
+UGV-MCP-003,uncertain dispatch + exact reconciliation to original task/execution,recovered then ready when terminal complete,no blind retry; duplicate execution = conflict
+UGV-XCHAIN-003,preserve provider business success without goal/physical inference,provider closure can be ready,goalSuccessProven=false; physicalSuccessProven=false

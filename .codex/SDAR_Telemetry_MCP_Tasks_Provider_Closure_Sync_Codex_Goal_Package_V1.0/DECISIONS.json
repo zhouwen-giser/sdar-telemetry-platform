@@ -1,0 +1,130 @@
+{
+  "schemaVersion": "sdar.telemetry-mcp-provider-closure-sync-decisions/v1",
+  "decisions": [
+    {
+      "id": "TEL-D01",
+      "decision": "Keep sdar.telemetry-smpp-providerops-handoff/v2 as the formal Provider handoff unless additive compatibility is proven impossible.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D02",
+      "decision": "Runtime mcp_task.remote_binding remains the only authority that selects Remote Task and Provider tuple.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D03",
+      "decision": "Provider-internal execution relations may prove selected Provider Task -> Provider Execution but may not select a different Provider Task or override Runtime binding.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D04",
+      "decision": "Origin, trace, correlation and generic relation hints remain non-authoritative for selection.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D05",
+      "decision": "Exact Task->Execution closure is 0=unresolved, 1=exact, >1=conflict.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D06",
+      "decision": "Dispatch uncertainty is a first-class state; uncertain is not failed.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D07",
+      "decision": "An uncertain dispatch requires exact reconciliation before semantic readiness can become ready.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D08",
+      "decision": "not_found/unavailable/deferred reconciliation does not prove no side effect; it remains unresolved readiness.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D09",
+      "decision": "Provider completed/business success never proves Goal achieved or physical success.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D10",
+      "decision": "Four terminal axes are control state, dispatch certainty, provider execution state and provider business outcome.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D11",
+      "decision": "Physical verification remains downstream Benchmark responsibility.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D12",
+      "decision": "No direct Provider private DB/HTTP collector will be added.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D13",
+      "decision": "No direct writes to external_provider_fact/entity_relation_fact as test evidence.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D14",
+      "decision": "No UGV-specific ClickHouse table will be introduced.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D15",
+      "decision": "If generic Provider closure detail persistence is needed, use additive Telemetry-owned schema only; vendor 00..26 remains untouched.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D16",
+      "decision": "Device Mission closure is optional until an authoritative producer contract exists.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D17",
+      "decision": "observedAt is the freshness clock for state/position; projectedAt is not a substitute.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D18",
+      "decision": "Closure snapshots are immutable; late evidence creates a new snapshot.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D19",
+      "decision": "Manifest remains the only publication marker and is written after detail rows.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D20",
+      "decision": "Same identity + same hash is idempotent; same identity + different hash is conflict.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D21",
+      "decision": "Missing required evidence means not_ready/conflict as appropriate, never a metric score of zero.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D22",
+      "decision": "This goal does not run vehicle_navigate or any physical side-effect command.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D23",
+      "decision": "ProviderOps remains schema 1.1.0 / 16 record types if upstream confirms additive semantics.",
+      "status": "conditional_on_T0"
+    },
+    {
+      "id": "TEL-D24",
+      "decision": "Runtime canonical record types and payload fields must be taken from execution-time frozen registry, not guessed from this package.",
+      "status": "frozen"
+    },
+    {
+      "id": "TEL-D25",
+      "decision": "No completion token unless every acceptance gate is proven PASS.",
+      "status": "frozen"
+    }
+  ]
+}

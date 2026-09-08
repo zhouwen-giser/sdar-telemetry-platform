@@ -1,0 +1,6 @@
+repository,mode,required,purpose
+sdar-telemetry-platform,modify,yes,"Provider Closure semantic intake, exact closure, readiness, handoff, tests"
+smpp-telemetry-platform,read-only,yes,ProviderOps payload/relation contract source
+sdar-mcp-provider-platform,read-only,yes,producer semantic authority verification
+skill-driven-agent-runtime,read-only,yes,canonical Runtime Evidence contract verification
+sdar-benchmark-server,read-only,yes,Provider Closure v2 consumer compatibility

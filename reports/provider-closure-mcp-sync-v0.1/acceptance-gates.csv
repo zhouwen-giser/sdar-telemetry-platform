@@ -1,0 +1,49 @@
+gate_id,phase,description,requirement,status,evidence
+TEL-G01,T0,Target main HEAD re-read and compared,required,PASS,00-source-lock target base exact
+TEL-G02,T0,SMPP Telemetry producer ref re-read and compared,required,PASS,930ea86294a8d5ccaebffe1237437c5e44fac80d
+TEL-G03,T0,Runtime exact Evidence producer ref resolved,required,PASS,b9a75e3990163e959d91c76d402fe94c8366f5e8 implementation and 2c3b0c4628ee09afe5e61559e8a7b9d14481b633 handoff
+TEL-G04,T0,Benchmark consumer ref re-read and compared,required,PASS,30a3aa2cfaafb48a1aa8da72d19f65bef3034d72 live-qualified
+TEL-G05,T0,ProviderOps payload catalog/version/record type count verified,required,PASS,sdar.provider.ops.event/1.1.0 catalog v1.1 count 16
+TEL-G06,T0,Current shared fact/relation field inventory recorded,required,PASS,01-gap-audit.md
+TEL-G07,T1,No new ProviderOps record type introduced without upstream change,required,PASS,02 mapping and catalog count 16
+TEL-G08,T1,Provider execution identity mapped only from frozen upstream semantics,required,PASS,26 focused closure tests and 02 mapping
+TEL-G09,T1,No text/time/resource heuristic identity mapping,required,PASS,exact tuple implementation and tests
+TEL-G10,T2,Runtime binding remains sole Provider Task selection authority,required,PASS,mcp_task.remote_binding unit and normal-path evidence
+TEL-G11,T2,Provider instance identity preserved when authoritative,required,PASS,provider_instance_id filtered and live-qualified
+TEL-G12,T2,Authoritative origin IDs populated only when Runtime provides them,required,PASS,03-runtime-evidence-mapping.md
+TEL-G13,T3,0 execution match -> unresolved/not_ready,required,PASS,provider-closure-v2 focused tests
+TEL-G14,T3,1 execution match -> exact,required,PASS,provider-closure-v2 focused tests and ready E2E
+TEL-G15,T3,>1 execution match -> conflict,required,PASS,provider-closure-v2 focused tests
+TEL-G16,T3,same deterministic id + different hash -> conflict,required,PASS,provider-closure-v2 focused tests
+TEL-G17,T4,uncertain dispatch does not become failed automatically,required,PASS,05-uncertainty-reconciliation.md and tests
+TEL-G18,T4,uncertain + found_exact -> recovered original task/execution,required,PASS,final normal-path snapshot recovered/found_exact
+TEL-G19,T4,uncertain + not_found/deferred/unavailable -> not_ready,required,PASS,focused reconciliation tests
+TEL-G20,T4,reconciliation conflict -> conflict,required,PASS,focused reconciliation tests
+TEL-G21,T5,MCP Task control state calculated independently,required,PASS,final snapshot control=completed
+TEL-G22,T5,dispatch certainty calculated independently,required,PASS,final snapshot dispatch=recovered
+TEL-G23,T5,Provider execution state calculated independently,required,PASS,final snapshot provider execution=completed
+TEL-G24,T5,Provider business outcome calculated independently,required,PASS,final snapshot business=succeeded
+TEL-G25,T5,goalSuccessProven remains false,required,PASS,final manifest false and unit guard
+TEL-G26,T5,physicalSuccessProven remains false,required,PASS,final manifest false and unit guard
+TEL-G27,T6,required task-execution unresolved blocks ready,required,PASS,consumer and closure rejection tests
+TEL-G28,T6,optional Mission unresolved does not block phase-1 ready,required,PASS,final ready snapshot mission=unresolved
+TEL-G29,T6,foreign/truncated/hints rules from v2 preserved,required,PASS,tuple isolation tests and v2 readiness contract
+TEL-G30,T7,No vendor 00..26 migration rewritten,required,PASS,migration 015 byte lock plus additive 016
+TEL-G31,T7,No UGV-specific closure table introduced,required,PASS,generic semantic table/view migration inspection
+TEL-G32,T7,Details publish before manifest,required,PASS,publisher order test and normal-path closure
+TEL-G33,T7,Old snapshots remain immutable after late data,required,PASS,determinism/late-data unit test
+TEL-G34,T8,Handoff remains v2 or task stops for breaking-design review,required,PASS,sdar.telemetry-smpp-providerops-handoff/v2
+TEL-G35,T8,v1 fallback remains disabled,required,PASS,handoff manifest and verifier
+TEL-G36,T8,Benchmark handoff verify passes,required,PASS,static and live verifier assets=8
+TEL-G37,T9,same input/asOf/contracts -> same snapshot hash,required,PASS,determinism unit test
+TEL-G38,T9,capture drift -> blocked_drift,required,PASS,closure-v2 drift regression
+TEL-G39,T9,manifest-absent partial details are not formally visible,required,PASS,manifest-gated views and publisher order test
+TEL-G40,T9,observedAt preserved distinctly from projectedAt,required,PASS,9/9 live facts and 1/1 selected closure fact
+TEL-G41,T10,E2E uses normal Producer/Processor path with no direct target fact INSERT,required,PASS,09-live-e2e.md directTargetFactInsert=false
+TEL-G42,T10,Task performs no device control,required,PASS,09-live-e2e.md deviceControl=false
+TEL-G43,T11,Benchmark consumer accepts exact ready snapshot,required,PASS,v2 consumer focused test and live two-handoff qualification
+TEL-G44,T11,Benchmark consumer rejects/not-readies unresolved/conflict snapshot,required,PASS,v2 consumer rejection tests
+TEL-G45,T12,All required reports generated,required,PASS,00 through 11 plus gates and checksums present
+TEL-G46,T12,SHA256SUMS generated and consistent,required,PASS,SHA256SUMS verified with sha256sum -c
+TEL-G47,T12,No unexecuted gate marked PASS,required,PASS,each TEL-G01..46 has executed evidence above
+TEL-G48,T12,Completion token emitted only if TEL-G01..47 all PASS,required,PASS,11-final-acceptance.md emits token after all prior gates PASS

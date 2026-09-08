@@ -73,9 +73,9 @@ const [registryRaw, projectionSource, migrationSource, querySource] = await Prom
 const registry = JSON.parse(registryRaw) as Registry;
 const validator = await loadEvidenceV1Validator(schemaRoot);
 assert(registry.contractVersion === "sdar.evidence/v1", "contract version");
-assert(registry.records.length === 100, "record count");
-assert(new Set(registry.records.map((record) => record.recordType)).size === 100, "unique types");
-assert(validator.recordSchemaCount === 100, "validator schema count");
+assert(registry.records.length === 105, "record count");
+assert(new Set(registry.records.map((record) => record.recordType)).size === 105, "unique types");
+assert(validator.recordSchemaCount === 105, "validator schema count");
 assert(projectionSource.includes(canonicalTable), "projection canonical target");
 assert(querySource.includes(canonicalTable), "query canonical target");
 assert(querySource.includes('addTraceFilter(filters, parameters, "recordId", "record_id")'), "query record route");
@@ -145,7 +145,7 @@ assert(required === 95, "required coverage");
 assert(diagnostic === 5, "diagnostic coverage");
 assert(specialized === 3, "specialized coverage");
 assert(canonicalOnly === 97, "canonical-only coverage");
-assert(rows.every((row) => row.recognized && row.canonical && row.queryable), "100/100 coverage");
+assert(rows.every((row) => row.recognized && row.canonical && row.queryable), "105/105 coverage");
 assert(rows.every((row) => !row.silentDrop), "silent drop");
 
 const evidence = {
@@ -161,9 +161,9 @@ const evidence = {
   deploymentBoundary:
     "Static target coverage only. The pre-014 snapshot does not contain the canonical target table.",
   assertions: {
-    recognized: "100/100",
-    canonical: "100/100",
-    queryable: "100/100",
+    recognized: "105/105",
+    canonical: "105/105",
+    queryable: "105/105",
     required: "95/95",
     diagnostic: "5/5",
     conditionalSpecialized: "3/3",
@@ -176,12 +176,12 @@ const evidence = {
 await mkdir(outputDirectory, {recursive: true});
 await Promise.all([
   writeFile(
-    path.join(outputDirectory, "projection-coverage-100.json"),
+    path.join(outputDirectory, "projection-coverage-105.json"),
     `${JSON.stringify(evidence, null, 2)}\n`,
     "utf8",
   ),
   writeFile(
-    path.join(outputDirectory, "projection-coverage-100.csv"),
+    path.join(outputDirectory, "projection-coverage-105.csv"),
     coverageCsv(rows),
     "utf8",
   ),
@@ -323,9 +323,9 @@ Generated: ${generatedAt}
 
 | Assertion | Result | Meaning |
 | --- | ---: | --- |
-| Frozen registry recognized | **100/100** | All unique registry entries and their schema assets were found. |
-| Canonical projection | **100/100** | Every Evidence v1 recordType was exercised through \`canonicalProjection\` and landed on \`${canonicalTable}\`. |
-| Queryable by target code path | **100/100** | The Query API reads the same canonical table and can address every row by mandatory \`record_id\`. |
+| Frozen registry recognized | **105/105** | All unique registry entries and their schema assets were found. |
+| Canonical projection | **105/105** | Every Evidence v1 recordType was exercised through \`canonicalProjection\` and landed on \`${canonicalTable}\`. |
+| Queryable by target code path | **105/105** | The Query API reads the same canonical table and can address every row by mandatory \`record_id\`. |
 | Evaluation role \`required\` | **95/95** | No required recordType is dropped. |
 | Evaluation role \`diagnostic\` | **5/5** | No diagnostic recordType is dropped. |
 | Conditional specialized projection | **3/3** | Only the three lossless Node Control mappings listed below are eligible. |
@@ -343,7 +343,7 @@ This is a static target-code assertion, not evidence that migration 014 has been
 - The 97 other types are canonical-only. In particular, \`capability.*\`, readiness, task binding, and task attempt payloads are not padded with invented values to satisfy older specialized DDL.
 - Query coverage is generic rather than a 100-item SQL allowlist: \`/v1/evidence/trace?recordId=...\` filters the mandatory canonical \`record_id\`; task routes and the \`episodeId\` trace filter use lineage columns on the same table.
 
-## Complete 100-type matrix
+## Complete 105-type matrix
 
 | # | recordType | family | evaluation | applicability | canonical | queryable | specialized | silent drop |
 | ---: | --- | --- | --- | --- | :---: | :---: | --- | :---: |
@@ -351,8 +351,8 @@ ${matrix}
 
 ## Machine-readable evidence
 
-- \`reports/sdar-integration/evidence/projection-coverage-100.json\`
-- \`reports/sdar-integration/evidence/projection-coverage-100.csv\`
+- \`reports/sdar-integration/evidence/projection-coverage-105.json\`
+- \`reports/sdar-integration/evidence/projection-coverage-105.csv\`
 
 Regenerate with:
 

@@ -1,0 +1,11 @@
+code,class,meaning
+SMPP_PROVIDER_EXECUTION_MISSING,not_ready,required selected Provider Task has no authoritative Provider Execution identity
+SMPP_PROVIDER_EXECUTION_CONFLICT,conflict,more than one authoritative Provider Execution candidate exists for one required binding
+SMPP_DISPATCH_UNCERTAIN,diagnostic,mutating dispatch outcome is uncertain
+SMPP_DISPATCH_RECOVERED,diagnostic,uncertain dispatch reconciled exactly to original task/execution
+SMPP_RECONCILIATION_UNRESOLVED,not_ready,uncertain dispatch cannot yet be reconciled exactly
+SMPP_RECONCILIATION_CONFLICT,conflict,reconciliation yields multiple/inconsistent identities
+SMPP_PROVIDER_TERMINAL_MISSING,not_ready,required terminal semantics not observed yet
+SMPP_PROVIDER_TERMINAL_CONFLICT,conflict,contradictory terminal/business outcome facts
+SMPP_PROVIDER_MISSION_UNRESOLVED,degraded,optional Device Mission identity unavailable
+SMPP_PROVIDER_IDENTITY_HASH_CONFLICT,conflict,same deterministic identity carries different content hash

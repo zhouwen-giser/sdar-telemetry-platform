@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "sdar.telemetry-current-authority-runtime-handoff/v1",
+  "generatedAt": "2026-09-01T01:41:49Z",
+  "deployment": {
+    "sourceCommit": "cceea2b88b697dcaef33dba0bd7679b15b3b28d3",
+    "image": "sdar-telemetry:cceea2b88b697dcaef33dba0bd7679b15b3b28d3",
+    "imageDigest": "sha256:34b75ac34cf67bc0ad4d392a4589a8c67fbc1118df96eda279e0857ded3971b1",
+    "ociRevision": "cceea2b88b697dcaef33dba0bd7679b15b3b28d3",
+    "project": "sdar-telemetry-latest",
+    "credentials": "secret_file_only",
+    "services": [
+      {"name":"ingestion-gateway","startedAt":"2026-09-01T01:39:01.733713020Z","endpoint":"http://127.0.0.1:18080","health":"healthy","restartCount":0},
+      {"name":"telemetry-worker","startedAt":"2026-09-01T01:39:03.036699360Z","health":"running","restartCount":0},
+      {"name":"query-api","startedAt":"2026-09-01T01:39:01.731922008Z","endpoint":"http://127.0.0.1:18081","health":"healthy","restartCount":0},
+      {"name":"admin-api","startedAt":"2026-09-01T01:39:03.033883715Z","endpoint":"http://127.0.0.1:18082","health":"healthy","restartCount":0}
+    ]
+  },
+  "currentAuthorityRule": {
+    "selection": "provider_observed_at_then_source_record_id_v1",
+    "historicalExactIsAuditOnlyAfterUnresolvedOrConflict": true,
+    "exactRelationMustReferenceSelectedFact": true
+  },
+  "upstream": {
+    "sourceCommit": "bbadebccd146a639cb38e610a8c931a0257289c3",
+    "image": "smpp-telemetry-processor:bbadebccd146a639cb38e610a8c931a0257289c3",
+    "imageDigest": "sha256:28d80af3f3b16527c7444224fbadf0b73b7b8f985b3e04692133c7438dd24a04",
+    "processorStartedAt": "2026-08-31T14:07:31.428361223Z",
+    "currentAuthorityApiStartedAt": "2026-08-31T14:08:31.032628018Z",
+    "currentAuthorityEndpoint": "http://127.0.0.1:18083",
+    "processorHealth": "ready",
+    "checkpointOffsetEnd": 14887971,
+    "standalonePending": 0,
+    "sharedPending": 0,
+    "lastError": null
+  },
+  "verification": {
+    "staticVerify": {"total":207,"passed":203,"skipped":4,"failed":0},
+    "ingestion": {"runId":"codex_it_authority_1788226891329","recordCount":2,"initialStatus":202,"duplicateStatus":202,"walBytesBefore":3016,"walBytesAfterInitial":6083,"walBytesAfterDuplicate":6083},
+    "query": {"authenticatedStatus":200,"anonymousProtectedStatus":401,"rowCount":2,"watermark":"2026-09-01T01:41:31.703Z"},
+    "smppTimelineQuery": {"authenticatedStatus":200,"anonymousProtectedStatus":401,"rowCount":11,"sourceContract":"smpp.providerops/v1.1"},
+    "failedTaskAuthority": {"taskId":"15588c56-7ede-4b7d-abf0-87031271c28c","taskExecutionCount":1,"missionStatus":"unresolved","executionMissionCount":0,"authorityRecordId":"9d48a6c8-d8f0-5dc0-9dc4-b4229008a0b8","auditHistoryPreserved":true},
+    "normalTaskAuthority": {"taskId":"ffcca9cc-7f1b-42d0-97c4-8309d19fec03","taskExecutionCount":1,"missionStatus":"exact","missionId":"64212","executionMissionCount":1,"missionRelationId":"d3575d99-38e5-531e-aacc-52f3f4822bcf"},
+    "smppBenchmarkHandoffV2": "PASS",
+    "smppClickHousePreflight": "PASS"
+  },
+  "safety": {
+    "deviceControl": false,
+    "navigation": false,
+    "runtimeMcpMutation": false,
+    "simulatorMutation": false,
+    "directSharedInsertOrDelete": false,
+    "historyDeleted": false,
+    "credentialsEmitted": false,
+    "goalSuccessProven": false,
+    "physicalSuccessProven": false
+  },
+  "remainingBlockers": []
+}
