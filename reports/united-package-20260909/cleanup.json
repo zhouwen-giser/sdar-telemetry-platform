@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "cleanExtractionRemoved": true,
+  "singlePackageProbeRemoved": true,
+  "isolatedPostgresRemoved": true,
+  "gatewaySmokeContainerRemoved": true
+}

@@ -1,0 +1,22 @@
+{
+  "/wsgs-dev-grounding-worker-1": {
+    "before": {
+      "id": "79c1ebc9e745ec98c68171617213bb0d5b34d45d44dd49d5377cef118071d4d3",
+      "startedAt": "2026-09-09T02:38:08.33627179Z"
+    },
+    "after": {
+      "id": "69b876c331d61043251b928a6bf10fe629334971502401452bb108dba678b242",
+      "startedAt": "2026-09-09T03:30:50.974840905Z"
+    }
+  },
+  "/wsgs-dev-grounding-api-1": {
+    "before": {
+      "id": "b81fe6f9aad89161c912f837d18343768afd072033bef417861b09c536ee3478",
+      "startedAt": "2026-09-09T02:39:03.476382629Z"
+    },
+    "after": {
+      "id": "271df4d084b537286ca673405fa86977bd1359bf37a7215e58e7ee440285856e",
+      "startedAt": "2026-09-09T03:30:50.969735558Z"
+    }
+  }
+}

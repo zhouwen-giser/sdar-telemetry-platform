@@ -1,0 +1,12 @@
+{
+  "sourceHash": "e3b4de6423e44232eb0d15a98d11d58e19086b80b9efe593b84878b68a726bc1",
+  "image": "sdar-telemetry:e3b4de6423e44232",
+  "scope": {
+    "environment": "development",
+    "projectId": "smpp-development",
+    "tenantId": "tenant-local"
+  },
+  "upstreamPreserved": 48,
+  "runtimeChanged": false,
+  "release": "/mnt/data/sdar-telemetry-releases/sdar-telemetry-e3b4de6423e44232"
+}

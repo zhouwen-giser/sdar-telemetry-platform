@@ -80,6 +80,12 @@ test("an explicit exact loopback qualification host is allowed without opening a
   },()=>assert.throws(()=>configFromEnv("TEST_CLICKHOUSE_"),/EXPECTED_HOST is not an approved/u));
 });
 
+test("sz-gowm allows only the explicitly selected shared ClickHouse DNS name", () => {
+  const env = { TEST_CLICKHOUSE_URL: "http://sdar-clickhouse:8123", TEST_CLICKHOUSE_USER: "reader", TEST_CLICKHOUSE_PASSWORD: "password", TEST_CLICKHOUSE_SECURE: "false", TEST_CLICKHOUSE_EXPECTED_HOST: "sdar-clickhouse" };
+  withEnvironment(env, () => assert.equal(configFromEnv("TEST_CLICKHOUSE_").expectedHost, "sdar-clickhouse"));
+  withEnvironment({ ...env, TEST_CLICKHOUSE_URL: "http://other-clickhouse:8123" }, () => assert.throws(() => configFromEnv("TEST_CLICKHOUSE_"), /hostname must be sdar-clickhouse/u));
+});
+
 test("custom CA configuration fails closed until the HTTP transport can apply it", () => {
   withEnvironment(
     {

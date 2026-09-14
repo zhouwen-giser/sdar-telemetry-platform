@@ -1,0 +1,8 @@
+{
+  "directory": "/home/zhouwen/web-download/sdar-telemetry-platform/artifacts/united/sdar-telemetry-united-a9452f8fd2e1b23164f4",
+  "archive": "sdar-telemetry-united-a9452f8fd2e1b23164f4.tar.gz",
+  "sha256": "f2bfd0cff223e0876db56722f37e23fcffc2f825a54f2d8b8d0f8f86bf210c80",
+  "sourceHash": "ef7716315248e699bdb1d25ea71d655f3dbc0e8853ec2a8f6369575e2be2f4a8",
+  "upstreamSha256": "01483f39eac04a555d4868c44cc6b94b269a9266bb3db83206698f6534b5f408",
+  "repeatIdentical": true
+}

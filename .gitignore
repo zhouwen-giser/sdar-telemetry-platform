@@ -5,3 +5,5 @@ deploy/secrets/
 runtime/
 *.log
 coverage/
+artifacts/
+__pycache__/

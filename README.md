@@ -1,5 +1,9 @@
 # sdar-telemetry-platform
 
+源码联合包一键生成：`npm run package:joint -- --upstream <SDAR 联合包路径>`，参见 [联合包交付说明](deploy/united/README.md)。
+
+sz-gowm 站点部署使用 ClickHouse 25.3.14.14，参见 [站点部署与恢复](deploy/sz-gowm/README.md)。
+
 四项目联调入口与默认 active 配置见 [UGV 联调说明](docs/UGV_DEBUG.md)。
 仅联调显式免登录；生产默认不变。SDAR → Commander/NPC 本轮暂留空。
 ProviderOps v2 使用 Control PostgreSQL 005 的增量 origin/lease/checkpoint，向外部

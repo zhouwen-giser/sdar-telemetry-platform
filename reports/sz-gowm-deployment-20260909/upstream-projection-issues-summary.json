@@ -1,0 +1,42 @@
+[
+  {
+    "issueCode": "projection_bug",
+    "severity": "blocking",
+    "recordType": "node_control.configuration_apply_ack",
+    "retryable": true,
+    "firstObservedAt": "2026-09-09T03:20:43.969Z",
+    "resolvedAt": "2026-09-09T03:20:49.864Z"
+  },
+  {
+    "issueCode": "projection_bug",
+    "severity": "blocking",
+    "recordType": "node_control.configuration_lkg_transition",
+    "retryable": true,
+    "firstObservedAt": "2026-09-09T03:20:43.972Z",
+    "resolvedAt": "2026-09-09T03:20:49.905Z"
+  },
+  {
+    "issueCode": "projection_bug",
+    "severity": "diagnostic",
+    "recordType": "evidence.export_status",
+    "retryable": true,
+    "firstObservedAt": "2026-09-09T03:20:46.134Z",
+    "resolvedAt": "2026-09-09T03:20:51.948Z"
+  },
+  {
+    "issueCode": "projection_bug",
+    "severity": "diagnostic",
+    "recordType": "evidence.export_status",
+    "retryable": true,
+    "firstObservedAt": "2026-09-09T03:26:06.646Z",
+    "resolvedAt": "2026-09-09T03:27:20.630Z"
+  },
+  {
+    "issueCode": "projection_bug",
+    "severity": "diagnostic",
+    "recordType": "evidence.export_status",
+    "retryable": true,
+    "firstObservedAt": "2026-09-09T03:27:22.430Z",
+    "resolvedAt": "2026-09-09T03:27:28.287Z"
+  }
+]

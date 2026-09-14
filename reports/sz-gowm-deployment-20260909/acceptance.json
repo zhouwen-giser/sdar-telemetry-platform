@@ -1,0 +1,111 @@
+{
+  "ingestion-gateway": {
+    "health": 200
+  },
+  "query-api": {
+    "health": 200
+  },
+  "admin-api": {
+    "health": 200
+  },
+  "domain-projection-worker": {
+    "health": 200
+  },
+  "/v1/metrics?limit=1": {
+    "status": 200,
+    "rows": 1
+  },
+  "/v1/traces?limit=1": {
+    "status": 200,
+    "rows": 1
+  },
+  "domain": {
+    "projections": 10,
+    "status": "missing_real_producers",
+    "maxMode": "shadow",
+    "activated": false
+  },
+  "provider": {
+    "status": "available",
+    "originId": "sz-gowm-provider-closure",
+    "notBefore": "2026-09-09T03:17:59.653Z",
+    "checkpoint": {
+      "projectedAt": "2026-09-09T03:17:59.653Z",
+      "rowId": ""
+    },
+    "data": "waiting_source",
+    "states": []
+  },
+  "evidence": {
+    "exportId": "sz-gowm-incremental-evidence",
+    "status": "healthy",
+    "activeRevision": 1,
+    "lastAcknowledgedSequence": "836",
+    "pendingRecords": 0,
+    "lastAcknowledgedAt": "2026-09-09T03:32:11.214Z",
+    "observedAt": "2026-09-09T03:32:30.968Z"
+  },
+  "warehouse": {
+    "rows": "458",
+    "records": "458",
+    "lastSequence": "836"
+  },
+  "permissions": {
+    "readerNoWriteOrDdl": true,
+    "writerNoDdl": true,
+    "separateIngestTokens": true
+  },
+  "containers": [
+    {
+      "name": "/sdar-telemetry-ingestion-gateway-1",
+      "id": "3d609272df7ed12df3877678731cea1248711f8194a823d87b548196995a10ec",
+      "imageId": "sha256:aa48d009d8b842889055a2f804e51667bf5b0da1addd559a714ee0ac020be971",
+      "status": "running",
+      "startedAt": "2026-09-09T03:29:35.466465682Z",
+      "health": "healthy"
+    },
+    {
+      "name": "/sdar-telemetry-telemetry-worker-1",
+      "id": "84507c164411d0462f046b66bf864fb31b09f03bf85b39fc4f541e8a05e9448b",
+      "imageId": "sha256:aa48d009d8b842889055a2f804e51667bf5b0da1addd559a714ee0ac020be971",
+      "status": "running",
+      "startedAt": "2026-09-09T03:29:35.437623377Z",
+      "health": null
+    },
+    {
+      "name": "/sdar-telemetry-query-api-1",
+      "id": "4e8279399d5a748d38ebcd9ffb4c43fdbd5922b8297ab84ecdde835e20340590",
+      "imageId": "sha256:aa48d009d8b842889055a2f804e51667bf5b0da1addd559a714ee0ac020be971",
+      "status": "running",
+      "startedAt": "2026-09-09T03:29:35.500364417Z",
+      "health": "healthy"
+    },
+    {
+      "name": "/sdar-telemetry-admin-api-1",
+      "id": "2b939b2cb8f2487e62ad16558f9890be2290c3fe0e1a8402ea220a9eda10df62",
+      "imageId": "sha256:aa48d009d8b842889055a2f804e51667bf5b0da1addd559a714ee0ac020be971",
+      "status": "running",
+      "startedAt": "2026-09-09T03:29:35.501237979Z",
+      "health": "healthy"
+    },
+    {
+      "name": "/sdar-telemetry-domain-projection-worker-1",
+      "id": "5d53ba9cd2e15bd84c9829bb6e565edf60ced24d3eaafe587771378d53f3ca02",
+      "imageId": "sha256:aa48d009d8b842889055a2f804e51667bf5b0da1addd559a714ee0ac020be971",
+      "status": "running",
+      "startedAt": "2026-09-09T03:29:35.467369883Z",
+      "health": "healthy"
+    },
+    {
+      "name": "/sdar-telemetry-control-postgres-1",
+      "id": "aa8eee3a14593b67d836a1da24642d6fe237b15189898d92f490f4689b709eed",
+      "imageId": "sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685",
+      "status": "running",
+      "startedAt": "2026-09-09T03:24:38.83212723Z",
+      "health": "healthy"
+    }
+  ],
+  "status": "PASS",
+  "sourceHash": "e3b4de6423e44232eb0d15a98d11d58e19086b80b9efe593b84878b68a726bc1",
+  "packageSecretScan": "PASS"
+}

@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "isolated": true,
+  "clickhouseVersion": "25.3.14.14",
+  "records": 2,
+  "gatewayRestartAckStable": true,
+  "outageCheckpointPreserved": true,
+  "restartIdle": true,
+  "replayFinalRowsStable": true,
+  "initial": {
+    "partitionsVisited": 1,
+    "framesCompleted": 1,
+    "writesCompleted": 1
+  }
+}

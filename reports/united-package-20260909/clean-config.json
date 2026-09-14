@@ -1,0 +1,317 @@
+{
+  "name": "sdar-telemetry",
+  "services": {
+    "ingestion-gateway": {
+      "image": "sdar-telemetry:verification",
+      "restart": "unless-stopped",
+      "command": [
+        "node",
+        "dist/apps/ingestion-gateway/src/main.js"
+      ],
+      "environment": {
+        "WAL_DIR": "/var/lib/sdar-telemetry/wal",
+        "GATEWAY_PORT": "8080",
+        "GATEWAY_BIND_HOST": "0.0.0.0",
+        "EVIDENCE_INGEST_BEARER_TOKEN_FILE": "/run/secrets/evidence-token",
+        "DOMAIN_SOURCE_INGEST_BEARER_TOKEN_FILE": "/run/secrets/domain-token"
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/evidence-token",
+          "target": "/run/secrets/evidence-token",
+          "read_only": true
+        },
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/domain-token",
+          "target": "/run/secrets/domain-token",
+          "read_only": true
+        },
+        "evidence-wal:/var/lib/sdar-telemetry/wal"
+      ],
+      "networks": {
+        "default": {},
+        "runtime": {
+          "aliases": [
+            "sdar-telemetry-ingestion"
+          ]
+        }
+      },
+      "labels": {
+        "io.sdar.site": "sz-gowm"
+      },
+      "ports": [
+        "0.0.0.0:28080:8080"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8080/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ],
+        "interval": "5s",
+        "timeout": "5s",
+        "retries": 24
+      }
+    },
+    "telemetry-worker": {
+      "image": "sdar-telemetry:verification",
+      "restart": "unless-stopped",
+      "command": [
+        "node",
+        "dist/apps/telemetry-worker/src/main.js"
+      ],
+      "environment": {
+        "CLICKHOUSE_URL": "http://sdar-clickhouse:8123",
+        "CLICKHOUSE_USER": "sdar_site_telemetry_writer",
+        "CLICKHOUSE_PASSWORD_FILE": "/run/secrets/warehouse-password",
+        "CLICKHOUSE_SECURE": "false",
+        "CLICKHOUSE_EXPECTED_HOST": "sdar-clickhouse",
+        "CONTROL_POSTGRES_URL_FILE": "/run/secrets/postgres-url",
+        "WAL_DIR": "/var/lib/sdar-telemetry/wal",
+        "PROVIDER_CLOSURE_CONFIG_FILE": "/run/config/provider-closure.json"
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/warehouse-password",
+          "target": "/run/secrets/warehouse-password",
+          "read_only": true
+        },
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/postgres-url",
+          "target": "/run/secrets/postgres-url",
+          "read_only": true
+        },
+        "evidence-wal:/var/lib/sdar-telemetry/wal",
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/provider-closure.json",
+          "target": "/run/config/provider-closure.json",
+          "read_only": true
+        }
+      ],
+      "networks": {
+        "default": {},
+        "warehouse": {}
+      },
+      "labels": {
+        "io.sdar.site": "sz-gowm"
+      }
+    },
+    "query-api": {
+      "image": "sdar-telemetry:verification",
+      "restart": "unless-stopped",
+      "command": [
+        "node",
+        "dist/apps/query-api/src/main.js"
+      ],
+      "environment": {
+        "QUERY_PORT": "8081",
+        "QUERY_BIND_HOST": "0.0.0.0",
+        "TELEMETRY_TRUSTED_DEVELOPMENT": "true",
+        "QUERY_API_BEARER_TOKEN_FILE": "/run/secrets/query-token",
+        "CLICKHOUSE_QUERY_URL": "http://sdar-clickhouse:8123",
+        "CLICKHOUSE_QUERY_USER": "sdar_site_telemetry_reader",
+        "CLICKHOUSE_QUERY_PASSWORD_FILE": "/run/secrets/warehouse-query-password",
+        "CLICKHOUSE_QUERY_SECURE": "false",
+        "CLICKHOUSE_QUERY_EXPECTED_HOST": "sdar-clickhouse",
+        "SMPP_TELEMETRY_QUERY_URL": "http://smpp-telemetry-query-api-1:8088"
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/query-token",
+          "target": "/run/secrets/query-token",
+          "read_only": true
+        },
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/warehouse-query-password",
+          "target": "/run/secrets/warehouse-query-password",
+          "read_only": true
+        }
+      ],
+      "networks": {
+        "default": {},
+        "warehouse": {}
+      },
+      "labels": {
+        "io.sdar.site": "sz-gowm"
+      },
+      "ports": [
+        "0.0.0.0:28081:8081"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8081/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ],
+        "interval": "5s",
+        "timeout": "5s",
+        "retries": 24
+      }
+    },
+    "admin-api": {
+      "image": "sdar-telemetry:verification",
+      "restart": "unless-stopped",
+      "command": [
+        "node",
+        "dist/apps/admin-api/src/main.js"
+      ],
+      "environment": {
+        "CONTROL_POSTGRES_URL_FILE": "/run/secrets/postgres-url",
+        "ADMIN_PORT": "8082",
+        "ADMIN_BIND_HOST": "0.0.0.0",
+        "ADMIN_API_BEARER_TOKEN_FILE": "/run/secrets/admin-token",
+        "TELEMETRY_TRUSTED_DEVELOPMENT": "true"
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/postgres-url",
+          "target": "/run/secrets/postgres-url",
+          "read_only": true
+        },
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/admin-token",
+          "target": "/run/secrets/admin-token",
+          "read_only": true
+        }
+      ],
+      "networks": {
+        "default": {}
+      },
+      "labels": {
+        "io.sdar.site": "sz-gowm"
+      },
+      "ports": [
+        "0.0.0.0:28082:8082"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8082/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ],
+        "interval": "5s",
+        "timeout": "5s",
+        "retries": 24
+      }
+    },
+    "domain-projection-worker": {
+      "image": "sdar-telemetry:verification",
+      "restart": "unless-stopped",
+      "command": [
+        "node",
+        "dist/apps/domain-projection-worker/src/main.js"
+      ],
+      "environment": {
+        "CLICKHOUSE_URL": "http://sdar-clickhouse:8123",
+        "CLICKHOUSE_USER": "sdar_site_telemetry_writer",
+        "CLICKHOUSE_PASSWORD_FILE": "/run/secrets/warehouse-password",
+        "CLICKHOUSE_SECURE": "false",
+        "CLICKHOUSE_EXPECTED_HOST": "sdar-clickhouse",
+        "CONTROL_POSTGRES_URL_FILE": "/run/secrets/postgres-url",
+        "DOMAIN_PROJECTION_ENABLED": "true",
+        "DOMAIN_PROJECTION_MAX_MODE": "shadow",
+        "DOMAIN_PROJECTION_BIND_HOST": "0.0.0.0",
+        "DOMAIN_PROJECTION_HEALTH_PORT": "8083",
+        "DOMAIN_PROJECTION_WORKER_ID": "sz-gowm-domain-worker",
+        "DOMAIN_TENANT_ID": "tenant-local",
+        "DOMAIN_PROJECT_ID": "smpp-development"
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/warehouse-password",
+          "target": "/run/secrets/warehouse-password",
+          "read_only": true
+        },
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/postgres-url",
+          "target": "/run/secrets/postgres-url",
+          "read_only": true
+        }
+      ],
+      "networks": {
+        "default": {},
+        "warehouse": {}
+      },
+      "labels": {
+        "io.sdar.site": "sz-gowm"
+      },
+      "ports": [
+        "127.0.0.1:28083:8083"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8083/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ],
+        "interval": "5s",
+        "timeout": "5s",
+        "retries": 24
+      }
+    },
+    "control-postgres": {
+      "image": "postgres:16-alpine@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685",
+      "restart": "unless-stopped",
+      "environment": {
+        "POSTGRES_USER": "sdar_telemetry",
+        "POSTGRES_DB": "sdar_telemetry_control",
+        "POSTGRES_PASSWORD_FILE": "/run/secrets/postgres-password"
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/tmp/sdar-union-config-only/postgres-password",
+          "target": "/run/secrets/postgres-password",
+          "read_only": true
+        },
+        "control-data:/var/lib/postgresql/data"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "pg_isready",
+          "-U",
+          "sdar_telemetry",
+          "-d",
+          "sdar_telemetry_control"
+        ],
+        "interval": "3s",
+        "timeout": "3s",
+        "retries": 40
+      },
+      "networks": {
+        "default": {}
+      }
+    }
+  },
+  "volumes": {
+    "control-data": {},
+    "evidence-wal": {}
+  },
+  "networks": {
+    "default": {},
+    "warehouse": {
+      "external": true,
+      "name": "smpp-telemetry_default"
+    },
+    "runtime": {
+      "external": true,
+      "name": "sdar-sz-gowm_default"
+    }
+  }
+}

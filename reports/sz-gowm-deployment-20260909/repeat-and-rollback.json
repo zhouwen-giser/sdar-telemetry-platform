@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "unchangedContainers": 6,
+  "notBefore": "2026-09-09T03:17:59.653Z",
+  "rowsBeforeRollback": "216",
+  "rowsAfterRecovery": "458",
+  "sourceHash": "e3b4de6423e44232eb0d15a98d11d58e19086b80b9efe593b84878b68a726bc1",
+  "imageId": "sha256:aa48d009d8b842889055a2f804e51667bf5b0da1addd559a714ee0ac020be971",
+  "runtimeChangedInFinalRepeat": false,
+  "upstreamPreservedInFinalRepeat": 48
+}

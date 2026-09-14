@@ -45,7 +45,9 @@
     "start:query": "node --env-file-if-exists=.env dist/apps/query-api/src/main.js",
     "start:admin": "node --env-file-if-exists=.env dist/apps/admin-api/src/main.js",
     "start:domain-worker": "node --env-file-if-exists=.env dist/apps/domain-projection-worker/src/main.js",
-    "start:relay": "node --env-file-if-exists=.env dist/apps/sdar-outbox-relay/src/main.js"
+    "start:relay": "node --env-file-if-exists=.env dist/apps/sdar-outbox-relay/src/main.js",
+    "package:joint": "python3 deploy/united/package.py",
+    "test:deployment": "python3 -m unittest discover -s deploy/sz-gowm -p \"test_*.py\" && python3 -m unittest discover -s deploy/united -p \"test_*.py\""
   },
   "dependencies": {
     "ajv": "8.17.1",

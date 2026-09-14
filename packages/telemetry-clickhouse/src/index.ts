@@ -4,7 +4,7 @@ import {readFile} from "node:fs/promises";
 import {assertSafeSqlIdentifier} from "../../telemetry-validation/src/index.js";
 
 const REQUIRED_CLICKHOUSE_HOST = "192.168.1.7";
-const QUALIFICATION_CLICKHOUSE_HOSTS = new Set([REQUIRED_CLICKHOUSE_HOST,"127.0.0.1","localhost","[::1]"]);
+const QUALIFICATION_CLICKHOUSE_HOSTS = new Set([REQUIRED_CLICKHOUSE_HOST,"sdar-clickhouse","127.0.0.1","localhost","[::1]"]);
 
 export interface ClickHouseConfig {
   url: string;

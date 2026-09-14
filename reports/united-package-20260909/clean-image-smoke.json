@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "health": 200,
+  "unauthenticated": 401,
+  "authenticatedProbe": 204,
+  "network": "none",
+  "dataWritten": false,
+  "imageId": "sha256:7fdceee8d2f337f562861a1669e3da1061de6d7bbfaa682c4518898ff9e3b76d",
+  "sourceHash": "ef7716315248e699bdb1d25ea71d655f3dbc0e8853ec2a8f6369575e2be2f4a8"
+}
